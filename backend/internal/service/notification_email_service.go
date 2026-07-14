@@ -42,6 +42,8 @@ const (
 	notificationEmailUnsubscribeSecretKey = "notification_email_unsubscribe_secret"
 	notificationEmailDefaultLocale        = "en"
 	notificationEmailLocaleChinese        = "zh"
+	// BOXAI: Vietnamese product locale for notification emails (Vietnam market).
+	notificationEmailLocaleVietnamese     = "vi"
 	notificationEmailMaxSubjectLength     = 200
 	notificationEmailMaxHTMLLength        = 30000
 	notificationEmailUnsubscribeTTL       = 365 * 24 * time.Hour
@@ -49,7 +51,7 @@ const (
 
 var (
 	notificationEmailPlaceholderPattern = regexp.MustCompile(`{{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*}}`)
-	notificationEmailLocales            = []string{notificationEmailDefaultLocale, notificationEmailLocaleChinese}
+	notificationEmailLocales            = []string{notificationEmailDefaultLocale, notificationEmailLocaleChinese, notificationEmailLocaleVietnamese}
 	notificationEmailCommonPlaceholders = []string{"site_name", "recipient_name", "recipient_email"}
 )
 
@@ -750,6 +752,10 @@ func normalizeNotificationLocale(raw string) string {
 		if strings.HasPrefix(tag, "zh") || tag == "cn" {
 			return notificationEmailLocaleChinese
 		}
+		// BOXAI: vi / vn → Vietnamese
+		if strings.HasPrefix(tag, "vi") || tag == "vn" {
+			return notificationEmailLocaleVietnamese
+		}
 		if strings.HasPrefix(tag, "en") {
 			return notificationEmailDefaultLocale
 		}
@@ -843,7 +849,8 @@ func isSafeNotificationEmailURL(raw string) bool {
 }
 
 func notificationEmailSampleVariables(locale string) map[string]string {
-	if normalizeNotificationLocale(locale) == notificationEmailLocaleChinese {
+	normalized := normalizeNotificationLocale(locale)
+	if normalized == notificationEmailLocaleChinese {
 		return map[string]string{
 			"site_name":           defaultSiteName,
 			"recipient_name":      "张三",
@@ -888,6 +895,53 @@ func notificationEmailSampleVariables(locale string) map[string]string {
 			"report_start_time":   "2026-05-19 12:00",
 			"report_end_time":     "2026-05-20 12:00",
 			"report_html":         "<h2>日报</h2><p>请求量：1024</p>",
+		}
+	}
+	if normalized == notificationEmailLocaleVietnamese {
+		return map[string]string{
+			"site_name":           defaultSiteName,
+			"recipient_name":      "An",
+			"recipient_email":     "user@example.com",
+			"verification_code":   "123456",
+			"expires_in_minutes":  "15",
+			"reset_url":           "https://example.com/reset-password?token=preview",
+			"subscription_group":  "Claude Pro",
+			"subscription_days":   "30",
+			"expiry_time":         "2026-06-18 12:00",
+			"days_remaining":      "3",
+			"current_balance":     "12.34",
+			"threshold":           "20.00",
+			"recharge_url":        "https://example.com/recharge",
+			"recharge_amount":     "50.00",
+			"order_id":            "1024",
+			"unsubscribe_url":     "https://example.com/unsubscribe",
+			"account_id":          "1001",
+			"account_name":        "openai-main",
+			"platform":            "openai",
+			"quota_dimension":     "Hạn mức ngày",
+			"quota_used":          "80.00",
+			"quota_limit":         "100.00",
+			"quota_remaining":     "20.00",
+			"quota_threshold":     "20%",
+			"triggered_at":        "2026-05-20 12:00:00",
+			"group_name":          "Nhóm mặc định",
+			"moderation_category": "violence",
+			"moderation_score":    "0.982",
+			"violation_count":     "2",
+			"ban_threshold":       "3",
+			"rule_name":           "Tỷ lệ lỗi cao",
+			"severity":            "critical",
+			"alert_status":        "firing",
+			"metric_type":         "error_rate",
+			"operator":            ">=",
+			"metric_value":        "12.50",
+			"threshold_value":     "10.00",
+			"alert_description":   "Tỷ lệ lỗi vượt ngưỡng trong 10 phút gần nhất.",
+			"report_name":         "Báo cáo ngày",
+			"report_type":         "daily_summary",
+			"report_start_time":   "2026-05-19 12:00",
+			"report_end_time":     "2026-05-20 12:00",
+			"report_html":         "<h2>Báo cáo ngày</h2><p>Yêu cầu: 1024</p>",
 		}
 	}
 	return map[string]string{

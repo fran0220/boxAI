@@ -145,6 +145,9 @@ docs/*
 !docs/legal/*.md
 !docs/agents/
 !docs/agents/**
+!docs/i18n/
+!docs/i18n/**
+
 .serena/
 .codex/
 frontend/coverage/

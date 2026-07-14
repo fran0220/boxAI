@@ -1,26 +1,29 @@
 /**
  * BoxAI brand constants — single source of truth for product naming.
  * Do not hard-code "BoxAI" / tagline elsewhere when a fallback default is needed.
+ *
+ * Display marketing copy must go through i18n (`home.*`). Constants here are
+ * language-neutral English defaults for title fallbacks before i18n loads.
  */
 
 /** Product display name (one word, capital B + AI). */
 export const BRAND_NAME = 'BoxAI'
 
-/** Short product descriptor used in titles and defaults. */
-export const BRAND_TAGLINE = '综合 AI 服务平台'
+/** Short product descriptor used in titles and defaults (English neutral). */
+export const BRAND_TAGLINE = 'AI Service Platform'
 
 /** Full default document title. */
 export const BRAND_DOCUMENT_TITLE = `${BRAND_NAME} - ${BRAND_TAGLINE}`
 
-/** Default marketing subtitle on the landing page when admin has not set one. */
-export const BRAND_DEFAULT_SUBTITLE = '所有模型 · 所有模态 · 一个盒子'
+/** Default marketing subtitle when admin has not set one (English neutral; prefer t('home.heroDescription')). */
+export const BRAND_DEFAULT_SUBTITLE = 'All models · All modalities · One box'
 
-/** North-star homepage badge (platform vision). */
-export const BRAND_PLATFORM_BADGE = '综合 AI 平台'
+/** North-star homepage badge (English neutral; prefer t('home.heroSubtitle')). */
+export const BRAND_PLATFORM_BADGE = 'Unified AI Platform'
 
-/** Hero lines for the platform homepage (zh primary; i18n may override). */
-export const BRAND_HERO_LINE1 = '一个盒子，'
-export const BRAND_HERO_LINE2 = '装下所有 AI'
+/** Hero lines (English neutral; prefer t('home.heroLine1/2')). */
+export const BRAND_HERO_LINE1 = 'One box.'
+export const BRAND_HERO_LINE2 = 'All AI inside.'
 
 /** Primary brand teal (matches Tailwind primary-500). */
 export const BRAND_COLOR_PRIMARY = '#14b8a6'
