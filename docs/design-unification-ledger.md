@@ -65,8 +65,8 @@
 |----|-----|------|
 | E1 | simple 发版 `v0.1.155-box.5` | done |
 | E2 | 生产 pin `0.1.155-box.5` | done |
-| E3 | 全站扫后 simple 发版 `v0.1.155-box.6` | pending |
-| E4 | 生产 pin `0.1.155-box.6` | pending |
+| E3 | 全站扫后 simple 发版 `v0.1.155-box.6` | done |
+| E4 | 生产 pin `0.1.155-box.6` | done |
 
 ## 验收清单
 
