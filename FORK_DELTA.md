@@ -31,6 +31,8 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `FORK_DELTA.md` | This inventory |
 | `tools/check_compliance_hash.py` | Compliance freeze gate |
 | `tools/check_migration_lint.py` | Migration naming gate |
+| `tools/i18n/*` | Locale parity / ledger export tools |
+| `docs/i18n/*` | i18n process, glossary, translation waves |
 | `.github/workflows/fork-gates.yml` | Fork CI gates |
 
 ## Sync-first / hybrid files with BOXAI markers
@@ -73,7 +75,11 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/components/layout/AppHeader.vue` | Header glass / token surfaces |
 | `frontend/src/components/layout/TablePageLayout.vue` | Table shell uses card tokens |
 | `frontend/src/components/layout/AuthLayout.vue` | Auth chrome brand + homepage ambient |
-| `frontend/src/i18n/locales/{en,zh}/*` | Product copy (landing/dashboard/settings/misc) |
+| `frontend/src/i18n/locales/{en,zh,vi}/*` | Product copy (landing/dashboard/settings/misc/batchImage + admin) |
+| `frontend/src/i18n/localeMeta.ts` | Locale codes, BCP-47, compliance language map |
+| `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage (+ legacy key) |
+| `backend/internal/service/notification_email_templates_vi.go` | Official Vietnamese email templates |
+| `backend/internal/service/notification_email_service.go` | BOXAI: `vi` in locale list + normalize |
 | Related views/components listed in brand rollout | Prefer import from `brand.ts` |
 
 ### Deploy / release hybrid
