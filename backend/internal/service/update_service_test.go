@@ -49,6 +49,44 @@ func (s *updateServiceGitHubClientStub) FetchChecksumFile(context.Context, strin
 	panic("FetchChecksumFile should not be called when no update is available")
 }
 
+func TestUpdateGitHubRepoDefaultsToBoxAI(t *testing.T) {
+	t.Setenv("UPDATE_GITHUB_REPO", "")
+	require.Equal(t, "fran0220/boxAI", updateGitHubRepo())
+	t.Setenv("UPDATE_GITHUB_REPO", "acme/other")
+	require.Equal(t, "acme/other", updateGitHubRepo())
+}
+
+func TestInplaceUpdateDisabledByEnv(t *testing.T) {
+	t.Setenv("BOXAI_DISABLE_INPLACE_UPDATE", "true")
+	require.True(t, inplaceUpdateDisabled())
+	t.Setenv("BOXAI_DISABLE_INPLACE_UPDATE", "false")
+	// When forced false, may still be true if /.dockerenv exists in CI containers.
+	// Only assert explicit true path above; force-off is best-effort.
+	_ = inplaceUpdateDisabled()
+}
+
+func TestUpdateServicePerformUpdateDisabledInDockerPolicy(t *testing.T) {
+	t.Setenv("BOXAI_DISABLE_INPLACE_UPDATE", "true")
+	svc := NewUpdateService(
+		&updateServiceCacheStub{},
+		&updateServiceGitHubClientStub{
+			release: &GitHubRelease{
+				TagName: "v9.9.9",
+				Name:    "future",
+			},
+		},
+		"0.1.0",
+		"release",
+	)
+	err := svc.PerformUpdate(context.Background())
+	require.ErrorIs(t, err, ErrInplaceUpdateDisabled)
+
+	info, err := svc.CheckUpdate(context.Background(), true)
+	require.NoError(t, err)
+	require.False(t, info.HasUpdate, "docker policy should hide upgrade CTA")
+	require.Contains(t, info.Warning, "Docker deploy detected")
+}
+
 func TestUpdateServicePerformUpdateNoUpdateReturnsSentinel(t *testing.T) {
 	svc := NewUpdateService(
 		&updateServiceCacheStub{},

@@ -42,6 +42,10 @@ services:
       # =======================================================================
       - AUTO_SETUP=true
 
+      # BOXAI: disable admin in-place binary upgrades in compose (see docs/PRODUCTION.md)
+      - BOXAI_DISABLE_INPLACE_UPDATE=${BOXAI_DISABLE_INPLACE_UPDATE:-true}
+      - UPDATE_GITHUB_REPO=${UPDATE_GITHUB_REPO:-fran0220/boxAI}
+
       # =======================================================================
       # Server Configuration
       # =======================================================================

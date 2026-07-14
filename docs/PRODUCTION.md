@@ -222,6 +222,10 @@ docker compose logs --tail=100 postgres redis
 
 ### 5.2 升级（滚动到新公开镜像）
 
+> **禁止**在管理后台点击「在线升级 / 更新」对 Docker 部署做就地二进制替换。  
+> 旧逻辑默认从 `Wei-Shaw/sub2api` 拉上游 release，会把容器内 `/app/sub2api` 覆盖成 **Sub2API 上游二进制**，表现为品牌/行为「恢复成 sub2api」。  
+> 正确升级路径：**只改 `BOXAI_IMAGE` + compose pull/up**。
+
 ```bash
 cd /opt/boxAI
 # 1) 备份（见 §6）
@@ -230,6 +234,22 @@ docker compose pull
 docker compose up -d
 curl -fsS http://127.0.0.1:8080/health
 curl -fsS https://you-box.com/health
+# 确认仍是 BoxAI（不是 Sub2API）
+docker exec sub2api /app/sub2api -version | head -1
+```
+
+环境变量（compose 默认已设）：
+
+| 变量 | 默认 | 含义 |
+|------|------|------|
+| `BOXAI_DISABLE_INPLACE_UPDATE` | `true` | 禁止 Docker 内就地换二进制 |
+| `UPDATE_GITHUB_REPO` | `fran0220/boxAI` | 版本检查来源（勿设为 Wei-Shaw/sub2api） |
+
+若误点升级导致变回 Sub2API，在未改镜像 tag 的情况下：
+
+```bash
+cd /opt/boxAI
+docker compose up -d --force-recreate --no-deps sub2api
 ```
 
 迁移在应用启动时 **自动** 执行（forward-only）。不要跳过大版本；不要改已应用的 SQL 迁移文件。

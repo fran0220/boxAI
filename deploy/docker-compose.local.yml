@@ -46,6 +46,12 @@ services:
       # =======================================================================
       - AUTO_SETUP=true
 
+      # BOXAI: never use admin UI in-place binary upgrade in compose (would pull
+      # Wei-Shaw/sub2api and overwrite the BoxAI product binary). Upgrade by
+      # pinning BOXAI_IMAGE and: docker compose pull && docker compose up -d
+      - BOXAI_DISABLE_INPLACE_UPDATE=${BOXAI_DISABLE_INPLACE_UPDATE:-true}
+      - UPDATE_GITHUB_REPO=${UPDATE_GITHUB_REPO:-fran0220/boxAI}
+
       # =======================================================================
       # Server Configuration
       # =======================================================================

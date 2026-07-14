@@ -19,18 +19,25 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: update repo identity
 	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
 )
 
 var (
 	ErrNoUpdateAvailable         = infraerrors.Conflict("ALREADY_UP_TO_DATE", "no update available; current version is latest")
 	ErrRollbackVersionNotAllowed = infraerrors.BadRequest("ROLLBACK_VERSION_NOT_ALLOWED", "version is not in the allowed rollback list")
+	// ErrInplaceUpdateDisabled is returned when binary in-place update is not safe
+	// (e.g. Docker compose deployments). Operators must update via image pin.
+	// BOXAI: prevent admin UI upgrade from overwriting the product with upstream Sub2API.
+	ErrInplaceUpdateDisabled = infraerrors.BadRequest(
+		"INPLACE_UPDATE_DISABLED",
+		"in-place binary update is disabled in Docker; set BOXAI_IMAGE to a new ghcr.io/fran0220/boxai tag and run: docker compose pull && docker compose up -d",
+	)
 )
 
 const (
 	updateCacheKey = "update_check_cache"
 	updateCacheTTL = 1200 // 20 minutes
-	githubRepo     = "Wei-Shaw/sub2api"
 
 	// Security: allowed download domains for updates
 	allowedDownloadHost = "github.com"
@@ -44,6 +51,35 @@ const (
 	// Fetch a few extra releases so filtering (current/newer/prerelease) still leaves enough candidates
 	rollbackFetchPageSize = 15
 )
+
+// updateGitHubRepo returns the owner/name used for release checks.
+// BOXAI: default is branding.UpdateGitHubRepo; override with UPDATE_GITHUB_REPO.
+func updateGitHubRepo() string {
+	if v := strings.TrimSpace(os.Getenv("UPDATE_GITHUB_REPO")); v != "" {
+		return v
+	}
+	return branding.UpdateGitHubRepo
+}
+
+// inplaceUpdateDisabled is true for Docker/compose deploys where swapping
+// /app/sub2api would discard BoxAI layers and/or pull the wrong product.
+// BOXAI: also forced when BOXAI_DISABLE_INPLACE_UPDATE is truthy.
+func inplaceUpdateDisabled() bool {
+	switch strings.ToLower(strings.TrimSpace(os.Getenv("BOXAI_DISABLE_INPLACE_UPDATE"))) {
+	case "1", "true", "yes", "on":
+		return true
+	case "0", "false", "no", "off":
+		return false
+	}
+	if _, err := os.Stat("/.dockerenv"); err == nil {
+		return true
+	}
+	// Common compose/k8s markers
+	if os.Getenv("KUBERNETES_SERVICE_HOST") != "" {
+		return true
+	}
+	return false
+}
 
 // UpdateCache defines cache operations for update service
 type UpdateCache interface {
@@ -134,7 +170,7 @@ func (s *UpdateService) CheckUpdate(ctx context.Context, force bool) (*UpdateInf
 	// Try cache first
 	if !force {
 		if cached, err := s.getFromCache(ctx); err == nil && cached != nil {
-			return cached, nil
+			return s.annotateDockerUpdatePolicy(cached), nil
 		}
 	}
 
@@ -144,25 +180,47 @@ func (s *UpdateService) CheckUpdate(ctx context.Context, force bool) (*UpdateInf
 		// Return cached on error
 		if cached, cacheErr := s.getFromCache(ctx); cacheErr == nil && cached != nil {
 			cached.Warning = "Using cached data: " + err.Error()
-			return cached, nil
+			return s.annotateDockerUpdatePolicy(cached), nil
 		}
-		return &UpdateInfo{
+		return s.annotateDockerUpdatePolicy(&UpdateInfo{
 			CurrentVersion: s.currentVersion,
 			LatestVersion:  s.currentVersion,
 			HasUpdate:      false,
 			Warning:        err.Error(),
 			BuildType:      s.buildType,
-		}, nil
+		}), nil
 	}
 
 	// Cache result
 	s.saveToCache(ctx, info)
-	return info, nil
+	return s.annotateDockerUpdatePolicy(info), nil
+}
+
+// annotateDockerUpdatePolicy attaches operator guidance for compose deploys.
+// BOXAI: in Docker, do not advertise in-place binary upgrades (they pull wrong product / break layers).
+func (s *UpdateService) annotateDockerUpdatePolicy(info *UpdateInfo) *UpdateInfo {
+	if info == nil || !inplaceUpdateDisabled() {
+		return info
+	}
+	msg := "Docker deploy detected: do not use in-app binary upgrade. " +
+		"Update by pinning BOXAI_IMAGE=" + branding.DefaultPublicImage + ":<tag> and running docker compose pull && docker compose up -d."
+	if info.Warning == "" {
+		info.Warning = msg
+	} else if !strings.Contains(info.Warning, "Docker deploy detected") {
+		info.Warning = info.Warning + " | " + msg
+	}
+	// Hide upgrade CTA so operators are not guided into a destructive action.
+	info.HasUpdate = false
+	return info
 }
 
 // PerformUpdate downloads and applies the update
 // Uses atomic file replacement pattern for safe in-place updates
 func (s *UpdateService) PerformUpdate(ctx context.Context) error {
+	if inplaceUpdateDisabled() {
+		return ErrInplaceUpdateDisabled
+	}
+
 	info, err := s.CheckUpdate(ctx, true)
 	if err != nil {
 		return err
@@ -179,6 +237,10 @@ func (s *UpdateService) PerformUpdate(ctx context.Context) error {
 // verifies its checksum, and atomically swaps the running binary.
 // Shared by PerformUpdate (latest) and RollbackToVersion (specific older version).
 func (s *UpdateService) applyReleaseAssets(ctx context.Context, releaseAssets []Asset) error {
+	if inplaceUpdateDisabled() {
+		return ErrInplaceUpdateDisabled
+	}
+
 	// Find matching archive and checksum for current platform
 	archiveName := s.getArchiveName()
 	var downloadURL string
@@ -281,6 +343,9 @@ func (s *UpdateService) applyReleaseAssets(ctx context.Context, releaseAssets []
 
 // Rollback restores the previous version
 func (s *UpdateService) Rollback() error {
+	if inplaceUpdateDisabled() {
+		return ErrInplaceUpdateDisabled
+	}
 	exePath, err := os.Executable()
 	if err != nil {
 		return fmt.Errorf("failed to get executable path: %w", err)
@@ -327,6 +392,9 @@ func (s *UpdateService) ListRollbackVersions(ctx context.Context) ([]RollbackVer
 // The target must be one of the versions returned by ListRollbackVersions;
 // anything else (including the current version) is rejected.
 func (s *UpdateService) RollbackToVersion(ctx context.Context, version string) error {
+	if inplaceUpdateDisabled() {
+		return ErrInplaceUpdateDisabled
+	}
 	target := strings.TrimPrefix(strings.TrimSpace(version), "v")
 	if target == "" {
 		return ErrRollbackVersionNotAllowed
@@ -363,7 +431,8 @@ func (s *UpdateService) RollbackToVersion(ctx context.Context, version string) e
 // fetchRollbackCandidates fetches recent releases and keeps the newest
 // maxRollbackVersions entries strictly older than the current version.
 func (s *UpdateService) fetchRollbackCandidates(ctx context.Context) ([]*GitHubRelease, error) {
-	releases, err := s.githubClient.FetchRecentReleases(ctx, githubRepo, rollbackFetchPageSize)
+	// BOXAI: rollback candidates from product repo
+	releases, err := s.githubClient.FetchRecentReleases(ctx, updateGitHubRepo(), rollbackFetchPageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -400,7 +469,8 @@ func (s *UpdateService) fetchRollbackCandidates(ctx context.Context) ([]*GitHubR
 }
 
 func (s *UpdateService) fetchLatestRelease(ctx context.Context) (*UpdateInfo, error) {
-	release, err := s.githubClient.FetchLatestRelease(ctx, githubRepo)
+	// BOXAI: use product release repo (fran0220/boxAI), not Wei-Shaw/sub2api
+	release, err := s.githubClient.FetchLatestRelease(ctx, updateGitHubRepo())
 	if err != nil {
 		return nil, err
 	}
