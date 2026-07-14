@@ -12,7 +12,8 @@
 
 services:
   sub2api:
-    image: weishaw/sub2api:latest
+    # BOXAI: pin a concrete tag in production; default is the BoxAI GHCR image.
+    image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:latest}
     container_name: sub2api
     restart: unless-stopped
     ulimits:

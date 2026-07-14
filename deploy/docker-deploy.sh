@@ -21,7 +21,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # GitHub raw content base URL
-GITHUB_RAW_URL="https://raw.githubusercontent.com/Wei-Shaw/sub2api/main/deploy"
+# BOXAI: fork deploy assets (compose image defaults point at BoxAI GHCR)
+GITHUB_RAW_URL="https://raw.githubusercontent.com/fran0220/boxAI/main/deploy"
 
 # Print colored message
 print_info() {
@@ -54,7 +55,7 @@ command_exists() {
 main() {
     echo ""
     echo "=========================================="
-    echo "  Sub2API Deployment Preparation"
+    echo "  BoxAI Deployment Preparation"
     echo "=========================================="
     echo ""
 
