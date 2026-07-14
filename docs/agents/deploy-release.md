@@ -12,7 +12,10 @@
 | Listen | `127.0.0.1:8080` |
 | Reverse proxy | Nginx `you-box.com` → `127.0.0.1:8080` |
 | Admin email | `admin@you-box.com` (password on host: `/root/.boxai-admin-password`) |
-| Prior stack | you-box offlined under `/opt/you-box.offlined-*`; volume `you-box_pg_data` retained |
+| Data services | **PostgreSQL 18** + **Redis 8** via same compose (healthy) |
+| Legacy you-box | **Purged** (archive dir, images, `you-box_pg_data` deleted 2026-07-15) |
+
+**完整生产文档（推荐阅读）：** [docs/PRODUCTION.md](../PRODUCTION.md)
 
 ```bash
 ssh youbox

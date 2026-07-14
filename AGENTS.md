@@ -10,6 +10,7 @@ Read this file before any non-trivial change. Detailed SOPs live under `docs/age
 | [Change design](docs/agents/change-design.md) | How to write BE/FE code that survives upstream merges |
 | [Upstream sync](docs/agents/upstream-sync.md) | Merge SOP, conflict policy, verification |
 | [Deploy & release](docs/agents/deploy-release.md) | Compose, Docker publish, versioning |
+| [**Production deploy (full)**](docs/PRODUCTION.md) | youbox 拓扑、Postgres/Redis、备份升级、从零安装 |
 | [PR checklist](docs/agents/pr-checklist.md) | Required checks before merge |
 | [FORK_DELTA.md](FORK_DELTA.md) | Enumerated product delta vs upstream |
 | [DEV_GUIDE.md](DEV_GUIDE.md) | Local env, CI versions, common pitfalls |
