@@ -1,6 +1,6 @@
 export default {
   dashboard: {
-    title: 'Dashboard',
+    title: 'Bảng điều khiển',
     welcomeMessage: "Welcome back! Here's an overview of your account.",
     balance: 'Balance',
     apiKeys: 'API Keys',
@@ -66,7 +66,7 @@ export default {
 
   // API Keys
   keys: {
-    title: 'API Keys',
+    title: 'Khóa API',
     description: 'Manage your API keys and access tokens',
     searchPlaceholder: 'Search name or key...',
     endpoints: {
