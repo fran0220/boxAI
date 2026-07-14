@@ -30,9 +30,10 @@ Docker Compose project: boxAI   (/opt/boxAI)
 | 应用目录 | `/opt/boxAI` |
 | Compose 文件 | `/opt/boxAI/docker-compose.yml`（内容同仓库 `deploy/docker-compose.local.yml`） |
 | 环境文件 | `/opt/boxAI/.env`（`chmod 600`，**勿提交 Git**） |
-| 公开镜像 | `ghcr.io/fran0220/boxai:0.1.155-box.2`（生产必须 pin tag） |
+| 公开镜像 | `ghcr.io/fran0220/boxai:<pin-tag>`（生产必须 pin，当前示例 `0.1.155-box.3`） |
 | 应用监听 | 仅本机 `127.0.0.1:8080`（不直接暴露公网） |
 | 健康检查 | `GET /health` → `{"status":"ok"}` |
+| Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;`（粘性会话 / `session_id`） |
 | 管理员 | 邮箱见 `.env` 的 `ADMIN_EMAIL`；初始密码见主机 `/root/.boxai-admin-password` |
 | 旧 you-box 栈 | **已彻底删除**（目录、镜像、`you-box_pg_data` 卷均已清除） |
 
@@ -166,7 +167,24 @@ curl -fsS http://127.0.0.1:8080/health
 
 ### 4.5 Nginx + TLS
 
-示例站点（与当前线上一致思路）：
+#### 4.5.1 必配：`http` 块开启下划线请求头
+
+反向代理 BoxAI/Sub2API（以及配合 Codex CLI / 多账号粘性会话）时，**必须**在 Nginx 的 **`http { }` 块**（不是 `server` 块）中配置：
+
+```nginx
+http {
+    # 保留名称含下划线的请求头（如 session_id）
+    # Nginx 默认会丢弃这类头，导致粘性会话失效
+    underscores_in_headers on;
+
+    # ... 其余配置
+}
+```
+
+线上文件位置：`/etc/nginx/nginx.conf` 的 `http` 块内。  
+修改后：`nginx -t && systemctl reload nginx`。
+
+#### 4.5.2 站点反代示例
 
 ```nginx
 server {
@@ -174,6 +192,16 @@ server {
 
   location /.well-known/acme-challenge/ {
     root /var/www/letsencrypt;
+  }
+
+  # 禁止 Docker 部署误用管理后台「在线升级」（会拉上游 Sub2API 覆盖二进制）
+  location = /api/v1/admin/system/update {
+    default_type application/json;
+    return 403 '{"code":403,"message":"Use docker compose upgrade for BoxAI."}';
+  }
+  location = /api/v1/admin/system/rollback {
+    default_type application/json;
+    return 403 '{"code":403,"message":"Use docker compose upgrade for BoxAI."}';
   }
 
   location / {
@@ -185,6 +213,7 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection $connection_upgrade;
+    # 勿在此再丢弃客户自定义头；session_id 依赖 http 块的 underscores_in_headers
     proxy_read_timeout 3600s;
     proxy_send_timeout 3600s;
     client_max_body_size 200m;
