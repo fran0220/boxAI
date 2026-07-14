@@ -1,76 +1,65 @@
-# Sub2API Docker Image
+# BoxAI Docker Image
 
-Sub2API is an AI API Gateway Platform for distributing and managing AI product subscription API quotas.
+Public multi-arch image for the BoxAI AI API Gateway (product surface on top of the Sub2API gateway stack).
+
+| Item | Value |
+|------|--------|
+| Registry | GitHub Container Registry |
+| Image | `ghcr.io/fran0220/boxai` |
+| Visibility | **Public** (no login required to pull) |
+| Tag scheme | `X.Y.Z-box.N` (aligned with git tag `vX.Y.Z-box.N`) |
 
 ## Quick Start
 
 ```bash
+# Prefer a pinned release tag in production
+docker pull ghcr.io/fran0220/boxai:0.1.155-box.1
+
 docker run -d \
-  --name sub2api \
+  --name boxai \
   -p 8080:8080 \
-  -e DATABASE_URL="postgres://user:pass@host:5432/sub2api" \
-  -e REDIS_URL="redis://host:6379" \
-  weishaw/sub2api:latest
+  -e AUTO_SETUP=true \
+  -e DATABASE_HOST=... \
+  -e DATABASE_PASSWORD=... \
+  -e REDIS_HOST=... \
+  -e JWT_SECRET=... \
+  -e TOTP_ENCRYPTION_KEY=... \
+  ghcr.io/fran0220/boxai:0.1.155-box.1
 ```
 
-## Docker Compose
+For a full stack (app + PostgreSQL + Redis), use the compose files in this directory:
+
+```bash
+export BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.1
+cp .env.example .env   # set secrets; pin BOXAI_IMAGE
+docker compose -f docker-compose.local.yml up -d
+```
+
+## Docker Compose snippet
 
 ```yaml
-version: '3.8'
-
 services:
   sub2api:
-    image: weishaw/sub2api:latest
+    image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:0.1.155-box.1}
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/sub2api?sslmode=disable
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - db
-      - redis
-
-  db:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=sub2api
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  redis:
-    image: redis:7-alpine
-    volumes:
-      - redis_data:/data
-
-volumes:
-  postgres_data:
-  redis_data:
+      - AUTO_SETUP=true
+      # ... see .env.example
 ```
 
-## Environment Variables
-
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | Yes | - |
-| `REDIS_URL` | Redis connection string | Yes | - |
-| `PORT` | Server port | No | `8080` |
-| `GIN_MODE` | Gin framework mode (`debug`/`release`) | No | `release` |
-
-## Supported Architectures
-
-- `linux/amd64`
-- `linux/arm64`
+> Service/container names remain `sub2api` for upstream deploy compatibility. Only the **image reference** is BoxAI-branded.
 
 ## Tags
 
-- `latest` - Latest stable release
-- `x.y.z` - Specific version
-- `x.y` - Latest patch of minor version
-- `x` - Latest minor of major version
+| Tag | Meaning |
+|-----|---------|
+| `X.Y.Z-box.N` | Immutable product release (recommended for production) |
+| `latest` | Points at the newest product release (moving target) |
+| `X.Y` / `X` | Convenience major/minor pointers from GoReleaser manifests |
 
-## Links
+## Notes
 
-- [GitHub Repository](https://github.com/weishaw/sub2api)
-- [Documentation](https://github.com/weishaw/sub2api#readme)
+- Image is **public**: `docker pull` works without `docker login` for anonymous pulls (GitHub may rate-limit unauthenticated pulls).
+- Inside the image the binary is still named `sub2api` (upstream contract).
+- Upgrade: pin a new tag, take a `pg_dump` backup, then recreate the container/compose stack.

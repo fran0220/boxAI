@@ -11,6 +11,7 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | Last fully inventoried baseline | `v0.1.155` / `0.1.155` (`backend/cmd/server/VERSION`) |
 | Product origin | `fran0220/boxAI` |
 | Public image | `ghcr.io/fran0220/boxai` |
+| Public release tag scheme | `vX.Y.Z-box.N` (GoReleaser → GHCR `boxai`) |
 
 ## Product-first paths (owned entirely by BoxAI)
 
@@ -75,6 +76,9 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `deploy/docker-compose.standalone.yml` | `BOXAI_IMAGE` parameter |
 | `deploy/docker-deploy.sh` | Fork raw URL + product banner |
 | `deploy/.env.example` | Document `BOXAI_IMAGE` pin |
+| `deploy/DOCKER.md` | Public GHCR pull docs for `boxai` |
+| `.goreleaser.yaml` / `.goreleaser.simple.yaml` | GHCR image name `boxai`, BoxAI release copy |
+| `.github/workflows/release.yml` | BoxAI package links; VERSION keeps upstream baseline |
 
 ## Frozen (must stay Sub2API wording)
 
