@@ -1,4 +1,4 @@
-# Sub2API
+# BoxAI
 
 <div align="center">
 
@@ -8,9 +8,13 @@
 [![Redis](https://img.shields.io/badge/Redis-7+-DC382D.svg)](https://redis.io/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
 
-<a href="https://trendshift.io/repositories/21823" target="_blank"><img src="https://trendshift.io/api/badge/repositories/21823" alt="Wei-Shaw%2Fsub2api | Trendshift" width="250" height="55"/></a>
+<img src="frontend/public/logo.svg" alt="BoxAI" width="96" height="96" />
 
-**AI API 网关平台 - 订阅配额分发管理**
+**BoxAI — 开箱即用的智能 API**
+
+AI API 网关平台 - 订阅配额分发管理
+
+BoxAI 基于开源 [Sub2API](https://github.com/Wei-Shaw/sub2api) 网关能力进行产品化品牌重塑。品牌规范见 [docs/BRAND.md](docs/BRAND.md)。
 
 [English](README.md) | 中文 | [日本語](README_JA.md)
 

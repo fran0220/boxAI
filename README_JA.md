@@ -1,4 +1,4 @@
-# Sub2API
+# BoxAI
 
 <div align="center">
 
@@ -8,9 +8,13 @@
 [![Redis](https://img.shields.io/badge/Redis-7+-DC382D.svg)](https://redis.io/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
 
-<a href="https://trendshift.io/repositories/21823" target="_blank"><img src="https://trendshift.io/api/badge/repositories/21823" alt="Wei-Shaw%2Fsub2api | Trendshift" width="250" height="55"/></a>
+<img src="frontend/public/logo.svg" alt="BoxAI" width="96" height="96" />
 
-**サブスクリプションクォータ配分のための AI API ゲートウェイプラットフォーム**
+**BoxAI — Intelligence, out of the box**
+
+サブスクリプションクォータ配分のための AI API ゲートウェイプラットフォーム
+
+BoxAI はオープンソースの [Sub2API](https://github.com/Wei-Shaw/sub2api) をベースにしたプロダクトブランドです。ブランド仕様は [docs/BRAND.md](docs/BRAND.md) を参照してください。
 
 [English](README.md) | [中文](README_CN.md) | 日本語
 

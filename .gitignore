@@ -126,17 +126,23 @@ scripts
 .code-review-state
 #openspec/
 code-reviews/
-AGENTS.md
+# Project AGENTS.md is tracked (agent hard rules). Local overrides can use AGENTS.local.md.
+AGENTS.local.md
 backend/cmd/server/server
 deploy/docker-compose.override.yml
 .gocache/
 vite.config.js
+# docs: ignore scratch notes; track published product/engineering docs
 docs/*
 !docs/PAYMENT.md
 !docs/PAYMENT_CN.md
 !docs/ADMIN_PAYMENT_INTEGRATION_API.md
+!docs/BATCH_IMAGE_MVP.md
+!docs/BRAND.md
 !docs/legal/
 !docs/legal/*.md
+!docs/agents/
+!docs/agents/**
 .serena/
 .codex/
 frontend/coverage/
