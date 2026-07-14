@@ -1,5 +1,29 @@
 # Deploy and public Docker release
 
+## Live production host (cutover 2026-07-15)
+
+| Item | Value |
+|------|--------|
+| SSH host | `youbox` (`160.187.1.155`) |
+| Domain | `https://you-box.com` |
+| App dir | `/opt/boxAI` |
+| Compose | `docker-compose.yml` (from `deploy/docker-compose.local.yml`) |
+| Image | `ghcr.io/fran0220/boxai:0.1.155-box.2` (pin releases) |
+| Listen | `127.0.0.1:8080` |
+| Reverse proxy | Nginx `you-box.com` → `127.0.0.1:8080` |
+| Admin email | `admin@you-box.com` (password on host: `/root/.boxai-admin-password`) |
+| Prior stack | you-box offlined under `/opt/you-box.offlined-*`; volume `you-box_pg_data` retained |
+
+```bash
+ssh youbox
+cd /opt/boxAI
+# bump BOXAI_IMAGE in .env to a new public tag
+docker compose pull
+docker compose up -d
+curl -fsS http://127.0.0.1:8080/health
+curl -fsSI https://you-box.com/health | head
+```
+
 ## Canonical production deploy
 
 | Choice | Standard |
