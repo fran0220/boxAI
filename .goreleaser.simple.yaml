@@ -3,9 +3,9 @@ version: 2
 
 project_name: sub2api
 
+# Skip go mod tidy for speed (CI already has a clean module graph from the tag).
 before:
-  hooks:
-    - go mod tidy -C backend
+  hooks: []
 
 builds:
   - id: sub2api

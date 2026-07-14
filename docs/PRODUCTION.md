@@ -315,7 +315,28 @@ tar czf /root/boxai-backups/redis-${TS}.tgz -C /opt/boxAI redis_data
 | 镜像 | `ghcr.io/fran0220/boxai`（**public**） |
 | Git tag | `vX.Y.Z-box.N`（`X.Y.Z` = 已合入上游基线） |
 | 触发 | `git push origin vX.Y.Z-box.N` → `.github/workflows/release.yml` |
-| 多架构 | amd64 + arm64 |
+| 多架构 | amd64 + arm64（**full**） |
+
+### 7.1 快速发版 vs 完整发版
+
+| 模式 | 用途 | 大概耗时 | 产物 |
+|------|------|----------|------|
+| **simple（推荐日常/hotfix）** | youbox 生产（x86_64）紧急修复 | **约 5–10 分钟** | 仅 `linux/amd64` GHCR 镜像 + GitHub Release 文案 |
+| **full** | 正式对外 / 需要 arm64（Apple 等） | **约 12–20+ 分钟** | amd64+arm64 镜像 manifest + 多平台二进制包 |
+
+**日常生产升级请用 simple**，不必等 full 多架构：
+
+```bash
+# 方式 A：workflow_dispatch（推荐）
+gh workflow run release.yml -R fran0220/boxAI \
+  -f tag=v0.1.155-box.3 \
+  -f simple_release=true
+
+# 方式 B：仓库变量长期默认 simple（仅当生产只需 amd64 时）
+# gh variable set SIMPLE_RELEASE -R fran0220/boxAI --body true
+```
+
+注意：`simple_release` 推送的 `ghcr.io/fran0220/boxai:latest` 与 version tag **只有 amd64**；若还要 arm64，再跑一次 full（同 tag 需删掉后重发，或打新 tag）。
 
 发布后把生产 `.env` 的 `BOXAI_IMAGE` 改为新 tag，再 `pull && up -d`。
 
