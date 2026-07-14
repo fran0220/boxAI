@@ -123,8 +123,8 @@
       </div>
 
       <!-- 高级设置区：请求模板 + 自定义 headers/body -->
-      <details class="rounded-lg border border-gray-200 bg-gray-50/50 p-3 dark:border-dark-700 dark:bg-dark-900/30">
-        <summary class="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
+      <details class="rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] p-3  ">
+        <summary class="cursor-pointer text-sm font-medium text-[color:var(--bx-text-soft)]">
           {{ t('admin.channelMonitor.advanced.section') }}
         </summary>
         <p class="mt-1 text-xs text-gray-400">{{ t('admin.channelMonitor.advanced.sectionHint') }}</p>
@@ -374,7 +374,7 @@ function apiModeButtonClass(mode: APIMode): string {
   if (active) {
     return 'border-primary-500 bg-white text-primary-700 shadow-sm dark:border-primary-400 dark:bg-primary-500/15 dark:text-primary-300'
   }
-  return 'border-blue-100 bg-white/70 text-gray-600 hover:border-primary-300 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-400'
+  return 'border-blue-100 bg-[color:var(--bx-bg-elevated)] text-[color:var(--bx-text-muted)] hover:border-primary-300 dark:border-dark-700  '
 }
 
 function templateOptionLabel(tpl: ChannelMonitorTemplate): string {

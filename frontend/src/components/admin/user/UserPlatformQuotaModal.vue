@@ -12,14 +12,14 @@
       >
         {{ t('admin.users.platformQuota.subscriptionWarning') }}
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400">
+      <p class="text-sm text-[color:var(--bx-text-muted)]">
         {{ t('admin.users.platformQuota.subtitle', { email: user.email }) }}
       </p>
       <div v-if="loading" class="py-10 text-center text-gray-500">{{ t('common.loading') }}</div>
       <div v-else class="overflow-x-auto">
         <table class="min-w-full text-sm">
           <thead>
-            <tr class="border-b border-gray-200 text-gray-700 dark:border-dark-700 dark:text-gray-300">
+            <tr class="border-b border-[color:var(--bx-border)] text-[color:var(--bx-text-soft)]  ">
               <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.platform') }}</th>
               <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.daily') }}</th>
               <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.weekly') }}</th>
@@ -28,8 +28,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in quotas" :key="row.platform" class="border-b border-gray-100 dark:border-dark-800">
-              <td class="px-3 py-2 font-mono text-gray-900 dark:text-white">{{ row.platform }}</td>
+            <tr v-for="row in quotas" :key="row.platform" class="border-b border-[color:var(--bx-border)]">
+              <td class="px-3 py-2 font-mono text-[color:var(--bx-text)]">{{ row.platform }}</td>
               <td class="px-3 py-2">
                 <div class="flex items-center gap-1">
                   <input
@@ -87,7 +87,7 @@
                   >↻</button>
                 </div>
               </td>
-              <td class="px-3 py-2 text-xs text-gray-500 dark:text-gray-400">
+              <td class="px-3 py-2 text-xs text-[color:var(--bx-text-dim)]">
                 {{ formatUsage(row.daily_usage_usd) }} / {{ formatUsage(row.weekly_usage_usd) }} / {{ formatUsage(row.monthly_usage_usd) }}
               </td>
             </tr>

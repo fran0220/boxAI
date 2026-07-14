@@ -14,9 +14,9 @@
         {{ t('admin.usage.cleanup.warning') }}
       </div>
 
-      <div class="rounded-xl border border-gray-200 p-4 dark:border-dark-700">
+      <div class="rounded-xl border border-[color:var(--bx-border)] p-4 ">
         <div class="flex items-center justify-between">
-          <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <h4 class="text-sm font-semibold text-[color:var(--bx-text-soft)]">
             {{ t('admin.usage.cleanup.recentTasks') }}
           </h4>
           <button type="button" class="btn btn-ghost btn-sm" @click="loadTasks">
@@ -25,17 +25,17 @@
         </div>
 
         <div class="mt-3 space-y-2">
-          <div v-if="tasksLoading" class="text-sm text-gray-500 dark:text-gray-400">
+          <div v-if="tasksLoading" class="text-sm text-[color:var(--bx-text-dim)]">
             {{ t('admin.usage.cleanup.loadingTasks') }}
           </div>
-          <div v-else-if="tasks.length === 0" class="text-sm text-gray-500 dark:text-gray-400">
+          <div v-else-if="tasks.length === 0" class="text-sm text-[color:var(--bx-text-dim)]">
             {{ t('admin.usage.cleanup.noTasks') }}
           </div>
           <div v-else class="space-y-2">
             <div
               v-for="task in tasks"
               :key="task.id"
-              class="flex flex-col gap-2 rounded-lg border border-gray-100 px-3 py-2 text-sm text-gray-600 dark:border-dark-700 dark:text-gray-300"
+              class="flex flex-col gap-2 rounded-lg border border-[color:var(--bx-border)] px-3 py-2 text-sm text-[color:var(--bx-text-muted)]  "
             >
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
@@ -56,7 +56,7 @@
                   {{ formatDateTime(task.created_at) }}
                 </div>
               </div>
-              <div class="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+              <div class="flex flex-wrap items-center gap-4 text-xs text-[color:var(--bx-text-dim)]">
                 <span>{{ t('admin.usage.cleanup.range') }}: {{ formatRange(task) }}</span>
                 <span>{{ t('admin.usage.cleanup.deletedRows') }}: {{ task.deleted_rows.toLocaleString() }}</span>
               </div>
@@ -209,7 +209,7 @@ const statusClass = (status: string) => {
     running: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-200',
     succeeded: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200',
     failed: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-200',
-    canceled: 'bg-gray-200 text-gray-600 dark:bg-dark-600 dark:text-gray-300'
+    canceled: 'bg-gray-200 text-[color:var(--bx-text-muted)] dark:bg-dark-600 '
   }
   return map[status] || 'bg-gray-100 text-gray-600'
 }

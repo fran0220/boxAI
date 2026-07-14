@@ -10,11 +10,11 @@
     </button>
 
     <div v-if="showDivider" class="flex items-center gap-3">
-      <div class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></div>
-      <span class="text-xs text-gray-500 dark:text-dark-400">
+      <div class="h-px flex-1 bg-[color:var(--bx-bg-muted)]"></div>
+      <span class="text-xs text-[color:var(--bx-text-dim)]">
         {{ t('auth.oauthOrContinue') }}
       </span>
-      <div class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></div>
+      <div class="h-px flex-1 bg-[color:var(--bx-bg-muted)]"></div>
     </div>
   </div>
 </template>

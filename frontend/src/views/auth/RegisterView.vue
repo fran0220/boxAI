@@ -3,10 +3,10 @@
     <div class="space-y-6">
       <!-- Title -->
       <div class="text-center">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 class="text-2xl font-bold text-[color:var(--bx-text)]">
           {{ t('auth.createAccount') }}
         </h2>
-        <p class="mt-2 text-sm text-gray-500 dark:text-dark-400">
+        <p class="mt-2 text-sm text-[color:var(--bx-text-dim)]">
           {{ t('auth.signUpToStart', { siteName }) }}
         </p>
       </div>
@@ -20,7 +20,7 @@
           <div class="flex-shrink-0">
             <Icon name="exclamationCircle" size="md" class="text-amber-500" />
           </div>
-          <p class="text-sm text-amber-700 dark:text-amber-400">
+          <p class="text-sm text-amber-400">
             {{ t('auth.registrationDisabled') }}
           </p>
         </div>
@@ -35,7 +35,7 @@
           </label>
           <div class="relative">
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Icon name="mail" size="md" class="text-gray-400 dark:text-dark-500" />
+              <Icon name="mail" size="md" class="text-[color:var(--bx-text-dim)]" />
             </div>
             <input
               id="email"
@@ -59,7 +59,7 @@
           </label>
           <div class="relative">
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Icon name="lock" size="md" class="text-gray-400 dark:text-dark-500" />
+              <Icon name="lock" size="md" class="text-[color:var(--bx-text-dim)]" />
             </div>
             <input
               id="password"
@@ -94,7 +94,7 @@
           </label>
           <div class="relative">
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Icon name="key" size="md" :class="invitationValidation.valid ? 'text-green-500' : 'text-gray-400 dark:text-dark-500'" />
+              <Icon name="key" size="md" :class="invitationValidation.valid ? 'text-green-500' : 'text-[color:var(--bx-text-dim)]'" />
             </div>
             <input
               id="invitation_code"
@@ -138,11 +138,11 @@
         <div v-if="promoCodeEnabled">
           <label for="promo_code" class="input-label">
             {{ t('auth.promoCodeLabel') }}
-            <span class="ml-1 text-xs font-normal text-gray-400 dark:text-dark-500">({{ t('common.optional') }})</span>
+            <span class="ml-1 text-xs font-normal text-[color:var(--bx-text-dim)]">({{ t('common.optional') }})</span>
           </label>
           <div class="relative">
             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <Icon name="gift" size="md" :class="promoValidation.valid ? 'text-green-500' : 'text-gray-400 dark:text-dark-500'" />
+              <Icon name="gift" size="md" :class="promoValidation.valid ? 'text-green-500' : 'text-[color:var(--bx-text-dim)]'" />
             </div>
             <input
               id="promo_code"
@@ -245,11 +245,11 @@
 
       <div v-if="showOAuthLogin" class="space-y-3 pt-1">
         <div class="flex items-center gap-3">
-          <div class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></div>
-          <span class="text-xs text-gray-500 dark:text-dark-400">
+          <div class="h-px flex-1 bg-[color:var(--bx-bg-muted)]"></div>
+          <span class="text-xs text-[color:var(--bx-text-dim)]">
             {{ t('auth.oauthOrContinue') }}
           </span>
-          <div class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></div>
+          <div class="h-px flex-1 bg-[color:var(--bx-bg-muted)]"></div>
         </div>
 
         <EmailOAuthButtons
@@ -284,7 +284,7 @@
 
     <!-- Footer -->
     <template #footer>
-      <p class="text-gray-500 dark:text-dark-400">
+      <p class="text-[color:var(--bx-text-dim)]">
         {{ t('auth.alreadyHaveAccount') }}
         <router-link
           to="/login"

@@ -38,22 +38,22 @@
                 </button>
                 <div
                   v-if="showAutoRefreshDropdown"
-                  class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+                  class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] shadow-lg"
                 >
                   <div class="p-2">
                     <button
                       @click="setAutoRefreshEnabled(!autoRefreshEnabled)"
-                      class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                      class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-[color:var(--bx-text-soft)] hover:bg-gray-100  dark:hover:bg-gray-700"
                     >
                       <span>{{ t('admin.accounts.enableAutoRefresh') }}</span>
                       <Icon v-if="autoRefreshEnabled" name="check" size="sm" class="text-primary-500" />
                     </button>
-                    <div class="my-1 border-t border-gray-100 dark:border-gray-700"></div>
+                    <div class="my-1 border-t border-gray-100 dark:border-[color:var(--bx-border)]"></div>
                     <button
                       v-for="sec in autoRefreshIntervals"
                       :key="sec"
                       @click="setAutoRefreshInterval(sec)"
-                      class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                      class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-[color:var(--bx-text-soft)] hover:bg-gray-100  dark:hover:bg-gray-700"
                     >
                       <span>{{ autoRefreshIntervalLabel(sec) }}</span>
                       <Icon v-if="autoRefreshIntervalSeconds === sec" name="check" size="sm" class="text-primary-500" />
@@ -78,11 +78,11 @@
                 </button>
                 <div
                   v-if="showAccountToolsDropdown"
-                  class="absolute right-0 z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] origin-top-right overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+                  class="absolute right-0 z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] origin-top-right overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl dark:border-[color:var(--bx-border)] dark:bg-[color:var(--bx-bg-elevated)]"
                 >
                   <div class="max-h-[70vh] overflow-y-auto p-2">
                     <div class="px-2 py-2">
-                      <div class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                      <div class="text-xs font-semibold uppercase tracking-wide text-[color:var(--bx-text-dim)]">
                         {{ t('admin.accounts.dataActions') }}
                       </div>
                     </div>
@@ -113,9 +113,9 @@
                       </span>
                     </button>
 
-                    <div class="my-2 border-t border-gray-100 dark:border-gray-700"></div>
+                    <div class="my-2 border-t border-gray-100 dark:border-[color:var(--bx-border)]"></div>
                     <div class="px-2 py-2">
-                      <div class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                      <div class="text-xs font-semibold uppercase tracking-wide text-[color:var(--bx-text-dim)]">
                         {{ t('admin.accounts.toolActions') }}
                       </div>
                     </div>
@@ -132,10 +132,10 @@
                       <span class="flex-1 text-left">{{ t('admin.tlsFingerprintProfiles.title') }}</span>
                     </button>
 
-                    <div class="my-2 border-t border-gray-100 dark:border-gray-700"></div>
+                    <div class="my-2 border-t border-gray-100 dark:border-[color:var(--bx-border)]"></div>
                     <div class="px-2 py-2">
                       <div class="flex items-center justify-between gap-3">
-                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-[color:var(--bx-text-dim)]">
                           {{ t('admin.accounts.viewColumns') }}
                         </span>
                         <Icon name="grid" size="sm" class="text-gray-400" />
@@ -146,7 +146,7 @@
                         v-for="col in toggleableColumns"
                         :key="col.key"
                         @click="toggleColumn(col.key)"
-                        class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                        class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-[color:var(--bx-text-soft)] transition-colors hover:bg-gray-100  dark:hover:bg-gray-700"
                       >
                         <span class="truncate">{{ col.label }}</span>
                         <Icon v-if="isColumnVisible(col.key)" name="check" size="sm" class="text-primary-500" />
@@ -212,14 +212,14 @@
             <input type="checkbox" :checked="isSelected(row.id)" @change="toggleSel(row.id)" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
           </template>
           <template #cell-id="{ value }">
-            <span class="font-mono text-xs text-gray-500 dark:text-gray-400">#{{ value }}</span>
+            <span class="font-mono text-xs text-[color:var(--bx-text-dim)]">#{{ value }}</span>
           </template>
           <template #cell-name="{ row, value }">
             <div class="flex flex-col">
-              <span class="font-medium text-gray-900 dark:text-white">{{ value }}</span>
+              <span class="font-medium text-[color:var(--bx-text)]">{{ value }}</span>
               <span
                 v-if="accountDisplayEmail(row)"
-                class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]"
+                class="text-xs text-[color:var(--bx-text-dim)] truncate max-w-[200px]"
                 :title="accountDisplayEmail(row) + (row.parent_chatgpt_account_id ? ' · ' + row.parent_chatgpt_account_id : '')"
               >
                 {{ accountDisplayEmail(row) }}
@@ -227,8 +227,8 @@
             </div>
           </template>
           <template #cell-notes="{ value }">
-            <span v-if="value" :title="value" class="block max-w-xs truncate text-sm text-gray-600 dark:text-gray-300">{{ value }}</span>
-            <span v-else class="text-sm text-gray-400 dark:text-dark-500">-</span>
+            <span v-if="value" :title="value" class="block max-w-xs truncate text-sm text-[color:var(--bx-text-muted)]">{{ value }}</span>
+            <span v-else class="text-sm text-[color:var(--bx-text-dim)]">-</span>
           </template>
           <template #cell-platform_type="{ row }">
             <div class="flex min-w-0 flex-col gap-1">
@@ -297,31 +297,31 @@
           <template #cell-proxy="{ row }">
             <div class="flex flex-col gap-1">
               <div v-if="row.proxy" class="flex items-center gap-2">
-                <span class="text-sm text-gray-700 dark:text-gray-300">{{ row.proxy.name }}</span>
-                <span v-if="row.proxy.country_code" class="text-xs text-gray-500 dark:text-gray-400">
+                <span class="text-sm text-[color:var(--bx-text-soft)]">{{ row.proxy.name }}</span>
+                <span v-if="row.proxy.country_code" class="text-xs text-[color:var(--bx-text-dim)]">
                   ({{ row.proxy.country_code }})
                 </span>
               </div>
-              <span v-else class="text-sm text-gray-400 dark:text-dark-500">-</span>
+              <span v-else class="text-sm text-[color:var(--bx-text-dim)]">-</span>
               <div v-if="row.proxy && row.proxy.expires_at" class="flex items-center gap-2 text-xs">
-                <span class="text-gray-600 dark:text-gray-300">{{ formatDateTime(row.proxy.expires_at) }}</span>
+                <span class="text-[color:var(--bx-text-muted)]">{{ formatDateTime(row.proxy.expires_at) }}</span>
                 <span :class="proxyExpiryBadge(row.proxy)">{{ proxyExpiryText(row.proxy) }}</span>
               </div>
               <div v-if="row.proxy_fallback_origin_id" class="flex items-center gap-1">
                 <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" :title="t('admin.accounts.fallbackActiveTip', { origin: row.proxy_fallback_origin_name })">
                   {{ t('admin.accounts.fallbackActive') }}
                 </span>
-                <button class="text-xs px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" @click="onRevertFallback(row)">{{ t('admin.accounts.revertProxy') }}</button>
+                <button class="text-xs px-1.5 py-0.5 rounded border border-gray-300 dark:border-[color:var(--bx-border)] text-[color:var(--bx-text-muted)] hover:bg-gray-100 dark:hover:bg-gray-700" @click="onRevertFallback(row)">{{ t('admin.accounts.revertProxy') }}</button>
               </div>
             </div>
           </template>
           <template #cell-rate_multiplier="{ row }">
-            <span class="text-sm font-mono text-gray-700 dark:text-gray-300">
+            <span class="text-sm font-mono text-[color:var(--bx-text-soft)]">
               {{ (row.rate_multiplier ?? 1).toFixed(2) }}x
             </span>
           </template>
           <template #cell-priority="{ value }">
-            <span class="text-sm text-gray-700 dark:text-gray-300">{{ value }}</span>
+            <span class="text-sm text-[color:var(--bx-text-soft)]">{{ value }}</span>
           </template>
           <template #header-scheduler_score="{ column }">
             <div class="flex items-center">
@@ -334,27 +334,27 @@
               <div
                 v-for="score in getSchedulerScoreRows(row)"
                 :key="String(score.group_id)"
-                class="flex items-center gap-1 whitespace-nowrap text-gray-700 dark:text-gray-300"
+                class="flex items-center gap-1 whitespace-nowrap text-[color:var(--bx-text-soft)]"
                 :title="`${formatSchedulerScoreGroup(score)} / ${formatSchedulerScore(score.base_score)} / ${formatStickySchedulerScore(score)}`"
               >
-                <span class="max-w-[4.75rem] truncate text-gray-500 dark:text-dark-400">{{ formatSchedulerScoreGroup(score) }}</span>
+                <span class="max-w-[4.75rem] truncate text-[color:var(--bx-text-dim)]">{{ formatSchedulerScoreGroup(score) }}</span>
                 <span class="text-gray-300 dark:text-gray-600">/</span>
                 <span>{{ formatSchedulerScore(score.base_score) }}</span>
                 <span class="text-gray-300 dark:text-gray-600">/</span>
-                <span class="text-primary-700 dark:text-primary-300">{{ formatStickySchedulerScore(score) }}</span>
+                <span class="text-primary-300">{{ formatStickySchedulerScore(score) }}</span>
               </div>
             </div>
-            <span v-else class="text-sm text-gray-400 dark:text-dark-500">-</span>
+            <span v-else class="text-sm text-[color:var(--bx-text-dim)]">-</span>
           </template>
           <template #cell-last_used_at="{ value }">
-            <span class="text-sm text-gray-500 dark:text-dark-400">{{ formatRelativeTime(value) }}</span>
+            <span class="text-sm text-[color:var(--bx-text-dim)]">{{ formatRelativeTime(value) }}</span>
           </template>
           <template #cell-created_at="{ value }">
-            <span class="text-sm text-gray-500 dark:text-dark-400">{{ formatDateTime(value) }}</span>
+            <span class="text-sm text-[color:var(--bx-text-dim)]">{{ formatDateTime(value) }}</span>
           </template>
           <template #cell-expires_at="{ row, value }">
             <div class="flex flex-col items-start gap-1">
-              <span class="text-sm text-gray-500 dark:text-dark-400">{{ formatExpiresAt(value) }}</span>
+              <span class="text-sm text-[color:var(--bx-text-dim)]">{{ formatExpiresAt(value) }}</span>
               <div v-if="isExpired(value) || (row.auto_pause_on_expired && value)" class="flex items-center gap-1">
                 <span
                   v-if="isExpired(value)"
@@ -373,7 +373,7 @@
           </template>
           <template #cell-actions="{ row }">
             <div class="flex items-center gap-1">
-              <button @click="handleEdit(row)" class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400">
+              <button @click="handleEdit(row)" class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-primary-600  dark:hover:text-primary-400">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                 <span class="text-xs">{{ t('common.edit') }}</span>
               </button>
@@ -381,7 +381,7 @@
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
                 <span class="text-xs">{{ t('common.delete') }}</span>
               </button>
-              <button @click="openMenu(row, $event)" class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-dark-700 dark:hover:text-white">
+              <button @click="openMenu(row, $event)" class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-gray-900  dark:hover:text-white">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
                 <span class="text-xs">{{ t('common.more') }}</span>
               </button>
@@ -416,7 +416,7 @@
     <ConfirmDialog :show="showDeleteDialog" :title="t('admin.accounts.deleteAccount')" :message="t('admin.accounts.deleteConfirm', { name: deletingAcc?.name })" :confirm-text="t('common.delete')" :cancel-text="t('common.cancel')" :danger="true" @confirm="confirmDelete" @cancel="showDeleteDialog = false" />
     <ConfirmDialog :show="showCreateShadowDialog" :title="t('admin.accounts.createSparkShadow')" :message="t('admin.accounts.createSparkShadowConfirm', { name: creatingShadowAcc?.name })" @confirm="confirmCreateSparkShadow" @cancel="showCreateShadowDialog = false" />
     <ConfirmDialog :show="showExportDataDialog" :title="t('admin.accounts.dataExport')" :message="t('admin.accounts.dataExportConfirmMessage')" :confirm-text="t('admin.accounts.dataExportConfirm')" :cancel-text="t('common.cancel')" @confirm="handleExportData" @cancel="showExportDataDialog = false">
-      <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+      <label class="flex items-center gap-2 text-sm text-[color:var(--bx-text-soft)]">
         <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" v-model="includeProxyOnExport" />
         <span>{{ t('admin.accounts.dataExportIncludeProxies') }}</span>
       </label>
@@ -1247,7 +1247,7 @@ function getOpenAICompactTitle(row: any): string {
 function getAntigravityTierClass(row: any): string {
   const tier = getAntigravityTierFromRow(row)
   switch (tier) {
-    case 'free-tier': return 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+    case 'free-tier': return 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)]  '
     case 'g1-pro-tier': return 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300'
     case 'g1-ultra-tier': return 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300'
     default: return ''
@@ -1889,7 +1889,7 @@ onUnmounted(() => {
 
 <style scoped>
 .account-tools-menu-item {
-  @apply flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700;
+  @apply flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[color:var(--bx-text-soft)] transition-colors hover:bg-gray-100  dark:hover:bg-gray-700;
 }
 
 .account-tools-menu-icon {

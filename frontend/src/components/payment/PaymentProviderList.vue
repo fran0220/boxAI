@@ -1,13 +1,13 @@
 <template>
   <div class="card">
     <!-- Header -->
-    <div class="border-b border-gray-100 px-4 py-3 dark:border-dark-700">
+    <div class="border-b border-[color:var(--bx-border)] px-4 py-3 ">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+          <h2 class="text-base font-semibold text-[color:var(--bx-text)]">
             {{ t('admin.settings.payment.providerManagement') }}
           </h2>
-          <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mt-0.5 text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.settings.payment.providerManagementDesc') }}
           </p>
         </div>
@@ -73,7 +73,7 @@
 
       <!-- Empty -->
       <div v-else-if="!loading" class="py-6 text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-sm text-[color:var(--bx-text-dim)]">
           {{ canCreate
             ? t('admin.settings.payment.noProviders')
             : t('admin.settings.payment.enableTypesFirst') }}

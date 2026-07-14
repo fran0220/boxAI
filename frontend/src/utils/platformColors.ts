@@ -34,7 +34,7 @@ const BORDER: Record<Platform, string> = {
   gemini: 'border-blue-500/20 dark:border-blue-500/20',
   grok: 'border-zinc-800/20 dark:border-zinc-500/20',
 }
-const BORDER_DEFAULT = 'border-gray-200 dark:border-dark-700'
+const BORDER_DEFAULT = 'border-[color:var(--bx-border)]'
 
 // ── Accent bar (gradient) ───────────────────────────────────────────
 const ACCENT_BAR: Record<Platform, string> = {
@@ -54,7 +54,7 @@ const TEXT: Record<Platform, string> = {
   gemini: 'text-blue-600 dark:text-blue-400',
   grok: 'text-zinc-800 dark:text-zinc-200',
 }
-const TEXT_DEFAULT = 'text-primary-600 dark:text-primary-400'
+const TEXT_DEFAULT = 'text-primary-400'
 
 // ── Icon (check mark etc.) ──────────────────────────────────────────
 const ICON: Record<Platform, string> = {

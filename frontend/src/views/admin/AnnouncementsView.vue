@@ -51,9 +51,9 @@
           <template #cell-title="{ value, row }">
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <span class="truncate font-medium text-gray-900 dark:text-white">{{ value }}</span>
+                <span class="truncate font-medium text-[color:var(--bx-text)]">{{ value }}</span>
               </div>
-              <div class="mt-1 flex items-center gap-2 text-xs text-gray-500 dark:text-dark-400">
+              <div class="mt-1 flex items-center gap-2 text-xs text-[color:var(--bx-text-dim)]">
                 <span>#{{ row.id }}</span>
                 <span class="text-gray-300 dark:text-dark-700">·</span>
                 <span>{{ formatDateTime(row.created_at) }}</span>
@@ -90,13 +90,13 @@
           </template>
 
           <template #cell-targeting="{ row }">
-            <span class="text-sm text-gray-600 dark:text-gray-300">
+            <span class="text-sm text-[color:var(--bx-text-muted)]">
               {{ targetingSummary(row.targeting) }}
             </span>
           </template>
 
           <template #cell-timeRange="{ row }">
-            <div class="text-sm text-gray-600 dark:text-gray-300">
+            <div class="text-sm text-[color:var(--bx-text-muted)]">
               <div>
                 <span class="font-medium">{{ t('admin.announcements.form.startsAt') }}:</span>
                 <span class="ml-1">{{ row.starts_at ? formatDateTime(row.starts_at) : t('admin.announcements.timeImmediate') }}</span>
@@ -109,7 +109,7 @@
           </template>
 
           <template #cell-created_at="{ value }">
-            <span class="text-sm text-gray-500 dark:text-dark-400">{{ formatDateTime(value) }}</span>
+            <span class="text-sm text-[color:var(--bx-text-dim)]">{{ formatDateTime(value) }}</span>
           </template>
 
           <template #cell-actions="{ row }">
@@ -123,7 +123,7 @@
               </button>
               <button
                 @click="openEditDialog(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-dark-600 dark:hover:text-gray-300"
+                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-gray-700  dark:hover:text-gray-300"
                 :title="t('common.edit')"
               >
                 <Icon name="edit" size="sm" />

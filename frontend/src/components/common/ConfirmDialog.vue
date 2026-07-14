@@ -1,7 +1,7 @@
 <template>
   <BaseDialog :show="show" :title="title" width="narrow" @close="handleCancel">
     <div class="space-y-4">
-      <p class="text-sm text-gray-600 dark:text-gray-400">{{ message }}</p>
+      <p class="text-sm text-[color:var(--bx-text-muted)]">{{ message }}</p>
       <slot></slot>
     </div>
 
@@ -10,7 +10,7 @@
         <button
           @click="handleCancel"
           type="button"
-          class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:border-dark-600 dark:bg-dark-700 dark:text-gray-200 dark:hover:bg-dark-600 dark:focus:ring-offset-dark-800"
+          class="rounded-md border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] px-4 py-2 text-sm font-medium text-[color:var(--bx-text-soft)] hover:bg-[color:var(--bx-hover)] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2     dark:focus:ring-offset-dark-800"
         >
           {{ cancelText }}
         </button>

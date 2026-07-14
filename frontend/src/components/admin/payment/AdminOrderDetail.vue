@@ -8,62 +8,62 @@
     <div v-if="order" class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.orderId') }}</p>
-          <p class="font-mono text-sm font-medium text-gray-900 dark:text-white">#{{ order.id }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.orderId') }}</p>
+          <p class="font-mono text-sm font-medium text-[color:var(--bx-text)]">#{{ order.id }}</p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.status') }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.status') }}</p>
           <span :class="['badge', statusBadgeClass(order.status)]">
             {{ t('payment.status.' + order.status.toLowerCase(), order.status) }}
           </span>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.baseAmount') }}</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ paymentAmountSymbol }}{{ baseAmount.toFixed(2) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.baseAmount') }}</p>
+          <p class="text-sm font-medium text-[color:var(--bx-text)]">{{ paymentAmountSymbol }}{{ baseAmount.toFixed(2) }}</p>
         </div>
         <div v-if="order.fee_rate > 0">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.fee') }} ({{ order.fee_rate }}%)</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ paymentAmountSymbol }}{{ feeAmount.toFixed(2) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.fee') }} ({{ order.fee_rate }}%)</p>
+          <p class="text-sm font-medium text-[color:var(--bx-text)]">{{ paymentAmountSymbol }}{{ feeAmount.toFixed(2) }}</p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.payAmount') }}</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ paymentAmountSymbol }}{{ order.pay_amount.toFixed(2) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.payAmount') }}</p>
+          <p class="text-sm font-medium text-[color:var(--bx-text)]">{{ paymentAmountSymbol }}{{ order.pay_amount.toFixed(2) }}</p>
         </div>
         <div v-if="order.amount !== order.pay_amount">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.creditedAmount') }}</p>
-          <p class="text-sm font-medium text-gray-900 dark:text-white">{{ creditedAmountSymbol }}{{ order.amount.toFixed(2) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.creditedAmount') }}</p>
+          <p class="text-sm font-medium text-[color:var(--bx-text)]">{{ creditedAmountSymbol }}{{ order.amount.toFixed(2) }}</p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.paymentMethod') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.paymentMethod') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">
             {{ t('payment.methods.' + order.payment_type, order.payment_type) }}
           </p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.admin.orderType') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.admin.orderType') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">
             {{ t('payment.admin.' + order.order_type + 'Order', order.order_type) }}
           </p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.userId') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">#{{ order.user_id }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.userId') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">#{{ order.user_id }}</p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.orders.createdAt') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDateTime(order.created_at) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.orders.createdAt') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">{{ formatDateTime(order.created_at) }}</p>
         </div>
         <div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.admin.expiresAt') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDateTime(order.expires_at) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.admin.expiresAt') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">{{ formatDateTime(order.expires_at) }}</p>
         </div>
         <div v-if="order.paid_at">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.admin.paidAt') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDateTime(order.paid_at) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.admin.paidAt') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">{{ formatDateTime(order.paid_at) }}</p>
         </div>
         <div v-if="order.completed_at">
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('payment.admin.completedAt') }}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">{{ formatDateTime(order.completed_at) }}</p>
+          <p class="text-xs text-[color:var(--bx-text-dim)]">{{ t('payment.admin.completedAt') }}</p>
+          <p class="text-sm text-[color:var(--bx-text-soft)]">{{ formatDateTime(order.completed_at) }}</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@
         v-if="order.refund_amount"
         class="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20"
       >
-        <h4 class="mb-2 text-sm font-semibold text-red-700 dark:text-red-400">
+        <h4 class="mb-2 text-sm font-semibold text-red-400">
           {{ t('payment.admin.refundInfo') }}
         </h4>
         <div class="grid grid-cols-2 gap-2 text-sm">
@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-end gap-2 border-t border-gray-200 pt-4 dark:border-dark-700">
+      <div class="flex items-center justify-end gap-2 border-t border-[color:var(--bx-border)] pt-4 ">
         <button
           v-if="order.status === 'PENDING'"
           @click="emit('cancel', order)"

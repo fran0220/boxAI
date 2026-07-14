@@ -2,10 +2,10 @@
   <div class="bx-page min-h-screen px-4 py-10">
     <div class="mx-auto max-w-2xl">
       <div class="card p-6">
-        <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <h1 class="text-lg font-semibold text-[color:var(--bx-text)]">
           {{ callbackTitleText }}
         </h1>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-2 text-sm text-[color:var(--bx-text-muted)]">
           {{ errorMessage || callbackProcessingText }}
         </p>
 
@@ -20,9 +20,9 @@
 
         <div
           v-else
-          class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-800/80"
+          class="mt-6 rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] p-4  "
         >
-          <p class="text-sm text-gray-700 dark:text-gray-300">
+          <p class="text-sm text-[color:var(--bx-text-soft)]">
             {{ errorMessage }}
           </p>
           <button

@@ -153,7 +153,7 @@ const kindBadgeClass = (kind: string) => {
     <template #default>
       <div class="flex h-full min-h-0 flex-col">
         <div class="mb-4 flex flex-shrink-0 items-center justify-between">
-          <div class="text-xs text-gray-500 dark:text-gray-400">
+          <div class="text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.ops.requestDetails.rangeLabel', { range: rangeLabel }) }}
           </div>
           <button
@@ -176,51 +176,51 @@ const kindBadgeClass = (kind: string) => {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ t('common.loading') }}</span>
+            <span class="text-sm font-medium text-[color:var(--bx-text-dim)]">{{ t('common.loading') }}</span>
           </div>
         </div>
 
         <!-- Table -->
         <div v-else class="flex min-h-0 flex-1 flex-col">
-          <div v-if="items.length === 0" class="rounded-xl border border-dashed border-gray-200 p-10 text-center dark:border-dark-700">
-            <div class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ t('admin.ops.requestDetails.empty') }}</div>
+          <div v-if="items.length === 0" class="rounded-xl border border-dashed border-[color:var(--bx-border)] p-10 text-center ">
+            <div class="text-sm font-medium text-[color:var(--bx-text-muted)]">{{ t('admin.ops.requestDetails.empty') }}</div>
             <div class="mt-1 text-xs text-gray-400">{{ t('admin.ops.requestDetails.emptyHint') }}</div>
           </div>
 
-          <div v-else class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-dark-700">
+          <div v-else class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-[color:var(--bx-border)]">
             <div class="min-h-0 flex-1 overflow-auto">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-dark-700">
-                <thead class="sticky top-0 z-10 bg-gray-50 dark:bg-dark-900">
+              <table class="min-w-full divide-y divide-[color:var(--bx-border)]">
+                <thead class="sticky top-0 z-10 bg-[color:var(--bx-bg-muted)]">
                 <tr>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.time') }}
                   </th>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.kind') }}
                   </th>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.platform') }}
                   </th>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.model') }}
                   </th>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.duration') }}
                   </th>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.status') }}
                   </th>
-                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.requestId') }}
                   </th>
-                  <th class="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <th class="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-[color:var(--bx-text-dim)]">
                     {{ t('admin.ops.requestDetails.table.actions') }}
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-200 bg-white dark:divide-dark-700 dark:bg-dark-800">
-                <tr v-for="(row, idx) in items" :key="idx" class="hover:bg-gray-50 dark:hover:bg-dark-700/50">
-                  <td class="whitespace-nowrap px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
+              <tbody class="divide-y divide-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)]">
+                <tr v-for="(row, idx) in items" :key="idx" class="hover:bg-[color:var(--bx-hover)]">
+                  <td class="whitespace-nowrap px-4 py-3 text-xs text-[color:var(--bx-text-muted)]">
                     {{ formatDateTime(row.created_at) }}
                   </td>
                   <td class="whitespace-nowrap px-4 py-3">
@@ -228,25 +228,25 @@ const kindBadgeClass = (kind: string) => {
                       {{ row.kind === 'error' ? t('admin.ops.requestDetails.kind.error') : t('admin.ops.requestDetails.kind.success') }}
                     </span>
                   </td>
-                  <td class="whitespace-nowrap px-4 py-3 text-xs font-medium text-gray-700 dark:text-gray-200">
+                  <td class="whitespace-nowrap px-4 py-3 text-xs font-medium text-[color:var(--bx-text-soft)]">
                     {{ (row.platform || 'unknown').toUpperCase() }}
                   </td>
-                  <td class="max-w-[240px] truncate px-4 py-3 text-xs text-gray-600 dark:text-gray-300" :title="row.model || ''">
+                  <td class="max-w-[240px] truncate px-4 py-3 text-xs text-[color:var(--bx-text-muted)]" :title="row.model || ''">
                     {{ row.model || '-' }}
                   </td>
-                  <td class="whitespace-nowrap px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
+                  <td class="whitespace-nowrap px-4 py-3 text-xs text-[color:var(--bx-text-muted)]">
                     {{ typeof row.duration_ms === 'number' ? `${row.duration_ms} ms` : '-' }}
                   </td>
-                  <td class="whitespace-nowrap px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
+                  <td class="whitespace-nowrap px-4 py-3 text-xs text-[color:var(--bx-text-muted)]">
                     {{ row.status_code ?? '-' }}
                   </td>
                   <td class="px-4 py-3">
                     <div v-if="row.request_id" class="flex items-center gap-2">
-                      <span class="max-w-[220px] truncate font-mono text-[11px] text-gray-700 dark:text-gray-200" :title="row.request_id">
+                      <span class="max-w-[220px] truncate font-mono text-[11px] text-[color:var(--bx-text-soft)]" :title="row.request_id">
                         {{ row.request_id }}
                       </span>
                       <button
-                        class="rounded-md bg-gray-100 px-2 py-1 text-[10px] font-bold text-gray-600 hover:bg-gray-200 dark:bg-dark-700 dark:text-gray-300 dark:hover:bg-dark-600"
+                        class="rounded-md bg-gray-100 px-2 py-1 text-[10px] font-bold text-[color:var(--bx-text-muted)] hover:bg-[color:var(--bx-bg-muted)]  dark:hover:bg-dark-600"
                         @click="handleCopyRequestId(row.request_id)"
                       >
                         {{ t('admin.ops.requestDetails.copy') }}

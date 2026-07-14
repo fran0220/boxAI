@@ -14,20 +14,20 @@
           <div class="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
             <Icon name="check" size="lg" class="text-green-500" />
           </div>
-          <p class="text-lg font-bold text-gray-900 dark:text-white">{{ t('payment.result.success') }}</p>
-          <div class="w-full rounded-xl bg-gray-50 p-4 dark:bg-dark-800">
+          <p class="text-lg font-bold text-[color:var(--bx-text)]">{{ t('payment.result.success') }}</p>
+          <div class="w-full rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">{{ t('payment.orders.orderId') }}</span>
-                <span class="font-medium text-gray-900 dark:text-white">#{{ orderId }}</span>
+                <span class="text-[color:var(--bx-text-dim)]">{{ t('payment.orders.orderId') }}</span>
+                <span class="font-medium text-[color:var(--bx-text)]">#{{ orderId }}</span>
               </div>
               <div v-if="amount > 0" class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">{{ t('payment.orders.amount') }}</span>
-                <span class="font-medium text-gray-900 dark:text-white">{{ creditedAmountSymbol }}{{ amount.toFixed(2) }}</span>
+                <span class="text-[color:var(--bx-text-dim)]">{{ t('payment.orders.amount') }}</span>
+                <span class="font-medium text-[color:var(--bx-text)]">{{ creditedAmountSymbol }}{{ amount.toFixed(2) }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-500 dark:text-gray-400">{{ t('payment.orders.payAmount') }}</span>
-                <span class="font-medium text-gray-900 dark:text-white">{{ paymentAmountSymbol }}{{ payAmount.toFixed(2) }}</span>
+                <span class="text-[color:var(--bx-text-dim)]">{{ t('payment.orders.payAmount') }}</span>
+                <span class="font-medium text-[color:var(--bx-text)]">{{ paymentAmountSymbol }}{{ payAmount.toFixed(2) }}</span>
               </div>
             </div>
           </div>

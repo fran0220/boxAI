@@ -9,7 +9,7 @@
               <Icon
                 name="search"
                 size="md"
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--bx-text-dim)]"
               />
               <input
                 v-model="searchQuery"
@@ -58,11 +58,11 @@
           @sort="handleSort"
         >
           <template #cell-name="{ value }">
-            <span class="font-medium text-gray-900 dark:text-white">{{ value }}</span>
+            <span class="font-medium text-[color:var(--bx-text)]">{{ value }}</span>
           </template>
 
           <template #cell-description="{ value }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">{{ value || '-' }}</span>
+            <span class="text-sm text-[color:var(--bx-text-muted)]">{{ value || '-' }}</span>
           </template>
 
           <template #cell-status="{ row }">
@@ -74,7 +74,7 @@
 
           <template #cell-group_count="{ row }">
             <span
-              class="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-dark-600 dark:text-gray-300"
+              class="inline-flex items-center rounded bg-[color:var(--bx-bg-muted)] px-2 py-0.5 text-xs font-medium text-gray-800  dark:text-gray-300"
             >
               {{ (row.group_ids || []).length }}
               {{ t('admin.channels.groupsUnit', 'groups') }}
@@ -83,7 +83,7 @@
 
           <template #cell-pricing_count="{ row }">
             <span
-              class="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-dark-600 dark:text-gray-300"
+              class="inline-flex items-center rounded bg-[color:var(--bx-bg-muted)] px-2 py-0.5 text-xs font-medium text-gray-800  dark:text-gray-300"
             >
               {{ (row.model_pricing || []).length }}
               {{ t('admin.channels.pricingUnit', 'pricing rules') }}
@@ -91,7 +91,7 @@
           </template>
 
           <template #cell-created_at="{ value }">
-            <span class="text-sm text-gray-600 dark:text-gray-400">
+            <span class="text-sm text-[color:var(--bx-text-muted)]">
               {{ formatDate(value) }}
             </span>
           </template>
@@ -100,7 +100,7 @@
             <div class="flex items-center gap-1">
               <button
                 @click="openEditDialog(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
+                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-primary-600  dark:hover:text-primary-400"
               >
                 <Icon name="edit" size="sm" />
                 <span class="text-xs">{{ t('common.edit', 'Edit') }}</span>
@@ -147,7 +147,7 @@
     >
       <div class="channel-dialog-body">
         <!-- Tab Bar -->
-        <div class="flex items-center border-b border-gray-200 dark:border-dark-700 flex-shrink-0 -mx-4 sm:-mx-6 px-4 sm:px-6 -mt-3 sm:-mt-4">
+        <div class="flex items-center border-b border-[color:var(--bx-border)] flex-shrink-0 -mx-4 sm:-mx-6 px-4 sm:px-6 -mt-3 sm:-mt-4">
           <!-- Basic Settings Tab -->
           <button
             type="button"
@@ -238,7 +238,7 @@
                   class="inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors"
                   :class="activePlatforms.includes(p)
                     ? 'bg-primary-50 border-primary-300 dark:bg-primary-900/20 dark:border-primary-700'
-                    : 'border-gray-200 hover:bg-gray-50 dark:border-dark-600 dark:hover:bg-dark-700'"
+                    : 'border-[color:var(--bx-border)] hover:bg-[color:var(--bx-hover)]  '"
                 >
                   <input
                     type="checkbox"
@@ -253,13 +253,13 @@
             </div>
 
             <!-- Apply Pricing to Account Stats (toggle only in basic settings) -->
-            <div class="border-t border-gray-200 pt-4 dark:border-dark-700">
+            <div class="border-t border-[color:var(--bx-border)] pt-4 ">
               <div class="flex items-center justify-between">
                 <div>
-                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label class="text-sm font-medium text-[color:var(--bx-text-soft)]">
                     {{ t('admin.channels.form.applyPricingToAccountStats') }}
                   </label>
-                  <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                  <p class="mt-0.5 text-xs text-[color:var(--bx-text-dim)]">
                     {{ t('admin.channels.form.applyPricingToAccountStatsDesc') }}
                   </p>
                 </div>
@@ -286,7 +286,7 @@
                   ({{ t('admin.channels.form.selectedCount', { count: section.group_ids.length }) }})
                 </span>
               </label>
-              <div class="max-h-40 overflow-auto rounded-lg border border-gray-200 bg-gray-50 p-2 dark:border-dark-600 dark:bg-dark-900">
+              <div class="max-h-40 overflow-auto rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] p-2  ">
                 <div v-if="groupsLoading" class="py-2 text-center text-xs text-gray-500">
                   {{ t('common.loading', 'Loading...') }}
                 </div>
@@ -297,7 +297,7 @@
                   <label
                     v-for="group in getGroupsForPlatform(section.platform)"
                     :key="group.id"
-                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-gray-200 px-2 py-1 text-xs transition-colors hover:bg-gray-50 dark:border-dark-600 dark:hover:bg-dark-700"
+                    class="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-[color:var(--bx-border)] px-2 py-1 text-xs transition-colors hover:bg-[color:var(--bx-hover)]  "
                     :class="[
                       section.group_ids.includes(group.id) ? 'bg-primary-50 border-primary-300 dark:bg-primary-900/20 dark:border-primary-700' : '',
                       isGroupInOtherChannel(group.id, section.platform) ? 'opacity-40' : ''
@@ -325,10 +325,10 @@
             </div>
 
             <!-- Web Search Emulation (Anthropic only, hidden when global disabled) -->
-            <div v-if="section.platform === 'anthropic' && webSearchGlobalEnabled" class="border-t border-gray-200 pt-3 dark:border-dark-600">
+            <div v-if="section.platform === 'anthropic' && webSearchGlobalEnabled" class="border-t border-[color:var(--bx-border)] pt-3 ">
               <div class="flex items-center justify-between">
                 <div>
-                  <label class="text-xs font-medium text-gray-700 dark:text-gray-300">
+                  <label class="text-xs font-medium text-[color:var(--bx-text-soft)]">
                     {{ t('admin.channels.form.webSearchEmulation') }}
                   </label>
                   <p class="mt-0.5 text-[11px] text-red-500 dark:text-red-400">
@@ -340,10 +340,10 @@
             </div>
 
             <!-- Codex Image Generation Bridge (OpenAI only) -->
-            <div v-if="section.platform === 'openai'" class="border-t border-gray-200 pt-3 dark:border-dark-600">
+            <div v-if="section.platform === 'openai'" class="border-t border-[color:var(--bx-border)] pt-3 ">
               <div class="flex items-center justify-between gap-4">
                 <div>
-                  <label class="text-xs font-medium text-gray-700 dark:text-gray-300">
+                  <label class="text-xs font-medium text-[color:var(--bx-text-soft)]">
                     {{ t('admin.channels.form.codexImageGenerationBridge') }}
                   </label>
                   <p class="mt-0.5 text-[11px] text-amber-600 dark:text-amber-400">
@@ -355,10 +355,10 @@
             </div>
 
             <!-- Bedrock CC Compatibility (Anthropic only) -->
-            <div v-if="section.platform === 'anthropic'" class="border-t border-gray-200 pt-3 dark:border-dark-600">
+            <div v-if="section.platform === 'anthropic'" class="border-t border-[color:var(--bx-border)] pt-3 ">
               <div class="flex items-center justify-between gap-4">
                 <div>
-                  <label class="text-xs font-medium text-gray-700 dark:text-gray-300">
+                  <label class="text-xs font-medium text-[color:var(--bx-text-soft)]">
                     {{ t('admin.channels.form.bedrockCCCompat') }}
                   </label>
                   <p class="mt-0.5 text-[11px] text-amber-600 dark:text-amber-400">
@@ -379,7 +379,7 @@
               </div>
               <div
                 v-if="Object.keys(section.model_mapping).length === 0"
-                class="rounded border border-dashed border-gray-300 p-2 text-center text-xs text-gray-400 dark:border-dark-500"
+                class="rounded border border-dashed border-[color:var(--bx-border)] p-2 text-center text-xs text-gray-400 "
               >
                 {{ t('admin.channels.form.noMappingRules', 'No mapping rules. Click "Add" to create one.') }}
               </div>
@@ -437,7 +437,7 @@
               </div>
               <div
                 v-if="section.model_pricing.length === 0"
-                class="rounded border border-dashed border-gray-300 p-2 text-center text-xs text-gray-400 dark:border-dark-500"
+                class="rounded border border-dashed border-[color:var(--bx-border)] p-2 text-center text-xs text-gray-400 "
               >
                 {{ t('admin.channels.form.noPricingRules', 'No pricing rules yet. Click "Add" to create one.') }}
               </div>
@@ -454,9 +454,9 @@
             </div>
 
             <!-- Account Stats Pricing Rules (per-platform, always visible) -->
-            <div class="mt-4 border-t border-gray-200 pt-4 dark:border-dark-700 space-y-3">
+            <div class="mt-4 border-t border-[color:var(--bx-border)] pt-4  space-y-3">
               <div class="flex items-center justify-between">
-                <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <h4 class="text-sm font-medium text-[color:var(--bx-text-soft)]">
                   {{ t('admin.channels.form.accountStatsPricingRules') }}
                 </h4>
                 <button
@@ -471,7 +471,7 @@
               <!-- Filter rules for this platform's groups -->
               <p
                 v-if="section.account_stats_pricing_rules.length === 0"
-                class="text-xs italic text-gray-400 dark:text-gray-500"
+                class="text-xs italic text-[color:var(--bx-text-dim)]"
               >
                 {{ t('admin.channels.form.noRulesConfigured') }}
               </p>
@@ -479,13 +479,13 @@
               <div
                 v-for="(rule, ruleIndex) in section.account_stats_pricing_rules"
                 :key="ruleIndex"
-                class="space-y-3 rounded-lg border border-gray-200 p-4 dark:border-dark-600"
+                class="space-y-3 rounded-lg border border-[color:var(--bx-border)] p-4 "
               >
                 <div class="flex items-center justify-between">
                   <input
                     v-model="rule.name"
                     :placeholder="t('admin.channels.form.ruleName')"
-                    class="bg-transparent text-sm font-medium text-gray-700 placeholder-gray-400 outline-none dark:text-gray-300"
+                    class="bg-transparent text-sm font-medium text-[color:var(--bx-text-soft)] placeholder-gray-400 outline-none "
                   />
                   <button type="button" @click="removeAccountStatsRule(sIdx, ruleIndex)" class="text-xs text-red-500 hover:text-red-700">
                     {{ t('common.delete') }}
@@ -493,7 +493,7 @@
                 </div>
 
                 <div>
-                  <label class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.channels.form.ruleGroups') }}</label>
+                  <label class="text-xs text-[color:var(--bx-text-dim)]">{{ t('admin.channels.form.ruleGroups') }}</label>
                   <div class="mt-1 flex flex-wrap gap-1">
                     <label
                       v-for="gid in section.group_ids"
@@ -501,7 +501,7 @@
                       class="inline-flex cursor-pointer items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors"
                       :class="rule.group_ids.includes(gid)
                         ? 'border-primary-300 bg-primary-50 dark:border-primary-700 dark:bg-primary-900/20'
-                        : 'border-gray-200 hover:bg-gray-50 dark:border-dark-600 dark:hover:bg-dark-700'"
+                        : 'border-[color:var(--bx-border)] hover:bg-[color:var(--bx-hover)]  '"
                     >
                       <input type="checkbox" :checked="rule.group_ids.includes(gid)" class="h-3 w-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500" @change="rule.group_ids.includes(gid) ? rule.group_ids.splice(rule.group_ids.indexOf(gid), 1) : rule.group_ids.push(gid)" />
                       <span :class="['font-medium', platformTextClass(section.platform)]">{{ getGroupNameById(gid) }}</span>
@@ -513,7 +513,7 @@
                 </div>
 
                 <div>
-                  <label class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.channels.form.ruleAccounts') }}</label>
+                  <label class="text-xs text-[color:var(--bx-text-dim)]">{{ t('admin.channels.form.ruleAccounts') }}</label>
                   <!-- Selected account chips -->
                   <div class="mt-1 flex flex-wrap gap-1">
                     <span
@@ -540,14 +540,14 @@
                     <!-- Search results dropdown -->
                     <div
                       v-if="showRuleAccountDropdown[`${section.platform}-${ruleIndex}`] && (ruleAccountSearchResults[`${section.platform}-${ruleIndex}`]?.length ?? 0) > 0"
-                      class="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-lg border bg-white shadow-lg dark:border-dark-600 dark:bg-dark-800"
+                      class="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-lg border bg-[color:var(--bx-bg-elevated)] shadow-lg dark:border-dark-600 "
                     >
                       <button
                         v-for="account in ruleAccountSearchResults[`${section.platform}-${ruleIndex}`]"
                         :key="account.id"
                         type="button"
                         @click="selectRuleAccount(rule, account, section.platform, ruleIndex)"
-                        class="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-dark-700"
+                        class="w-full px-3 py-2 text-left text-sm hover:bg-[color:var(--bx-hover)]"
                         :class="{ 'opacity-50': rule.account_ids.includes(account.id) }"
                         :disabled="rule.account_ids.includes(account.id)"
                       >
@@ -563,12 +563,12 @@
 
                 <div>
                   <div class="mb-1 flex items-center justify-between">
-                    <label class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.channels.form.ruleModelPricing') }}</label>
+                    <label class="text-xs text-[color:var(--bx-text-dim)]">{{ t('admin.channels.form.ruleModelPricing') }}</label>
                     <button type="button" @click="addRulePricingEntry(sIdx, ruleIndex)" class="text-xs text-primary-600 hover:text-primary-700">
                       + {{ t('common.add') }}
                     </button>
                   </div>
-                  <div v-if="rule.pricing.length === 0" class="rounded border border-dashed border-gray-300 p-2 text-center text-xs text-gray-400 dark:border-dark-500">
+                  <div v-if="rule.pricing.length === 0" class="rounded border border-dashed border-[color:var(--bx-border)] p-2 text-center text-xs text-gray-400 ">
                     {{ t('admin.channels.form.noPricingRules') }}
                   </div>
                   <div v-else class="space-y-2">
@@ -1625,6 +1625,6 @@ onUnmounted(() => {
 }
 
 .channel-tab-inactive {
-  @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300;
+  @apply border-transparent text-[color:var(--bx-text-dim)] hover:text-gray-700 hover:border-gray-300  dark:hover:text-gray-300;
 }
 </style>

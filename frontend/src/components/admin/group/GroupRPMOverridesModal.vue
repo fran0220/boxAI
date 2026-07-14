@@ -2,22 +2,22 @@
   <BaseDialog :show="show" :title="t('admin.groups.rpmOverridesTitle')" width="wide" @close="handleClose">
     <div v-if="group" class="space-y-4">
       <!-- 分组信息 -->
-      <div class="flex flex-wrap items-center gap-3 rounded-lg bg-gray-50 px-4 py-2.5 text-sm dark:bg-dark-700">
+      <div class="flex flex-wrap items-center gap-3 rounded-lg bg-[color:var(--bx-bg-muted)] px-4 py-2.5 text-sm ">
         <span class="inline-flex items-center gap-1.5" :class="platformColorClass">
           <PlatformIcon :platform="group.platform" size="sm" />
           {{ t('admin.groups.platforms.' + group.platform) }}
         </span>
         <span class="text-gray-400">|</span>
-        <span class="font-medium text-gray-900 dark:text-white">{{ group.name }}</span>
+        <span class="font-medium text-[color:var(--bx-text)]">{{ group.name }}</span>
         <span class="text-gray-400">|</span>
-        <span class="text-gray-600 dark:text-gray-400">
+        <span class="text-[color:var(--bx-text-muted)]">
           {{ t('admin.groups.groupRpmDefault') }}: {{ group.rpm_limit || 0 }}
         </span>
       </div>
 
       <!-- 操作区：添加用户 -->
-      <div class="rounded-lg border border-gray-200 p-3 dark:border-dark-600">
-        <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+      <div class="rounded-lg border border-[color:var(--bx-border)] p-3 ">
+        <h4 class="mb-2 text-sm font-medium text-[color:var(--bx-text-soft)]">
           {{ t('admin.groups.addUserRpm') }}
         </h4>
         <div class="flex items-end gap-2">
@@ -33,17 +33,17 @@
             />
             <div
               v-if="showDropdown && searchResults.length > 0"
-              class="absolute left-0 right-0 top-full z-10 mt-1 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-dark-500 dark:bg-dark-700"
+              class="absolute left-0 right-0 top-full z-10 mt-1 max-h-48 overflow-y-auto rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] shadow-lg  "
             >
               <button
                 v-for="user in searchResults"
                 :key="user.id"
                 type="button"
-                class="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-gray-50 dark:hover:bg-dark-600"
+                class="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-[color:var(--bx-hover)] "
                 @click="selectUser(user)"
               >
                 <span class="text-gray-400">#{{ user.id }}</span>
-                <span class="text-gray-900 dark:text-white">{{ user.username || user.email }}</span>
+                <span class="text-[color:var(--bx-text)]">{{ user.username || user.email }}</span>
                 <span v-if="user.username" class="text-xs text-gray-400">{{ user.email }}</span>
               </button>
             </div>
@@ -69,7 +69,7 @@
           </button>
         </div>
 
-        <div v-if="localEntries.length > 0" class="mt-3 flex items-center justify-end border-t border-gray-100 pt-3 dark:border-dark-600">
+        <div v-if="localEntries.length > 0" class="mt-3 flex items-center justify-end border-t border-[color:var(--bx-border)] pt-3 ">
           <button
             type="button"
             :disabled="clearing"
@@ -92,26 +92,26 @@
 
       <!-- 列表 -->
       <div v-else>
-        <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <h4 class="mb-2 text-sm font-medium text-[color:var(--bx-text-soft)]">
           {{ t('admin.groups.rpmOverrides') }} ({{ localEntries.length }})
         </h4>
 
-        <div v-if="localEntries.length === 0" class="py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+        <div v-if="localEntries.length === 0" class="py-6 text-center text-sm text-[color:var(--bx-text-dim)]">
           {{ t('admin.groups.noRpmOverrides') }}
         </div>
 
         <div v-else>
-          <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-dark-600">
+          <div class="overflow-hidden rounded-lg border border-[color:var(--bx-border)]">
             <div class="max-h-[420px] overflow-y-auto">
               <table class="w-full text-sm">
                 <thead class="sticky top-0 z-[1]">
-                  <tr class="border-b border-gray-200 bg-gray-50 dark:border-dark-600 dark:bg-dark-700">
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('admin.groups.columns.userEmail') }}</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">ID</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('admin.groups.columns.userName') }}</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('admin.groups.columns.userNotes') }}</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('admin.groups.columns.userStatus') }}</th>
-                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400" :title="t('admin.groups.columns.rpmOverrideHint')">{{ t('admin.groups.columns.rpmOverride') }}</th>
+                  <tr class="border-b border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)]  ">
+                    <th class="px-3 py-2 text-left text-xs font-medium text-[color:var(--bx-text-dim)]">{{ t('admin.groups.columns.userEmail') }}</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-[color:var(--bx-text-dim)]">ID</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-[color:var(--bx-text-dim)]">{{ t('admin.groups.columns.userName') }}</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-[color:var(--bx-text-dim)]">{{ t('admin.groups.columns.userNotes') }}</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-[color:var(--bx-text-dim)]">{{ t('admin.groups.columns.userStatus') }}</th>
+                    <th class="px-3 py-2 text-left text-xs font-medium text-[color:var(--bx-text-dim)]" :title="t('admin.groups.columns.rpmOverrideHint')">{{ t('admin.groups.columns.rpmOverride') }}</th>
                     <th class="w-10 px-2 py-2"></th>
                   </tr>
                 </thead>
@@ -119,19 +119,19 @@
                   <tr
                     v-for="entry in paginatedLocalEntries"
                     :key="entry.user_id"
-                    class="hover:bg-gray-50 dark:hover:bg-dark-700/50"
+                    class="hover:bg-[color:var(--bx-hover)]"
                   >
-                    <td class="px-3 py-2 text-gray-600 dark:text-gray-400">{{ entry.user_email }}</td>
-                    <td class="whitespace-nowrap px-3 py-2 text-gray-400 dark:text-gray-500">{{ entry.user_id }}</td>
-                    <td class="whitespace-nowrap px-3 py-2 text-gray-900 dark:text-white">{{ entry.user_name || '-' }}</td>
-                    <td class="max-w-[160px] truncate px-3 py-2 text-gray-500 dark:text-gray-400" :title="entry.user_notes">{{ entry.user_notes || '-' }}</td>
+                    <td class="px-3 py-2 text-[color:var(--bx-text-muted)]">{{ entry.user_email }}</td>
+                    <td class="whitespace-nowrap px-3 py-2 text-[color:var(--bx-text-dim)]">{{ entry.user_id }}</td>
+                    <td class="whitespace-nowrap px-3 py-2 text-[color:var(--bx-text)]">{{ entry.user_name || '-' }}</td>
+                    <td class="max-w-[160px] truncate px-3 py-2 text-[color:var(--bx-text-dim)]" :title="entry.user_notes">{{ entry.user_notes || '-' }}</td>
                     <td class="whitespace-nowrap px-3 py-2">
                       <span
                         :class="[
                           'inline-flex rounded-full px-2 py-0.5 text-xs font-medium',
                           entry.user_status === 'active'
                             ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-gray-100 text-gray-600 dark:bg-dark-600 dark:text-gray-400'
+                            : 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)]  '
                         ]"
                       >
                         {{ entry.user_status }}
@@ -144,7 +144,7 @@
                         min="0"
                         autocomplete="off"
                         :value="entry.rpm_override"
-                        class="hide-spinner w-20 rounded border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium transition-colors focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500/20 dark:border-dark-500 dark:bg-dark-700 dark:focus:border-primary-500"
+                        class="hide-spinner w-20 rounded border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] px-2 py-1 text-center text-sm font-medium transition-colors focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500/20   dark:focus:border-primary-500"
                         @change="updateLocalRpm(entry.user_id, ($event.target as HTMLInputElement).value)"
                       />
                     </td>
@@ -174,7 +174,7 @@
       </div>
 
       <!-- 底部 -->
-      <div class="flex items-center gap-3 border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="flex items-center gap-3 border-t border-[color:var(--bx-border)] pt-4 ">
         <template v-if="isDirty">
           <span class="text-xs text-amber-600 dark:text-amber-400">{{ t('admin.groups.unsavedChanges') }}</span>
           <button
@@ -249,7 +249,7 @@ let searchTimeout: ReturnType<typeof setTimeout>
 const platformColorClass = computed(() => {
   switch (props.group?.platform) {
     case 'anthropic': return 'text-orange-700 dark:text-orange-400'
-    case 'openai': return 'text-emerald-700 dark:text-emerald-400'
+    case 'openai': return 'text-emerald-400'
     case 'antigravity': return 'text-purple-700 dark:text-purple-400'
     default: return 'text-blue-700 dark:text-blue-400'
   }

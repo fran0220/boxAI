@@ -11,20 +11,20 @@
       <div v-if="loading" class="space-y-1.5">
         <!-- OAuth: 3 rows, Setup Token: 1 row -->
         <div class="flex items-center gap-1">
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
         </div>
         <template v-if="account.type === 'oauth'">
           <div class="flex items-center gap-1">
-            <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+            <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+            <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
           </div>
           <div class="flex items-center gap-1">
-            <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+            <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+            <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
           </div>
         </template>
       </div>
@@ -81,7 +81,7 @@
         <div class="flex items-center gap-1.5 mt-0.5">
           <span
             v-if="usageInfo.source === 'passive'"
-            class="text-[9px] text-gray-400 dark:text-gray-500 italic"
+            class="text-[9px] text-[color:var(--bx-text-dim)] italic"
           >
             {{ t('admin.accounts.usageWindow.passiveSampled') }}
           </span>
@@ -173,14 +173,14 @@
       </div>
       <div v-else-if="loading" class="space-y-1.5">
         <div class="flex items-center gap-1">
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
         </div>
         <div class="flex items-center gap-1">
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
         </div>
       </div>
       <div v-else>
@@ -248,7 +248,7 @@
           </a>
           <button
             type="button"
-            class="text-[10px] text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            class="text-[10px] text-[color:var(--bx-text-dim)] hover:text-gray-700  dark:hover:text-gray-200"
             :title="t('admin.accounts.copyLink')"
             @click="copyValidationURL"
           >
@@ -274,9 +274,9 @@
       <!-- Loading state -->
       <div v-else-if="loading" class="space-y-1.5">
         <div class="flex items-center gap-1">
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
         </div>
       </div>
 
@@ -323,11 +323,11 @@
           color="amber"
         />
 
-        <div v-if="aiCreditsDisplay" class="mt-1 text-[10px] text-gray-500 dark:text-gray-400">
+        <div v-if="aiCreditsDisplay" class="mt-1 text-[10px] text-[color:var(--bx-text-dim)]">
           💳 {{ t('admin.accounts.aiCreditsBalance') }}: {{ aiCreditsDisplay }}
         </div>
       </div>
-      <div v-else-if="aiCreditsDisplay" class="text-[10px] text-gray-500 dark:text-gray-400">
+      <div v-else-if="aiCreditsDisplay" class="text-[10px] text-[color:var(--bx-text-dim)]">
         💳 {{ t('admin.accounts.aiCreditsBalance') }}: {{ aiCreditsDisplay }}
       </div>
       <div v-else class="text-xs text-gray-400">-</div>
@@ -337,9 +337,9 @@
     <template v-else-if="account.platform === 'grok' && account.type === 'oauth'">
       <div v-if="loading" class="space-y-1.5">
         <div class="flex items-center gap-1">
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
         </div>
       </div>
       <div v-else-if="error" class="text-xs text-red-500">
@@ -362,19 +362,19 @@
           </span>
         </div>
         <div v-if="grokLocalUsage" class="mb-0.5 flex items-center">
-          <div class="flex items-center gap-1.5 text-[9px] text-gray-500 dark:text-gray-400">
-            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800">
+          <div class="flex items-center gap-1.5 text-[9px] text-[color:var(--bx-text-dim)]">
+            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]">
               {{ formatWindowRequests(grokLocalUsage) }} req
             </span>
-            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800">
+            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]">
               {{ formatWindowTokens(grokLocalUsage) }}
             </span>
-            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800" :title="t('usage.accountBilled')">
+            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]" :title="t('usage.accountBilled')">
               A ${{ formatWindowCost(grokLocalUsage) }}
             </span>
             <span
               v-if="grokLocalUsage.user_cost != null"
-              class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800"
+              class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]"
               :title="t('usage.userBilled')"
             >
               U ${{ formatWindowUserCost(grokLocalUsage) }}
@@ -416,13 +416,13 @@
         <div v-if="grokRetryAfterLabel" class="text-[10px] text-amber-600 dark:text-amber-400">
           {{ t('admin.accounts.usageWindow.grokRetryAfter', { time: grokRetryAfterLabel }) }}
         </div>
-        <div v-if="grokQuotaUnknown" class="text-[10px] text-gray-500 dark:text-gray-400">
+        <div v-if="grokQuotaUnknown" class="text-[10px] text-[color:var(--bx-text-dim)]">
           {{ grokQuotaUnknownLabel }}
         </div>
         <div v-else-if="usageInfo.error" class="truncate text-xs text-amber-600 dark:text-amber-400 max-w-[200px]" :title="usageInfo.error">
           {{ usageErrorLabel }}
         </div>
-        <div v-if="grokQuotaStatusLine" class="text-[10px] text-gray-500 dark:text-gray-400">
+        <div v-if="grokQuotaStatusLine" class="text-[10px] text-[color:var(--bx-text-dim)]">
           {{ grokQuotaStatusLine }}
         </div>
         <GrokQuotaProbeCell :account="account" @probed="handleGrokProbed" />
@@ -481,19 +481,19 @@
           v-if="showGeminiTodayStats && todayStats"
           class="mb-0.5 flex items-center"
         >
-          <div class="flex items-center gap-1.5 text-[9px] text-gray-500 dark:text-gray-400">
-            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800">
+          <div class="flex items-center gap-1.5 text-[9px] text-[color:var(--bx-text-dim)]">
+            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]">
               {{ formatKeyRequests }} req
             </span>
-            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800">
+            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]">
               {{ formatKeyTokens }}
             </span>
-            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800" :title="t('usage.accountBilled')">
+            <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]" :title="t('usage.accountBilled')">
               A ${{ formatKeyCost }}
             </span>
             <span
               v-if="todayStats.user_cost != null"
-              class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800"
+              class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]"
               :title="t('usage.userBilled')"
             >
               U ${{ formatKeyUserCost }}
@@ -504,15 +504,15 @@
           v-else-if="showGeminiTodayStats && todayStatsLoading"
           class="mb-0.5 flex items-center gap-1"
         >
-          <div class="h-3 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-          <div class="h-3 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-3 w-10 animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-8 animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+          <div class="h-3 w-12 animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
         </div>
         <div v-if="loading" class="space-y-1">
           <div class="flex items-center gap-1">
-            <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div class="h-1.5 w-8 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div class="h-3 w-[32px] animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+            <div class="h-1.5 w-8 animate-pulse rounded-full bg-[color:var(--bx-bg-muted)]"></div>
+            <div class="h-3 w-[32px] animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
           </div>
         </div>
         <div v-else-if="error" class="text-xs text-red-500">
@@ -529,7 +529,7 @@
             :window-stats="bar.windowStats"
             :color="bar.color"
           />
-          <p class="mt-1 text-[9px] leading-tight text-gray-400 dark:text-gray-500 italic">
+          <p class="mt-1 text-[9px] leading-tight text-[color:var(--bx-text-dim)] italic">
             * {{ t('admin.accounts.gemini.quotaPolicy.simulatedNote') || 'Simulated quota' }}
           </p>
         </div>
@@ -557,19 +557,19 @@
         v-if="todayStats"
         class="mb-0.5 flex items-center"
       >
-        <div class="flex items-center gap-1.5 text-[9px] text-gray-500 dark:text-gray-400">
-          <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800">
+        <div class="flex items-center gap-1.5 text-[9px] text-[color:var(--bx-text-dim)]">
+          <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]">
             {{ formatKeyRequests }} req
           </span>
-          <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800">
+          <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]">
             {{ formatKeyTokens }}
           </span>
-          <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800" :title="t('usage.accountBilled')">
+          <span class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]" :title="t('usage.accountBilled')">
             A ${{ formatKeyCost }}
           </span>
           <span
             v-if="todayStats.user_cost != null"
-            class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-gray-800"
+            class="rounded bg-gray-100 px-1.5 py-0.5 dark:bg-[color:var(--bx-bg-elevated)]"
             :title="t('usage.userBilled')"
           >
             U ${{ formatKeyUserCost }}
@@ -581,9 +581,9 @@
         v-else-if="todayStatsLoading"
         class="mb-0.5 flex items-center gap-1"
       >
-        <div class="h-3 w-10 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-        <div class="h-3 w-8 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-        <div class="h-3 w-12 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+        <div class="h-3 w-10 animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+        <div class="h-3 w-8 animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
+        <div class="h-3 w-12 animate-pulse rounded bg-[color:var(--bx-bg-muted)]"></div>
       </div>
 
       <!-- API Key accounts with quota limits: show progress bars -->
@@ -928,7 +928,7 @@ const geminiTierClass = computed(() => {
   if (channel === 'google one') {
     if (level === 'ultra') return 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300'
     if (level === 'pro') return 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300'
-    return 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+    return 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)]  '
   }
 
   if (channel === 'gcp') {
@@ -1183,7 +1183,7 @@ const antigravityTierLabel = computed(() => {
 const antigravityTierClass = computed(() => {
   switch (antigravityTier.value) {
     case 'free-tier':
-      return 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+      return 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)]  '
     case 'g1-pro-tier':
       return 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300'
     case 'g1-ultra-tier':

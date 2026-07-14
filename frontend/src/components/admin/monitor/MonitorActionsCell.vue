@@ -3,14 +3,14 @@
     <button
       @click="$emit('run', row)"
       :disabled="running"
-      class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
+      class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-primary-600  dark:hover:text-primary-400"
     >
       <Icon name="refresh" size="sm" :class="running ? 'animate-spin' : ''" />
       <span class="text-xs">{{ t('admin.channelMonitor.runNow') }}</span>
     </button>
     <button
       @click="$emit('edit', row)"
-      class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
+      class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-primary-600  dark:hover:text-primary-400"
     >
       <Icon name="edit" size="sm" />
       <span class="text-xs">{{ t('common.edit') }}</span>

@@ -3,36 +3,36 @@
     <div v-if="loading" class="flex items-center justify-center py-16">
       <div class="flex flex-col items-center gap-3">
         <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-primary-600"></div>
-        <div class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ t('admin.ops.errorDetail.loading') }}</div>
+        <div class="text-sm font-medium text-[color:var(--bx-text-dim)]">{{ t('admin.ops.errorDetail.loading') }}</div>
       </div>
     </div>
 
-    <div v-else-if="!detail" class="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+    <div v-else-if="!detail" class="py-10 text-center text-sm text-[color:var(--bx-text-dim)]">
       {{ emptyText }}
     </div>
 
     <div v-else class="space-y-6 p-6">
       <!-- Summary -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.requestId') }}</div>
-          <div class="mt-1 break-all font-mono text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 break-all font-mono text-sm font-medium text-[color:var(--bx-text)]">
             {{ requestId || '—' }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.time') }}</div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             {{ formatDateTime(detail.created_at) }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">
             {{ isUpstreamError(detail) ? t('admin.ops.errorDetail.account') : t('admin.ops.errorDetail.user') }}
           </div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             <template v-if="isUpstreamError(detail)">
               {{ detail.account_name || (detail.account_id != null ? String(detail.account_id) : '—') }}
             </template>
@@ -42,27 +42,27 @@
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.platform') }}</div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.platform || '—' }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.group') }}</div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.group_name || (detail.group_id != null ? String(detail.group_id) : '—') }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.model') }}</div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             <template v-if="hasModelMapping(detail)">
               <span class="font-mono">{{ detail.requested_model }}</span>
               <span class="mx-1 text-gray-400">→</span>
-              <span class="font-mono text-primary-600 dark:text-primary-400">{{ detail.upstream_model }}</span>
+              <span class="font-mono text-primary-400">{{ detail.upstream_model }}</span>
             </template>
             <template v-else>
               {{ displayModel(detail) || '—' }}
@@ -70,21 +70,21 @@
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.inboundEndpoint') }}</div>
-          <div class="mt-1 break-all font-mono text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 break-all font-mono text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.inbound_endpoint || '—' }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.upstreamEndpoint') }}</div>
-          <div class="mt-1 break-all font-mono text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 break-all font-mono text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.upstream_endpoint || '—' }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.status') }}</div>
           <div class="mt-1">
             <span :class="['inline-flex items-center rounded-lg px-2 py-1 text-xs font-black ring-1 ring-inset shadow-sm', statusClass]">
@@ -93,39 +93,39 @@
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.requestType') }}</div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             {{ formatRequestTypeLabel(detail.request_type) }}
           </div>
         </div>
 
-        <div class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.message') }}</div>
-          <div class="mt-1 truncate text-sm font-medium text-gray-900 dark:text-white" :title="detail.message">
+          <div class="mt-1 truncate text-sm font-medium text-[color:var(--bx-text)]" :title="detail.message">
             {{ detail.message || '—' }}
           </div>
         </div>
 
-        <div v-if="detail.api_key_prefix" class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div v-if="detail.api_key_prefix" class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.apiKeyPrefix') }}</div>
-          <div class="mt-1 font-mono text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 font-mono text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.api_key_prefix }}
           </div>
         </div>
 
-        <div v-if="detail.attempted_key_prefix" class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div v-if="detail.attempted_key_prefix" class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.attemptedKeyPrefix') }}</div>
-          <div class="mt-1 font-mono text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 font-mono text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.attempted_key_prefix }}
           </div>
         </div>
 
-        <div v-if="detail.deleted_key_owner_email" class="rounded-xl bg-gray-50 p-4 dark:bg-dark-900">
+        <div v-if="detail.deleted_key_owner_email" class="rounded-xl bg-[color:var(--bx-bg-muted)] p-4 ">
           <div class="text-xs font-bold uppercase tracking-wider text-gray-400">{{ t('admin.ops.errorDetail.deletedKeyOwner') }}</div>
-          <div class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+          <div class="mt-1 text-sm font-medium text-[color:var(--bx-text)]">
             {{ detail.deleted_key_owner_email }}
-            <span v-if="detail.deleted_key_name" class="ml-1 text-xs text-gray-500 dark:text-gray-400">({{ detail.deleted_key_name }})</span>
+            <span v-if="detail.deleted_key_name" class="ml-1 text-xs text-[color:var(--bx-text-dim)]">({{ detail.deleted_key_name }})</span>
             <span class="ml-2 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold ring-1 ring-inset bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-500/30">
               {{ t('admin.ops.errorDetail.keyDeletedBadge') }}
             </span>
@@ -134,19 +134,19 @@
       </div>
 
       <!-- Response content (client request -> error_body; upstream -> upstream_error_detail/message) -->
-      <div class="rounded-xl bg-gray-50 p-6 dark:bg-dark-900">
-        <h3 class="text-sm font-black uppercase tracking-wider text-gray-900 dark:text-white">{{ t('admin.ops.errorDetail.responseBody') }}</h3>
-        <pre class="mt-4 max-h-[520px] overflow-auto rounded-xl border border-gray-200 bg-white p-4 text-xs text-gray-800 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-100"><code>{{ prettyJSON(primaryResponseBody || '') }}</code></pre>
+      <div class="rounded-xl bg-[color:var(--bx-bg-muted)] p-6 ">
+        <h3 class="text-sm font-black uppercase tracking-wider text-[color:var(--bx-text)]">{{ t('admin.ops.errorDetail.responseBody') }}</h3>
+        <pre class="mt-4 max-h-[520px] overflow-auto rounded-xl border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] p-4 text-xs text-gray-800   dark:text-gray-100"><code>{{ prettyJSON(primaryResponseBody || '') }}</code></pre>
       </div>
 
       <!-- Upstream errors list (only for request errors) -->
-      <div v-if="showUpstreamList" class="rounded-xl bg-gray-50 p-6 dark:bg-dark-900">
+      <div v-if="showUpstreamList" class="rounded-xl bg-[color:var(--bx-bg-muted)] p-6 ">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="text-sm font-black uppercase tracking-wider text-gray-900 dark:text-white">{{ t('admin.ops.errorDetails.upstreamErrors') }}</h3>
-          <div class="text-xs text-gray-500 dark:text-gray-400" v-if="correlatedUpstreamLoading">{{ t('common.loading') }}</div>
+          <h3 class="text-sm font-black uppercase tracking-wider text-[color:var(--bx-text)]">{{ t('admin.ops.errorDetails.upstreamErrors') }}</h3>
+          <div class="text-xs text-[color:var(--bx-text-dim)]" v-if="correlatedUpstreamLoading">{{ t('common.loading') }}</div>
         </div>
 
-        <div v-if="!correlatedUpstreamLoading && !correlatedUpstreamErrors.length" class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+        <div v-if="!correlatedUpstreamLoading && !correlatedUpstreamErrors.length" class="mt-3 text-sm text-[color:var(--bx-text-dim)]">
           {{ t('common.noData') }}
         </div>
 
@@ -154,15 +154,15 @@
           <div
             v-for="(ev, idx) in correlatedUpstreamErrors"
             :key="ev.id"
-            class="rounded-xl border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-800"
+            class="rounded-xl border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] p-4  "
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="text-xs font-black text-gray-900 dark:text-white">
+              <div class="text-xs font-black text-[color:var(--bx-text)]">
                 #{{ idx + 1 }}
-                <span v-if="ev.type" class="ml-2 rounded-md bg-gray-100 px-2 py-0.5 font-mono text-[10px] font-bold text-gray-700 dark:bg-dark-700 dark:text-gray-200">{{ ev.type }}</span>
+                <span v-if="ev.type" class="ml-2 rounded-md bg-[color:var(--bx-bg-muted)] px-2 py-0.5 font-mono text-[10px] font-bold text-[color:var(--bx-text-soft)]  ">{{ ev.type }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <div class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                <div class="font-mono text-xs text-[color:var(--bx-text-dim)]">
                   {{ ev.status_code ?? '—' }}
                 </div>
                 <button
@@ -188,7 +188,7 @@
               </div>
             </div>
 
-            <div class="mt-3 grid grid-cols-1 gap-2 text-xs text-gray-600 dark:text-gray-300 sm:grid-cols-2">
+            <div class="mt-3 grid grid-cols-1 gap-2 text-xs text-[color:var(--bx-text-muted)] sm:grid-cols-2">
               <div>
                 <span class="text-gray-400">{{ t('admin.ops.errorDetail.upstreamEvent.status') }}:</span>
                 <span class="ml-1 font-mono">{{ ev.status_code ?? '—' }}</span>
@@ -199,11 +199,11 @@
               </div>
             </div>
 
-            <div v-if="ev.message" class="mt-3 break-words text-sm font-medium text-gray-900 dark:text-white">{{ ev.message }}</div>
+            <div v-if="ev.message" class="mt-3 break-words text-sm font-medium text-[color:var(--bx-text)]">{{ ev.message }}</div>
 
             <pre
               v-if="expandedUpstreamDetailIds.has(ev.id)"
-              class="mt-3 max-h-[240px] overflow-auto rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs text-gray-800 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100"
+              class="mt-3 max-h-[240px] overflow-auto rounded-xl border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] p-3 text-xs text-gray-800   dark:text-gray-100"
             ><code>{{ prettyJSON(getUpstreamResponsePreview(ev)) }}</code></pre>
           </div>
         </div>
@@ -380,7 +380,7 @@ const statusClass = computed(() => {
   if (code >= 500) return 'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-500/30'
   if (code === 429) return 'bg-purple-50 text-purple-700 ring-purple-600/20 dark:bg-purple-900/30 dark:text-purple-400 dark:ring-purple-500/30'
   if (code >= 400) return 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-900/30 dark:text-amber-400 dark:ring-amber-500/30'
-  return 'bg-gray-50 text-gray-700 ring-gray-600/20 dark:bg-gray-900/30 dark:text-gray-400 dark:ring-gray-500/30'
+  return 'bg-gray-50 text-gray-700 ring-gray-600/20 dark:bg-[color:var(--bx-bg-elevated)] dark:text-gray-400 dark:ring-gray-500/30'
 })
 
 </script>

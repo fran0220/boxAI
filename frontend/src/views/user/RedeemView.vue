@@ -29,7 +29,7 @@
               </label>
               <div class="relative mt-1">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                  <Icon name="gift" size="md" class="text-gray-400 dark:text-dark-500" />
+                  <Icon name="gift" size="md" class="text-[color:var(--bx-text-dim)]" />
                 </div>
                 <input
                   id="code"
@@ -87,7 +87,7 @@
           <div class="p-6">
             <div class="flex items-start gap-4">
               <div
-                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30"
+                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-900/30"
               >
                 <Icon name="checkCircle" size="md" class="text-emerald-600 dark:text-emerald-400" />
               </div>
@@ -95,7 +95,7 @@
                 <h3 class="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
                   {{ t('redeem.redeemSuccess') }}
                 </h3>
-                <div class="mt-2 text-sm text-emerald-700 dark:text-emerald-400">
+                <div class="mt-2 text-sm text-emerald-400">
                   <p>{{ redeemResult.message }}</p>
                   <div class="mt-3 space-y-1">
                     <p v-if="redeemResult.type === 'balance'" class="font-medium">
@@ -141,7 +141,7 @@
           <div class="p-6">
             <div class="flex items-start gap-4">
               <div
-                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/30"
+                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-red-900/30"
               >
                 <Icon
                   name="exclamationCircle"
@@ -153,7 +153,7 @@
                 <h3 class="text-sm font-semibold text-red-800 dark:text-red-300">
                   {{ t('redeem.redeemFailed') }}
                 </h3>
-                <p class="mt-2 text-sm text-red-700 dark:text-red-400">
+                <p class="mt-2 text-sm text-red-400">
                   {{ errorMessage }}
                 </p>
               </div>
@@ -169,9 +169,9 @@
         <div class="p-6">
           <div class="flex items-start gap-4">
             <div
-              class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/30"
+              class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-900/30"
             >
-              <Icon name="infoCircle" size="md" class="text-primary-600 dark:text-primary-400" />
+              <Icon name="infoCircle" size="md" class="text-primary-400" />
             </div>
             <div class="flex-1">
               <h3 class="text-sm font-semibold text-primary-800 dark:text-primary-300">
@@ -200,8 +200,8 @@
 
       <!-- Recent Activity -->
       <div class="card">
-        <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <div class="border-b border-[color:var(--bx-border)] px-6 py-4 ">
+          <h2 class="text-lg font-semibold text-[color:var(--bx-text)]">
             {{ t('redeem.recentActivity') }}
           </h2>
         </div>
@@ -230,7 +230,7 @@
             <div
               v-for="item in history"
               :key="item.id"
-              class="flex items-center justify-between rounded-xl bg-gray-50 p-4 dark:bg-dark-800"
+              class="flex items-center justify-between rounded-xl bg-[color:var(--bx-bg-muted)] p-4 "
             >
               <div class="flex items-center gap-4">
                 <div
@@ -238,8 +238,8 @@
                     'flex h-10 w-10 items-center justify-center rounded-xl',
                     isBalanceType(item.type)
                       ? item.value >= 0
-                        ? 'bg-emerald-100 dark:bg-emerald-900/30'
-                        : 'bg-red-100 dark:bg-red-900/30'
+                        ? 'bg-emerald-900/30'
+                        : 'bg-red-900/30'
                       : isSubscriptionType(item.type)
                         ? 'bg-purple-100 dark:bg-purple-900/30'
                         : item.value >= 0
@@ -278,10 +278,10 @@
                   />
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  <p class="text-sm font-medium text-[color:var(--bx-text)]">
                     {{ getHistoryItemTitle(item) }}
                   </p>
-                  <p class="text-xs text-gray-500 dark:text-dark-400">
+                  <p class="text-xs text-[color:var(--bx-text-dim)]">
                     {{ formatDateTime(item.used_at) }}
                   </p>
                 </div>
@@ -305,17 +305,17 @@
                 </p>
                 <p
                   v-if="!isAdminAdjustment(item.type)"
-                  class="font-mono text-xs text-gray-400 dark:text-dark-500"
+                  class="font-mono text-xs text-[color:var(--bx-text-dim)]"
                 >
                   {{ item.code.slice(0, 8) }}...
                 </p>
-                <p v-else class="text-xs text-gray-400 dark:text-dark-500">
+                <p v-else class="text-xs text-[color:var(--bx-text-dim)]">
                   {{ t('redeem.adminAdjustment') }}
                 </p>
                 <!-- Display notes for admin adjustments -->
                 <p
                   v-if="item.notes"
-                  class="mt-1 text-xs text-gray-500 dark:text-dark-400 italic max-w-[200px] truncate"
+                  class="mt-1 text-xs text-[color:var(--bx-text-dim)] italic max-w-[200px] truncate"
                   :title="item.notes"
                 >
                   {{ item.notes }}
@@ -327,11 +327,11 @@
           <!-- Empty State -->
           <div v-else class="empty-state py-8">
             <div
-              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-dark-800"
+              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[color:var(--bx-bg-muted)]"
             >
-              <Icon name="clock" size="xl" class="text-gray-400 dark:text-dark-500" />
+              <Icon name="clock" size="xl" class="text-[color:var(--bx-text-dim)]" />
             </div>
-            <p class="text-sm text-gray-500 dark:text-dark-400">
+            <p class="text-sm text-[color:var(--bx-text-dim)]">
               {{ t('redeem.historyWillAppear') }}
             </p>
           </div>

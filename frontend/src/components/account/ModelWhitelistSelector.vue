@@ -4,13 +4,13 @@
     <div class="relative mb-3">
       <div
         @click="toggleDropdown"
-        class="cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-dark-500 dark:bg-dark-700"
+        class="cursor-pointer rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] px-3 py-2  "
       >
         <div class="grid grid-cols-2 gap-1.5">
           <span
             v-for="model in modelValue"
             :key="model"
-            class="inline-flex items-center justify-between gap-1 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-dark-600 dark:text-gray-300"
+            class="inline-flex items-center justify-between gap-1 rounded bg-[color:var(--bx-bg-muted)] px-2 py-1 text-xs text-[color:var(--bx-text-soft)]  "
           >
             <span class="flex items-center gap-1 truncate">
               <ModelIcon :model="model" size="14px" />
@@ -25,7 +25,7 @@
             </button>
           </span>
         </div>
-        <div class="mt-2 flex items-center justify-between border-t border-gray-200 pt-2 dark:border-dark-600">
+        <div class="mt-2 flex items-center justify-between border-t border-[color:var(--bx-border)] pt-2 ">
           <span class="text-xs text-gray-400">{{ t('admin.accounts.modelCount', { count: modelValue.length }) }}</span>
           <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -35,9 +35,9 @@
       <!-- Dropdown List -->
       <div
         v-if="showDropdown"
-        class="absolute left-0 right-0 top-full z-50 mt-1 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-dark-600 dark:bg-dark-700"
+        class="absolute left-0 right-0 top-full z-50 mt-1 rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] shadow-lg  "
       >
-        <div class="sticky top-0 border-b border-gray-200 bg-white p-2 dark:border-dark-600 dark:bg-dark-700">
+        <div class="sticky top-0 border-b border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] p-2  ">
           <input
             v-model="searchQuery"
             type="text"
@@ -52,14 +52,14 @@
             :key="model.value"
             type="button"
             @click="toggleModel(model.value)"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-dark-600"
+            class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[color:var(--bx-hover)] "
           >
             <span
               :class="[
                 'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
                 modelValue.includes(model.value)
                   ? 'border-primary-500 bg-primary-500 text-white'
-                  : 'border-gray-300 dark:border-dark-500'
+                  : 'border-[color:var(--bx-border-strong)]'
               ]"
             >
               <svg v-if="modelValue.includes(model.value)" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,7 +67,7 @@
               </svg>
             </span>
             <ModelIcon :model="model.value" size="18px" />
-            <span class="truncate text-gray-900 dark:text-white">{{ model.value }}</span>
+            <span class="truncate text-[color:var(--bx-text)]">{{ model.value }}</span>
           </button>
           <div v-if="filteredModels.length === 0" class="px-3 py-4 text-center text-sm text-gray-500">
             {{ t('admin.accounts.noMatchingModels') }}
@@ -105,7 +105,7 @@
 
     <!-- Custom Model Input -->
     <div class="mb-3">
-      <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('admin.accounts.customModelName') }}</label>
+      <label class="mb-1.5 block text-sm font-medium text-[color:var(--bx-text-soft)]">{{ t('admin.accounts.customModelName') }}</label>
       <div class="flex gap-2">
         <input
           v-model="customModel"
@@ -119,7 +119,7 @@
         <button
           type="button"
           @click="addCustom"
-          class="rounded-lg bg-primary-50 px-4 py-2 text-sm font-medium text-primary-600 hover:bg-primary-100 dark:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-900/50"
+          class="rounded-lg bg-primary-50 px-4 py-2 text-sm font-medium text-primary-600 hover:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-900/50"
         >
           {{ t('admin.accounts.addModel') }}
         </button>

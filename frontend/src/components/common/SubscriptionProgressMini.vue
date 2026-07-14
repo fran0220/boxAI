@@ -27,13 +27,13 @@
     <transition name="dropdown">
       <div
         v-if="tooltipOpen"
-        class="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-dark-700 dark:bg-dark-800"
+        class="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-xl border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] shadow-xl  "
       >
-        <div class="border-b border-gray-100 p-3 dark:border-dark-700">
-          <h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+        <div class="border-b border-[color:var(--bx-border)] p-3 ">
+          <h3 class="text-sm font-semibold text-[color:var(--bx-text)]">
             {{ t('subscriptionProgress.title') }}
           </h3>
-          <p class="mt-0.5 text-xs text-gray-500 dark:text-dark-400">
+          <p class="mt-0.5 text-xs text-[color:var(--bx-text-dim)]">
             {{ t('subscriptionProgress.activeCount', { count: activeSubscriptions.length }) }}
           </p>
         </div>
@@ -45,7 +45,7 @@
             class="border-b border-gray-50 p-3 last:border-b-0 dark:border-dark-700/50"
           >
             <div class="mb-2 flex items-center justify-between">
-              <span class="text-sm font-medium text-gray-900 dark:text-white">
+              <span class="text-sm font-medium text-[color:var(--bx-text)]">
                 {{ subscription.group?.name || `Group #${subscription.group_id}` }}
               </span>
               <span
@@ -163,7 +163,7 @@
           </div>
         </div>
 
-        <div class="border-t border-gray-100 p-2 dark:border-dark-700">
+        <div class="border-t border-[color:var(--bx-border)] p-2 ">
           <router-link
             to="/subscriptions"
             @click="closeTooltip"
@@ -275,7 +275,7 @@ function getDaysRemainingClass(expiresAt: string): string {
   const days = Math.ceil(diff / (1000 * 60 * 60 * 24))
   if (days <= 3) return 'text-red-600 dark:text-red-400'
   if (days <= 7) return 'text-orange-600 dark:text-orange-400'
-  return 'text-gray-500 dark:text-dark-400'
+  return 'text-[color:var(--bx-text-dim)]'
 }
 
 function toggleTooltip() {

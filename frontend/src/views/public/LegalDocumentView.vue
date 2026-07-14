@@ -1,9 +1,9 @@
 <template>
   <div class="bx-page min-h-screen">
-    <header class="border-b border-gray-200 bg-white/95 dark:border-dark-800 dark:bg-dark-900/95">
+    <header class="border-b border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)]">
       <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <RouterLink to="/home" class="flex min-w-0 items-center gap-3">
-          <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 dark:bg-dark-800 dark:ring-dark-700">
+          <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[color:var(--bx-bg-elevated)] shadow-sm ring-1 ring-gray-200  dark:ring-dark-700">
             <img :src="siteLogo || '/logo.png'" alt="Logo" class="h-full w-full object-contain" />
           </span>
           <span class="truncate text-base font-semibold text-gray-950 dark:text-white">
@@ -34,15 +34,15 @@
 
       <section
         v-else-if="!currentDocument"
-        class="rounded-lg border border-gray-200 bg-white p-6 dark:border-dark-700 dark:bg-dark-900"
+        class="rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] p-6"
       >
         <div class="flex items-start gap-3">
-          <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600 dark:bg-dark-800 dark:text-dark-300">
+          <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[color:var(--bx-bg-muted)] text-gray-600  dark:text-dark-300">
             <Icon name="document" size="sm" />
           </span>
           <div>
-            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">{{ t('legal.notFound') }}</h1>
-            <p class="mt-2 text-sm leading-6 text-gray-600 dark:text-dark-300">
+            <h1 class="text-lg font-semibold text-[color:var(--bx-text)]">{{ t('legal.notFound') }}</h1>
+            <p class="mt-2 text-sm leading-6 text-[color:var(--bx-text-muted)]">
               {{ t('legal.notFoundDescription') }}
             </p>
           </div>
@@ -50,17 +50,17 @@
       </section>
 
       <article v-else>
-        <div class="mb-8 border-b border-gray-200 pb-6 dark:border-dark-700">
+        <div class="mb-8 border-b border-[color:var(--bx-border)] pb-6 ">
           <div class="flex items-start gap-4">
             <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-300">
               <Icon :name="documentIcon" size="md" />
             </span>
             <div class="min-w-0">
-              <p class="text-sm font-medium text-primary-700 dark:text-primary-300">{{ documentTypeLabel }}</p>
+              <p class="text-sm font-medium text-primary-300">{{ documentTypeLabel }}</p>
               <h1 class="mt-2 break-words text-2xl font-bold tracking-normal text-gray-950 dark:text-white sm:text-3xl">
                 {{ currentDocument.title }}
               </h1>
-              <p v-if="updatedAt" class="mt-3 text-sm text-gray-500 dark:text-dark-400">
+              <p v-if="updatedAt" class="mt-3 text-sm text-[color:var(--bx-text-dim)]">
                 {{ t('legal.updatedAt', { date: updatedAt }) }}
               </p>
             </div>
@@ -74,7 +74,7 @@
         ></div>
         <div
           v-else
-          class="rounded-lg border border-dashed border-gray-300 bg-white px-6 py-14 text-center text-sm text-gray-500 dark:border-dark-700 dark:bg-dark-900 dark:text-dark-400"
+          class="rounded-lg border border-dashed border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] px-6 py-14 text-center text-sm text-[color:var(--bx-text-dim)]   "
         >
           {{ t('legal.empty') }}
         </div>
@@ -187,7 +187,7 @@ onMounted(async () => {
 }
 
 .legal-document-content :deep(h1) {
-  @apply mb-4 mt-8 border-b border-gray-200 pb-3 text-3xl font-bold dark:border-dark-700;
+  @apply mb-4 mt-8 border-b border-[color:var(--bx-border)] pb-3 text-3xl font-bold ;
 }
 
 .legal-document-content :deep(h2) {
@@ -207,7 +207,7 @@ onMounted(async () => {
 }
 
 .legal-document-content :deep(a) {
-  @apply text-primary-600 underline underline-offset-4 hover:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200;
+  @apply text-primary-600 underline underline-offset-4 hover:text-primary-300 dark:hover:text-primary-200;
 }
 
 .legal-document-content :deep(ul) {
@@ -223,11 +223,11 @@ onMounted(async () => {
 }
 
 .legal-document-content :deep(blockquote) {
-  @apply my-5 border-l-4 border-gray-300 pl-4 text-gray-600 dark:border-dark-600 dark:text-dark-300;
+  @apply my-5 border-l-4 border-[color:var(--bx-border)] pl-4 text-gray-600  dark:text-dark-300;
 }
 
 .legal-document-content :deep(code) {
-  @apply rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm dark:bg-dark-800;
+  @apply rounded bg-[color:var(--bx-bg-muted)] px-1.5 py-0.5 font-mono text-sm ;
 }
 
 .legal-document-content :deep(pre) {
@@ -243,11 +243,11 @@ onMounted(async () => {
 }
 
 .legal-document-content :deep(th) {
-  @apply border border-gray-300 bg-gray-50 px-3 py-2 text-left font-semibold dark:border-dark-600 dark:bg-dark-800;
+  @apply border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] px-3 py-2 text-left font-semibold  ;
 }
 
 .legal-document-content :deep(td) {
-  @apply border border-gray-300 px-3 py-2 dark:border-dark-600;
+  @apply border border-[color:var(--bx-border)] px-3 py-2 ;
 }
 
 .legal-document-content :deep(img) {
@@ -255,6 +255,6 @@ onMounted(async () => {
 }
 
 .legal-document-content :deep(hr) {
-  @apply my-7 border-gray-200 dark:border-dark-700;
+  @apply my-7 border-[color:var(--bx-border)];
 }
 </style>

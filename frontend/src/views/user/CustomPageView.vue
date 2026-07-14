@@ -14,14 +14,14 @@
         >
           <div class="max-w-md">
             <div
-              class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-dark-700"
+              class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--bx-bg-muted)]"
             >
               <Icon name="link" size="lg" class="text-gray-400" />
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 class="text-lg font-semibold text-[color:var(--bx-text)]">
               {{ t('customPage.notFoundTitle') }}
             </h3>
-            <p class="mt-2 text-sm text-gray-500 dark:text-dark-400">
+            <p class="mt-2 text-sm text-[color:var(--bx-text-dim)]">
               {{ t('customPage.notFoundDesc') }}
             </p>
           </div>
@@ -80,14 +80,14 @@
         <div v-else-if="!isValidUrl" class="flex h-full items-center justify-center p-10 text-center">
           <div class="max-w-md">
             <div
-              class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-dark-700"
+              class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--bx-bg-muted)]"
             >
               <Icon name="link" size="lg" class="text-gray-400" />
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 class="text-lg font-semibold text-[color:var(--bx-text)]">
               {{ t('customPage.notConfiguredTitle') }}
             </h3>
-            <p class="mt-2 text-sm text-gray-500 dark:text-dark-400">
+            <p class="mt-2 text-sm text-[color:var(--bx-text-dim)]">
               {{ t('customPage.notConfiguredDesc') }}
             </p>
           </div>
@@ -380,7 +380,7 @@ onUnmounted(() => {
 }
 
 .toc-sidebar {
-  @apply flex flex-col h-full border-r border-gray-200 dark:border-dark-600 bg-gray-50 dark:bg-dark-800;
+  @apply flex flex-col h-full border-r border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)];
   width: min(240px, 30%);
   min-width: 160px;
   max-width: 280px;
@@ -401,7 +401,7 @@ onUnmounted(() => {
 }
 
 .toc-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-dark-600;
+  @apply flex items-center justify-between px-4 py-3 border-b border-[color:var(--bx-border)];
 }
 
 .toc-title {
@@ -418,11 +418,11 @@ onUnmounted(() => {
 
 .toc-item {
   @apply block px-2 py-1.5 text-sm rounded transition-colors truncate;
-  @apply text-gray-600 dark:text-dark-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-dark-600;
+  @apply text-[color:var(--bx-text-muted)] hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-dark-600;
 }
 
 .toc-item.toc-active {
-  @apply text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium;
+  @apply text-primary-400 bg-primary-900/20 font-medium;
 }
 
 .toc-level-1 { padding-left: 8px; }
@@ -432,15 +432,15 @@ onUnmounted(() => {
 
 .toc-toggle-btn {
   @apply absolute left-2 top-2 z-10 flex items-center px-2 py-1.5 rounded-md text-sm;
-  @apply bg-white dark:bg-dark-700 border border-gray-200 dark:border-dark-500;
-  @apply text-gray-600 dark:text-dark-300 hover:bg-gray-100 dark:hover:bg-dark-600;
+  @apply bg-[color:var(--bx-bg-elevated)] border border-[color:var(--bx-border)];
+  @apply text-[color:var(--bx-text-muted)] hover:bg-[color:var(--bx-hover)] ;
   @apply shadow-sm transition-colors cursor-pointer;
 }
 
 .custom-embed-shell {
   @apply relative;
   @apply h-full w-full overflow-hidden rounded-2xl;
-  @apply bg-gradient-to-b from-gray-50 to-white dark:from-dark-900 dark:to-dark-950;
+  background: var(--bx-bg);
   @apply p-0;
 }
 
@@ -466,7 +466,7 @@ onUnmounted(() => {
   line-height: 1.7;
   color: inherit;
 }
-.markdown-page-content h1 { @apply text-3xl font-bold mt-8 mb-4 pb-2 border-b border-gray-200 dark:border-dark-600; }
+.markdown-page-content h1 { @apply text-3xl font-bold mt-8 mb-4 pb-2 border-b border-[color:var(--bx-border)]; }
 .markdown-page-content h2 { @apply text-2xl font-bold mt-6 mb-3; }
 .markdown-page-content h3 { @apply text-xl font-semibold mt-5 mb-2; }
 .markdown-page-content h4 { @apply text-lg font-semibold mt-4 mb-2; }
@@ -475,15 +475,15 @@ onUnmounted(() => {
 .markdown-page-content ol { @apply list-decimal pl-6 mb-4; }
 .markdown-page-content li { @apply mb-1; }
 .markdown-page-content a { @apply text-primary-500 hover:text-primary-600 underline; }
-.markdown-page-content blockquote { @apply border-l-4 border-gray-300 dark:border-dark-500 pl-4 italic text-gray-600 dark:text-dark-300 my-4; }
+.markdown-page-content blockquote { @apply border-l-4 border-[color:var(--bx-border-strong)] pl-4 italic text-[color:var(--bx-text-muted)] my-4; }
 .markdown-page-content img { @apply max-w-full h-auto rounded-lg my-4; }
 .markdown-page-content table { @apply w-full border-collapse my-4; }
-.markdown-page-content th { @apply border border-gray-300 dark:border-dark-500 px-3 py-2 bg-gray-50 dark:bg-dark-700 font-semibold text-left; }
-.markdown-page-content td { @apply border border-gray-300 dark:border-dark-500 px-3 py-2; }
-.markdown-page-content code { @apply bg-gray-100 dark:bg-dark-700 px-1.5 py-0.5 rounded text-sm font-mono; }
+.markdown-page-content th { @apply border border-[color:var(--bx-border-strong)] px-3 py-2 bg-[color:var(--bx-bg-muted)] font-semibold text-left; }
+.markdown-page-content td { @apply border border-[color:var(--bx-border-strong)] px-3 py-2; }
+.markdown-page-content code { @apply bg-[color:var(--bx-bg-muted)] px-1.5 py-0.5 rounded text-sm font-mono; }
 .markdown-page-content pre { @apply bg-gray-900 dark:bg-dark-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4 relative; }
 .markdown-page-content pre code { @apply bg-transparent p-0 text-inherit; }
-.markdown-page-content hr { @apply my-6 border-gray-200 dark:border-dark-600; }
+.markdown-page-content hr { @apply my-6 border-[color:var(--bx-border)]; }
 
 .copy-btn {
   position: absolute;

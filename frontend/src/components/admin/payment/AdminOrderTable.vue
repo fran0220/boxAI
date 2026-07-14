@@ -48,12 +48,12 @@
       </template>
 
       <template #cell-user_id="{ value }">
-        <span class="text-sm text-gray-600 dark:text-gray-400">#{{ value }}</span>
+        <span class="text-sm text-[color:var(--bx-text-muted)]">#{{ value }}</span>
       </template>
 
       <template #cell-pay_amount="{ value, row }">
         <div class="text-sm">
-          <span class="font-medium text-gray-900 dark:text-white">{{ paymentAmountSymbol(row) }}{{ value.toFixed(2) }}</span>
+          <span class="font-medium text-[color:var(--bx-text)]">{{ paymentAmountSymbol(row) }}{{ value.toFixed(2) }}</span>
           <span v-if="row.fee_rate > 0" class="ml-1 text-xs text-gray-400" :title="t('payment.orders.fee') + ': ' + row.fee_rate + '%'">
             ({{ row.fee_rate }}%)
           </span>
@@ -64,7 +64,7 @@
       </template>
 
       <template #cell-payment_type="{ value }">
-        <span class="text-sm text-gray-700 dark:text-gray-300">
+        <span class="text-sm text-[color:var(--bx-text-soft)]">
           {{ t('payment.methods.' + value, value) }}
         </span>
       </template>
@@ -76,13 +76,13 @@
       </template>
 
       <template #cell-order_type="{ value }">
-        <span class="text-sm text-gray-700 dark:text-gray-300">
+        <span class="text-sm text-[color:var(--bx-text-soft)]">
           {{ t('payment.admin.' + value + 'Order', value) }}
         </span>
       </template>
 
       <template #cell-created_at="{ value }">
-        <span class="text-xs text-gray-500 dark:text-gray-400">{{ formatDateTime(value) }}</span>
+        <span class="text-xs text-[color:var(--bx-text-dim)]">{{ formatDateTime(value) }}</span>
       </template>
 
       <template #cell-actions="{ row }">

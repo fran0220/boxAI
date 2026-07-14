@@ -35,7 +35,7 @@
       </button>
     </div>
 
-    <div v-if="summary" class="text-[10px] text-gray-600 dark:text-gray-300">
+    <div v-if="summary" class="text-[10px] text-[color:var(--bx-text-muted)]">
       {{ summary }}
     </div>
     <div v-if="error" class="truncate text-[10px] text-red-600 dark:text-red-400" :title="error">

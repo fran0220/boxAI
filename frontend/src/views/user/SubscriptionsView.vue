@@ -11,14 +11,14 @@
       <!-- Empty State -->
       <div v-else-if="subscriptions.length === 0" class="card p-12 text-center">
         <div
-          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-dark-700"
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[color:var(--bx-bg-muted)]"
         >
           <Icon name="creditCard" size="xl" class="text-gray-400" />
         </div>
-        <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+        <h3 class="mb-2 text-lg font-semibold text-[color:var(--bx-text)]">
           {{ t('userSubscriptions.noActiveSubscriptions') }}
         </h3>
-        <p class="text-gray-500 dark:text-dark-400">
+        <p class="text-[color:var(--bx-text-dim)]">
           {{ t('userSubscriptions.noActiveSubscriptionsDesc') }}
         </p>
       </div>
@@ -28,28 +28,28 @@
         <div
           v-for="subscription in subscriptions"
           :key="subscription.id"
-          class="overflow-hidden rounded-2xl border bg-white dark:bg-dark-800"
+          class="overflow-hidden rounded-2xl border bg-[color:var(--bx-bg-elevated)]"
           :class="platformBorderClass(subscription.group?.platform || '')"
         >
           <!-- Header -->
           <div
-            class="flex items-center justify-between border-b border-gray-100 p-4 dark:border-dark-700"
+            class="flex items-center justify-between border-b border-[color:var(--bx-border)] p-4 "
           >
             <div class="flex items-center gap-3">
               <div :class="['h-1.5 w-1.5 shrink-0 rounded-full', platformAccentDotClass(subscription.group?.platform || '')]" />
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                  <h3 class="font-semibold text-[color:var(--bx-text)]">
                     {{ subscription.group?.name || `Group #${subscription.group_id}` }}
                   </h3>
                   <span :class="['rounded-md border px-2 py-0.5 text-[11px] font-medium', platformBadgeClass(subscription.group?.platform || '')]">
                     {{ platformLabel(subscription.group?.platform || '') }}
                   </span>
                 </div>
-                <p v-if="subscription.group?.description" class="mt-0.5 text-xs text-gray-500 dark:text-dark-400">
+                <p v-if="subscription.group?.description" class="mt-0.5 text-xs text-[color:var(--bx-text-dim)]">
                   {{ subscription.group.description }}
                 </p>
-                <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-gray-400 dark:text-gray-500">
+                <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-[color:var(--bx-text-dim)]">
                   <span>{{ t('payment.planCard.rate') }}: ×{{ subscription.group?.rate_multiplier ?? 1 }}</span>
                   <span v-if="subscriptionHasPeakRate(subscription)" class="text-amber-700 dark:text-amber-300">
                     {{ t('payment.planCard.peakRate') }}: {{ subscriptionPeakRateLabel(subscription) }}
@@ -64,7 +64,7 @@
                   subscription.status === 'active'
                     ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
                     : subscription.status === 'expired'
-                      ? 'bg-gray-100 text-gray-600 dark:bg-dark-700 dark:text-gray-400'
+                      ? 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)]  '
                       : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
                 ]"
               >
@@ -84,7 +84,7 @@
           <div class="space-y-4 p-4">
             <!-- Expiration Info -->
             <div v-if="subscription.expires_at" class="flex items-center justify-between text-sm">
-              <span class="text-gray-500 dark:text-dark-400">{{
+              <span class="text-[color:var(--bx-text-dim)]">{{
                 t('userSubscriptions.expires')
               }}</span>
               <span :class="getExpirationClass(subscription.expires_at)">
@@ -92,10 +92,10 @@
               </span>
             </div>
             <div v-else class="flex items-center justify-between text-sm">
-              <span class="text-gray-500 dark:text-dark-400">{{
+              <span class="text-[color:var(--bx-text-dim)]">{{
                 t('userSubscriptions.expires')
               }}</span>
-              <span class="text-gray-700 dark:text-gray-300">{{
+              <span class="text-[color:var(--bx-text-soft)]">{{
                 t('userSubscriptions.noExpiration')
               }}</span>
             </div>
@@ -103,10 +103,10 @@
             <!-- Daily Usage -->
             <div v-if="subscription.group?.daily_limit_usd" class="space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span class="text-sm font-medium text-[color:var(--bx-text-soft)]">
                   {{ t('userSubscriptions.daily') }}
                 </span>
-                <span class="text-sm text-gray-500 dark:text-dark-400">
+                <span class="text-sm text-[color:var(--bx-text-dim)]">
                   ${{ (subscription.daily_usage_usd || 0).toFixed(2) }} / ${{
                     subscription.group.daily_limit_usd.toFixed(2)
                   }}
@@ -131,7 +131,7 @@
               </div>
               <p
                 v-if="subscription.daily_window_start"
-                class="text-xs text-gray-500 dark:text-dark-400"
+                class="text-xs text-[color:var(--bx-text-dim)]"
               >
                 {{ formatDailyUsageWindow(subscription) }}
               </p>
@@ -140,10 +140,10 @@
             <!-- Weekly Usage -->
             <div v-if="subscription.group?.weekly_limit_usd" class="space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span class="text-sm font-medium text-[color:var(--bx-text-soft)]">
                   {{ t('userSubscriptions.weekly') }}
                 </span>
-                <span class="text-sm text-gray-500 dark:text-dark-400">
+                <span class="text-sm text-[color:var(--bx-text-dim)]">
                   ${{ (subscription.weekly_usage_usd || 0).toFixed(2) }} / ${{
                     subscription.group.weekly_limit_usd.toFixed(2)
                   }}
@@ -168,7 +168,7 @@
               </div>
               <p
                 v-if="subscription.weekly_window_start"
-                class="text-xs text-gray-500 dark:text-dark-400"
+                class="text-xs text-[color:var(--bx-text-dim)]"
               >
                 {{
                   t('userSubscriptions.resetIn', {
@@ -181,10 +181,10 @@
             <!-- Monthly Usage -->
             <div v-if="subscription.group?.monthly_limit_usd" class="space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span class="text-sm font-medium text-[color:var(--bx-text-soft)]">
                   {{ t('userSubscriptions.monthly') }}
                 </span>
-                <span class="text-sm text-gray-500 dark:text-dark-400">
+                <span class="text-sm text-[color:var(--bx-text-dim)]">
                   ${{ (subscription.monthly_usage_usd || 0).toFixed(2) }} / ${{
                     subscription.group.monthly_limit_usd.toFixed(2)
                   }}
@@ -209,7 +209,7 @@
               </div>
               <p
                 v-if="subscription.monthly_window_start"
-                class="text-xs text-gray-500 dark:text-dark-400"
+                class="text-xs text-[color:var(--bx-text-dim)]"
               >
                 {{
                   t('userSubscriptions.resetIn', {
@@ -343,7 +343,7 @@ function getExpirationClass(expiresAt: string): string {
   if (days <= 0) return 'text-red-600 dark:text-red-400 font-medium'
   if (days <= 3) return 'text-red-600 dark:text-red-400'
   if (days <= 7) return 'text-orange-600 dark:text-orange-400'
-  return 'text-gray-700 dark:text-gray-300'
+  return 'text-[color:var(--bx-text-soft)]'
 }
 
 function formatDurationParts(parts: RemainingDurationParts): string {

@@ -50,7 +50,7 @@
         >
           <template #cell-code="{ value }">
             <div class="flex items-center space-x-2">
-              <code class="font-mono text-sm text-gray-900 dark:text-gray-100">{{ value }}</code>
+              <code class="font-mono text-sm text-[color:var(--bx-text)]">{{ value }}</code>
               <button
                 @click="copyToClipboard(value)"
                 :class="[
@@ -75,13 +75,13 @@
           </template>
 
           <template #cell-bonus_amount="{ value }">
-            <span class="text-sm font-medium text-gray-900 dark:text-white">
+            <span class="text-sm font-medium text-[color:var(--bx-text)]">
               ${{ value.toFixed(2) }}
             </span>
           </template>
 
           <template #cell-usage="{ row }">
-            <span class="text-sm text-gray-600 dark:text-gray-300">
+            <span class="text-sm text-[color:var(--bx-text-muted)]">
               {{ row.used_count }} / {{ row.max_uses === 0 ? '∞' : row.max_uses }}
             </span>
           </template>
@@ -98,13 +98,13 @@
           </template>
 
           <template #cell-expires_at="{ value }">
-            <span class="text-sm text-gray-500 dark:text-dark-400">
+            <span class="text-sm text-[color:var(--bx-text-dim)]">
               {{ value ? formatDateTime(value) : t('admin.promo.neverExpires') }}
             </span>
           </template>
 
           <template #cell-created_at="{ value }">
-            <span class="text-sm text-gray-500 dark:text-dark-400">
+            <span class="text-sm text-[color:var(--bx-text-dim)]">
               {{ formatDateTime(value) }}
             </span>
           </template>
@@ -127,7 +127,7 @@
               </button>
               <button
                 @click="handleEdit(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-dark-600 dark:hover:text-gray-300"
+                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-[color:var(--bx-hover)] hover:text-gray-700  dark:hover:text-gray-300"
                 :title="t('common.edit')"
               >
                 <Icon name="edit" size="sm" />
@@ -323,24 +323,24 @@
       <div v-if="usagesLoading" class="flex items-center justify-center py-8">
         <Icon name="refresh" size="lg" class="animate-spin text-gray-400" />
       </div>
-      <div v-else-if="usages.length === 0" class="py-8 text-center text-gray-500 dark:text-gray-400">
+      <div v-else-if="usages.length === 0" class="py-8 text-center text-[color:var(--bx-text-dim)]">
         {{ t('admin.promo.noUsages') }}
       </div>
       <div v-else class="space-y-3">
         <div
           v-for="usage in usages"
           :key="usage.id"
-          class="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-dark-600"
+          class="flex items-center justify-between rounded-lg border border-[color:var(--bx-border)] p-3 "
         >
           <div class="flex items-center gap-3">
             <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
               <Icon name="user" size="sm" class="text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">
+              <p class="text-sm font-medium text-[color:var(--bx-text)]">
                 {{ usage.user?.email || t('admin.promo.userPrefix', { id: usage.user_id }) }}
               </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+              <p class="text-xs text-[color:var(--bx-text-dim)]">
                 {{ formatDateTime(usage.used_at) }}
               </p>
             </div>

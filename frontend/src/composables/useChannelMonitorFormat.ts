@@ -110,7 +110,7 @@ export function useChannelMonitorFormat() {
       default:
         return active
           ? 'border-gray-400 bg-gray-50 text-gray-700 dark:border-dark-500 dark:bg-dark-700 dark:text-gray-200'
-          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-400'
+          : 'border-gray-200 bg-white text-gray-600 hover:border-[color:var(--bx-border-strong)] dark:bg-dark-800 dark:text-gray-400'
     }
   }
 

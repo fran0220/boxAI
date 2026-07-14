@@ -3,12 +3,12 @@
     <div class="space-y-6">
       <!-- Title -->
       <div class="text-center">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 class="text-2xl font-bold text-[color:var(--bx-text)]">
           {{ t('auth.verifyYourEmail') }}
         </h2>
-        <p class="mt-2 text-sm text-gray-500 dark:text-dark-400">
+        <p class="mt-2 text-sm text-[color:var(--bx-text-dim)]">
           {{ t('auth.sendCodeDesc') }}
-          <span class="font-medium text-gray-700 dark:text-gray-300">{{ email }}</span>
+          <span class="font-medium text-[color:var(--bx-text-soft)]">{{ email }}</span>
         </p>
       </div>
 
@@ -21,7 +21,7 @@
           <div class="flex-shrink-0">
             <Icon name="exclamationCircle" size="md" class="text-amber-500" />
           </div>
-          <div class="text-sm text-amber-700 dark:text-amber-400">
+          <div class="text-sm text-amber-400">
             <p class="font-medium">{{ t('auth.sessionExpired') }}</p>
             <p class="mt-1">{{ t('auth.sessionExpiredDesc') }}</p>
           </div>
@@ -109,7 +109,7 @@
             v-if="countdown > 0"
             type="button"
             disabled
-            class="cursor-not-allowed text-sm text-gray-400 dark:text-dark-500"
+            class="cursor-not-allowed text-sm text-[color:var(--bx-text-dim)]"
           >
             {{ t('auth.resendCountdown', { countdown }) }}
           </button>
@@ -136,7 +136,7 @@
     <template #footer>
       <button
         @click="handleBack"
-        class="flex items-center gap-2 text-gray-500 transition-colors hover:text-gray-700 dark:text-dark-400 dark:hover:text-gray-300"
+        class="flex items-center gap-2 text-[color:var(--bx-text-dim)] transition-colors hover:text-gray-700  dark:hover:text-gray-300"
       >
         <Icon name="arrowLeft" size="sm" />
         {{ t('auth.backToRegistration') }}

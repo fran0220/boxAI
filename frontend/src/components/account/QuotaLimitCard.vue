@@ -131,7 +131,7 @@ const dailyFixedHint = computed(() =>
 </script>
 
 <template>
-  <div class="rounded-lg border border-gray-200 dark:border-dark-600">
+  <div class="rounded-lg border border-[color:var(--bx-border)]">
       <!-- Header: toggle + collapse -->
       <div class="flex items-center justify-between p-4" :class="{ 'pb-0': localEnabled && !collapsed }">
         <div class="flex items-center gap-2 flex-1 cursor-pointer" @click="localEnabled && (collapsed = !collapsed)">
@@ -140,7 +140,7 @@ const dailyFixedHint = computed(() =>
           </svg>
           <div>
             <label class="input-label mb-0 cursor-pointer">{{ t('admin.accounts.quotaLimitToggle') }}</label>
-            <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-0.5 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.quotaLimitToggleHint') }}
             </p>
           </div>

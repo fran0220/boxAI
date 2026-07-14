@@ -6,7 +6,7 @@
         variantClass
       ]"
     ></span>
-    <span class="text-sm text-gray-700 dark:text-gray-300">
+    <span class="text-sm text-[color:var(--bx-text-soft)]">
       {{ label }}
     </span>
   </div>

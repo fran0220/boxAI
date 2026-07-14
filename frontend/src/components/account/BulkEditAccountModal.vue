@@ -23,7 +23,7 @@
 
       <!-- Mixed platform warning -->
       <div v-if="isMixedPlatform" class="rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
-        <p class="text-sm text-amber-700 dark:text-amber-400">
+        <p class="text-sm text-amber-400">
           <svg class="mr-1.5 inline h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
@@ -34,7 +34,7 @@
       <!-- OpenAI passthrough -->
       <div
         v-if="allOpenAIPassthroughCapable"
-        class="border-t border-gray-200 pt-4 dark:border-dark-600"
+        class="border-t border-[color:var(--bx-border)] pt-4 "
       >
         <div class="mb-3 flex items-center justify-between">
           <div class="flex-1 pr-4">
@@ -45,7 +45,7 @@
             >
               {{ t('admin.accounts.openai.oauthPassthrough') }}
             </label>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.openai.oauthPassthroughDesc') }}
             </p>
           </div>
@@ -83,7 +83,7 @@
       </div>
 
       <!-- Base URL (API Key only) -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-base-url-label"
@@ -116,7 +116,7 @@
       </div>
 
       <!-- Model restriction -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-model-restriction-label"
@@ -144,7 +144,7 @@
             v-if="isOpenAIModelRestrictionDisabled"
             class="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20"
           >
-            <p class="text-xs text-amber-700 dark:text-amber-400">
+            <p class="text-xs text-amber-400">
               {{ t('admin.accounts.openai.modelRestrictionDisabledByPassthrough') }}
             </p>
           </div>
@@ -158,7 +158,7 @@
                   'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
                   modelRestrictionMode === 'whitelist'
                     ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                    : 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)] hover:bg-gray-200   dark:hover:bg-dark-500'
                 ]"
                 @click="modelRestrictionMode = 'whitelist'"
               >
@@ -183,7 +183,7 @@
                   'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
                   modelRestrictionMode === 'mapping'
                     ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                    : 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)] hover:bg-gray-200   dark:hover:bg-dark-500'
                 ]"
                 @click="modelRestrictionMode = 'mapping'"
               >
@@ -230,7 +230,7 @@
                 :platforms="targetSelectedPlatforms"
               />
 
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+              <p class="text-xs text-[color:var(--bx-text-dim)]">
                 {{ t('admin.accounts.selectedModels', { count: allowedModels.length }) }}
                 <span v-if="allowedModels.length === 0">{{
                   t('admin.accounts.supportsAllModels')
@@ -310,7 +310,7 @@
 
               <button
                 type="button"
-                class="mb-3 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+                class="mb-3 w-full rounded-lg border-2 border-dashed border-[color:var(--bx-border)] px-4 py-2 text-[color:var(--bx-text-muted)] transition-colors hover:border-gray-400 hover:text-gray-700   dark:hover:border-dark-400 dark:hover:text-gray-300"
                 @click="addModelMapping"
               >
                 <svg
@@ -347,7 +347,7 @@
       </div>
 
       <!-- Custom error codes -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <div>
             <label
@@ -357,7 +357,7 @@
             >
               {{ t('admin.accounts.customErrorCodes') }}
             </label>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.customErrorCodesHint') }}
             </p>
           </div>
@@ -372,7 +372,7 @@
 
         <div v-if="enableCustomErrorCodes" id="bulk-edit-custom-error-codes-body" class="space-y-3">
           <div class="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
-            <p class="text-xs text-amber-700 dark:text-amber-400">
+            <p class="text-xs text-amber-400">
               <Icon name="exclamationTriangle" size="sm" class="mr-1 inline" :stroke-width="2" />
               {{ t('admin.accounts.customErrorCodesWarning') }}
             </p>
@@ -388,7 +388,7 @@
                 'rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
                 selectedErrorCodes.includes(code.value)
                   ? 'bg-red-100 text-red-700 ring-1 ring-red-500 dark:bg-red-900/30 dark:text-red-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  : 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)] hover:bg-gray-200   dark:hover:bg-dark-500'
               ]"
               @click="toggleErrorCode(code.value)"
             >
@@ -445,7 +445,7 @@
       </div>
 
       <!-- Intercept warmup requests (Anthropic only) -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="flex items-center justify-between">
           <div class="flex-1 pr-4">
             <label
@@ -455,7 +455,7 @@
             >
               {{ t('admin.accounts.interceptWarmupRequests') }}
             </label>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.interceptWarmupRequestsDesc') }}
             </p>
           </div>
@@ -487,7 +487,7 @@
       </div>
 
       <!-- Header Override (anthropic/openai apikey only) -->
-      <div v-if="allHeaderOverrideCapable" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allHeaderOverrideCapable" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="flex items-center justify-between">
           <div class="flex-1 pr-4">
             <label
@@ -497,7 +497,7 @@
             >
               {{ t('admin.accounts.headerOverride.title') }}
             </label>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.headerOverride.hint') }}
             </p>
           </div>
@@ -575,7 +575,7 @@
 
             <button
               type="button"
-              class="w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+              class="w-full rounded-lg border-2 border-dashed border-[color:var(--bx-border)] px-4 py-2 text-[color:var(--bx-text-muted)] transition-colors hover:border-gray-400 hover:text-gray-700   dark:hover:border-dark-400 dark:hover:text-gray-300"
               @click="addHeaderOverrideRow"
             >
               <svg class="mr-1 inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -592,25 +592,25 @@
             <div v-if="headerOverrideTemplatePlatform" class="flex flex-wrap gap-2">
               <button
                 type="button"
-                class="rounded-lg bg-primary-50 px-3 py-1 text-xs text-primary-700 transition-colors hover:bg-primary-100 dark:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-900/50"
+                class="rounded-lg bg-primary-50 px-3 py-1 text-xs text-primary-700 transition-colors hover:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-900/50"
                 @click="fillHeaderOverrideTemplate"
               >
                 + {{ t('admin.accounts.headerOverride.fillTemplate') }}
               </button>
             </div>
 
-            <p class="text-xs text-gray-500 dark:text-gray-400">
+            <p class="text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.headerOverride.emptyValueHint') }}
             </p>
           </div>
-          <p v-else class="text-xs text-gray-500 dark:text-gray-400">
+          <p v-else class="text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.accounts.headerOverride.bulkDisableHint') }}
           </p>
         </div>
       </div>
 
       <!-- Proxy -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-proxy-label"
@@ -637,7 +637,7 @@
       </div>
 
       <!-- Concurrency & Priority -->
-      <div class="grid grid-cols-2 gap-4 border-t border-gray-200 pt-4 dark:border-dark-600 lg:grid-cols-4">
+      <div class="grid grid-cols-2 gap-4 border-t border-[color:var(--bx-border)] pt-4  lg:grid-cols-4">
         <div>
           <div class="mb-3 flex items-center justify-between">
             <label
@@ -758,7 +758,7 @@
       </div>
 
       <!-- Status -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-status-label"
@@ -785,7 +785,7 @@
       </div>
 
       <!-- OpenAI OAuth WS mode -->
-      <div v-if="allOpenAIOAuth" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allOpenAIOAuth" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-openai-ws-mode-label"
@@ -806,10 +806,10 @@
           id="bulk-edit-openai-ws-mode"
           :class="!enableOpenAIWSMode && 'pointer-events-none opacity-50'"
         >
-          <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mb-3 text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.accounts.openai.wsModeDesc') }}
           </p>
-          <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mb-3 text-xs text-[color:var(--bx-text-dim)]">
             {{ t(openAIWSModeConcurrencyHintKey) }}
           </p>
           <Select
@@ -822,7 +822,7 @@
       </div>
 
       <!-- OpenAI OAuth Codex CLI only -->
-      <div v-if="allOpenAIOAuth" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allOpenAIOAuth" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-openai-codex-cli-only-label"
@@ -843,7 +843,7 @@
           id="bulk-edit-openai-codex-cli-only"
           :class="!enableCodexCLIOnly && 'pointer-events-none opacity-50'"
         >
-          <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mb-3 text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.accounts.openai.codexCLIOnlyDesc') }}
           </p>
           <button
@@ -866,7 +866,7 @@
       </div>
 
       <!-- OpenAI OAuth: Codex app-server -->
-      <div v-if="allOpenAIOAuth" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allOpenAIOAuth" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-openai-codex-app-server-label"
@@ -887,7 +887,7 @@
           id="bulk-edit-openai-codex-app-server"
           :class="!enableCodexCLIOnlyAppServer && 'pointer-events-none opacity-50'"
         >
-          <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mb-3 text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.accounts.openai.codexCLIOnlyAppServerDesc') }}
           </p>
           <button
@@ -910,7 +910,7 @@
       </div>
 
       <!-- OpenAI API Key WS mode -->
-      <div v-if="allOpenAIAPIKey" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allOpenAIAPIKey" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-openai-apikey-ws-mode-label"
@@ -931,10 +931,10 @@
           id="bulk-edit-openai-apikey-ws-mode"
           :class="!enableOpenAIAPIKeyWSMode && 'pointer-events-none opacity-50'"
         >
-          <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mb-3 text-xs text-[color:var(--bx-text-dim)]">
             {{ t('admin.accounts.openai.wsModeDesc') }}
           </p>
-          <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mb-3 text-xs text-[color:var(--bx-text-dim)]">
             {{ t(openAIAPIKeyWSModeConcurrencyHintKey) }}
           </p>
           <Select
@@ -947,7 +947,7 @@
       </div>
 
       <!-- OpenAI Compact mode -->
-      <div v-if="allOpenAIPassthroughCapable" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allOpenAIPassthroughCapable" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <div class="flex-1 pr-4">
             <label
@@ -957,7 +957,7 @@
             >
               {{ t('admin.accounts.openai.compactMode') }}
             </label>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.openai.compactModeDesc') }}
             </p>
           </div>
@@ -983,7 +983,7 @@
       </div>
 
       <!-- OpenAI Compact model mapping -->
-      <div v-if="allOpenAIPassthroughCapable" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allOpenAIPassthroughCapable" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <div class="flex-1 pr-4">
             <label
@@ -993,7 +993,7 @@
             >
               {{ t('admin.accounts.openai.compactModelMapping') }}
             </label>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
               {{ t('admin.accounts.openai.compactModelMappingDesc') }}
             </p>
           </div>
@@ -1041,7 +1041,7 @@
           </div>
           <button
             type="button"
-            class="mb-3 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+            class="mb-3 w-full rounded-lg border-2 border-dashed border-[color:var(--bx-border)] px-4 py-2 text-[color:var(--bx-text-muted)] transition-colors hover:border-gray-400 hover:text-gray-700   dark:hover:border-dark-400 dark:hover:text-gray-300"
             data-testid="bulk-edit-openai-compact-model-mapping-add"
             @click="addOpenAICompactModelMapping"
           >
@@ -1051,7 +1051,7 @@
       </div>
 
       <!-- RPM Limit (仅全部为 Anthropic OAuth/SetupToken 时显示) -->
-      <div v-if="allAnthropicOAuthOrSetupToken" class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div v-if="allAnthropicOAuthOrSetupToken" class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-rpm-limit-label"
@@ -1076,7 +1076,7 @@
           aria-labelledby="bulk-edit-rpm-limit-label"
         >
           <div class="mb-3 flex items-center justify-between">
-            <span class="text-sm text-gray-700 dark:text-gray-300">{{ t('admin.accounts.quotaControl.rpmLimit.hint') }}</span>
+            <span class="text-sm text-[color:var(--bx-text-soft)]">{{ t('admin.accounts.quotaControl.rpmLimit.hint') }}</span>
             <button
               type="button"
               @click="rpmLimitEnabled = !rpmLimitEnabled"
@@ -1119,7 +1119,7 @@
                     'flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-all',
                     bulkRpmStrategy === 'tiered'
                       ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                      : 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)] hover:bg-gray-200   dark:hover:bg-dark-500'
                   ]"
                 >
                   {{ t('admin.accounts.quotaControl.rpmLimit.strategyTiered') }}
@@ -1131,7 +1131,7 @@
                     'flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-all',
                     bulkRpmStrategy === 'sticky_exempt'
                       ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                      : 'bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)] hover:bg-gray-200   dark:hover:bg-dark-500'
                   ]"
                 >
                   {{ t('admin.accounts.quotaControl.rpmLimit.strategyStickyExempt') }}
@@ -1158,7 +1158,7 @@
         <!-- 用户消息限速模式（独立于 RPM 开关，始终可见） -->
         <div class="mt-4">
           <label class="input-label">{{ t('admin.accounts.quotaControl.rpmLimit.userMsgQueue') }}</label>
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 mb-2">
+          <p class="mt-1 text-xs text-[color:var(--bx-text-dim)] mb-2">
             {{ t('admin.accounts.quotaControl.rpmLimit.userMsgQueueHint') }}
           </p>
           <div class="flex space-x-2">
@@ -1168,7 +1168,7 @@
                 'px-3 py-1.5 text-sm rounded-md border transition-colors',
                 userMsgQueueMode === opt.value
                   ? 'bg-primary-600 text-white border-primary-600'
-                  : 'bg-white dark:bg-dark-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-dark-500 hover:bg-gray-50 dark:hover:bg-dark-600'
+                  : 'bg-[color:var(--bx-bg-elevated)] text-[color:var(--bx-text-soft)] border-[color:var(--bx-border-strong)] hover:bg-[color:var(--bx-hover)] '
               ]">
               {{ opt.label }}
             </button>
@@ -1177,7 +1177,7 @@
       </div>
 
       <!-- Groups -->
-      <div class="border-t border-gray-200 pt-4 dark:border-dark-600">
+      <div class="border-t border-[color:var(--bx-border)] pt-4 ">
         <div class="mb-3 flex items-center justify-between">
           <label
             id="bulk-edit-groups-label"
