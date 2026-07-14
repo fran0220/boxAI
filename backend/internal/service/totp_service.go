@@ -11,6 +11,7 @@ import (
 
 	"github.com/pquerna/otp/totp"
 
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
 	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
 )
 
@@ -89,7 +90,8 @@ const (
 	totpLoginTTL    = 5 * time.Minute
 	totpAttemptsTTL = 15 * time.Minute
 	maxTotpAttempts = 5
-	totpIssuer      = "Sub2API"
+	// BOXAI: TOTP issuer uses product name
+	totpIssuer = branding.ProductName
 )
 
 // TotpService handles TOTP operations

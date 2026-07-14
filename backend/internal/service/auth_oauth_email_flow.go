@@ -11,6 +11,7 @@ import (
 
 	dbent "github.com/Wei-Shaw/sub2api/ent"
 	"github.com/Wei-Shaw/sub2api/ent/redeemcode"
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
 	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
 )
 
@@ -43,7 +44,7 @@ func (s *AuthService) SendPendingOAuthVerifyCode(ctx context.Context, email stri
 		return nil, ErrServiceUnavailable
 	}
 
-	siteName := "Sub2API"
+	siteName := branding.ProductName // BOXAI: default product name
 	if s.settingService != nil {
 		siteName = s.settingService.GetSiteName(ctx)
 	}

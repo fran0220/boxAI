@@ -11,6 +11,8 @@ import (
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
 )
 
 // IsRegistrationEnabled 检查是否开放注册
@@ -173,7 +175,7 @@ func (s *SettingService) IsTotpEncryptionKeyConfigured() bool {
 func (s *SettingService) GetSiteName(ctx context.Context) string {
 	value, err := s.settingRepo.GetValue(ctx, SettingKeySiteName)
 	if err != nil || value == "" {
-		return "Sub2API"
+		return branding.ProductName // BOXAI: default product name
 	}
 	return value
 }

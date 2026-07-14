@@ -10,6 +10,7 @@ import (
 
 	dbent "github.com/Wei-Shaw/sub2api/ent"
 	"github.com/Wei-Shaw/sub2api/ent/authidentity"
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
 	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
 	"github.com/Wei-Shaw/sub2api/internal/pkg/logger"
 )
@@ -130,7 +131,7 @@ func (s *AuthService) SendEmailIdentityBindCode(ctx context.Context, userID int6
 		return ErrServiceUnavailable
 	}
 
-	siteName := "Sub2API"
+	siteName := branding.ProductName // BOXAI: default product name
 	if s.settingService != nil {
 		siteName = s.settingService.GetSiteName(ctx)
 	}

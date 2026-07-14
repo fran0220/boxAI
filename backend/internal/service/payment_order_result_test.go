@@ -7,6 +7,7 @@ import (
 	"time"
 
 	dbent "github.com/Wei-Shaw/sub2api/ent"
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
 	"github.com/Wei-Shaw/sub2api/internal/payment"
 	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
 )
@@ -308,8 +309,9 @@ func TestBuildPaymentSubjectAppliesAffixToSubscriptionPlanDefaultName(t *testing
 	plan := &dbent.SubscriptionPlan{Name: "Team Monthly"}
 
 	got := svc.buildPaymentSubject(plan, 0, cfg, nil)
-	if got != "PRE Sub2API Subscription Team Monthly SUF" {
-		t.Fatalf("buildPaymentSubject() = %q, want %q", got, "PRE Sub2API Subscription Team Monthly SUF")
+	want := "PRE " + branding.SubscriptionSubjectPrefix() + "Team Monthly SUF"
+	if got != want {
+		t.Fatalf("buildPaymentSubject() = %q, want %q", got, want)
 	}
 }
 

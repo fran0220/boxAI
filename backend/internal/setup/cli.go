@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
+
 	"golang.org/x/term"
 )
 
@@ -51,7 +53,8 @@ func RunCLI() error {
 
 	fmt.Println()
 	fmt.Println("╔═══════════════════════════════════════════╗")
-	fmt.Println("║       Sub2API Installation Wizard         ║")
+	// BOXAI: product display name (keep banner width aligned)
+	fmt.Printf("║       %s Installation Wizard           ║\n", branding.ProductName)
 	fmt.Println("╚═══════════════════════════════════════════╝")
 	fmt.Println()
 

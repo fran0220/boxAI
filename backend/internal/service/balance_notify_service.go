@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Wei-Shaw/sub2api/internal/branding" // BOXAI: product identity
 )
 
 const (
@@ -22,7 +24,8 @@ const (
 	quotaDimWeekly = "weekly"
 	quotaDimTotal  = "total"
 
-	defaultSiteName = "Sub2API"
+	// BOXAI: default product name
+	defaultSiteName = branding.ProductName
 )
 
 // quotaDimLabels maps dimension names to display labels.
