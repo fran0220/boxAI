@@ -15,8 +15,8 @@ export default {
     getStarted: '立即开始',
     goToDashboard: '进入控制台',
     // 新增：面向用户的价值主张
-    heroSubtitle: '一个密钥，畅用多个 AI 模型',
-    heroDescription: '无需管理多个订阅账号，一站式接入 Claude、GPT、Gemini 等主流 AI 服务',
+    heroSubtitle: '开箱即用的智能 API',
+    heroDescription: 'BoxAI：一个密钥，统一接入 Claude、GPT、Gemini 等多模型能力',
     tags: {
       subscriptionToApi: '订阅转 API',
       stickySession: '会话保持',
@@ -191,8 +191,8 @@ export default {
 
   // Setup Wizard
   setup: {
-    title: 'Sub2API 安装向导',
-    description: '配置您的 Sub2API 实例',
+    title: 'BoxAI 安装向导',
+    description: '配置您的 BoxAI 实例',
     database: {
       title: '数据库配置',
       description: '连接到您的 PostgreSQL 数据库',

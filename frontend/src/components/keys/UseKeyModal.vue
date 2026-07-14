@@ -595,8 +595,8 @@ web_search = "sub2api-grok"
 [model."sub2api-grok"]
 model = "grok-4.5"
 base_url = "${baseUrl}"
-name = "Grok 4.5 via Sub2API"
-description = "Grok 4.5 through a Sub2API Grok group"
+name = "Grok 4.5 via BoxAI"
+description = "Grok 4.5 through a BoxAI Grok group"
 api_key = "${apiKey}"
 api_backend = "responses"
 context_window = 1000000
@@ -1149,7 +1149,7 @@ function generateOpenCodeConfig(platform: string, baseUrl: string, apiKey: strin
     provider[platform].models = openaiModels
   } else if (platform === 'grok') {
     provider[platform].npm = '@ai-sdk/openai'
-    provider[platform].name = 'Grok via Sub2API'
+    provider[platform].name = 'Grok via BoxAI'
     provider[platform].models = grokModels
   }
 

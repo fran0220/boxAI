@@ -57,7 +57,7 @@ vi.mock('vue-i18n', () => ({
   useI18n: () => ({
     t: (key: string, params?: Record<string, string | number>) => {
       if (key === 'auth.accountCreatedSuccess') {
-        return `Account created for ${params?.siteName ?? 'Sub2API'}`
+        return `Account created for ${params?.siteName ?? 'BoxAI'}`
       }
       return key
     },

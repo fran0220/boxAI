@@ -39,19 +39,33 @@
     <!-- Header -->
     <header class="relative z-20 px-6 py-4">
       <nav class="mx-auto flex max-w-6xl items-center justify-between">
-        <!-- Logo -->
-        <div class="flex items-center">
-          <div class="h-10 w-10 overflow-hidden rounded-xl shadow-md">
-            <img :src="siteLogo || '/logo.png'" alt="Logo" class="h-full w-full object-contain" />
+        <!-- Brand mark + wordmark -->
+        <div class="flex items-center gap-3">
+          <div
+            class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary-500/10 to-cyan-500/10 shadow-md ring-1 ring-primary-500/20"
+          >
+            <img
+              :src="siteLogo || '/logo.svg'"
+              :alt="siteName"
+              class="h-full w-full object-contain p-0.5"
+            />
+          </div>
+          <div class="hidden sm:block">
+            <div
+              class="bg-gradient-to-r from-primary-600 to-cyan-500 bg-clip-text text-lg font-bold tracking-tight text-transparent dark:from-primary-400 dark:to-cyan-300"
+            >
+              {{ siteName }}
+            </div>
+            <div class="text-[11px] font-medium uppercase tracking-wider text-gray-500 dark:text-dark-400">
+              {{ t('home.heroSubtitle') }}
+            </div>
           </div>
         </div>
 
         <!-- Nav Actions -->
         <div class="flex items-center gap-3">
-          <!-- Language Switcher -->
           <LocaleSwitcher />
 
-          <!-- Doc Link -->
           <a
             v-if="docUrl"
             :href="docUrl"
@@ -63,7 +77,6 @@
             <Icon name="book" size="md" />
           </a>
 
-          <!-- Theme Toggle -->
           <button
             @click="toggleTheme"
             class="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
@@ -73,7 +86,6 @@
             <Icon v-else name="moon" size="md" />
           </button>
 
-          <!-- Login / Dashboard Button -->
           <router-link
             v-if="isAuthenticated"
             :to="dashboardPath"
@@ -102,7 +114,7 @@
           <router-link
             v-else
             to="/login"
-            class="inline-flex items-center rounded-full bg-gray-900 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
+            class="inline-flex items-center rounded-full bg-gradient-to-r from-primary-500 to-cyan-500 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md shadow-primary-500/25 transition hover:from-primary-600 hover:to-cyan-600"
           >
             {{ t('home.login') }}
           </router-link>
@@ -111,23 +123,36 @@
     </header>
 
     <!-- Main Content -->
-    <main class="relative z-10 flex-1 px-6 py-16">
+    <main class="relative z-10 flex-1 px-6 py-12 md:py-16">
       <div class="mx-auto max-w-6xl">
         <!-- Hero Section - Left/Right Layout -->
-        <div class="mb-12 flex flex-col items-center justify-between gap-12 lg:flex-row lg:gap-16">
+        <div class="mb-14 flex flex-col items-center justify-between gap-12 lg:flex-row lg:gap-16">
           <!-- Left: Text Content -->
           <div class="flex-1 text-center lg:text-left">
-            <h1
-              class="mb-4 text-4xl font-bold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
+            <div
+              class="mb-5 inline-flex items-center gap-2 rounded-full border border-primary-200/70 bg-white/80 px-3 py-1 text-xs font-semibold text-primary-700 shadow-sm backdrop-blur dark:border-primary-800/60 dark:bg-dark-800/80 dark:text-primary-300"
             >
-              {{ siteName }}
+              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-500"></span>
+              {{ t('home.heroSubtitle') }}
+            </div>
+            <h1
+              class="mb-4 text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl"
+            >
+              <span
+                class="bg-gradient-to-r from-gray-900 via-primary-700 to-cyan-600 bg-clip-text text-transparent dark:from-white dark:via-primary-300 dark:to-cyan-300"
+              >
+                {{ siteName }}
+              </span>
             </h1>
-            <p class="mb-8 text-lg text-gray-600 dark:text-dark-300 md:text-xl">
+            <p class="mb-3 text-xl font-medium text-gray-800 dark:text-dark-100 md:text-2xl">
+              {{ t('home.heroDescription') }}
+            </p>
+            <p class="mb-8 max-w-xl text-base text-gray-600 dark:text-dark-300 md:text-lg lg:mx-0 mx-auto">
               {{ siteSubtitle }}
             </p>
 
-            <!-- CTA Button -->
-            <div>
+            <!-- CTA Buttons -->
+            <div class="flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
               <router-link
                 :to="isAuthenticated ? dashboardPath : '/login'"
                 class="btn btn-primary px-8 py-3 text-base shadow-lg shadow-primary-500/30"
@@ -135,6 +160,43 @@
                 {{ isAuthenticated ? t('home.goToDashboard') : t('home.getStarted') }}
                 <Icon name="arrowRight" size="md" class="ml-2" :stroke-width="2" />
               </router-link>
+              <router-link
+                v-if="!isAuthenticated"
+                to="/register"
+                class="inline-flex items-center rounded-xl border border-gray-200 bg-white/80 px-6 py-3 text-sm font-semibold text-gray-800 shadow-sm backdrop-blur transition hover:border-primary-300 hover:text-primary-700 dark:border-dark-700 dark:bg-dark-800/70 dark:text-dark-100 dark:hover:border-primary-700 dark:hover:text-primary-300"
+              >
+                {{ t('home.cta.button') }}
+              </router-link>
+            </div>
+
+            <!-- Trust metrics strip -->
+            <div
+              class="mt-10 grid grid-cols-3 gap-3 text-center lg:max-w-md lg:text-left"
+            >
+              <div
+                class="rounded-2xl border border-gray-200/60 bg-white/70 p-3 backdrop-blur dark:border-dark-700/60 dark:bg-dark-800/60"
+              >
+                <div class="text-lg font-bold text-primary-600 dark:text-primary-400">1 Key</div>
+                <div class="text-[11px] font-medium text-gray-500 dark:text-dark-400">
+                  {{ t('home.features.unifiedGateway') }}
+                </div>
+              </div>
+              <div
+                class="rounded-2xl border border-gray-200/60 bg-white/70 p-3 backdrop-blur dark:border-dark-700/60 dark:bg-dark-800/60"
+              >
+                <div class="text-lg font-bold text-primary-600 dark:text-primary-400">Multi</div>
+                <div class="text-[11px] font-medium text-gray-500 dark:text-dark-400">
+                  {{ t('home.providers.title') }}
+                </div>
+              </div>
+              <div
+                class="rounded-2xl border border-gray-200/60 bg-white/70 p-3 backdrop-blur dark:border-dark-700/60 dark:bg-dark-800/60"
+              >
+                <div class="text-lg font-bold text-primary-600 dark:text-primary-400">Pay-go</div>
+                <div class="text-[11px] font-medium text-gray-500 dark:text-dark-400">
+                  {{ t('home.tags.realtimeBilling') }}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -149,7 +211,7 @@
                     <span class="btn-minimize"></span>
                     <span class="btn-maximize"></span>
                   </div>
-                  <span class="terminal-title">terminal</span>
+                  <span class="terminal-title">boxai · gateway</span>
                 </div>
                 <!-- Terminal content -->
                 <div class="terminal-body">
@@ -157,14 +219,14 @@
                     <span class="code-prompt">$</span>
                     <span class="code-cmd">curl</span>
                     <span class="code-flag">-X POST</span>
-                    <span class="code-url">/v1/messages</span>
+                    <span class="code-url">/v1/chat/completions</span>
                   </div>
                   <div class="code-line line-2">
-                    <span class="code-comment"># Routing to upstream...</span>
+                    <span class="code-comment"># BoxAI · routing across model pool…</span>
                   </div>
                   <div class="code-line line-3">
                     <span class="code-success">200 OK</span>
-                    <span class="code-response">{ "content": "Hello!" }</span>
+                    <span class="code-response">{ "model": "claude-*" }</span>
                   </div>
                   <div class="code-line line-4">
                     <span class="code-prompt">$</span>
@@ -369,6 +431,25 @@
             >
           </div>
         </div>
+
+        <!-- Bottom CTA band -->
+        <div
+          class="mb-4 overflow-hidden rounded-3xl border border-primary-200/50 bg-gradient-to-br from-primary-500 via-primary-600 to-cyan-600 p-8 text-center shadow-glow-lg dark:border-primary-800/40 md:p-12"
+        >
+          <h2 class="mb-3 text-2xl font-bold text-white md:text-3xl">
+            {{ t('home.cta.title') }}
+          </h2>
+          <p class="mx-auto mb-6 max-w-xl text-sm text-primary-50/90 md:text-base">
+            {{ t('home.cta.description') }}
+          </p>
+          <router-link
+            :to="isAuthenticated ? dashboardPath : '/register'"
+            class="inline-flex items-center rounded-xl bg-white px-8 py-3 text-sm font-bold text-primary-700 shadow-lg transition hover:bg-primary-50"
+          >
+            {{ isAuthenticated ? t('home.goToDashboard') : t('home.cta.button') }}
+            <Icon name="arrowRight" size="md" class="ml-2" :stroke-width="2" />
+          </router-link>
+        </div>
       </div>
     </main>
 
@@ -411,6 +492,7 @@ import { useAuthStore, useAppStore } from '@/stores'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
+import { BRAND_NAME, BRAND_DEFAULT_SUBTITLE, BRAND_LOGO_SVG } from '@/constants/brand'
 
 const { t } = useI18n()
 
@@ -418,9 +500,18 @@ const authStore = useAuthStore()
 const appStore = useAppStore()
 
 // Site settings - directly from appStore (already initialized from injected config)
-const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'Sub2API')
-const siteLogo = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
-const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || 'AI API Gateway Platform')
+const siteName = computed(
+  () => appStore.cachedPublicSettings?.site_name || appStore.siteName || BRAND_NAME,
+)
+const siteLogo = computed(() =>
+  sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || BRAND_LOGO_SVG, {
+    allowRelative: true,
+    allowDataUrl: true,
+  }),
+)
+const siteSubtitle = computed(
+  () => appStore.cachedPublicSettings?.site_subtitle || BRAND_DEFAULT_SUBTITLE,
+)
 const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url || appStore.docUrl || ''))
 const homeContent = computed(() => appStore.cachedPublicSettings?.home_content || '')
 
@@ -433,7 +524,7 @@ const isHomeContentUrl = computed(() => {
 // Theme
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
-// GitHub URL
+// Upstream project reference (this product is BoxAI branding on the gateway stack)
 const githubUrl = 'https://github.com/Wei-Shaw/sub2api'
 
 // Auth state

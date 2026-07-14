@@ -5,6 +5,7 @@ import router from './router'
 import i18n, { initI18n } from './i18n'
 import { useAppStore } from '@/stores/app'
 import './style.css'
+import { BRAND_NAME, BRAND_TAGLINE } from '@/constants/brand'
 
 function initThemeClass() {
   const savedTheme = localStorage.getItem('theme')
@@ -28,8 +29,8 @@ async function bootstrap() {
   appStore.initFromInjectedConfig()
 
   // Set document title immediately after config is loaded
-  if (appStore.siteName && appStore.siteName !== 'Sub2API') {
-    document.title = `${appStore.siteName} - AI API Gateway`
+  if (appStore.siteName && appStore.siteName !== BRAND_NAME) {
+    document.title = `${appStore.siteName} - ${BRAND_TAGLINE}`
   }
 
   await initI18n()

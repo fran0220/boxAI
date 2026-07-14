@@ -15,8 +15,8 @@ export default {
     getStarted: 'Get Started',
     goToDashboard: 'Go to Dashboard',
     // User-focused value proposition
-    heroSubtitle: 'One Key, All AI Models',
-    heroDescription: 'No need to manage multiple subscriptions. Access Claude, GPT, Gemini and more with a single API key',
+    heroSubtitle: 'Intelligence, out of the box',
+    heroDescription: 'BoxAI: one API key for Claude, GPT, Gemini and more — unified multi-model gateway',
     tags: {
       subscriptionToApi: 'Subscription to API',
       stickySession: 'Session Persistence',
@@ -191,8 +191,8 @@ export default {
 
   // Setup Wizard
   setup: {
-    title: 'Sub2API Setup',
-    description: 'Configure your Sub2API instance',
+    title: 'BoxAI Setup',
+    description: 'Configure your BoxAI instance',
     database: {
       title: 'Database Configuration',
       description: 'Connect to your PostgreSQL database',
