@@ -30,7 +30,7 @@ Docker Compose project: boxAI   (/opt/boxAI)
 | 应用目录 | `/opt/boxAI` |
 | Compose 文件 | `/opt/boxAI/docker-compose.yml`（内容同仓库 `deploy/docker-compose.local.yml`） |
 | 环境文件 | `/opt/boxAI/.env`（`chmod 600`，**勿提交 Git**） |
-| 公开镜像 | `ghcr.io/fran0220/boxai:<pin-tag>`（生产必须 pin，当前示例 `0.1.155-box.3`） |
+| 公开镜像 | `ghcr.io/fran0220/boxai:<pin-tag>`（生产必须 pin，当前示例 `0.1.155-box.5`） |
 | 应用监听 | 仅本机 `127.0.0.1:8080`（不直接暴露公网） |
 | 健康检查 | `GET /health` → `{"status":"ok"}` |
 | Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;`（粘性会话 / `session_id`） |
@@ -83,7 +83,7 @@ docker exec sub2api-redis redis-cli ping   # 期望 PONG
 `/opt/boxAI/.env` 至少包含：
 
 ```bash
-BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.2
+BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.5
 BIND_HOST=127.0.0.1
 SERVER_PORT=8080
 SERVER_MODE=release

@@ -63,8 +63,8 @@
 
 | ID | 项 | 状态 |
 |----|-----|------|
-| E1 | simple 发版 `v0.1.155-box.5` | in_progress |
-| E2 | 生产 pin 镜像 | pending |
+| E1 | simple 发版 `v0.1.155-box.5` | done |
+| E2 | 生产 pin 镜像 `0.1.155-box.5` @ youbox | done |
 
 ## 验收清单
 
