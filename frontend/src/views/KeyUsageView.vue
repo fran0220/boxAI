@@ -907,11 +907,15 @@ async function queryKey() {
 
 // ==================== Lifecycle ====================
 
+// BOXAI: product default dark (homepage language)
 function initTheme() {
   const savedTheme = localStorage.getItem('theme')
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  if (savedTheme !== 'light') {
     isDark.value = true
     document.documentElement.classList.add('dark')
+  } else {
+    isDark.value = false
+    document.documentElement.classList.remove('dark')
   }
 }
 

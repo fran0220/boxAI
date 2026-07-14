@@ -33,23 +33,24 @@ export default {
           900: '#0f172a',
           950: '#020617'
         },
-        // 深色模式背景
+        // 深色模式背景 — aligned with homepage --bx-bg (#080a0d)
         dark: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617'
+          50: '#f4f5f7',
+          100: '#e8eaed',
+          200: '#c5c9d0',
+          300: '#9aa1ac',
+          400: '#7a8494',
+          500: '#5c6675',
+          600: '#3d4654',
+          700: '#2a3140',
+          800: '#141a22',
+          900: '#0c1013',
+          950: '#080a0d'
         }
       },
       fontFamily: {
         sans: [
+          'Noto Sans SC',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -65,22 +66,23 @@ export default {
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(0, 0, 0, 0.08)',
-        'glass-sm': '0 4px 16px rgba(0, 0, 0, 0.06)',
-        glow: '0 0 20px rgba(20, 184, 166, 0.25)',
-        'glow-lg': '0 0 40px rgba(20, 184, 166, 0.35)',
-        card: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-        'card-hover': '0 10px 40px rgba(0, 0, 0, 0.08)',
-        'inner-glow': 'inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        glass: '0 8px 32px rgba(0, 0, 0, 0.35)',
+        'glass-sm': '0 4px 16px rgba(0, 0, 0, 0.25)',
+        glow: '0 0 20px rgba(45, 212, 191, 0.25)',
+        'glow-lg': '0 0 40px rgba(45, 212, 191, 0.35)',
+        card: '0 8px 32px rgba(0, 0, 0, 0.35)',
+        'card-hover': '0 12px 40px rgba(0, 0, 0, 0.4)',
+        'inner-glow': 'inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+        cta: '0 14px 44px -10px rgba(45, 212, 191, 0.55)'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)',
-        'gradient-dark': 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        'gradient-primary': 'linear-gradient(135deg, #2dd4bf 0%, #22d3ee 100%)',
+        'gradient-dark': 'linear-gradient(135deg, #0c1013 0%, #080a0d 100%)',
         'gradient-glass':
-          'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+          'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
         'mesh-gradient':
-          'radial-gradient(at 40% 20%, rgba(20, 184, 166, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(20, 184, 166, 0.08) 0px, transparent 50%)'
+          'radial-gradient(at 12% 8%, rgba(45, 212, 191, 0.12) 0px, transparent 45%), radial-gradient(at 88% 0%, rgba(34, 211, 238, 0.1) 0px, transparent 42%), radial-gradient(at 50% 100%, rgba(56, 189, 248, 0.06) 0px, transparent 48%)'
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out',

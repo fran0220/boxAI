@@ -7,6 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="BoxAI — Intelligence, out of the box. Multi-model AI API gateway for teams and developers." />
     <title>BoxAI - AI API Gateway</title>
+    <!-- BOXAI: homepage / console shared font; dark default before CSS loads -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('theme') !== 'light') {
+            document.documentElement.classList.add('dark')
+          }
+        } catch (_) {
+          document.documentElement.classList.add('dark')
+        }
+      })()
+    </script>
+    <style>
+      html.dark body { background: #080a0d; color: #f4f5f7; }
+    </style>
   </head>
   <body>
     <div id="app"></div>

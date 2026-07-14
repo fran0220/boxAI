@@ -19,7 +19,7 @@
       <div class="sidebar-brand" :class="{ 'sidebar-brand-collapsed': sidebarCollapsed }" :aria-hidden="sidebarCollapsed ? 'true' : 'false'">
         <router-link
           :to="homePath"
-          class="sidebar-brand-title text-lg font-bold text-gray-900 transition-colors hover:text-primary-600 dark:text-white dark:hover:text-primary-400"
+          class="sidebar-brand-title text-lg font-bold transition-colors"
           @click="handleMenuItemClick(homePath)"
         >
           {{ siteName }}
@@ -62,7 +62,7 @@
                 </span>
               </button>
               <!-- Children -->
-              <div v-if="!sidebarCollapsed && isGroupExpanded(item)" class="mb-1 ml-4 border-l border-gray-200 pl-2 dark:border-dark-600">
+              <div v-if="!sidebarCollapsed && isGroupExpanded(item)" class="sidebar-group-children mb-1 ml-4 border-l pl-2">
                 <router-link
                   v-for="child in item.children"
                   :key="child.path"
@@ -148,7 +148,7 @@
     </nav>
 
     <!-- Bottom Section -->
-    <div class="mt-auto border-t border-gray-100 p-3 dark:border-dark-800">
+    <div class="sidebar-footer mt-auto border-t p-3">
       <!-- Theme Toggle -->
       <button
         @click="toggleTheme"
@@ -900,14 +900,14 @@ function handleGroupClick(item: NavItem) {
   }
 }
 
-// Initialize theme
+// BOXAI: default dark (homepage language); light only when user explicitly chose it
 const savedTheme = localStorage.getItem('theme')
-if (
-  savedTheme === 'dark' ||
-  (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
-) {
+if (savedTheme !== 'light') {
   isDark.value = true
   document.documentElement.classList.add('dark')
+} else {
+  isDark.value = false
+  document.documentElement.classList.remove('dark')
 }
 
 // Fetch admin settings (for feature-gated nav items like Ops).
@@ -944,6 +944,20 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+/* BOXAI: token-aligned brand + chrome */
+.sidebar-brand-title {
+  color: var(--bx-text);
+}
+.sidebar-brand-title:hover {
+  color: var(--bx-teal-bright);
+}
+.sidebar-group-children {
+  border-color: var(--bx-border);
+}
+.sidebar-footer {
+  border-color: var(--bx-border);
+}
+
 .sidebar-logo {
   flex: 0 0 2.25rem;
   min-width: 2.25rem;

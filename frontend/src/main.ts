@@ -7,11 +7,10 @@ import { useAppStore } from '@/stores/app'
 import './style.css'
 import { BRAND_NAME, BRAND_TAGLINE } from '@/constants/brand'
 
+// BOXAI: product default is dark (homepage design language); only light when user chose it
 function initThemeClass() {
   const savedTheme = localStorage.getItem('theme')
-  const shouldUseDark =
-    savedTheme === 'dark' ||
-    (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+  const shouldUseDark = savedTheme !== 'light'
   document.documentElement.classList.toggle('dark', shouldUseDark)
 }
 

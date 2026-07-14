@@ -19,6 +19,9 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 |------|---------|
 | `backend/internal/branding/` | Backend product name/tagline helpers |
 | `frontend/src/constants/brand.ts` | Frontend brand constants |
+| `frontend/src/styles/tokens.css` | Global design tokens (`--bx-*`, dark-first) |
+| `frontend/src/styles/home-platform.css` | Homepage motion shell |
+| `docs/design-unification-ledger.md` | Console ↔ homepage design unification ledger |
 | `frontend/public/logo.svg` | Full-color mark |
 | `frontend/public/logo-mono.svg` | Monochrome mark |
 | `frontend/public/logo.png` | Raster mark |
@@ -60,10 +63,16 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/constants/brand.ts` | Source of truth |
 | `frontend/src/router/title.ts` | Title uses brand constants |
 | `frontend/src/stores/app.ts` | Default site name |
-| `frontend/src/main.ts` | Document title default |
-| `frontend/index.html` | Default title |
+| `frontend/src/main.ts` | Document title default; default dark theme |
+| `frontend/index.html` | Default title; Noto Sans SC; FOUC dark class |
+| `frontend/src/style.css` | Primitives use `--bx-*` tokens |
+| `frontend/tailwind.config.js` | `dark` scale + mesh/shadows aligned to homepage |
 | `frontend/src/views/HomeView.vue` | Marketing surface |
-| `frontend/src/components/layout/AuthLayout.vue` | Auth chrome brand |
+| `frontend/src/components/layout/AppLayout.vue` | Console shell `bx-page` + ambient mesh |
+| `frontend/src/components/layout/AppSidebar.vue` | Sidebar tokens + default dark |
+| `frontend/src/components/layout/AppHeader.vue` | Header glass / token surfaces |
+| `frontend/src/components/layout/TablePageLayout.vue` | Table shell uses card tokens |
+| `frontend/src/components/layout/AuthLayout.vue` | Auth chrome brand + homepage ambient |
 | `frontend/src/i18n/locales/{en,zh}/*` | Product copy (landing/dashboard/settings/misc) |
 | Related views/components listed in brand rollout | Prefer import from `brand.ts` |
 

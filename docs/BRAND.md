@@ -44,27 +44,32 @@ Constants live in:
 
 ## Color
 
-Aligned with existing Tailwind `primary` scale (do not invent a parallel palette):
+**Single source of truth:** `frontend/src/styles/tokens.css` (`--bx-*`).  
+Console + homepage share the same dark-first surface. Tailwind `primary` / `dark` scales map to this system.
 
-| Token | Hex | Role |
-|-------|-----|------|
-| `primary-500` | `#14b8a6` | Brand primary / CTA |
-| accent cyan | `#06b6d4` | Logo / gradient highlight |
-| `primary-600` | `#0d9488` | Hover / emphasis |
-| `dark-950` | `#020617` | Dark surfaces |
-| `dark-900` | `#0f172a` | Dark panels |
+| Token | Hex / value | Role |
+|-------|-------------|------|
+| `--bx-bg` | `#080a0d` | Page background (product default) |
+| `--bx-bg-elevated` | `#0c1013` | Sidebar / header / elevated panels |
+| `--bx-bg-card` | `rgba(255,255,255,0.035)` | Cards / tables |
+| `--bx-text` | `#f4f5f7` | Primary text |
+| `--bx-teal` / CTA | `#2dd4bf` → `#22d3ee` | Brand / CTA gradient |
+| `primary-500` | `#14b8a6` | Tailwind primary (compat) |
+| `dark-950` | `#080a0d` | Tailwind dark base (= homepage) |
 
-Gradients: `from-primary-500 to-cyan-500` (or `#14b8a6 → #06b6d4`).
+Gradients: `--bx-grad-cta` / `--bx-grad-hero` (`#2dd4bf → #22d3ee` / hero multi-stop).
+
+**Default theme:** dark. Light is an explicit user toggle fallback (`html:not(.dark)` in `tokens.css`).
 
 ## Typography
 
-- UI: system / PingFang SC / Microsoft YaHei stack (see `tailwind.config.js` `fontFamily.sans`)
+- UI / marketing: **Noto Sans SC** + system / PingFang SC / Microsoft YaHei (`--bx-font`, `tailwind.config.js` `fontFamily.sans`, loaded in `index.html`)
 - Code / terminal demos: `ui-monospace` stack
 - Marketing H1: extrabold, tracking-tight, optional gradient text on the product name
 
 ## Marketing surface
 
-Default landing: `frontend/src/views/HomeView.vue`
+Default landing: `frontend/src/views/HomeView.vue` + `styles/home-platform.css` (motion only; colors from `tokens.css`).
 
 - Wordmark + mark in header
 - Gradient hero product name
@@ -72,6 +77,8 @@ Default landing: `frontend/src/views/HomeView.vue`
 - Terminal demo (“boxai · gateway”)
 - Feature grid, provider strip, bottom CTA
 - Admin can still override via `home_content` (HTML or iframe URL)
+
+**Console shell** (`AppLayout` / `AuthLayout`) reuses `bx-page` + `bx-ambient-mesh` so auth and dashboard match the homepage language. Design unification ledger: `docs/design-unification-ledger.md`.
 
 ## Compliance note (do not change casually)
 
