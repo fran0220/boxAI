@@ -1,0 +1,43 @@
+name: Fork Gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compliance-hash:
+    name: compliance-hash
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Verify compliance pins
+        run: python3 tools/check_compliance_hash.py
+
+  migration-lint:
+    name: migration-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Lint migrations
+        env:
+          CHECK_MIGRATION_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || 'HEAD~1' }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            export CHECK_MIGRATION_BASE="${{ github.event.pull_request.base.sha }}"
+          elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            export CHECK_MIGRATION_BASE="HEAD~1"
+          else
+            unset CHECK_MIGRATION_BASE
+          fi
+          echo "CHECK_MIGRATION_BASE=${CHECK_MIGRATION_BASE:-<unset>}"
+          python3 tools/check_migration_lint.py
