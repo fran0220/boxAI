@@ -25,7 +25,7 @@ services:
   # ===========================================================================
   sub2api:
     # BOXAI: public image; pin a concrete tag in production.
-    image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:0.1.155-box.1}
+    image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:0.1.155-box.2}
     container_name: sub2api
     restart: unless-stopped
     ulimits:

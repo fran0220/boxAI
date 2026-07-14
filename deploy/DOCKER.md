@@ -13,7 +13,7 @@ Public multi-arch image for the BoxAI AI API Gateway (product surface on top of 
 
 ```bash
 # Prefer a pinned release tag in production
-docker pull ghcr.io/fran0220/boxai:0.1.155-box.1
+docker pull ghcr.io/fran0220/boxai:0.1.155-box.2
 
 docker run -d \
   --name boxai \
@@ -24,13 +24,13 @@ docker run -d \
   -e REDIS_HOST=... \
   -e JWT_SECRET=... \
   -e TOTP_ENCRYPTION_KEY=... \
-  ghcr.io/fran0220/boxai:0.1.155-box.1
+  ghcr.io/fran0220/boxai:0.1.155-box.2
 ```
 
 For a full stack (app + PostgreSQL + Redis), use the compose files in this directory:
 
 ```bash
-export BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.1
+export BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.2
 cp .env.example .env   # set secrets; pin BOXAI_IMAGE
 docker compose -f docker-compose.local.yml up -d
 ```
@@ -40,7 +40,7 @@ docker compose -f docker-compose.local.yml up -d
 ```yaml
 services:
   sub2api:
-    image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:0.1.155-box.1}
+    image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:0.1.155-box.2}
     ports:
       - "8080:8080"
     environment:
