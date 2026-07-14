@@ -1,0 +1,149 @@
+/**
+ * BoxAI Platform homepage design tokens (north-star marketing surface).
+ * Source: 综合服务平台首页重新设计 / BoxAI Homepage.dc.html
+ */
+
+.bx-home {
+  --bx-bg: #080a0d;
+  --bx-bg-elevated: #0c1013;
+  --bx-bg-card: rgba(255, 255, 255, 0.035);
+  --bx-bg-card-hover: rgba(255, 255, 255, 0.055);
+  --bx-text: #f4f5f7;
+  --bx-text-muted: rgba(244, 245, 247, 0.62);
+  --bx-text-dim: rgba(244, 245, 247, 0.4);
+  --bx-text-soft: rgba(244, 245, 247, 0.72);
+  --bx-border: rgba(255, 255, 255, 0.08);
+  --bx-border-strong: rgba(255, 255, 255, 0.11);
+  --bx-teal: #2dd4bf;
+  --bx-cyan: #22d3ee;
+  --bx-sky: #38bdf8;
+  --bx-teal-bright: #5eead4;
+  --bx-teal-deep: #0d9488;
+  --bx-teal-ink: #04201d;
+  --bx-primary: #14b8a6;
+  --bx-accent: #06b6d4;
+  --bx-cavity: #042f2e;
+  --bx-grad-hero: linear-gradient(100deg, #2dd4bf 0%, #22d3ee 34%, #5eead4 60%, #38bdf8 100%);
+  --bx-grad-cta: linear-gradient(135deg, #2dd4bf, #22d3ee);
+  --bx-grad-border: linear-gradient(115deg, #2dd4bf, #22d3ee, #38bdf8, #2dd4bf);
+  --bx-font: 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --bx-radius: 12px;
+  --bx-radius-sm: 10px;
+  --bx-radius-lg: 16px;
+  --bx-shadow-cta: 0 14px 44px -10px rgba(45, 212, 191, 0.55);
+
+  font-family: var(--bx-font);
+  color: var(--bx-text);
+  background: var(--bx-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes bx-aurora1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(6%, 4%) scale(1.15);
+  }
+}
+
+@keyframes bx-aurora2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, 3%) scale(1.1);
+  }
+}
+
+@keyframes bx-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes bx-face-l {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-9px, -4px);
+  }
+}
+
+@keyframes bx-face-r {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(9px, -4px);
+  }
+}
+
+@keyframes bx-face-top {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, -11px);
+  }
+}
+
+@keyframes bx-spark {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.8;
+  }
+}
+
+@keyframes bx-node {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.6);
+  }
+}
+
+@keyframes bx-line {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes bx-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes bx-borderflow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}

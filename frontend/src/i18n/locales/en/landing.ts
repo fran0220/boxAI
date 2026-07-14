@@ -14,9 +14,47 @@ export default {
     login: 'Login',
     getStarted: 'Get Started',
     goToDashboard: 'Go to Dashboard',
-    // User-focused value proposition
-    heroSubtitle: 'Intelligence, out of the box',
-    heroDescription: 'BoxAI: one API key for Claude, GPT, Gemini and more — unified multi-model gateway',
+    // Platform homepage (north-star)
+    heroSubtitle: 'Unified AI Platform',
+    heroLine1: 'One box.',
+    heroLine2: 'All AI inside.',
+    heroDescription: 'All models · All modalities · One box',
+    nav: {
+      gateway: 'Gateway',
+      chat: 'Chat',
+      generate: 'Generate',
+      client: 'Desktop',
+      enter: 'Enter'
+    },
+    pillars: {
+      title: 'One platform, six capabilities',
+      subtitle: 'Six powers · One box',
+      gateway: {
+        title: 'API Gateway',
+        desc: 'One key for Claude, GPT, Gemini, and Grok — native tools, seamless routing.'
+      },
+      chat: {
+        title: 'Web Chat',
+        desc: 'Full multi-model chat in the browser. Zero setup required.'
+      },
+      desktop: {
+        title: 'Office Client',
+        desc: 'Desktop AI assistant deeply embedded in your daily workflow.'
+      },
+      image: {
+        title: 'Image Generation',
+        desc: 'Text-to-image and image-to-image with top models, seconds to result.'
+      },
+      video: {
+        title: 'Video Generation',
+        desc: 'From a prompt to a finished clip — AI video pipeline you control.'
+      },
+      audio: {
+        title: 'Audio Generation',
+        desc: 'TTS, voiceover, and music creation in one audio workbench.'
+      }
+    },
+    modelsSupported: 'Supported models',
     tags: {
       subscriptionToApi: 'Subscription to API',
       stickySession: 'Session Persistence',
@@ -105,12 +143,13 @@ export default {
     },
     // CTA section
     cta: {
-      title: 'Ready to Get Started?',
-      description: 'Sign up now and get free trial credits to experience seamless AI access',
-      button: 'Sign Up Free'
+      title: 'Open the box. Start creating.',
+      description: 'One account for every model and modality — no separate sign-ups per capability.',
+      button: 'Start free'
     },
     footer: {
-      allRightsReserved: 'All rights reserved.'
+      allRightsReserved: 'Intelligence, out of the box',
+      pricing: 'Pricing'
     }
   },
 

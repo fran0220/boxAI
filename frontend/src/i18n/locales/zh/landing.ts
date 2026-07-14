@@ -14,9 +14,29 @@ export default {
     login: '登录',
     getStarted: '立即开始',
     goToDashboard: '进入控制台',
-    // 新增：面向用户的价值主张
-    heroSubtitle: '开箱即用的智能 API',
-    heroDescription: 'BoxAI：一个密钥，统一接入 Claude、GPT、Gemini 等多模型能力',
+    // 综合 AI 服务平台（北极星首页）
+    heroSubtitle: '综合 AI 平台',
+    heroLine1: '一个盒子，',
+    heroLine2: '装下所有 AI',
+    heroDescription: '所有模型 · 所有模态 · 一个盒子',
+    nav: {
+      gateway: '网关',
+      chat: '聊天',
+      generate: '生成',
+      client: '客户端',
+      enter: '进入'
+    },
+    pillars: {
+      title: '一个平台，六种能力',
+      subtitle: '六大能力 · 一个盒子',
+      gateway: { title: 'API 网关', desc: '一个 Key 统一接入 Claude · GPT · Gemini · Grok，原生工具无缝使用。' },
+      chat: { title: '网页聊天', desc: '浏览器里的完整多模型对话体验，开箱即用，无需配置。' },
+      desktop: { title: '办公客户端', desc: '桌面级 AI 办公助手，深度融入你的日常工作流。' },
+      image: { title: '图片生成', desc: '文生图 / 图生图，主流模型自由切换，秒级出图。' },
+      video: { title: '视频生成', desc: '从一句话到成片的 AI 视频流水线，导演级可控。' },
+      audio: { title: '音频生成', desc: '语音合成 · 配音 · 音乐创作，一站式音频工作台。' }
+    },
+    modelsSupported: '支持的模型',
     tags: {
       subscriptionToApi: '订阅转 API',
       stickySession: '会话保持',
@@ -105,12 +125,13 @@ export default {
     },
     // CTA 区块
     cta: {
-      title: '准备好开始了吗？',
-      description: '注册即可获得免费试用额度，体验一站式 AI 服务',
-      button: '免费注册'
+      title: '打开盒子，开始创造',
+      description: '一个账户，接入所有模型与所有模态，无需为每个能力单独开通。',
+      button: '免费开始'
     },
     footer: {
-      allRightsReserved: '保留所有权利。'
+      allRightsReserved: '开箱即用的智能',
+      pricing: '定价'
     }
   },
 
