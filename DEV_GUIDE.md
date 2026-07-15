@@ -158,9 +158,43 @@ git merge upstream-main   # 仅在遵循 sync SOP 时
 ```bash
 cd frontend
 pnpm install
-pnpm dev
+pnpm dev          # 默认读 .env.development.local（可指到线上 API）
 pnpm build
 ```
+
+#### 推荐：本地前端 + 线上后端 / 数据库（日常 UI 开发）
+
+不启动本机 Postgres / Redis / Go，只跑 Vite；API 经代理打到生产。
+
+```bash
+cd frontend
+# 首次：复制示例（仓库已可带 .env.development.local.example）
+cp -n .env.development.local.example .env.development.local
+
+# 默认示例指向 https://you-box.com
+# 编辑 .env.development.local 可改目标：
+#   VITE_DEV_PROXY_TARGET=https://you-box.com
+#   VITE_DEV_PORT=3000
+
+pnpm dev
+# 或显式：pnpm dev:remote
+```
+
+| 项 | 说明 |
+|----|------|
+| 浏览器 | `http://localhost:3000`（或 `VITE_DEV_PORT`） |
+| API 代理 | `/api` `/v1` `/setup` `/health` → `VITE_DEV_PROXY_TARGET` |
+| 鉴权 | Bearer token 存在 **本机** `localStorage`；登录用线上账号即可 |
+| 数据 | 读写 **生产库**（操作前想清楚） |
+| 本地全栈 | `pnpm dev:local-api` 且本机 `8080` 跑后端；或删掉/改掉 `.env.development.local` |
+
+**注意：**
+
+1. **不要**把 `VITE_API_BASE_URL` 设成 `https://you-box.com`，否则浏览器直连线上会撞 CORS；保持默认相对路径 `/api/v1`，走 Vite 同源代理。
+2. **OAuth / 支付回调** 仍指向生产域名，本地调试 OAuth 可能跳到 `you-box.com`；账号密码登录一般够用。
+3. `.env.development.local` 已被 gitignore，勿提交密钥或内网地址。
+4. 启动日志应出现：`[vite] API proxy → https://you-box.com (remote prod backend + DB)`。
+5. 若改了 `vite.config.ts` 却不生效，检查是否残留本地编译产物 `frontend/vite.config.js`（已 gitignore）；删掉后以 `.ts` 为准。
 
 ### 后端
 
@@ -170,6 +204,8 @@ go run ./cmd/server/
 go generate ./ent
 go test -tags=unit ./...
 ```
+
+本地全栈时仍需 Postgres + Redis（见上文端口）。若只做前端，用 **dev:remote** 即可，不必起后端。
 
 ### 部署（生产推荐）
 

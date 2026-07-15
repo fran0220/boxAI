@@ -2,6 +2,9 @@
 
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string
+  /** Dev-only: Vite proxy target for /api /v1 /setup /health */
+  readonly VITE_DEV_PROXY_TARGET?: string
+  readonly VITE_DEV_PORT?: string
   readonly BASE_URL: string
 }
 
