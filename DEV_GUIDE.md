@@ -196,6 +196,32 @@ pnpm dev
 4. 启动日志应出现：`[vite] API proxy → https://you-box.com (remote prod backend + DB)`。
 5. 若改了 `vite.config.ts` 却不生效，检查是否残留本地编译产物 `frontend/vite.config.js`（已 gitignore）；删掉后以 `.ts` 为准。
 
+#### Agentation（本地 UI 标注 → 给 AI 调试）
+
+[Agentation](https://github.com/benjitaylor/agentation) 是 React 组件；本仓库用 **dev-only React 岛** 挂到 `body`，**生产构建不会打入**。
+
+```bash
+cd frontend
+pnpm install   # 已含 agentation + react 作为 devDependencies
+pnpm dev       # 右下角出现 Agentation 工具条
+```
+
+| 操作 | 说明 |
+|------|------|
+| 点右下角图标 | 激活标注模式 |
+| 点击页面元素 / 框选 | 写反馈，复制 markdown 给 agent |
+| 可选 MCP 同步 | 另开终端：`pnpm agentation:mcp`（默认 `http://localhost:4747`） |
+
+MCP 给 Cursor / Claude Code 等用时可：
+
+```bash
+npx add-mcp "npx -y agentation-mcp server"
+# 或
+npx agentation-mcp doctor
+```
+
+实现：`frontend/src/dev/mountAgentation.ts`，入口在 `main.ts` 的 `import.meta.env.DEV` 分支。
+
 ### 后端
 
 ```bash

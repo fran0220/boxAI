@@ -5,6 +5,8 @@ interface ImportMetaEnv {
   /** Dev-only: Vite proxy target for /api /v1 /setup /health */
   readonly VITE_DEV_PROXY_TARGET?: string
   readonly VITE_DEV_PORT?: string
+  /** Dev-only: Agentation MCP HTTP endpoint (default http://localhost:4747) */
+  readonly VITE_AGENTATION_ENDPOINT?: string
   readonly BASE_URL: string
 }
 

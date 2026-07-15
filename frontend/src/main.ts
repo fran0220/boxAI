@@ -40,6 +40,14 @@ async function bootstrap() {
   // 等待路由器完成初始导航后再挂载，避免竞态条件导致的空白渲染
   await router.isReady()
   app.mount('#app')
+
+  // BOXAI: dev-only Agentation toolbar for visual feedback → AI agents
+  // https://github.com/benjitaylor/agentation  (React island; not in production build)
+  if (import.meta.env.DEV) {
+    void import('./dev/mountAgentation')
+      .then(({ mountAgentation }) => mountAgentation())
+      .catch((err) => console.warn('[agentation] failed to mount', err))
+  }
 }
 
 bootstrap()
