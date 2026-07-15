@@ -11,9 +11,10 @@
   </div>
 
   <!-- Platform homepage (north-star design) -->
-  <div v-else class="bx-home relative min-h-screen overflow-hidden">
+  <!-- overflow-x only: vertical overflow-hidden clipped language dropdown -->
+  <div v-else class="bx-home relative min-h-screen overflow-x-hidden">
     <!-- Ambient background -->
-    <div class="bx-ambient pointer-events-none absolute inset-0 z-0">
+    <div class="bx-ambient pointer-events-none absolute inset-0 z-0" aria-hidden="true">
       <div class="bx-aurora bx-aurora-1"></div>
       <div class="bx-aurora bx-aurora-2"></div>
       <div class="bx-aurora bx-aurora-3"></div>
@@ -22,17 +23,19 @@
 
     <div class="relative z-10 mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-10">
       <!-- Nav -->
-      <nav class="flex items-center justify-between py-5 sm:py-[22px]">
+      <nav class="relative z-30 flex items-center justify-between py-5 sm:py-[22px]">
         <div class="flex items-center gap-3">
           <img
             :src="siteLogo || brandLogo"
             :alt="siteName"
             class="h-[34px] w-[34px] object-contain"
           />
-          <span class="text-[21px] font-bold tracking-tight">{{ siteName }}</span>
+          <span class="text-[21px] font-bold tracking-tight text-[color:var(--bx-text)]">{{
+            siteName
+          }}</span>
         </div>
 
-        <div class="flex items-center gap-3 sm:gap-6">
+        <div class="flex items-center gap-2 sm:gap-4">
           <div
             class="hidden items-center gap-[30px] text-sm font-medium text-[color:var(--bx-text-soft)] md:flex"
           >
@@ -50,7 +53,19 @@
             }}</a>
           </div>
 
-          <LocaleSwitcher class="opacity-90" />
+          <LocaleSwitcher />
+
+          <button
+            type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-[color:var(--bx-hover)]"
+            style="color: var(--bx-text-muted)"
+            :title="isDark ? t('home.switchToLight') : t('home.switchToDark')"
+            :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
+            @click="toggleTheme"
+          >
+            <Icon v-if="isDark" name="sun" size="md" />
+            <Icon v-else name="moon" size="md" />
+          </button>
 
           <router-link
             v-if="isAuthenticated"
@@ -75,13 +90,13 @@
       >
         <div class="text-center lg:text-left">
           <div
-            class="mb-7 inline-flex items-center gap-2 rounded-lg border border-[color:rgba(45,212,191,0.25)] bg-[color:rgba(8,10,13,0.6)] px-3.5 py-1.5 text-xs font-medium tracking-[0.1em] text-[color:var(--bx-teal-bright)] backdrop-blur-sm"
+            class="mb-7 inline-flex items-center gap-2 rounded-lg border border-[color:rgba(45,212,191,0.25)] bg-[color:var(--bx-bg-elevated)] px-3.5 py-1.5 text-xs font-medium tracking-[0.1em] text-[color:var(--bx-teal-bright)] backdrop-blur-sm"
           >
             {{ t('home.heroSubtitle') }}
           </div>
           <h1 class="mb-6 font-extrabold tracking-tight">
             <span
-              class="mb-1 block text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-[color:rgba(244,245,247,0.9)]"
+              class="mb-1 block text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tight text-[color:var(--bx-text)]"
             >
               {{ t('home.heroLine1') }}
             </span>
@@ -250,16 +265,16 @@
       <section id="cta" class="pb-16 pt-12 sm:pb-[72px] sm:pt-[60px]">
         <div class="bx-cta-ring rounded-2xl p-[2px]">
           <div
-            class="relative overflow-hidden rounded-[14px] bg-gradient-to-b from-[#0c1013] to-[#0a0d11] px-6 py-12 text-center sm:px-12 sm:py-14"
+            class="relative overflow-hidden rounded-[14px] bg-[color:var(--bx-bg-elevated)] px-6 py-12 text-center sm:px-12 sm:py-14"
           >
             <div class="bx-cta-glow pointer-events-none absolute inset-0"></div>
             <h2
-              class="relative mb-3.5 text-[clamp(1.75rem,4vw,2.375rem)] font-extrabold tracking-tight"
+              class="relative mb-3.5 text-[clamp(1.75rem,4vw,2.375rem)] font-extrabold tracking-tight text-[color:var(--bx-text)]"
             >
               {{ t('home.cta.title') }}
             </h2>
             <p
-              class="relative mx-auto mb-8 max-w-[520px] text-base text-[color:rgba(244,245,247,0.68)]"
+              class="relative mx-auto mb-8 max-w-[520px] text-base text-[color:var(--bx-text-muted)]"
             >
               {{ t('home.cta.description') }}
             </p>
@@ -275,15 +290,15 @@
 
       <!-- Footer -->
       <footer
-        class="flex flex-wrap items-center justify-between gap-4 border-t border-white/[0.07] py-7 pb-10"
+        class="flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--bx-border)] py-7 pb-10"
       >
         <div class="flex items-center gap-2.5">
           <img :src="siteLogo || brandLogo" :alt="siteName" class="h-6 w-6 object-contain" />
-          <span class="text-sm text-[color:rgba(244,245,247,0.55)]">
+          <span class="text-sm text-[color:var(--bx-text-dim)]">
             © {{ currentYear }} {{ siteName }} · {{ t('home.footer.allRightsReserved') }}
           </span>
         </div>
-        <div class="flex gap-6 text-sm text-[color:rgba(244,245,247,0.55)]">
+        <div class="flex gap-6 text-sm text-[color:var(--bx-text-dim)]">
           <a
             v-if="docUrl"
             :href="docUrl"
@@ -308,10 +323,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore, useAppStore } from '@/stores'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
+import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
 import {
   BRAND_NAME,
@@ -323,6 +339,19 @@ import '@/styles/home-platform.css'
 const { t } = useI18n()
 const authStore = useAuthStore()
 const appStore = useAppStore()
+
+// BOXAI: homepage theme toggle (default dark; light when user chooses)
+const isDark = ref(
+  typeof document !== 'undefined'
+    ? document.documentElement.classList.contains('dark')
+    : true
+)
+
+function toggleTheme() {
+  isDark.value = !isDark.value
+  document.documentElement.classList.toggle('dark', isDark.value)
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
 
 const brandLogo = BRAND_LOGO_SVG
 
