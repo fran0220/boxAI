@@ -1,0 +1,13 @@
+{"key": "subscriptionProgress.activeCount", "module": "subscriptionProgress", "en": "{count} active subscription(s)", "zh": "{count} 个有效订阅", "vi": "{count} gói đang hoạt động", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "subscriptionProgress.daily", "module": "subscriptionProgress", "en": "Daily", "zh": "每日", "vi": "Hằng ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.daysRemaining", "module": "subscriptionProgress", "en": "{days} days left", "zh": "剩余 {days} 天", "vi": "Còn {days} ngày", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "subscriptionProgress.expired", "module": "subscriptionProgress", "en": "Expired", "zh": "已过期", "vi": "Đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.expiresToday", "module": "subscriptionProgress", "en": "Expires today", "zh": "今天到期", "vi": "Hết hạn hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.expiresTomorrow", "module": "subscriptionProgress", "en": "Expires tomorrow", "zh": "明天到期", "vi": "Hết hạn ngày mai", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.monthly", "module": "subscriptionProgress", "en": "Monthly", "zh": "每月", "vi": "Hằng tháng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.noSubscriptions", "module": "subscriptionProgress", "en": "No active subscriptions", "zh": "暂无有效订阅", "vi": "Không có gói đang hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.title", "module": "subscriptionProgress", "en": "My Subscriptions", "zh": "我的订阅", "vi": "Gói đăng ký của tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.unlimited", "module": "subscriptionProgress", "en": "Unlimited", "zh": "无限制", "vi": "Không giới hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.viewAll", "module": "subscriptionProgress", "en": "View all subscriptions", "zh": "查看全部订阅", "vi": "Xem tất cả gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.viewDetails", "module": "subscriptionProgress", "en": "View subscription details", "zh": "查看订阅详情", "vi": "Xem chi tiết gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "subscriptionProgress.weekly", "module": "subscriptionProgress", "en": "Weekly", "zh": "每周", "vi": "Hằng tuần", "status": "draft", "placeholders": [], "notes": ""}

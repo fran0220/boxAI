@@ -48,8 +48,11 @@ const route = useRoute()
 const { t, locale } = useI18n()
 const providerName = computed(() => t('auth.wechatProviderName'))
 
-function localizeWeChatHint(zh: string, en: string): string {
-  return locale.value.startsWith('zh') ? zh : en
+// BOXAI: WeChat availability guidance explicitly supports the product's vi locale.
+function localizeWeChatHint(zh: string, en: string, vi: string): string {
+  if (locale.value.startsWith('zh')) return zh
+  if (locale.value.startsWith('vi')) return vi
+  return en
 }
 
 const resolvedStart = computed(() => resolveWeChatOAuthStart(appStore.cachedPublicSettings))
@@ -67,6 +70,7 @@ const disabledHint = computed(() => {
       return localizeWeChatHint(
         '当前仅配置微信移动应用登录，需要在原生 App 中通过微信 SDK 发起授权。',
         'This site only has WeChat mobile app login configured. Continue from the native app through the WeChat SDK.',
+        'Trang này hiện chỉ cấu hình đăng nhập bằng ứng dụng WeChat dành cho thiết bị di động. Hãy tiếp tục trong ứng dụng gốc thông qua WeChat SDK.',
       )
     case 'not_configured':
       return t('auth.oauthFlow.wechatNotConfigured')

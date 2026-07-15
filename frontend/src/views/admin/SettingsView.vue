@@ -1814,14 +1814,13 @@
               class="border-b border-[color:var(--bx-border)] px-6 py-4 "
             >
               <h2 class="text-lg font-semibold text-[color:var(--bx-text)]">
-                {{ localText("邮箱快捷登录", "Email OAuth Sign-in") }}
+                {{ localText("邮箱快捷登录", "Email OAuth Sign-in", "Đăng nhập qua email OAuth") }}
               </h2>
               <p class="mt-1 text-sm text-[color:var(--bx-text-dim)]">
                 {{
                   localText(
                     "开启 GitHub 或 Google 邮箱授权登录后，系统会读取已验证邮箱，存在则直接登录，不存在则自动注册。",
-                    "After GitHub or Google email OAuth is enabled, the system reads a verified email, signs in matching users, and auto-registers missing users.",
-                  )
+                    "After GitHub or Google email OAuth is enabled, the system reads a verified email, signs in matching users, and auto-registers missing users.", "Sau khi GitHub hoặc Google email OAuth được bật, hệ thống sẽ đọc email đã được xác minh, đăng nhập vào những người dùng phù hợp và tự động đăng ký những người dùng bị thiếu.")
                 }}
               </p>
             </div>
@@ -1837,8 +1836,7 @@
                         {{
                           localText(
                             "GitHub OAuth App 需要 read:user user:email 权限，回调地址填写下方后端地址。",
-                            "GitHub OAuth App needs read:user user:email scopes. Use the backend callback URL below.",
-                          )
+                            "GitHub OAuth App needs read:user user:email scopes. Use the backend callback URL below.", "Ứng dụng GitHub OAuth cần đọc: người dùng người dùng: phạm vi email. Sử dụng lệnh gọi lại phụ trợ URL bên dưới.")
                         }}
                       </p>
                     </div>
@@ -1857,6 +1855,17 @@
                           class="font-medium text-primary-600 hover:underline dark:text-primary-400"
                         >OAuth Apps</a>
                         → New OAuth App；Homepage URL 填站点域名，Authorization callback URL 填下面的后端回调地址。
+                      </template>
+                      <template v-else-if="isViLocale">
+                        Hướng dẫn thiết lập: GitHub Settings → Developer settings →
+                        <a
+                          data-testid="github-oauth-apps-guide-link"
+                          href="https://github.com/settings/developers"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="font-medium text-primary-600 hover:underline dark:text-primary-400"
+                        >OAuth Apps</a>
+                        → New OAuth App. Dùng tên miền trang làm Homepage URL và địa chỉ callback backend bên dưới làm Authorization callback URL.
                       </template>
                       <template v-else>
                         Setup guide: GitHub Settings → Developer settings →
@@ -1889,7 +1898,7 @@
                           class="input font-mono text-sm"
                           :placeholder="
                             form.github_oauth_client_secret_configured
-                              ? localText('密钥已配置，留空以保留当前值。', 'Secret configured. Leave empty to keep the current value.')
+                              ? localText('密钥已配置，留空以保留当前值。', 'Secret configured. Leave empty to keep the current value.', 'Đã cấu hình bí mật. Để trống để giữ giá trị hiện tại.')
                               : 'GitHub OAuth Client Secret'
                           "
                         />
@@ -1898,7 +1907,7 @@
 
                     <div>
                       <label class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]">
-                        {{ localText("后端回调地址", "Backend Callback URL") }}
+                        {{ localText("后端回调地址", "Backend Callback URL", "Gọi lại phụ trợ URL") }}
                       </label>
                       <input
                         v-model="form.github_oauth_redirect_url"
@@ -1912,7 +1921,7 @@
                           class="btn btn-secondary btn-sm w-fit"
                           @click="setAndCopyEmailOAuthRedirectUrl('github')"
                         >
-                          {{ localText("生成并复制", "Generate and copy") }}
+                          {{ localText("生成并复制", "Generate and copy", "Tạo và sao chép") }}
                         </button>
                         <code
                           v-if="githubOAuthRedirectUrlSuggestion"
@@ -1925,7 +1934,7 @@
 
                     <div>
                       <label class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]">
-                        {{ localText("前端回跳地址", "Frontend Callback URL") }}
+                        {{ localText("前端回跳地址", "Frontend Callback URL", "Gọi lại giao diện người dùng URL") }}
                       </label>
                       <input
                         v-model="form.github_oauth_frontend_redirect_url"
@@ -1947,8 +1956,7 @@
                         {{
                           localText(
                             "Google OAuth 客户端需要 openid email profile 范围，并在凭据里登记后端回调地址。",
-                            "Google OAuth client needs openid email profile scopes and the backend callback URL registered in credentials.",
-                          )
+                            "Google OAuth client needs openid email profile scopes and the backend callback URL registered in credentials.", "Ứng dụng khách Google OAuth cần có phạm vi hồ sơ email mở và lệnh gọi lại phụ trợ URL đã đăng ký bằng thông tin xác thực.")
                         }}
                       </p>
                     </div>
@@ -1960,8 +1968,7 @@
                       {{
                         localText(
                           "开通引导：Google Cloud Console → APIs & Services → OAuth consent screen 完成同意屏幕；Credentials → Create Credentials → OAuth client ID，类型选择 Web application，并把下面地址加入 Authorized redirect URIs。",
-                          "Setup guide: Google Cloud Console → APIs & Services → OAuth consent screen, then Credentials → Create Credentials → OAuth client ID, choose Web application, and add the URL below to Authorized redirect URIs.",
-                        )
+                          "Setup guide: Google Cloud Console → APIs & Services → OAuth consent screen, then Credentials → Create Credentials → OAuth client ID, choose Web application, and add the URL below to Authorized redirect URIs.", "Hướng dẫn thiết lập: Google Cloud Console → API & Dịch vụ → Màn hình đồng ý OAuth, sau đó Thông tin xác thực → Tạo thông tin xác thực → ID ứng dụng khách OAuth, chọn Ứng dụng web và thêm URL bên dưới vào URI chuyển hướng được ủy quyền.")
                       }}
                     </div>
 
@@ -1983,7 +1990,7 @@
                           class="input font-mono text-sm"
                           :placeholder="
                             form.google_oauth_client_secret_configured
-                              ? localText('密钥已配置，留空以保留当前值。', 'Secret configured. Leave empty to keep the current value.')
+                              ? localText('密钥已配置，留空以保留当前值。', 'Secret configured. Leave empty to keep the current value.', 'Đã cấu hình bí mật. Để trống để giữ giá trị hiện tại.')
                               : 'Google OAuth Client Secret'
                           "
                         />
@@ -1992,7 +1999,7 @@
 
                     <div>
                       <label class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]">
-                        {{ localText("后端回调地址", "Backend Callback URL") }}
+                        {{ localText("后端回调地址", "Backend Callback URL", "Gọi lại phụ trợ URL") }}
                       </label>
                       <input
                         v-model="form.google_oauth_redirect_url"
@@ -2006,7 +2013,7 @@
                           class="btn btn-secondary btn-sm w-fit"
                           @click="setAndCopyEmailOAuthRedirectUrl('google')"
                         >
-                          {{ localText("生成并复制", "Generate and copy") }}
+                          {{ localText("生成并复制", "Generate and copy", "Tạo và sao chép") }}
                         </button>
                         <code
                           v-if="googleOAuthRedirectUrlSuggestion"
@@ -2019,7 +2026,7 @@
 
                     <div>
                       <label class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]">
-                        {{ localText("前端回跳地址", "Frontend Callback URL") }}
+                        {{ localText("前端回跳地址", "Frontend Callback URL", "Gọi lại giao diện người dùng URL") }}
                       </label>
                       <input
                         v-model="form.google_oauth_frontend_redirect_url"
@@ -2073,14 +2080,13 @@
                     <div class="flex items-start justify-between gap-4">
                       <div>
                         <h3 class="font-medium text-[color:var(--bx-text)]">
-                          {{ localText("PC 应用", "PC App") }}
+                          {{ localText("PC 应用", "PC App", "Ứng dụng PC") }}
                         </h3>
                         <p class="mt-1 text-sm text-[color:var(--bx-text-dim)]">
                           {{
                             localText(
                               "桌面浏览器通过微信开放平台扫码登录。可与公众号或移动应用同时存在。",
-                              "Desktop browsers sign in through WeChat Open Platform QR login. This can coexist with Official Account or Mobile App.",
-                            )
+                              "Desktop browsers sign in through WeChat Open Platform QR login. This can coexist with Official Account or Mobile App.", "Trình duyệt máy tính để bàn đăng nhập thông qua đăng nhập QR Nền tảng mở WeChat. Điều này có thể cùng tồn tại với Tài khoản chính thức hoặc Ứng dụng di động.")
                           }}
                         </p>
                       </div>
@@ -2098,7 +2104,7 @@
                         <label
                           class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]"
                         >
-                          {{ localText("PC AppID", "PC App ID") }}
+                          {{ localText("PC AppID", "PC App ID", "ID ứng dụng PC") }}
                         </label>
                         <input
                           v-model="form.wechat_connect_open_app_id"
@@ -2108,8 +2114,7 @@
                           :placeholder="
                             localText(
                               '微信开放平台 PC 应用 AppID',
-                              'WeChat Open Platform PC App ID',
-                            )
+                              'WeChat Open Platform PC App ID', 'ID ứng dụng PC nền tảng mở WeChat')
                           "
                         />
                       </div>
@@ -2117,7 +2122,7 @@
                         <label
                           class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]"
                         >
-                          {{ localText("PC AppSecret", "PC App Secret") }}
+                          {{ localText("PC AppSecret", "PC App Secret", "Bí mật ứng dụng PC") }}
                         </label>
                         <input
                           v-model="form.wechat_connect_open_app_secret"
@@ -2128,12 +2133,10 @@
                             form.wechat_connect_open_app_secret_configured
                               ? localText(
                                   '密钥已配置，留空以保留当前值。',
-                                  'Secret configured. Leave empty to keep the current value.',
-                                )
+                                  'Secret configured. Leave empty to keep the current value.', 'Đã cấu hình bí mật. Để trống để giữ giá trị hiện tại.')
                               : localText(
                                   '微信开放平台 PC 应用 AppSecret',
-                                  'WeChat Open Platform PC App Secret',
-                                )
+                                  'WeChat Open Platform PC App Secret', 'Bí mật ứng dụng PC nền tảng mở WeChat')
                           "
                         />
                       </div>
@@ -2146,14 +2149,13 @@
                     <div class="flex items-start justify-between gap-4">
                       <div>
                         <h3 class="font-medium text-[color:var(--bx-text)]">
-                          {{ localText("公众号", "Official Account") }}
+                          {{ localText("公众号", "Official Account", "Tài khoản chính thức") }}
                         </h3>
                         <p class="mt-1 text-sm text-[color:var(--bx-text-dim)]">
                           {{
                             localText(
                               "仅在微信内浏览器可用；非微信环境下会显示不可用。",
-                              "Only available inside the WeChat browser. It is shown as unavailable outside WeChat.",
-                            )
+                              "Only available inside the WeChat browser. It is shown as unavailable outside WeChat.", "Chỉ khả dụng trong trình duyệt WeChat. Nó được hiển thị là không khả dụng bên ngoài WeChat.")
                           }}
                         </p>
                       </div>
@@ -2171,7 +2173,7 @@
                         <label
                           class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]"
                         >
-                          {{ localText("公众号 AppID", "Official Account App ID") }}
+                          {{ localText("公众号 AppID", "Official Account App ID", "ID ứng dụng tài khoản chính thức") }}
                         </label>
                         <input
                           v-model="form.wechat_connect_mp_app_id"
@@ -2181,8 +2183,7 @@
                           :placeholder="
                             localText(
                               '公众号 AppID',
-                              'Official Account App ID',
-                            )
+                              'Official Account App ID', 'ID ứng dụng tài khoản chính thức')
                           "
                         />
                       </div>
@@ -2193,8 +2194,7 @@
                           {{
                             localText(
                               "公众号 AppSecret",
-                              "Official Account App Secret",
-                            )
+                              "Official Account App Secret", "Bí mật ứng dụng tài khoản chính thức")
                           }}
                         </label>
                         <input
@@ -2206,12 +2206,10 @@
                             form.wechat_connect_mp_app_secret_configured
                               ? localText(
                                   '密钥已配置，留空以保留当前值。',
-                                  'Secret configured. Leave empty to keep the current value.',
-                                )
+                                  'Secret configured. Leave empty to keep the current value.', 'Đã cấu hình bí mật. Để trống để giữ giá trị hiện tại.')
                               : localText(
                                   '公众号 AppSecret',
-                                  'Official Account App Secret',
-                                )
+                                  'Official Account App Secret', 'Bí mật ứng dụng tài khoản chính thức')
                           "
                         />
                       </div>
@@ -2224,14 +2222,13 @@
                     <div class="flex items-start justify-between gap-4">
                       <div>
                         <h3 class="font-medium text-[color:var(--bx-text)]">
-                          {{ localText("移动应用", "Mobile App") }}
+                          {{ localText("移动应用", "Mobile App", "Ứng dụng di động") }}
                         </h3>
                         <p class="mt-1 text-sm text-[color:var(--bx-text-dim)]">
                           {{
                             localText(
                               "原生移动端通过微信 SDK 唤起授权，网页端不会直接发起该流程。",
-                              "Native mobile clients start authorization through the WeChat SDK. The web UI does not launch this flow directly.",
-                            )
+                              "Native mobile clients start authorization through the WeChat SDK. The web UI does not launch this flow directly.", "Khách hàng di động gốc bắt đầu ủy quyền thông qua WeChat SDK. Giao diện người dùng web không trực tiếp khởi chạy luồng này.")
                           }}
                         </p>
                       </div>
@@ -2249,7 +2246,7 @@
                         <label
                           class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]"
                         >
-                          {{ localText("移动应用 AppID", "Mobile App ID") }}
+                          {{ localText("移动应用 AppID", "Mobile App ID", "ID ứng dụng di động") }}
                         </label>
                         <input
                           v-model="form.wechat_connect_mobile_app_id"
@@ -2259,8 +2256,7 @@
                           :placeholder="
                             localText(
                               '移动应用 AppID',
-                              'Mobile App ID',
-                            )
+                              'Mobile App ID', 'ID ứng dụng di động')
                           "
                         />
                       </div>
@@ -2268,7 +2264,7 @@
                         <label
                           class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]"
                         >
-                          {{ localText("移动应用 AppSecret", "Mobile App Secret") }}
+                          {{ localText("移动应用 AppSecret", "Mobile App Secret", "Bí mật ứng dụng di động") }}
                         </label>
                         <input
                           v-model="form.wechat_connect_mobile_app_secret"
@@ -2279,12 +2275,10 @@
                             form.wechat_connect_mobile_app_secret_configured
                               ? localText(
                                   '密钥已配置，留空以保留当前值。',
-                                  'Secret configured. Leave empty to keep the current value.',
-                                )
+                                  'Secret configured. Leave empty to keep the current value.', 'Đã cấu hình bí mật. Để trống để giữ giá trị hiện tại.')
                               : localText(
                                   '移动应用 AppSecret',
-                                  'Mobile App Secret',
-                                )
+                                  'Mobile App Secret', 'Bí mật ứng dụng di động')
                           "
                         />
                       </div>
@@ -2303,8 +2297,7 @@
                   {{
                     localText(
                       "如果同时启用 PC 应用和公众号/移动应用，这些应用需要挂在同一个微信开放平台主体下，否则 UnionID 无法稳定归并账号。",
-                      "When PC App is enabled together with Official Account or Mobile App, they should belong to the same WeChat Open Platform account so UnionID can merge identities reliably.",
-                    )
+                      "When PC App is enabled together with Official Account or Mobile App, they should belong to the same WeChat Open Platform account so UnionID can merge identities reliably.", "Khi Ứng dụng PC được bật cùng với Tài khoản chính thức hoặc Ứng dụng di động, chúng phải thuộc cùng một tài khoản Nền tảng mở WeChat để UnionID có thể hợp nhất danh tính một cách đáng tin cậy.")
                   }}
                 </div>
 
@@ -2316,8 +2309,7 @@
                       {{
                         localText(
                           "浏览器回调地址",
-                          "Browser Redirect URL",
-                        )
+                          "Browser Redirect URL", "Chuyển hướng trình duyệt URL")
                       }}
                     </label>
                     <input
@@ -2331,8 +2323,7 @@
                       {{
                         localText(
                           "用于 PC 应用和公众号的网页回调。移动应用走原生 SDK 时不直接使用这个浏览器回调。",
-                          "Used by PC App and Official Account browser callbacks. Native mobile SDK flows do not start from this browser callback directly.",
-                        )
+                          "Used by PC App and Official Account browser callbacks. Native mobile SDK flows do not start from this browser callback directly.", "Được sử dụng bởi các lệnh gọi lại của trình duyệt Tài khoản chính thức và Ứng dụng PC. Luồng SDK trên thiết bị di động gốc không bắt đầu trực tiếp từ lệnh gọi lại trình duyệt này.")
                       }}
                     </p>
                     <div
@@ -2558,7 +2549,7 @@
                         <input
                           v-model="form.dingtalk_connect_sync_display_name_attr_name"
                           type="text"
-                          :placeholder="localText('钉钉姓名', 'DingTalk Name')"
+                          :placeholder="localText('钉钉姓名', 'DingTalk Name', 'Tên DingTalk')"
                           class="input text-sm flex-1 max-w-xs"
                         />
                       </div>
@@ -2604,7 +2595,7 @@
                         <input
                           v-model="form.dingtalk_connect_sync_corp_email_attr_name"
                           type="text"
-                          :placeholder="localText('钉钉企业邮箱', 'DingTalk Corporate Email')"
+                          :placeholder="localText('钉钉企业邮箱', 'DingTalk Corporate Email', 'Email doanh nghiệp DingTalk')"
                           class="input text-sm flex-1 max-w-xs"
                         />
                       </div>
@@ -2650,7 +2641,7 @@
                         <input
                           v-model="form.dingtalk_connect_sync_dept_attr_name"
                           type="text"
-                          :placeholder="localText('钉钉部门', 'DingTalk Department')"
+                          :placeholder="localText('钉钉部门', 'DingTalk Department', 'Phòng ban DingTalk')"
                           class="input text-sm flex-1 max-w-xs"
                         />
                       </div>
@@ -5575,20 +5566,19 @@
 	              <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 	                <div>
 	                  <h2 class="text-lg font-semibold text-[color:var(--bx-text)]">
-	                    {{ localText("登录条款确认", "Login agreement") }}
+	                    {{ localText("登录条款确认", "Login agreement", "Thỏa thuận đăng nhập") }}
 	                  </h2>
 	                  <p class="mt-1 text-sm text-[color:var(--bx-text-dim)]">
 	                    {{
 	                      localText(
 	                        "控制登录页是否要求用户先阅读并同意服务条款、隐私政策或其他 Markdown 文档。",
-	                        "Control whether the login page requires users to accept Markdown policy documents first.",
-	                      )
+	                        "Control whether the login page requires users to accept Markdown policy documents first.", "Kiểm soát xem trang đăng nhập có yêu cầu người dùng chấp nhận tài liệu chính sách Markdown trước hay không.")
 	                    }}
 	                  </p>
 	                </div>
 	                <div class="flex items-center gap-3">
 	                  <span class="text-sm text-[color:var(--bx-text-muted)]">
-	                    {{ form.login_agreement_enabled ? localText("已启用", "Enabled") : localText("未启用", "Disabled") }}
+	                    {{ form.login_agreement_enabled ? localText("已启用", "Enabled", "Đã bật") : localText("未启用", "Disabled", "Đã tắt") }}
 	                  </span>
 	                  <Toggle v-model="form.login_agreement_enabled" />
 	                </div>
@@ -5599,7 +5589,7 @@
 	              <div class="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_220px]">
 	                <div>
 	                  <label class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]">
-	                    {{ localText("展示形式", "Display mode") }}
+	                    {{ localText("展示形式", "Display mode", "Chế độ hiển thị") }}
 	                  </label>
 	                  <div class="grid grid-cols-2 gap-2 rounded-lg bg-[color:var(--bx-bg-muted)] p-1 ">
                     <button
@@ -5613,7 +5603,7 @@
                       @click="form.login_agreement_mode = 'modal'"
                     >
                       <Icon name="shield" size="sm" />
-                      {{ localText("弹窗", "Modal") }}
+                      {{ localText("弹窗", "Modal", "Hộp thoại") }}
                     </button>
                     <button
                       type="button"
@@ -5626,21 +5616,21 @@
                       @click="form.login_agreement_mode = 'checkbox'"
                     >
                       <Icon name="checkCircle" size="sm" />
-                      {{ localText("复选框", "Checkbox") }}
+                      {{ localText("复选框", "Checkbox", "Hộp kiểm") }}
                     </button>
                   </div>
                   <p class="mt-1.5 text-xs text-[color:var(--bx-text-dim)]">
                     {{
                       form.login_agreement_mode === "checkbox"
-                        ? localText("复选框会显示在登录按钮下方，未勾选前所有登录入口禁用。", "The checkbox appears below the login button and gates all login actions.")
-                        : localText("弹窗会在登录页打开，用户拒绝后所有登录入口保持禁用。", "The modal opens on the login page and gates all login actions until accepted.")
+                        ? localText("复选框会显示在登录按钮下方，未勾选前所有登录入口禁用。", "The checkbox appears below the login button and gates all login actions.", "Hộp kiểm xuất hiện bên dưới nút đăng nhập và kiểm soát tất cả các hành động đăng nhập.")
+                        : localText("弹窗会在登录页打开，用户拒绝后所有登录入口保持禁用。", "The modal opens on the login page and gates all login actions until accepted.", "Hộp thoại mở trên trang đăng nhập và kiểm soát tất cả các hành động đăng nhập cho đến khi được chấp nhận.")
                     }}
                   </p>
                 </div>
 
                 <div>
                   <label class="mb-2 block text-sm font-medium text-[color:var(--bx-text-soft)]">
-                    {{ localText("条款更新日期", "Updated date") }}
+                    {{ localText("条款更新日期", "Updated date", "Ngày cập nhật") }}
                   </label>
                   <input
                     v-model="form.login_agreement_updated_at"
@@ -5648,7 +5638,7 @@
                     class="input"
                   />
                   <p class="mt-1.5 text-xs text-[color:var(--bx-text-dim)]">
-                    {{ localText("日期或文档内容变化后，用户需要重新同意。", "Changing the date or content requires fresh consent.") }}
+                    {{ localText("日期或文档内容变化后，用户需要重新同意。", "Changing the date or content requires fresh consent.", "Việc thay đổi ngày hoặc nội dung cần có sự đồng ý mới.") }}
                   </p>
                 </div>
               </div>
@@ -5657,14 +5647,13 @@
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h3 class="text-sm font-medium text-[color:var(--bx-text)]">
-                      {{ localText("协议文档", "Agreement documents") }}
+                      {{ localText("协议文档", "Agreement documents", "Văn bản thỏa thuận") }}
                     </h3>
                     <p class="mt-1 text-xs text-[color:var(--bx-text-dim)]">
                       {{
                         localText(
                           "文档名称可自定义，内容按 Markdown 保存。可参考：服务条款、使用政策、支持的国家和地区、服务特定条款。",
-                          "Document titles are customizable and content is saved as Markdown.",
-                        )
+                          "Document titles are customizable and content is saved as Markdown.", "Tiêu đề tài liệu có thể tùy chỉnh và nội dung được lưu dưới dạng Markdown.")
                       }}
                     </p>
                   </div>
@@ -5674,7 +5663,7 @@
                     @click="addLoginAgreementDocument"
                   >
                     <Icon name="plus" size="sm" />
-                    {{ localText("添加文档", "Add document") }}
+                    {{ localText("添加文档", "Add document", "Thêm tài liệu") }}
                   </button>
                 </div>
 
@@ -5702,7 +5691,7 @@
                         </span>
                         <div class="min-w-0">
                           <p class="truncate text-sm font-semibold text-[color:var(--bx-text)]">
-                            {{ doc.title || localText("未命名文档", "Untitled document") }}
+                            {{ doc.title || localText("未命名文档", "Untitled document", "Tài liệu không có tiêu đề") }}
                           </p>
                           <p class="truncate text-xs text-[color:var(--bx-text-dim)]">
                             {{ loginAgreementRoutePath(doc, index) }}
@@ -5725,18 +5714,18 @@
                     <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
                       <div>
                         <label class="mb-1 block text-xs font-medium text-[color:var(--bx-text-muted)]">
-                          {{ localText("文档名称", "Document title") }}
+                          {{ localText("文档名称", "Document title", "Tiêu đề tài liệu") }}
                         </label>
                         <input
                           v-model="doc.title"
                           type="text"
                           class="input text-sm"
-                          :placeholder="localText('例如：服务条款', 'Example: Terms of Service')"
+                          :placeholder="localText('例如：服务条款', 'Example: Terms of Service', 'Ví dụ: Điều khoản dịch vụ')"
                         />
                       </div>
                       <div>
                         <label class="mb-1 block text-xs font-medium text-[color:var(--bx-text-muted)]">
-                          {{ localText("路由标识", "Route slug") }}
+                          {{ localText("路由标识", "Route slug", "Định danh tuyến") }}
                         </label>
                         <div class="flex overflow-hidden rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-elevated)] focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500  ">
                           <span class="inline-flex flex-shrink-0 items-center border-r border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] px-3 text-sm text-[color:var(--bx-text-dim)]   ">
@@ -5753,13 +5742,13 @@
                     </div>
                     <div class="mt-3">
                       <label class="mb-1 block text-xs font-medium text-[color:var(--bx-text-muted)]">
-                        {{ localText("Markdown 内容", "Markdown content") }}
+                        {{ localText("Markdown 内容", "Markdown content", "Nội dung Markdown") }}
                       </label>
                         <textarea
                           v-model="doc.content_md"
                           rows="8"
                           class="input font-mono text-sm"
-                          :placeholder="localText('在这里填写正式 Markdown 内容。', 'Write the final Markdown content here.')"
+                          :placeholder="localText('在这里填写正式 Markdown 内容。', 'Write the final Markdown content here.', 'Viết nội dung Markdown cuối cùng tại đây.')"
                         ></textarea>
                     </div>
                   </div>
@@ -7405,22 +7394,26 @@ const { t, locale } = useI18n();
 const appStore = useAppStore();
 const adminSettingsStore = useAdminSettingsStore();
 const isZhLocale = computed(() => locale.value.startsWith("zh"));
+const isViLocale = computed(() => locale.value.startsWith("vi"));
 
-function localText(zh: string, en: string): string {
-  return isZhLocale.value ? zh : en;
+// BOXAI: Keep product-only inline settings copy available in all supported UI locales.
+function localText(zh: string, en: string, vi = en): string {
+  if (isZhLocale.value) return zh;
+  if (isViLocale.value) return vi;
+  return en;
 }
 
-const paymentGuideHref = computed(() =>
-  locale.value.startsWith("zh")
-    ? "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT_CN.md"
-    : "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT.md",
-);
+const paymentGuideHref = computed(() => ({
+  zh: "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT_CN.md",
+  en: "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT.md",
+  vi: "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT.md",
+})[isZhLocale.value ? "zh" : isViLocale.value ? "vi" : "en"]);
 
-const paymentMethodsHref = computed(() =>
-  locale.value.startsWith("zh")
-    ? "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT_CN.md#支持的支付方式"
-    : "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT.md#supported-payment-methods",
-);
+const paymentMethodsHref = computed(() => ({
+  zh: "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT_CN.md#支持的支付方式",
+  en: "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT.md#supported-payment-methods",
+  vi: "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT.md#supported-payment-methods",
+})[isZhLocale.value ? "zh" : isViLocale.value ? "vi" : "en"]);
 
 type SettingsTab =
   | "general"
@@ -7585,22 +7578,22 @@ function defaultLoginAgreementDocuments(): LoginAgreementDocument[] {
   return [
     {
       id: "terms",
-      title: localText("服务条款", "Terms of Service"),
+      title: localText("服务条款", "Terms of Service", "Điều khoản dịch vụ"),
       content_md: "",
     },
     {
       id: "usage-policy",
-      title: localText("使用政策", "Usage Policy"),
+      title: localText("使用政策", "Usage Policy", "Chính sách sử dụng"),
       content_md: "",
     },
     {
       id: "supported-regions",
-      title: localText("支持的国家和地区", "Supported Countries and Regions"),
+      title: localText("支持的国家和地区", "Supported Countries and Regions", "Các quốc gia và khu vực được hỗ trợ"),
       content_md: "",
     },
     {
       id: "service-specific-terms",
-      title: localText("服务特定条款", "Service-Specific Terms"),
+      title: localText("服务特定条款", "Service-Specific Terms", "Điều khoản dành riêng cho từng dịch vụ"),
       content_md: "",
     },
   ];
@@ -8152,9 +8145,9 @@ const form = reactive<SettingsForm>({
   dingtalk_connect_sync_corp_email_attr_key: "dingtalk_email",
   dingtalk_connect_sync_display_name_attr_key: "dingtalk_name",
   dingtalk_connect_sync_dept_attr_key: "dingtalk_department",
-  dingtalk_connect_sync_corp_email_attr_name: localText("钉钉企业邮箱", "DingTalk Corporate Email"),
-  dingtalk_connect_sync_display_name_attr_name: localText("钉钉姓名", "DingTalk Name"),
-  dingtalk_connect_sync_dept_attr_name: localText("钉钉部门", "DingTalk Department"),
+  dingtalk_connect_sync_corp_email_attr_name: localText("钉钉企业邮箱", "DingTalk Corporate Email", "Email doanh nghiệp DingTalk"),
+  dingtalk_connect_sync_display_name_attr_name: localText("钉钉姓名", "DingTalk Name", "Tên DingTalk"),
+  dingtalk_connect_sync_dept_attr_name: localText("钉钉部门", "DingTalk Department", "Phòng ban DingTalk"),
   wechat_connect_enabled: false,
   wechat_connect_app_id: "",
   wechat_connect_app_secret: "",
@@ -8408,24 +8401,21 @@ const authSourceDefaultsMeta = computed(() => [
     title: "GitHub",
     description: localText(
       "通过 GitHub 已验证邮箱首次注册或首次绑定时应用。",
-      "Applied on first signup or first bind through a verified GitHub email.",
-    ),
+      "Applied on first signup or first bind through a verified GitHub email.", "Áp dụng cho lần đăng ký đầu tiên hoặc liên kết lần đầu thông qua email GitHub đã được xác minh."),
   },
   {
     source: "google" as AuthSourceType,
     title: "Google",
     description: localText(
       "通过 Google 已验证邮箱首次注册或首次绑定时应用。",
-      "Applied on first signup or first bind through a verified Google email.",
-    ),
+      "Applied on first signup or first bind through a verified Google email.", "Áp dụng cho lần đăng ký đầu tiên hoặc liên kết lần đầu thông qua email Google đã được xác minh."),
   },
   {
     source: "dingtalk" as AuthSourceType,
     title: t("auth.dingtalkProviderName"),
     description: localText(
       "通过钉钉首次注册或首次绑定时应用。",
-      "Applied on first signup or first bind through DingTalk.",
-    ),
+      "Applied on first signup or first bind through DingTalk.", "Áp dụng cho lần đăng ký đầu tiên hoặc liên kết lần đầu thông qua DingTalk."),
   },
 ]);
 
@@ -8760,7 +8750,7 @@ async function setAndCopyEmailOAuthRedirectUrl(provider: EmailOAuthProvider) {
   }
   await copyToClipboard(
     url,
-    localText("回调地址已写入并复制。", "Callback URL set and copied."),
+    localText("回调地址已写入并复制。", "Callback URL set and copied.", "URL callback được đặt và sao chép."),
   );
 }
 
@@ -9291,8 +9281,7 @@ async function saveSettings() {
       appStore.showError(
         localText(
           "启用登录条款确认时，至少需要保留一份文档。",
-          "At least one document is required when login agreement is enabled.",
-        ),
+          "At least one document is required when login agreement is enabled.", "Cần có ít nhất một tài liệu khi bật thỏa thuận đăng nhập."),
       );
       return;
     }
@@ -9303,8 +9292,7 @@ async function saveSettings() {
       appStore.showError(
         localText(
           "登录条款文档名称不能为空。",
-          "Login agreement document title cannot be empty.",
-        ),
+          "Login agreement document title cannot be empty.", "Tiêu đề tài liệu thỏa thuận đăng nhập không được để trống."),
       );
       return;
     }
@@ -9363,8 +9351,7 @@ async function saveSettings() {
       appStore.showError(
         localText(
           "公众号和移动应用不能同时启用。",
-          "Official Account and Mobile App cannot be enabled at the same time.",
-        ),
+          "Official Account and Mobile App cannot be enabled at the same time.", "Tài khoản chính thức và Ứng dụng di động không thể được kích hoạt cùng lúc."),
       );
       return;
     }

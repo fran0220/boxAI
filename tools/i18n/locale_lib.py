@@ -73,6 +73,9 @@ def load_locale_bundle(locale: str) -> dict[str, Any]:
             )
         esbuild = candidates[0]
 
+    # Bundle to a regular temporary file. Some managed environments do not
+    # expose /dev/stdout as a writable output path to child processes.
+    tmp = REPO_ROOT / "tools" / "i18n" / f".bundle_{locale}.mjs"
     result = subprocess.run(
         [
             str(esbuild),
@@ -80,7 +83,7 @@ def load_locale_bundle(locale: str) -> dict[str, Any]:
             "--bundle",
             "--format=esm",
             "--platform=neutral",
-            "--outfile=/dev/stdout",
+            f"--outfile={tmp}",
             "--log-level=error",
         ],
         capture_output=True,
@@ -89,16 +92,15 @@ def load_locale_bundle(locale: str) -> dict[str, Any]:
         check=False,
     )
     if result.returncode != 0:
+        tmp.unlink(missing_ok=True)
         raise RuntimeError(f"esbuild failed for {locale}: {result.stderr}")
 
-    # Write temp ESM and import via node
-    tmp = REPO_ROOT / "tools" / "i18n" / f".bundle_{locale}.mjs"
-    tmp.write_text(result.stdout, encoding="utf-8")
+    # Import the temporary ESM bundle via node.
     node = subprocess.run(
         [
             "node",
             "-e",
-            f"import m from 'file://{tmp}'; console.log(JSON.stringify(m.default))",
+            f"import m from 'file://{tmp}'; console.log(JSON.stringify(m))",
         ],
         capture_output=True,
         text=True,
@@ -139,6 +141,16 @@ def infer_status(en: str, vi: str, override: str | None = None) -> str:
 
 def load_status_overrides() -> dict[str, str]:
     path = REPO_ROOT / "docs" / "i18n" / "ledger" / "status.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(data, dict):
+        return {str(k): str(v) for k, v in data.items()}
+    return {}
+
+
+def load_notes_overrides() -> dict[str, str]:
+    path = REPO_ROOT / "docs" / "i18n" / "ledger" / "notes.json"
     if not path.exists():
         return {}
     data = json.loads(path.read_text(encoding="utf-8"))

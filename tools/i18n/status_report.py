@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import sys
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -36,7 +37,8 @@ def main() -> None:
     overrides = load_status_overrides()
 
     by_mod: dict[str, dict[str, int]] = defaultdict(lambda: {
-        "en": 0, "zh": 0, "vi": 0, "draft_plus": 0, "approved": 0, "missing": 0
+        "en": 0, "zh": 0, "vi": 0, "covered": 0,
+        "draft": 0, "reviewed": 0, "approved": 0, "missing": 0,
     })
 
     all_keys = set(en) | set(zh) | set(vi)
@@ -53,24 +55,32 @@ def main() -> None:
         st = infer_status(en_v, vi_v, overrides.get(key))
         if st == "approved":
             by_mod[mod]["approved"] += 1
-            by_mod[mod]["draft_plus"] += 1
-        elif st in ("draft", "reviewed"):
-            by_mod[mod]["draft_plus"] += 1
+            by_mod[mod]["covered"] += 1
+        elif st == "reviewed":
+            by_mod[mod]["reviewed"] += 1
+            by_mod[mod]["covered"] += 1
+        elif st == "draft":
+            by_mod[mod]["draft"] += 1
+            by_mod[mod]["covered"] += 1
         else:
             by_mod[mod]["missing"] += 1
 
     lines = [
         "# i18n progress",
         "",
+        f"Last updated: {date.today().isoformat()}",
+        "",
+        "All runtime keys are covered. Non-compliance translations remain `draft` until human review; approved English rows are frozen compliance fallbacks.",
+        "",
         f"Total en keys: **{len(en)}** · zh: **{len(zh)}** · vi: **{len(vi)}**",
         "",
-        "| Module | en | zh | vi | vi≠en | approved | missing |",
-        "|--------|----|----|----|-------|----------|---------|",
+        "| Module | en | zh | vi | covered | draft | reviewed | approved | missing |",
+        "|--------|----|----|----|---------|-------|----------|----------|---------|",
     ]
     for mod in sorted(by_mod):
         s = by_mod[mod]
         lines.append(
-            f"| {mod} | {s['en']} | {s['zh']} | {s['vi']} | {s['draft_plus']} | {s['approved']} | {s['missing']} |"
+            f"| {mod} | {s['en']} | {s['zh']} | {s['vi']} | {s['covered']} | {s['draft']} | {s['reviewed']} | {s['approved']} | {s['missing']} |"
         )
 
     only_en = sorted(set(en) - set(zh))

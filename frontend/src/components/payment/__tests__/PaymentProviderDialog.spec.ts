@@ -190,7 +190,8 @@ describe('PaymentProviderDialog payment guide', () => {
     const customTypeInputs = inputs.filter(input => (input.element as HTMLInputElement).placeholder === 'credit_card')
     const ldcTypeInput = customTypeInputs[0]
     const upstreamTypeInput = customTypeInputs[1]
-    const displayNameInput = inputs.find(input => (input.element as HTMLInputElement).placeholder === '信用卡')
+    // BOXAI: The placeholder follows the active locale instead of a Chinese-only literal.
+    const displayNameInput = inputs.find(input => (input.element as HTMLInputElement).placeholder === 'Display name')
     if (!ldcTypeInput || !upstreamTypeInput || !displayNameInput) {
       throw new Error('custom method inputs not found')
     }
@@ -233,7 +234,7 @@ describe('PaymentProviderDialog payment guide', () => {
     const customTypeInputs = inputs.filter(input => (input.element as HTMLInputElement).placeholder === 'credit_card')
     const typeInput = customTypeInputs[0]
     const upstreamTypeInput = customTypeInputs[1]
-    const displayNameInput = inputs.find(input => (input.element as HTMLInputElement).placeholder === '信用卡')
+    const displayNameInput = inputs.find(input => (input.element as HTMLInputElement).placeholder === 'Display name')
     if (!typeInput || !upstreamTypeInput || !displayNameInput) {
       throw new Error('custom method inputs not found')
     }

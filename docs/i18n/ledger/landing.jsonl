@@ -1,0 +1,133 @@
+{"key": "batchImageGuide.description", "module": "landing", "en": "Submit multiple prompts in one job and download the generated images when complete", "zh": "一次提交多条提示词，任务完成后可统一下载图片结果", "vi": "Gửi nhiều prompt trong một tác vụ và tải ảnh khi hoàn tất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "batchImageGuide.title", "module": "landing", "en": "Batch Image Generation", "zh": "图片批量生成", "vi": "Sinh ảnh hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.headers.feature", "module": "landing", "en": "Comparison", "zh": "对比项", "vi": "So sánh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.headers.official", "module": "landing", "en": "Official Subscriptions", "zh": "官方订阅", "vi": "Gói chính hãng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.headers.us", "module": "landing", "en": "Our Platform", "zh": "本平台", "vi": "Nền tảng của chúng tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.control.feature", "module": "landing", "en": "Usage Control", "zh": "用量控制", "vi": "Kiểm soát mức dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.control.official", "module": "landing", "en": "Not available", "zh": "无法限制", "vi": "Không có", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.control.us", "module": "landing", "en": "Quotas & detailed analytics", "zh": "可设配额、查明细", "vi": "Hạn mức & phân tích chi tiết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.management.feature", "module": "landing", "en": "Account Management", "zh": "账号管理", "vi": "Quản lý tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.management.official", "module": "landing", "en": "Manage each service separately", "zh": "每个服务单独管理", "vi": "Mỗi dịch vụ quản lý riêng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.management.us", "module": "landing", "en": "Unified key, one dashboard", "zh": "统一密钥，一站管理", "vi": "Một khóa, một bảng điều khiển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.models.feature", "module": "landing", "en": "Model Selection", "zh": "模型选择", "vi": "Chọn mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.models.official", "module": "landing", "en": "Single provider only", "zh": "单一服务商", "vi": "Chỉ một nhà cung cấp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.models.us", "module": "landing", "en": "Switch between models freely", "zh": "多模型随意切换", "vi": "Chuyển mô hình tự do", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.pricing.feature", "module": "landing", "en": "Pricing", "zh": "付费方式", "vi": "Giá", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.pricing.official", "module": "landing", "en": "Fixed monthly fee, pay even if unused", "zh": "固定月费，用不完也付", "vi": "Phí tháng cố định, dù không dùng hết vẫn trả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.pricing.us", "module": "landing", "en": "Pay only for what you use", "zh": "按量付费，用多少付多少", "vi": "Chỉ trả phần đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.stability.feature", "module": "landing", "en": "Stability", "zh": "服务稳定性", "vi": "Ổn định", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.stability.official", "module": "landing", "en": "Single account rate limits", "zh": "单账号易触发限制", "vi": "Giới hạn tốc độ theo một tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.items.stability.us", "module": "landing", "en": "Multi-account pool, auto-failover", "zh": "多账号池，自动切换", "vi": "Nhóm nhiều tài khoản, tự chuyển lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.comparison.title", "module": "landing", "en": "Why Choose Us?", "zh": "为什么选择我们？", "vi": "Vì sao chọn chúng tôi?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.cta.button", "module": "landing", "en": "Start free", "zh": "免费开始", "vi": "Dùng thử miễn phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.cta.description", "module": "landing", "en": "One account for every model and modality — no separate sign-ups per capability.", "zh": "一个账户，接入所有模型与所有模态，无需为每个能力单独开通。", "vi": "Một tài khoản cho mọi mô hình và phương thức — không đăng ký rời từng tính năng.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.cta.title", "module": "landing", "en": "Open the box. Start creating.", "zh": "打开盒子，开始创造", "vi": "Mở hộp. Bắt đầu sáng tạo.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.dashboard", "module": "landing", "en": "Dashboard", "zh": "控制台", "vi": "Bảng điều khiển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.docs", "module": "landing", "en": "Docs", "zh": "文档", "vi": "Tài liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.features.balanceQuota", "module": "landing", "en": "Pay What You Use", "zh": "用多少付多少", "vi": "Trả đúng mức dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.features.balanceQuotaDesc", "module": "landing", "en": "Usage-based billing with quota limits. Full visibility into team consumption.", "zh": "按实际使用量计费，支持设置配额上限，团队用量一目了然。", "vi": "Tính phí theo mức dùng kèm hạn mức. Minh bạch tiêu thụ của nhóm.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.features.multiAccount", "module": "landing", "en": "Always Reliable", "zh": "稳定可靠", "vi": "Luôn ổn định", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.features.multiAccountDesc", "module": "landing", "en": "Smart routing across multiple upstream accounts with automatic failover. Say goodbye to errors.", "zh": "智能调度多个上游账号，自动切换和负载均衡，告别频繁报错。", "vi": "Định tuyến thông minh qua nhiều tài khoản upstream, tự động chuyển khi lỗi.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.features.unifiedGateway", "module": "landing", "en": "One-Click Access", "zh": "一键接入", "vi": "Truy cập một chạm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.features.unifiedGatewayDesc", "module": "landing", "en": "Get a single API key to call all connected AI models. No separate applications needed.", "zh": "获取一个 API 密钥，即可调用所有已接入的 AI 模型，无需分别申请。", "vi": "Một Khóa API để gọi mọi mô hình đã kết nối. Không cần đăng ký riêng lẻ.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.footer.allRightsReserved", "module": "landing", "en": "Intelligence, out of the box", "zh": "开箱即用的智能", "vi": "Trí tuệ, mở hộp là dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.footer.pricing", "module": "landing", "en": "Pricing", "zh": "定价", "vi": "Bảng giá", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.getStarted", "module": "landing", "en": "Get Started", "zh": "立即开始", "vi": "Bắt đầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.goToDashboard", "module": "landing", "en": "Go to Dashboard", "zh": "进入控制台", "vi": "Vào bảng điều khiển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.heroDescription", "module": "landing", "en": "All models · All modalities · One box", "zh": "所有模型 · 所有模态 · 一个盒子", "vi": "Mọi mô hình · Mọi phương thức · Một hộp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.heroLine1", "module": "landing", "en": "One box.", "zh": "一个盒子，", "vi": "Một hộp.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.heroLine2", "module": "landing", "en": "All AI inside.", "zh": "装下所有 AI", "vi": "Tất cả AI bên trong.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.heroSubtitle", "module": "landing", "en": "Unified AI Platform", "zh": "综合 AI 平台", "vi": "Nền tảng AI thống nhất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.login", "module": "landing", "en": "Login", "zh": "登录", "vi": "Đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.modelsSupported", "module": "landing", "en": "Supported models", "zh": "支持的模型", "vi": "Mô hình hỗ trợ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.nav.chat", "module": "landing", "en": "Chat", "zh": "聊天", "vi": "Trò chuyện", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.nav.client", "module": "landing", "en": "Desktop", "zh": "客户端", "vi": "Máy tính", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.nav.enter", "module": "landing", "en": "Enter", "zh": "进入", "vi": "Vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.nav.gateway", "module": "landing", "en": "Gateway", "zh": "网关", "vi": "Cổng API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.nav.generate", "module": "landing", "en": "Generate", "zh": "生成", "vi": "Sinh nội dung", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.complex.desc", "module": "landing", "en": "Managing scattered accounts and API keys across different platforms", "zh": "不同平台的账号、密钥分散各处，管理起来很麻烦", "vi": "Quản lý tài khoản và khóa API rải rác nhiều nền tảng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.complex.title", "module": "landing", "en": "Account Chaos", "zh": "多账号难管理", "vi": "Tài khoản lộn xộn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.expensive.desc", "module": "landing", "en": "Paying for multiple AI subscriptions that add up every month", "zh": "每个 AI 服务都要单独订阅，每月支出越来越多", "vi": "Trả nhiều gói AI mỗi tháng, cộng dồn nhanh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.expensive.title", "module": "landing", "en": "High Subscription Costs", "zh": "订阅费用高", "vi": "Chi phí đăng ký cao", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.noControl.desc", "module": "landing", "en": "Can't track where your money goes or limit team member usage", "zh": "不知道钱花在哪了，也无法限制团队成员的使用", "vi": "Không theo dõi được chi tiêu hay giới hạn thành viên nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.noControl.title", "module": "landing", "en": "No Usage Control", "zh": "用量无法控制", "vi": "Không kiểm soát mức dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.unstable.desc", "module": "landing", "en": "Single accounts hitting rate limits and disrupting your workflow", "zh": "单一账号容易触发限制，影响正常使用", "vi": "Một tài khoản chạm giới hạn tốc độ và làm gián đoạn công việc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.items.unstable.title", "module": "landing", "en": "Service Interruptions", "zh": "服务不稳定", "vi": "Dịch vụ gián đoạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.painPoints.title", "module": "landing", "en": "Sound Familiar?", "zh": "你是否也遇到这些问题？", "vi": "Nghe quen không?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.audio.desc", "module": "landing", "en": "TTS, voiceover, and music creation in one audio workbench.", "zh": "语音合成 · 配音 · 音乐创作，一站式音频工作台。", "vi": "TTS, lồng tiếng và sáng tác nhạc trong một bàn làm việc âm thanh.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.audio.title", "module": "landing", "en": "Audio Generation", "zh": "音频生成", "vi": "Sinh âm thanh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.chat.desc", "module": "landing", "en": "Full multi-model chat in the browser. Zero setup required.", "zh": "浏览器里的完整多模型对话体验，开箱即用，无需配置。", "vi": "Trò chuyện đa mô hình đầy đủ trên trình duyệt. Không cần cài đặt.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.chat.title", "module": "landing", "en": "Web Chat", "zh": "网页聊天", "vi": "Chat trên web", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.desktop.desc", "module": "landing", "en": "Desktop AI assistant deeply embedded in your daily workflow.", "zh": "桌面级 AI 办公助手，深度融入你的日常工作流。", "vi": "Trợ lý AI máy tính gắn sâu vào quy trình làm việc hằng ngày.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.desktop.title", "module": "landing", "en": "Office Client", "zh": "办公客户端", "vi": "Ứng dụng văn phòng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.gateway.desc", "module": "landing", "en": "One key for Claude, GPT, Gemini, and Grok — native tools, seamless routing.", "zh": "一个 Key 统一接入 Claude · GPT · Gemini · Grok，原生工具无缝使用。", "vi": "Một khóa cho Claude, GPT, Gemini và Grok — công cụ gốc, định tuyến mượt.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.gateway.title", "module": "landing", "en": "API Gateway", "zh": "API 网关", "vi": "Cổng API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.image.desc", "module": "landing", "en": "Text-to-image and image-to-image with top models, seconds to result.", "zh": "文生图 / 图生图，主流模型自由切换，秒级出图。", "vi": "Văn bản-sang-ảnh và ảnh-sang-ảnh với các mô hình hàng đầu, ra kết quả trong vài giây.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.image.title", "module": "landing", "en": "Image Generation", "zh": "图片生成", "vi": "Sinh ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.subtitle", "module": "landing", "en": "Six powers · One box", "zh": "六大能力 · 一个盒子", "vi": "Sáu sức mạnh · Một hộp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.title", "module": "landing", "en": "One platform, six capabilities", "zh": "一个平台，六种能力", "vi": "Một nền tảng, sáu năng lực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.video.desc", "module": "landing", "en": "From a prompt to a finished clip — AI video pipeline you control.", "zh": "从一句话到成片的 AI 视频流水线，导演级可控。", "vi": "Từ một câu lệnh đến đoạn video hoàn chỉnh — pipeline AI do bạn kiểm soát.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.pillars.video.title", "module": "landing", "en": "Video Generation", "zh": "视频生成", "vi": "Sinh video", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.providers.antigravity", "module": "landing", "en": "Antigravity", "zh": "Antigravity", "vi": "Antigravity", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "home.providers.claude", "module": "landing", "en": "Claude", "zh": "Claude", "vi": "Claude", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "home.providers.description", "module": "landing", "en": "One API, Multiple Choices", "zh": "一个 API，多种选择", "vi": "Một API, nhiều lựa chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.providers.gemini", "module": "landing", "en": "Gemini", "zh": "Gemini", "vi": "Gemini", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "home.providers.more", "module": "landing", "en": "More", "zh": "更多", "vi": "Thêm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.providers.soon", "module": "landing", "en": "Soon", "zh": "即将推出", "vi": "Sắp có", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.providers.supported", "module": "landing", "en": "Supported", "zh": "已支持", "vi": "Hỗ trợ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.providers.title", "module": "landing", "en": "Supported AI Models", "zh": "已支持的 AI 模型", "vi": "Mô hình AI được hỗ trợ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.solutions.subtitle", "module": "landing", "en": "Three simple steps to stress-free AI access", "zh": "简单三步，开始省心使用 AI", "vi": "Ba bước đơn giản để dùng AI nhẹ nhàng hơn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.solutions.title", "module": "landing", "en": "We Solve These Problems", "zh": "我们帮你解决", "vi": "Chúng tôi giải quyết những vấn đề này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.switchToDark", "module": "landing", "en": "Switch to Dark Mode", "zh": "切换到深色模式", "vi": "Chuyển sang giao diện tối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.switchToLight", "module": "landing", "en": "Switch to Light Mode", "zh": "切换到浅色模式", "vi": "Chuyển sang giao diện sáng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.tags.realtimeBilling", "module": "landing", "en": "Pay As You Go", "zh": "按量计费", "vi": "Trả theo mức dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.tags.stickySession", "module": "landing", "en": "Session Persistence", "zh": "会话保持", "vi": "Giữ phiên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.tags.subscriptionToApi", "module": "landing", "en": "Subscription to API", "zh": "订阅转 API", "vi": "Gói đăng ký thành API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.viewDocs", "module": "landing", "en": "View Documentation", "zh": "查看文档", "vi": "Xem tài liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "home.viewOnGithub", "module": "landing", "en": "View on GitHub", "zh": "在 GitHub 上查看", "vi": "Xem trên GitHub", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.confirmPassword", "module": "landing", "en": "Confirm Password", "zh": "确认密码", "vi": "Xác nhận mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.confirmPasswordPlaceholder", "module": "landing", "en": "Confirm password", "zh": "确认密码", "vi": "Xác nhận mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.description", "module": "landing", "en": "Create your administrator account", "zh": "创建您的管理员账户", "vi": "Tạo tài khoản quản trị viên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.email", "module": "landing", "en": "Email", "zh": "邮箱", "vi": "Email", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "setup.admin.password", "module": "landing", "en": "Password", "zh": "密码", "vi": "Mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.passwordMismatch", "module": "landing", "en": "Passwords do not match", "zh": "密码不匹配", "vi": "Mật khẩu không khớp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.passwordPlaceholder", "module": "landing", "en": "Min 8 characters", "zh": "至少 8 个字符", "vi": "Tối thiểu 8 ký tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.admin.title", "module": "landing", "en": "Admin Account", "zh": "管理员账户", "vi": "Tài khoản quản trị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.databaseName", "module": "landing", "en": "Database Name", "zh": "数据库名称", "vi": "Tên CSDL", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.description", "module": "landing", "en": "Connect to your PostgreSQL database", "zh": "连接到您的 PostgreSQL 数据库", "vi": "Kết nối PostgreSQL", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.host", "module": "landing", "en": "Host", "zh": "主机", "vi": "Máy chủ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.password", "module": "landing", "en": "Password", "zh": "密码", "vi": "Mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.passwordPlaceholder", "module": "landing", "en": "Password", "zh": "密码", "vi": "Mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.port", "module": "landing", "en": "Port", "zh": "端口", "vi": "Cổng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.ssl.disable", "module": "landing", "en": "Disable", "zh": "禁用", "vi": "Tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.ssl.require", "module": "landing", "en": "Require", "zh": "要求", "vi": "Bắt buộc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.ssl.verifyCa", "module": "landing", "en": "Verify CA", "zh": "验证 CA", "vi": "Xác minh CA", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.ssl.verifyFull", "module": "landing", "en": "Verify Full", "zh": "完全验证", "vi": "Xác minh đầy đủ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.sslMode", "module": "landing", "en": "SSL Mode", "zh": "SSL 模式", "vi": "Chế độ SSL", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.title", "module": "landing", "en": "Database Configuration", "zh": "数据库配置", "vi": "Cấu hình cơ sở dữ liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.database.username", "module": "landing", "en": "Username", "zh": "用户名", "vi": "Tên người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.description", "module": "landing", "en": "Configure your BoxAI instance", "zh": "配置您的 BoxAI 实例", "vi": "Cấu hình phiên bản BoxAI của bạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.ready.adminEmail", "module": "landing", "en": "Admin Email", "zh": "管理员邮箱", "vi": "Email quản trị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.ready.database", "module": "landing", "en": "Database", "zh": "数据库", "vi": "Cơ sở dữ liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.ready.description", "module": "landing", "en": "Review your configuration and complete setup", "zh": "检查您的配置并完成安装", "vi": "Rà soát cấu hình và hoàn tất cài đặt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.ready.redis", "module": "landing", "en": "Redis", "zh": "Redis", "vi": "Redis", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "setup.ready.title", "module": "landing", "en": "Ready to Install", "zh": "准备安装", "vi": "Sẵn sàng cài đặt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.database", "module": "landing", "en": "Database", "zh": "数据库", "vi": "Cơ sở dữ liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.description", "module": "landing", "en": "Connect to your Redis server", "zh": "连接到您的 Redis 服务器", "vi": "Kết nối máy chủ Redis", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.enableTls", "module": "landing", "en": "Enable TLS", "zh": "启用 TLS", "vi": "Bật TLS", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.enableTlsHint", "module": "landing", "en": "Use TLS when connecting to Redis (public CA certs)", "zh": "连接 Redis 时使用 TLS（公共 CA 证书）", "vi": "Dùng TLS khi kết nối Redis (chứng chỉ CA công khai)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.host", "module": "landing", "en": "Host", "zh": "主机", "vi": "Máy chủ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.password", "module": "landing", "en": "Password (optional)", "zh": "密码（可选）", "vi": "Mật khẩu (tuỳ chọn)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.passwordPlaceholder", "module": "landing", "en": "Password", "zh": "密码", "vi": "Mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.port", "module": "landing", "en": "Port", "zh": "端口", "vi": "Cổng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.redis.title", "module": "landing", "en": "Redis Configuration", "zh": "Redis 配置", "vi": "Cấu hình Redis", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.completeInstallation", "module": "landing", "en": "Complete Installation", "zh": "完成安装", "vi": "Hoàn tất cài đặt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.completed", "module": "landing", "en": "Installation completed!", "zh": "安装完成！", "vi": "Cài đặt hoàn tất!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.installing", "module": "landing", "en": "Installing...", "zh": "安装中...", "vi": "Đang cài đặt...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.redirecting", "module": "landing", "en": "Redirecting to login page...", "zh": "正在跳转到登录页面...", "vi": "Đang chuyển tới trang đăng nhập...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.restarting", "module": "landing", "en": "Service is restarting, please wait...", "zh": "服务正在重启，请稍候...", "vi": "Dịch vụ đang khởi động lại, vui lòng chờ...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.success", "module": "landing", "en": "Connection Successful", "zh": "连接成功", "vi": "Kết nối thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.testConnection", "module": "landing", "en": "Test Connection", "zh": "测试连接", "vi": "Kiểm tra kết nối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.testing", "module": "landing", "en": "Testing...", "zh": "测试中...", "vi": "Đang kiểm tra...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.status.timeout", "module": "landing", "en": "Service restart is taking longer than expected. Please refresh the page manually.", "zh": "服务重启时间超出预期，请手动刷新页面。", "vi": "Khởi động lại mất nhiều thời gian hơn dự kiến. Hãy làm mới trang thủ công.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "setup.title", "module": "landing", "en": "BoxAI Setup", "zh": "BoxAI 安装向导", "vi": "Cài đặt BoxAI", "status": "draft", "placeholders": [], "notes": ""}

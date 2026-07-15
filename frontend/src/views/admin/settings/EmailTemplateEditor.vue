@@ -113,7 +113,7 @@
                   : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
               "
             >
-              {{ selectedEventMeta.optional ? localText("可退订通知", "Optional") : localText("事务邮件", "Transactional") }}
+              {{ selectedEventMeta.optional ? localText("可退订通知", "Optional", "Tùy chọn") : localText("事务邮件", "Transactional", "Giao dịch") }}
             </span>
           </div>
           <p class="mt-2 text-sm leading-6 text-[color:var(--bx-text-muted)]">
@@ -312,8 +312,12 @@ interface EventDisplayMeta {
   categoryLabel: string;
 }
 
-function localText(zh: string, en: string): string {
-  return locale.value.toLowerCase().startsWith("zh") ? zh : en;
+// BOXAI: Email-template administration has explicit copy for every product locale.
+function localText(zh: string, en: string, vi = en): string {
+  const currentLocale = locale.value.toLowerCase();
+  if (currentLocale.startsWith("zh")) return zh;
+  if (currentLocale.startsWith("vi")) return vi;
+  return en;
 }
 
 const eventDisplayMeta: Record<string, EventDisplayMeta> = {
@@ -442,6 +446,70 @@ const eventDisplayMetaEn: Record<string, EventDisplayMeta> = {
   },
 };
 
+// BOXAI: Vietnamese event metadata mirrors the official vi notification templates.
+const eventDisplayMetaVi: Record<string, EventDisplayMeta> = {
+  "auth.verify_code": {
+    label: "Mã xác minh email",
+    timing: "Đã gửi để đăng ký, liên kết email, hoàn thành email đang chờ OAuth hoặc TOTP xác minh email.",
+    categoryLabel: "Xác thực",
+  },
+  "auth.password_reset": {
+    label: "Đặt lại mật khẩu",
+    timing: "Được gửi khi người dùng yêu cầu liên kết đặt lại mật khẩu.",
+    categoryLabel: "Xác thực",
+  },
+  "notification_email.verify_code": {
+    label: "Xác minh email thông báo",
+    timing: "Được gửi khi người dùng thêm và xác minh địa chỉ email thông báo bổ sung.",
+    categoryLabel: "Xác thực",
+  },
+  "subscription.purchase_success": {
+    label: "Đã kích hoạt đăng ký",
+    timing: "Được gửi sau khi đơn đặt hàng đăng ký được thanh toán và đăng ký được kích hoạt hoặc gia hạn.",
+    categoryLabel: "Đăng ký",
+  },
+  "subscription.expiry_reminder": {
+    label: "Lời nhắc hết hạn đăng ký",
+    timing: "Được gửi bởi tác vụ nền khi đăng ký đang hoạt động còn 7, 3 hoặc 1 ngày. Nó có thể bị vô hiệu hóa trong cài đặt Email.",
+    categoryLabel: "Đăng ký",
+  },
+  "balance.low": {
+    label: "Cảnh báo số dư thấp",
+    timing: "Được gửi khi số dư của người dùng giảm xuống dưới ngưỡng nhắc nhở chung hoặc cá nhân.",
+    categoryLabel: "Thanh toán",
+  },
+  "balance.recharge_success": {
+    label: "Nạp số dư thành công",
+    timing: "Được gửi sau khi lệnh nạp số dư được thanh toán và ghi có.",
+    categoryLabel: "Thanh toán",
+  },
+  "account.quota_alert": {
+    label: "Cảnh báo hạn ngạch tài khoản",
+    timing: "Đã gửi tới email thông báo của quản trị viên khi tài khoản thượng nguồn đạt đến ngưỡng cảnh báo hạn ngạch đã định cấu hình.",
+    categoryLabel: "Quản trị viên",
+  },
+  "content_moderation.violation_notice": {
+    label: "Thông báo vi phạm kiểm soát rủi ro",
+    timing: "Được gửi khi yêu cầu của người dùng kích hoạt các quy tắc kiểm duyệt nội dung hoặc kiểm soát rủi ro nhưng tài khoản vẫn chưa bị vô hiệu hóa.",
+    categoryLabel: "Kiểm soát rủi ro",
+  },
+  "content_moderation.account_disabled": {
+    label: "Tài khoản kiểm soát rủi ro bị vô hiệu hóa",
+    timing: "Được gửi khi kiểm duyệt nội dung đạt đến ngưỡng cấm và tự động vô hiệu hóa tài khoản người dùng.",
+    categoryLabel: "Kiểm soát rủi ro",
+  },
+  "ops.alert": {
+    label: "Cảnh báo hoạt động",
+    timing: "Được gửi tới người nhận hoạt động khi quy tắc giám sát hoạt động kích hoạt và cài đặt thông báo qua email cho phép điều đó.",
+    categoryLabel: "Vận hành",
+  },
+  "ops.scheduled_report": {
+    label: "Báo cáo hoạt động đã lên lịch",
+    timing: "Được gửi khi báo cáo hàng ngày, hàng tuần, thông báo lỗi hoặc tình trạng tài khoản được định cấu hình đạt đến thời gian gửi theo lịch trình.",
+    categoryLabel: "Vận hành",
+  },
+};
+
 function normalizeEventOption(option: EmailTemplateEventOption): EmailTemplateOption {
   if (typeof option === "string") {
     return { value: option };
@@ -451,11 +519,13 @@ function normalizeEventOption(option: EmailTemplateEventOption): EmailTemplateOp
 
 function eventMetaFor(option?: EmailTemplateOption | null) {
   if (!option) return null;
-  const displayMeta = (
-    locale.value.toLowerCase().startsWith("zh")
-      ? eventDisplayMeta
-      : eventDisplayMetaEn
-  )[option.value];
+  const currentLocale = locale.value.toLowerCase();
+  const localizedMeta = currentLocale.startsWith("zh")
+    ? eventDisplayMeta
+    : currentLocale.startsWith("vi")
+      ? eventDisplayMetaVi
+      : eventDisplayMetaEn;
+  const displayMeta = localizedMeta[option.value];
   const label = displayMeta?.label || option.label || option.value;
   const timing = displayMeta?.timing || option.description || "";
   const categoryLabel =
@@ -476,17 +546,17 @@ function formatEventOptionLabel(option: EmailTemplateOption): string {
 
 function formatCategory(category: string): string {
   const normalized = category.trim().toLowerCase();
-  if (!normalized) return localText("通知", "Notification");
-  const labels: Record<string, { zh: string; en: string }> = {
-    auth: { zh: "认证安全", en: "Auth" },
-    subscription: { zh: "订阅", en: "Subscription" },
-    billing: { zh: "计费", en: "Billing" },
-    admin: { zh: "管理告警", en: "Admin" },
-    risk_control: { zh: "风控", en: "Risk Control" },
-    ops: { zh: "运维", en: "Ops" },
+  if (!normalized) return localText("通知", "Notification", "Thông báo");
+  const labels: Record<string, { zh: string; en: string; vi: string }> = {
+    auth: { zh: "认证安全", en: "Auth", vi: "Xác thực" },
+    subscription: { zh: "订阅", en: "Subscription", vi: "Gói đăng ký" },
+    billing: { zh: "计费", en: "Billing", vi: "Thanh toán" },
+    admin: { zh: "管理告警", en: "Admin", vi: "Quản trị" },
+    risk_control: { zh: "风控", en: "Risk Control", vi: "Kiểm soát rủi ro" },
+    ops: { zh: "运维", en: "Ops", vi: "Vận hành" },
   };
   const item = labels[normalized];
-  return item ? localText(item.zh, item.en) : category;
+  return item ? localText(item.zh, item.en, item.vi) : category;
 }
 
 const selectedEventOption = computed(() => {
@@ -540,6 +610,9 @@ function formatLocale(locale: string): string {
   }
   if (lower === "en" || lower.startsWith("en-")) {
     return t("admin.settings.emailTemplates.localeEn");
+  }
+  if (lower === "vi" || lower.startsWith("vi-")) {
+    return t("admin.settings.emailTemplates.localeVi");
   }
   return locale;
 }

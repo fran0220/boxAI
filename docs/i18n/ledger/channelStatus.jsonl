@@ -1,0 +1,29 @@
+{"key": "channelStatus.allProviders", "module": "channelStatus", "en": "All Providers", "zh": "全部供应商", "vi": "Tất cả nhà cung cấp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.closeDetail", "module": "channelStatus", "en": "Close", "zh": "关闭", "vi": "Đóng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.columns.availability7d", "module": "channelStatus", "en": "7d Availability", "zh": "7 天可用率", "vi": "Khả dụng 7 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.columns.groupName", "module": "channelStatus", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.columns.latency", "module": "channelStatus", "en": "Latency (ms)", "zh": "延迟 (ms)", "vi": "Độ trễ (ms)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.columns.name", "module": "channelStatus", "en": "Name", "zh": "名称", "vi": "Tên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.columns.primaryModel", "module": "channelStatus", "en": "Primary Model", "zh": "主模型", "vi": "Mô hình chính", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.columns.provider", "module": "channelStatus", "en": "Provider", "zh": "供应商", "vi": "Nhà cung cấp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.description", "module": "channelStatus", "en": "Inspect channel availability, latency and recent status", "zh": "查看渠道可用性、延迟和近期状态", "vi": "Kiểm tra khả dụng, độ trễ và trạng thái gần đây của kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.availability15d", "module": "channelStatus", "en": "15d Availability", "zh": "15 天可用率", "vi": "Khả dụng 15 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.availability30d", "module": "channelStatus", "en": "30d Availability", "zh": "30 天可用率", "vi": "Khả dụng 30 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.availability7d", "module": "channelStatus", "en": "7d Availability", "zh": "7 天可用率", "vi": "Khả dụng 7 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.avgLatency7d", "module": "channelStatus", "en": "7d Avg Latency (ms)", "zh": "7 天平均延迟 (ms)", "vi": "Độ trễ TB 7 ngày (ms)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.latestLatency", "module": "channelStatus", "en": "Latest Latency (ms)", "zh": "最新延迟 (ms)", "vi": "Độ trễ mới nhất (ms)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.latestStatus", "module": "channelStatus", "en": "Latest Status", "zh": "最新状态", "vi": "Trạng thái mới nhất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailColumns.model", "module": "channelStatus", "en": "Model", "zh": "模型", "vi": "Mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailLoadError", "module": "channelStatus", "en": "Failed to load channel detail", "zh": "加载渠道详情失败", "vi": "Không thể tải chi tiết kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.detailTitle", "module": "channelStatus", "en": "Channel Detail", "zh": "渠道详情", "vi": "Chi tiết kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.empty.description", "module": "channelStatus", "en": "No monitored channels have been configured yet.", "zh": "管理员尚未配置可监控的渠道。", "vi": "Chưa cấu hình kênh được giám sát.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.empty.title", "module": "channelStatus", "en": "No channels available", "zh": "暂无可显示的渠道", "vi": "Không có kênh khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.loadError", "module": "channelStatus", "en": "Failed to load channel status", "zh": "加载渠道状态失败", "vi": "Không thể tải trạng thái kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.overall.degraded", "module": "channelStatus", "en": "DEGRADED", "zh": "DEGRADED", "vi": "SUY GIẢM", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.overall.operational", "module": "channelStatus", "en": "OPERATIONAL", "zh": "OPERATIONAL", "vi": "HOẠT ĐỘNG BÌNH THƯỜNG", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.overall.unavailable", "module": "channelStatus", "en": "UNAVAILABLE", "zh": "UNAVAILABLE", "vi": "KHÔNG KHẢ DỤNG", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.searchPlaceholder", "module": "channelStatus", "en": "Search channels...", "zh": "搜索渠道...", "vi": "Tìm kênh...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.title", "module": "channelStatus", "en": "Channel Status", "zh": "渠道状态", "vi": "Trạng thái kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.windowTab.15d", "module": "channelStatus", "en": "15 days", "zh": "15 天", "vi": "15 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.windowTab.30d", "module": "channelStatus", "en": "30 days", "zh": "30 天", "vi": "30 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "channelStatus.windowTab.7d", "module": "channelStatus", "en": "7 days", "zh": "7 天", "vi": "7 ngày", "status": "draft", "placeholders": [], "notes": ""}

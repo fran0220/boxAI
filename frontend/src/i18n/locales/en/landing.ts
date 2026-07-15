@@ -155,6 +155,10 @@ export default {
 
   // Key Usage Query Page
   keyUsage: {
+    // BOXAI: Quota period abbreviations are locale data for explicit vi support.
+    dailyShort: 'D',
+    weeklyShort: 'W',
+    monthlyShort: 'M',
     title: 'API Key Usage',
     subtitle: 'Enter your API Key to view real-time spending and usage status',
     placeholder: 'sk-ant-mirror-xxxxxxxxxxxx',

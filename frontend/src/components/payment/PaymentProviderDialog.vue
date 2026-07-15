@@ -100,7 +100,8 @@
             </div>
             <div>
               <label class="text-xs text-[color:var(--bx-text-dim)]">{{ t('admin.settings.payment.customMethodDisplayName') }}</label>
-              <input v-model="method.displayName" type="text" class="input mt-0.5" placeholder="信用卡" />
+              <!-- BOXAI: Do not leak a Chinese-only example into en/vi administration. -->
+              <input v-model="method.displayName" type="text" class="input mt-0.5" :placeholder="t('admin.settings.payment.customMethodDisplayName')" />
             </div>
             <button
               type="button"

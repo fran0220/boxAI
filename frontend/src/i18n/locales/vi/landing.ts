@@ -150,6 +150,10 @@ export default {
   },
 
   keyUsage: {
+    // BOXAI: Quota period abbreviations are locale data for explicit vi support.
+    dailyShort: 'N',
+    weeklyShort: 'T',
+    monthlyShort: 'Th',
     title: 'Mức dùng Khóa API',
     subtitle: 'Nhập Khóa API để xem chi tiêu và trạng thái dùng theo thời gian thực',
     placeholder: 'sk-ant-mirror-xxxxxxxxxxxx',
@@ -223,7 +227,7 @@ export default {
     database: {
       title: 'Cấu hình cơ sở dữ liệu',
       description: 'Kết nối PostgreSQL',
-      host: 'Host',
+      host: 'Máy chủ',
       port: 'Cổng',
       username: 'Tên người dùng',
       password: 'Mật khẩu',
@@ -240,10 +244,10 @@ export default {
     redis: {
       title: 'Cấu hình Redis',
       description: 'Kết nối máy chủ Redis',
-      host: 'Host',
+      host: 'Máy chủ',
       port: 'Cổng',
       password: 'Mật khẩu (tuỳ chọn)',
-      database: 'Database',
+      database: 'Cơ sở dữ liệu',
       passwordPlaceholder: 'Mật khẩu',
       enableTls: 'Bật TLS',
       enableTlsHint: 'Dùng TLS khi kết nối Redis (chứng chỉ CA công khai)'

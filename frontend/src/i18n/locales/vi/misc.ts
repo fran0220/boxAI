@@ -2,211 +2,211 @@ export default {
 
   // Subscription Progress (Header component)
   subscriptionProgress: {
-    title: 'My Subscriptions',
-    viewDetails: 'View subscription details',
-    activeCount: '{count} active subscription(s)',
-    daily: 'Daily',
-    weekly: 'Weekly',
-    monthly: 'Monthly',
-    daysRemaining: '{days} days left',
-    expired: 'Expired',
-    expiresToday: 'Expires today',
-    expiresTomorrow: 'Expires tomorrow',
-    viewAll: 'View all subscriptions',
-    noSubscriptions: 'No active subscriptions',
-    unlimited: 'Unlimited'
+    title: 'Gói đăng ký của tôi',
+    viewDetails: 'Xem chi tiết gói đăng ký',
+    activeCount: '{count} gói đang hoạt động',
+    daily: 'Hằng ngày',
+    weekly: 'Hằng tuần',
+    monthly: 'Hằng tháng',
+    daysRemaining: 'Còn {days} ngày',
+    expired: 'Đã hết hạn',
+    expiresToday: 'Hết hạn hôm nay',
+    expiresTomorrow: 'Hết hạn ngày mai',
+    viewAll: 'Xem tất cả gói đăng ký',
+    noSubscriptions: 'Không có gói đang hoạt động',
+    unlimited: 'Không giới hạn'
   },
 
   // Version Badge
   version: {
-    currentVersion: 'Current Version',
-    latestVersion: 'Latest Version',
-    upToDate: "You're running the latest version.",
-    updateAvailable: 'A new version is available!',
-    releaseNotes: 'Release Notes',
-    noReleaseNotes: 'No release notes',
-    viewUpdate: 'View Update',
-    viewRelease: 'View Release',
-    viewChangelog: 'View Changelog',
-    refresh: 'Refresh',
-    sourceMode: 'Source Build',
-    sourceModeHint: 'Source build, use git pull to update',
-    updateNow: 'Update Now',
-    updating: 'Updating...',
-    updateComplete: 'Update Complete',
-    updateFailed: 'Update Failed',
-    restartRequired: 'Please restart the service to apply the update',
-    restartNow: 'Restart Now',
-    restarting: 'Restarting...',
-    retry: 'Retry',
-    rollback: 'Version Rollback',
-    rollbackSelectVersion: 'Select a version to roll back to (last 3 versions)',
-    rollbackConfirm: 'Roll back to {version}',
+    currentVersion: 'Phiên bản hiện tại',
+    latestVersion: 'Phiên bản mới nhất',
+    upToDate: 'Bạn đang dùng phiên bản mới nhất.',
+    updateAvailable: 'Đã có phiên bản mới!',
+    releaseNotes: 'Ghi chú phát hành',
+    noReleaseNotes: 'Không có ghi chú phát hành',
+    viewUpdate: 'Xem bản cập nhật',
+    viewRelease: 'Xem bản phát hành',
+    viewChangelog: 'Xem nhật ký thay đổi',
+    refresh: 'Làm mới',
+    sourceMode: 'Bản dựng từ mã nguồn',
+    sourceModeHint: 'Bản dựng từ mã nguồn, dùng git pull để cập nhật',
+    updateNow: 'Cập nhật ngay',
+    updating: 'Đang cập nhật...',
+    updateComplete: 'Cập nhật hoàn tất',
+    updateFailed: 'Cập nhật thất bại',
+    restartRequired: 'Vui lòng khởi động lại dịch vụ để áp dụng bản cập nhật',
+    restartNow: 'Khởi động lại ngay',
+    restarting: 'Đang khởi động lại...',
+    retry: 'Thử lại',
+    rollback: 'Quay về phiên bản cũ',
+    rollbackSelectVersion: 'Chọn phiên bản muốn quay về (3 phiên bản gần nhất)',
+    rollbackConfirm: 'Quay về {version}',
     rollbackWarning:
-      'Rollback downloads the selected version and replaces the current binary. A service restart is required afterwards.',
-    rollingBack: 'Rolling back...',
-    rollbackComplete: 'Rollback Complete',
-    rollbackFailed: 'Rollback Failed',
-    manualRollbackCommand: 'Manual rollback',
-    copyCommand: 'Copy',
-    copied: 'Copied',
-    noRollbackVersions: 'No versions available for rollback',
-    loadVersionsFailed: 'Failed to load versions',
-    rollbackSourceHint: 'Online rollback is not available for source builds',
-    deployScript: 'Script',
+      'Thao tác quay về sẽ tải phiên bản đã chọn và thay thế tệp nhị phân hiện tại. Sau đó cần khởi động lại dịch vụ.',
+    rollingBack: 'Đang quay về...',
+    rollbackComplete: 'Đã quay về phiên bản cũ',
+    rollbackFailed: 'Quay về thất bại',
+    manualRollbackCommand: 'Quay về thủ công',
+    copyCommand: 'Sao chép',
+    copied: 'Đã sao chép',
+    noRollbackVersions: 'Không có phiên bản để quay về',
+    loadVersionsFailed: 'Không thể tải danh sách phiên bản',
+    rollbackSourceHint: 'Không hỗ trợ quay về trực tuyến cho bản dựng từ mã nguồn',
+    deployScript: 'Tập lệnh',
     deployDocker: 'Docker',
-    dockerEditCompose: 'Edit the image tag in docker-compose.yml',
-    dockerRecreate: 'Recreate the container'
+    dockerEditCompose: 'Sửa thẻ image trong docker-compose.yml',
+    dockerRecreate: 'Tạo lại container'
   },
 
   // Recharge / Subscription Page
   purchase: {
-    title: 'Recharge / Subscription',
-    description: 'Recharge balance or purchase subscription via the embedded page',
-    openInNewTab: 'Open in new tab',
-    notEnabledTitle: 'Feature not enabled',
-    notEnabledDesc: 'The administrator has not enabled the recharge/subscription entry. Please contact admin.',
-    notConfiguredTitle: 'Recharge / Subscription URL not configured',
+    title: 'Nạp tiền / Gói đăng ký',
+    description: 'Nạp số dư hoặc mua gói đăng ký qua trang nhúng',
+    openInNewTab: 'Mở trong tab mới',
+    notEnabledTitle: 'Tính năng chưa được bật',
+    notEnabledDesc: 'Quản trị viên chưa bật mục nạp tiền/gói đăng ký. Vui lòng liên hệ quản trị viên.',
+    notConfiguredTitle: 'Chưa cấu hình URL nạp tiền / gói đăng ký',
     notConfiguredDesc:
-      'The administrator enabled the entry but has not configured a recharge/subscription URL. Please contact admin.'
+      'Quản trị viên đã bật mục này nhưng chưa cấu hình URL nạp tiền/gói đăng ký. Vui lòng liên hệ quản trị viên.'
   },
 
   // Custom Page (iframe embed)
   customPage: {
-    title: 'Custom Page',
-    openInNewTab: 'Open in new tab',
-    notFoundTitle: 'Page not found',
-    notFoundDesc: 'This custom page does not exist or has been removed.',
-    notConfiguredTitle: 'Page URL not configured',
-    notConfiguredDesc: 'The URL for this custom page has not been properly configured.',
-    tableOfContents: 'Contents',
-    copyCode: 'Copy',
-    copiedCode: 'Copied',
-    copyCodeFailed: 'Failed'
+    title: 'Trang tùy chỉnh',
+    openInNewTab: 'Mở trong tab mới',
+    notFoundTitle: 'Không tìm thấy trang',
+    notFoundDesc: 'Trang tùy chỉnh này không tồn tại hoặc đã bị xóa.',
+    notConfiguredTitle: 'Chưa cấu hình URL trang',
+    notConfiguredDesc: 'URL của trang tùy chỉnh này chưa được cấu hình đúng.',
+    tableOfContents: 'Mục lục',
+    copyCode: 'Sao chép',
+    copiedCode: 'Đã sao chép',
+    copyCodeFailed: 'Thất bại'
   },
 
   // Announcements Page
   announcements: {
-    title: 'Announcements',
-    description: 'View system announcements',
-    unreadOnly: 'Show unread only',
-    markRead: 'Mark as read',
-    markAllRead: 'Mark all as read',
-    viewAll: 'View all announcements',
-    markedAsRead: 'Marked as read',
-    allMarkedAsRead: 'All announcements marked as read',
-    newCount: '{count} new announcement | {count} new announcements',
-    readAt: 'Read at',
-    read: 'Read',
-    unread: 'Unread',
-    startsAt: 'Starts at',
-    endsAt: 'Ends at',
-    empty: 'No announcements',
-    emptyUnread: 'No unread announcements',
-    total: 'announcements',
-    emptyDescription: 'There are no system announcements at this time',
-    readStatus: 'You have read this announcement',
-    markReadHint: 'Click "Mark as read" to mark this announcement'
+    title: 'Thông báo',
+    description: 'Xem thông báo hệ thống',
+    unreadOnly: 'Chỉ hiện chưa đọc',
+    markRead: 'Đánh dấu đã đọc',
+    markAllRead: 'Đánh dấu tất cả đã đọc',
+    viewAll: 'Xem tất cả thông báo',
+    markedAsRead: 'Đã đánh dấu đã đọc',
+    allMarkedAsRead: 'Đã đánh dấu tất cả thông báo là đã đọc',
+    newCount: '{count} thông báo mới',
+    readAt: 'Đọc lúc',
+    read: 'Đã đọc',
+    unread: 'Chưa đọc',
+    startsAt: 'Bắt đầu lúc',
+    endsAt: 'Kết thúc lúc',
+    empty: 'Không có thông báo',
+    emptyUnread: 'Không có thông báo chưa đọc',
+    total: 'thông báo',
+    emptyDescription: 'Hiện không có thông báo hệ thống',
+    readStatus: 'Bạn đã đọc thông báo này',
+    markReadHint: 'Nhấp "Đánh dấu đã đọc" để đánh dấu thông báo này'
   },
 
   // User Subscriptions Page
   userSubscriptions: {
-    title: 'My Subscriptions',
-    description: 'View your subscription plans and usage',
-    noActiveSubscriptions: 'No Active Subscriptions',
+    title: 'Gói đăng ký của tôi',
+    description: 'Xem các gói đăng ký và mức sử dụng',
+    noActiveSubscriptions: 'Không có gói đang hoạt động',
     noActiveSubscriptionsDesc:
-      "You don't have any active subscriptions. Contact administrator to get one.",
-    failedToLoad: 'Failed to load subscriptions',
+      'Bạn không có gói đăng ký đang hoạt động. Hãy liên hệ quản trị viên để được cấp.',
+    failedToLoad: 'Không thể tải gói đăng ký',
     status: {
-      active: 'Active',
-      expired: 'Expired',
-      revoked: 'Revoked'
+      active: 'Đang hoạt động',
+      expired: 'Đã hết hạn',
+      revoked: 'Đã thu hồi'
     },
-    usage: 'Usage',
-    expires: 'Expires',
-    noExpiration: 'No expiration',
-    unlimited: 'Unlimited',
-    unlimitedDesc: 'No usage limits on this subscription',
-    daily: 'Daily',
-    weekly: 'Weekly',
-    monthly: 'Monthly',
-    daysRemaining: '{days} days remaining',
-    expiresOn: 'Expires on {date}',
-    resetIn: 'Resets in {time}',
-    quotaEndsIn: 'Quota ends in {time}',
-    windowNotActive: 'Awaiting first use',
-    usageOf: '{used} of {limit}'
+    usage: 'Mức sử dụng',
+    expires: 'Hết hạn',
+    noExpiration: 'Không hết hạn',
+    unlimited: 'Không giới hạn',
+    unlimitedDesc: 'Gói đăng ký này không giới hạn mức sử dụng',
+    daily: 'Hằng ngày',
+    weekly: 'Hằng tuần',
+    monthly: 'Hằng tháng',
+    daysRemaining: 'Còn {days} ngày',
+    expiresOn: 'Hết hạn vào {date}',
+    resetIn: 'Đặt lại sau {time}',
+    quotaEndsIn: 'Hạn mức kết thúc sau {time}',
+    windowNotActive: 'Đang chờ lần sử dụng đầu tiên',
+    usageOf: '{used} trên {limit}'
   },
 
   // Onboarding Tour
   onboarding: {
-    restartTour: 'Restart Onboarding Tour',
-    dontShowAgain: "Don't show again",
-    dontShowAgainTitle: 'Permanently close onboarding guide',
-    confirmDontShow: "Are you sure you don't want to see the onboarding guide again?\n\nYou can restart it anytime from the user menu in the top right corner.",
-    confirmExit: 'Are you sure you want to exit the onboarding guide? You can restart it anytime from the top right menu.',
-    interactiveHint: 'Press Enter or Click to continue',
+    restartTour: 'Khởi động lại hướng dẫn làm quen',
+    dontShowAgain: 'Không hiển thị lại',
+    dontShowAgainTitle: 'Đóng vĩnh viễn hướng dẫn làm quen',
+    confirmDontShow: 'Bạn có chắc không muốn xem lại hướng dẫn làm quen?\n\nBạn có thể khởi động lại bất cứ lúc nào từ menu người dùng ở góc trên bên phải.',
+    confirmExit: 'Bạn có chắc muốn thoát hướng dẫn làm quen? Bạn có thể khởi động lại bất cứ lúc nào từ menu góc trên bên phải.',
+    interactiveHint: 'Nhấn Enter hoặc nhấp để tiếp tục',
     navigation: {
-      flipPage: 'Flip Page',
-      exit: 'Exit'
+      flipPage: 'Lật trang',
+      exit: 'Thoát'
     },
     // Admin tour steps
     admin: {
       welcome: {
-        title: '👋 Welcome to BoxAI',
-        description: '<div style="line-height: 1.8;"><p style="margin-bottom: 16px;">BoxAI is a powerful AI service gateway platform that helps you easily manage and distribute AI services.</p><p style="margin-bottom: 12px;"><b>🎯 Core Features:</b></p><ul style="margin-left: 20px; margin-bottom: 16px;"><li>📦 <b>Group Management</b> - Create service tiers (VIP, Free Trial, etc.)</li><li>🔗 <b>Account Pool</b> - Connect multiple upstream AI service accounts</li><li>🔑 <b>Key Distribution</b> - Generate independent API Keys for users</li><li>💰 <b>Billing Control</b> - Flexible rate and quota management</li></ul><p style="color: #10b981; font-weight: 600;">Let\'s complete the initial setup in 3 minutes →</p></div>',
-        nextBtn: 'Start Setup 🚀',
-        prevBtn: 'Skip'
+        title: '👋 Chào mừng đến với BoxAI',
+        description: '<div style="line-height: 1.8;"><p style="margin-bottom: 16px;">BoxAI là nền tảng cổng dịch vụ AI mạnh mẽ, giúp bạn dễ dàng quản lý và phân phối dịch vụ AI.</p><p style="margin-bottom: 12px;"><b>🎯 Tính năng cốt lõi:</b></p><ul style="margin-left: 20px; margin-bottom: 16px;"><li>📦 <b>Quản lý nhóm</b> - Tạo các bậc dịch vụ (VIP, Dùng thử miễn phí, v.v.)</li><li>🔗 <b>Nhóm tài khoản</b> - Kết nối nhiều tài khoản dịch vụ AI thượng nguồn</li><li>🔑 <b>Phân phối khóa</b> - Tạo khóa API độc lập cho người dùng</li><li>💰 <b>Kiểm soát tính phí</b> - Quản lý linh hoạt hệ số và hạn mức</li></ul><p style="color: #10b981; font-weight: 600;">Hãy hoàn tất thiết lập ban đầu trong 3 phút →</p></div>',
+        nextBtn: 'Bắt đầu thiết lập 🚀',
+        prevBtn: 'Bỏ qua'
       },
       groupManage: {
-        title: '📦 Step 1: Group Management',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;"><b>What is a Group?</b></p><p style="margin-bottom: 12px;">Groups are the core concept of BoxAI, like a "service package":</p><ul style="margin-left: 20px; margin-bottom: 12px; font-size: 13px;"><li>🎯 Each group can contain multiple upstream accounts</li><li>💰 Each group has independent billing multiplier</li><li>👥 Can be set as public or exclusive</li></ul><p style="margin-top: 12px; padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Example:</b> You can create "VIP Premium" (high rate) and "Free Trial" (low rate) groups</p><p style="margin-top: 16px; color: #10b981; font-weight: 600;">👉 Click "Group Management" on the left sidebar</p></div>'
+        title: '📦 Bước 1: Quản lý nhóm',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;"><b>Nhóm là gì?</b></p><p style="margin-bottom: 12px;">Nhóm là khái niệm cốt lõi của BoxAI, giống như một "gói dịch vụ":</p><ul style="margin-left: 20px; margin-bottom: 12px; font-size: 13px;"><li>🎯 Mỗi nhóm có thể chứa nhiều tài khoản thượng nguồn</li><li>💰 Mỗi nhóm có hệ số tính phí độc lập</li><li>👥 Có thể đặt là công khai hoặc độc quyền</li></ul><p style="margin-top: 12px; padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Ví dụ:</b> Bạn có thể tạo nhóm "VIP Cao cấp" (hệ số cao) và "Dùng thử miễn phí" (hệ số thấp)</p><p style="margin-top: 16px; color: #10b981; font-weight: 600;">👉 Nhấp "Quản lý nhóm" trên thanh bên trái</p></div>'
       },
       createGroup: {
-        title: '➕ Create New Group',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Let\'s create your first group.</p><p style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>📝 Tip:</b> Recommend creating a test group first to familiarize yourself with the process</p><p style="color: #10b981; font-weight: 600;">👉 Click the "Create Group" button</p></div>'
+        title: '➕ Tạo nhóm mới',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Hãy tạo nhóm đầu tiên của bạn.</p><p style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>📝 Mẹo:</b> Nên tạo một nhóm thử nghiệm trước để làm quen với quy trình</p><p style="color: #10b981; font-weight: 600;">👉 Nhấp nút "Tạo nhóm"</p></div>'
       },
       groupName: {
-        title: '✏️ 1. Group Name',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Give your group an easy-to-identify name.</p><div style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>💡 Naming Suggestions:</b><ul style="margin: 8px 0 0 16px;"><li>"Test Group" - For testing</li><li>"VIP Premium" - High-quality service</li><li>"Free Trial" - Trial version</li></ul></div><p style="font-size: 13px; color: #6b7280;">Click "Next" when done</p></div>',
-        nextBtn: 'Next'
+        title: '✏️ 1. Tên nhóm',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Đặt tên dễ nhận biết cho nhóm.</p><div style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>💡 Gợi ý đặt tên:</b><ul style="margin: 8px 0 0 16px;"><li>"Nhóm thử nghiệm" - Dùng để kiểm thử</li><li>"VIP Cao cấp" - Dịch vụ chất lượng cao</li><li>"Dùng thử miễn phí" - Phiên bản dùng thử</li></ul></div><p style="font-size: 13px; color: #6b7280;">Nhấp "Tiếp" khi hoàn tất</p></div>',
+        nextBtn: 'Tiếp'
       },
       groupPlatform: {
-        title: '🤖 2. Select Platform',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Choose the AI platform this group supports.</p><div style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>📌 Platform Guide:</b><ul style="margin: 8px 0 0 16px;"><li><b>Anthropic</b> - Claude models</li><li><b>OpenAI</b> - GPT models</li><li><b>Google</b> - Gemini models</li></ul></div><p style="font-size: 13px; color: #6b7280;">One group can only have one platform</p></div>',
-        nextBtn: 'Next'
+        title: '🤖 2. Chọn nền tảng',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Chọn nền tảng AI mà nhóm này hỗ trợ.</p><div style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>📌 Hướng dẫn nền tảng:</b><ul style="margin: 8px 0 0 16px;"><li><b>Anthropic</b> - Mô hình Claude</li><li><b>OpenAI</b> - Mô hình GPT</li><li><b>Google</b> - Mô hình Gemini</li></ul></div><p style="font-size: 13px; color: #6b7280;">Mỗi nhóm chỉ có thể dùng một nền tảng</p></div>',
+        nextBtn: 'Tiếp'
       },
       groupMultiplier: {
-        title: '💰 3. Rate Multiplier',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Set the billing multiplier to control user charges.</p><div style="padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>⚙️ Billing Rules:</b><ul style="margin: 8px 0 0 16px;"><li><b>1.0</b> - Original price (cost price)</li><li><b>1.5</b> - User consumes $1, charged $1.5</li><li><b>2.0</b> - User consumes $1, charged $2</li><li><b>0.8</b> - Subsidy mode (loss-making)</li></ul></div><p style="font-size: 13px; color: #6b7280;">Recommend setting test group to 1.0</p></div>',
-        nextBtn: 'Next'
+        title: '💰 3. Hệ số tính phí',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Đặt hệ số tính phí để kiểm soát khoản phí của người dùng.</p><div style="padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>⚙️ Quy tắc tính phí:</b><ul style="margin: 8px 0 0 16px;"><li><b>1.0</b> - Giá gốc (giá vốn)</li><li><b>1.5</b> - Người dùng tiêu thụ $1, tính phí $1.5</li><li><b>2.0</b> - Người dùng tiêu thụ $1, tính phí $2</li><li><b>0.8</b> - Chế độ trợ giá (chịu lỗ)</li></ul></div><p style="font-size: 13px; color: #6b7280;">Khuyến nghị đặt nhóm thử nghiệm là 1.0</p></div>',
+        nextBtn: 'Tiếp'
       },
       groupExclusive: {
-        title: '🔒 4. Exclusive Group (Optional)',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Control group visibility and access permissions.</p><div style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>🔐 Permission Guide:</b><ul style="margin: 8px 0 0 16px;"><li><b>Off</b> - Public group, visible to all users</li><li><b>On</b> - Exclusive group, only for specified users</li></ul></div><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Use Cases:</b> VIP exclusive, internal testing, special customers</p></div>',
-        nextBtn: 'Next'
+        title: '🔒 4. Nhóm độc quyền (Tùy chọn)',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Kiểm soát khả năng hiển thị và quyền truy cập nhóm.</p><div style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>🔐 Hướng dẫn quyền:</b><ul style="margin: 8px 0 0 16px;"><li><b>Tắt</b> - Nhóm công khai, mọi người dùng đều thấy</li><li><b>Bật</b> - Nhóm độc quyền, chỉ dành cho người dùng được chỉ định</li></ul></div><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Trường hợp sử dụng:</b> VIP độc quyền, kiểm thử nội bộ, khách hàng đặc biệt</p></div>',
+        nextBtn: 'Tiếp'
       },
       groupSubmit: {
-        title: '✅ Save Group',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Confirm the information and click create to save the group.</p><p style="padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>⚠️ Note:</b> Platform type cannot be changed after creation, but other settings can be edited anytime</p><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>📌 Next Step:</b> After creation, we\'ll add upstream accounts to this group</p><p style="margin-top: 12px; color: #10b981; font-weight: 600;">👉 Click "Create" button</p></div>'
+        title: '✅ Lưu nhóm',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Xác nhận thông tin và nhấp tạo để lưu nhóm.</p><p style="padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>⚠️ Lưu ý:</b> Không thể thay đổi loại nền tảng sau khi tạo, nhưng có thể sửa các cài đặt khác bất cứ lúc nào</p><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>📌 Bước tiếp theo:</b> Sau khi tạo, chúng ta sẽ thêm tài khoản thượng nguồn vào nhóm này</p><p style="margin-top: 12px; color: #10b981; font-weight: 600;">👉 Nhấp nút "Tạo"</p></div>'
       },
       accountManage: {
-        title: '🔗 Step 2: Add Account',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;"><b>Great! Group created successfully 🎉</b></p><p style="margin-bottom: 12px;">Now add upstream AI service accounts to enable actual service delivery.</p><div style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>🔑 Account Purpose:</b><ul style="margin: 8px 0 0 16px;"><li>Connect to upstream AI services (Claude, GPT, etc.)</li><li>One group can contain multiple accounts (load balancing)</li><li>Supports OAuth and Session Key methods</li></ul></div><p style="margin-top: 16px; color: #10b981; font-weight: 600;">👉 Click "Account Management" on the left sidebar</p></div>'
+        title: '🔗 Bước 2: Thêm tài khoản',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;"><b>Tuyệt vời! Đã tạo nhóm thành công 🎉</b></p><p style="margin-bottom: 12px;">Bây giờ hãy thêm tài khoản dịch vụ AI thượng nguồn để bắt đầu cung cấp dịch vụ.</p><div style="padding: 8px 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 13px; margin-bottom: 12px;"><b>🔑 Mục đích tài khoản:</b><ul style="margin: 8px 0 0 16px;"><li>Kết nối dịch vụ AI thượng nguồn (Claude, GPT, v.v.)</li><li>Một nhóm có thể chứa nhiều tài khoản (cân bằng tải)</li><li>Hỗ trợ phương thức OAuth và Khóa phiên</li></ul></div><p style="margin-top: 16px; color: #10b981; font-weight: 600;">👉 Nhấp "Quản lý tài khoản" trên thanh bên trái</p></div>'
       },
       createAccount: {
-        title: '➕ Add New Account',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Click the button to start adding your first upstream account.</p><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Tip:</b> Recommend using OAuth method - more secure and no manual key extraction needed</p><p style="margin-top: 12px; color: #10b981; font-weight: 600;">👉 Click "Add Account" button</p></div>'
+        title: '➕ Thêm tài khoản mới',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Nhấp nút để bắt đầu thêm tài khoản thượng nguồn đầu tiên.</p><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Mẹo:</b> Khuyến nghị dùng OAuth — bảo mật hơn và không cần trích xuất khóa thủ công</p><p style="margin-top: 12px; color: #10b981; font-weight: 600;">👉 Nhấp nút "Thêm tài khoản"</p></div>'
       },
       accountName: {
-        title: '✏️ 1. Account Name',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Set an easy-to-identify name for the account.</p><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Naming Suggestions:</b> "Claude Main", "GPT Backup 1", "Test Account", etc.</p></div>',
-        nextBtn: 'Next'
+        title: '✏️ 1. Tên tài khoản',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Đặt tên dễ nhận biết cho tài khoản.</p><p style="padding: 8px 12px; background: #f0fdf4; border-left: 3px solid #10b981; border-radius: 4px; font-size: 13px;"><b>💡 Gợi ý đặt tên:</b> "Claude Chính", "GPT Dự phòng 1", "Tài khoản thử nghiệm", v.v.</p></div>',
+        nextBtn: 'Tiếp'
       },
       accountPlatform: {
-        title: '🤖 2. Select Platform',
-        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Choose the service provider platform for this account.</p><p style="padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 13px;"><b>⚠️ Important:</b> Platform must match the group you just created</p></div>',
-        nextBtn: 'Next'
+        title: '🤖 2. Chọn nền tảng',
+        description: '<div style="line-height: 1.7;"><p style="margin-bottom: 12px;">Chọn nền tảng nhà cung cấp dịch vụ cho tài khoản này.</p><p style="padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: 13px;"><b>⚠️ Quan trọng:</b> Nền tảng phải khớp với nhóm bạn vừa tạo</p></div>',
+        nextBtn: 'Tiếp'
       },
       accountType: {
         title: '🔐 3. Phương thức ủy quyền',

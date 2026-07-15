@@ -1,0 +1,27 @@
+{"key": "monitorCommon.availabilityPrefix", "module": "monitorCommon", "en": "Availability", "zh": "可用性", "vi": "Khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.dialogLatency", "module": "monitorCommon", "en": "Dialog Latency", "zh": "对话延迟", "vi": "Độ trễ hội thoại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.endpointPing", "module": "monitorCommon", "en": "Endpoint PING", "zh": "端点 PING", "vi": "PING điểm cuối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.extraModelsCount", "module": "monitorCommon", "en": "+ {n} models", "zh": "+ {n} 模型", "vi": "+ {n} mô hình", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.extraModelsEmpty", "module": "monitorCommon", "en": "No extra models", "zh": "无附加模型", "vi": "Không có mô hình bổ sung", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.extraModelsHeader", "module": "monitorCommon", "en": "Extra Models", "zh": "附加模型", "vi": "Mô hình bổ sung", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.history60pts", "module": "monitorCommon", "en": "HISTORY ({n} PTS)", "zh": "近 {n} 次记录", "vi": "LỊCH SỬ ({n} ĐIỂM)", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.latencyEmpty", "module": "monitorCommon", "en": "-", "zh": "-", "vi": "-", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "monitorCommon.maintenancePaused", "module": "monitorCommon", "en": "Maintenance · timeline paused", "zh": "维护中 · 已暂停时间线采集", "vi": "Bảo trì · dòng thời gian tạm dừng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.nextUpdateIn", "module": "monitorCommon", "en": "NEXT UPDATE IN {n}s", "zh": "{n}s 后刷新", "vi": "CẬP NHẬT TIẾP SAU {n}s", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.now", "module": "monitorCommon", "en": "NOW", "zh": "NOW", "vi": "BÂY GIỜ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.past", "module": "monitorCommon", "en": "PAST", "zh": "PAST", "vi": "TRƯỚC ĐÂY", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.pollEvery", "module": "monitorCommon", "en": "{n}s polling", "zh": "{n}s 轮询", "vi": "thăm dò mỗi {n}s", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.providers.anthropic", "module": "monitorCommon", "en": "Anthropic", "zh": "Anthropic", "vi": "Anthropic", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "monitorCommon.providers.gemini", "module": "monitorCommon", "en": "Gemini", "zh": "Gemini", "vi": "Gemini", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "monitorCommon.providers.grok", "module": "monitorCommon", "en": "Grok", "zh": "Grok", "vi": "Grok", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "monitorCommon.providers.openai", "module": "monitorCommon", "en": "OpenAI", "zh": "OpenAI", "vi": "OpenAI", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "monitorCommon.relativeDaysAgo", "module": "monitorCommon", "en": "{n}d ago", "zh": "{n} 天前", "vi": "{n} ngày trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.relativeHoursAgo", "module": "monitorCommon", "en": "{n}h ago", "zh": "{n} 小时前", "vi": "{n} giờ trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.relativeMinutesAgo", "module": "monitorCommon", "en": "{n}m ago", "zh": "{n} 分钟前", "vi": "{n} phút trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.relativeSecondsAgo", "module": "monitorCommon", "en": "{n}s ago", "zh": "{n} 秒前", "vi": "{n} giây trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "monitorCommon.status.degraded", "module": "monitorCommon", "en": "Degraded", "zh": "降级", "vi": "Suy giảm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.status.error", "module": "monitorCommon", "en": "Error", "zh": "错误", "vi": "Lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.status.failed", "module": "monitorCommon", "en": "Failed", "zh": "失败", "vi": "Thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.status.operational", "module": "monitorCommon", "en": "Operational", "zh": "正常", "vi": "Hoạt động bình thường", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "monitorCommon.status.unknown", "module": "monitorCommon", "en": "-", "zh": "-", "vi": "-", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "monitorCommon.updatedAt", "module": "monitorCommon", "en": "Updated {time}", "zh": "更新于 {time}", "vi": "Đã cập nhật {time}", "status": "draft", "placeholders": ["time"], "notes": ""}

@@ -1,0 +1,13 @@
+{"key": "pagination.goToPage", "module": "pagination", "en": "Go to page {page}", "zh": "跳转到第 {page} 页", "vi": "Đến trang {page}", "status": "draft", "placeholders": ["page"], "notes": ""}
+{"key": "pagination.jumpAction", "module": "pagination", "en": "Go", "zh": "跳转", "vi": "Đi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.jumpPlaceholder", "module": "pagination", "en": "Page", "zh": "页码", "vi": "Trang", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.jumpTo", "module": "pagination", "en": "Jump to", "zh": "跳转页", "vi": "Chuyển đến", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.next", "module": "pagination", "en": "Next", "zh": "下一页", "vi": "Tiếp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.of", "module": "pagination", "en": "of", "zh": "共", "vi": "trên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.page", "module": "pagination", "en": "Page", "zh": "页", "vi": "Trang", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.pageOf", "module": "pagination", "en": "Page {page} of {total}", "zh": "第 {page} / {total} 页", "vi": "Trang {page} trên {total}", "status": "draft", "placeholders": ["page", "total"], "notes": ""}
+{"key": "pagination.perPage", "module": "pagination", "en": "Per page", "zh": "每页", "vi": "Mỗi trang", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.previous", "module": "pagination", "en": "Previous", "zh": "上一页", "vi": "Trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.results", "module": "pagination", "en": "results", "zh": "条结果", "vi": "kết quả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.showing", "module": "pagination", "en": "Showing", "zh": "显示", "vi": "Đang hiển thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "pagination.to", "module": "pagination", "en": "to", "zh": "至", "vi": "đến", "status": "draft", "placeholders": [], "notes": ""}

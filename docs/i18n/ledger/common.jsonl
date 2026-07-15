@@ -1,0 +1,330 @@
+{"key": "auth.accountCreatedSuccess", "module": "common", "en": "Account created successfully! Welcome to {siteName}.", "zh": "账户创建成功！欢迎使用 {siteName}。", "vi": "Tạo tài khoản thành công! Chào mừng đến {siteName}.", "status": "draft", "placeholders": ["siteName"], "notes": ""}
+{"key": "auth.alreadyHaveAccount", "module": "common", "en": "Already have an account?", "zh": "已有账户？", "vi": "Đã có tài khoản?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.backToLogin", "module": "common", "en": "Back to Login", "zh": "返回登录", "vi": "Quay lại đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.backToRegistration", "module": "common", "en": "Back to registration", "zh": "返回注册", "vi": "Quay lại đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.clickToResend", "module": "common", "en": "Click to resend code", "zh": "点击重新发送验证码", "vi": "Bấm để gửi lại mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.codeRequired", "module": "common", "en": "Verification code is required", "zh": "请输入验证码", "vi": "Cần mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.codeSentSuccess", "module": "common", "en": "Verification code sent! Please check your inbox.", "zh": "验证码已发送！请查收您的邮箱。", "vi": "Đã gửi mã xác minh! Kiểm tra hộp thư.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.completeVerification", "module": "common", "en": "Please complete the verification", "zh": "请完成验证", "vi": "Vui lòng hoàn tất xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.confirmPassword", "module": "common", "en": "Confirm Password", "zh": "确认密码", "vi": "Xác nhận mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.confirmPasswordPlaceholder", "module": "common", "en": "Confirm your new password", "zh": "再次输入新密码", "vi": "Xác nhận mật khẩu mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.confirmPasswordRequired", "module": "common", "en": "Please confirm your password", "zh": "请确认您的密码", "vi": "Vui lòng xác nhận mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.continue", "module": "common", "en": "Continue", "zh": "继续", "vi": "Tiếp tục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.createAccount", "module": "common", "en": "Create Account", "zh": "创建账户", "vi": "Tạo tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.createPasswordPlaceholder", "module": "common", "en": "Create a strong password", "zh": "创建一个安全的密码", "vi": "Tạo mật khẩu mạnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.backToLogin", "module": "common", "en": "Back to Login", "zh": "返回登录", "vi": "Quay lại đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.callbackHint", "module": "common", "en": "If you are not redirected automatically, go back to the login page and try again.", "zh": "如果页面未自动跳转，请返回登录页重试。", "vi": "Nếu không được tự động chuyển hướng, hãy quay lại trang đăng nhập và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.callbackMissingToken", "module": "common", "en": "Missing login token, please try again.", "zh": "登录信息缺失，请返回重试。", "vi": "Thiếu token đăng nhập, vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.callbackProcessing", "module": "common", "en": "Completing DingTalk login, please wait...", "zh": "正在验证钉钉登录信息，请稍候...", "vi": "Đang hoàn tất đăng nhập DingTalk, vui lòng chờ...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.callbackTitle", "module": "common", "en": "Signing you in with DingTalk", "zh": "正在完成钉钉登录", "vi": "Đang đăng nhập bằng DingTalk", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.completeRegistration", "module": "common", "en": "Complete Registration", "zh": "完成注册", "vi": "Hoàn tất đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.completeRegistrationFailed", "module": "common", "en": "Registration failed. Please check your invitation code and try again.", "zh": "注册失败，请检查邀请码后重试。", "vi": "Đăng ký thất bại. Vui lòng kiểm tra mã mời và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.completing", "module": "common", "en": "Completing registration…", "zh": "正在完成注册...", "vi": "Đang hoàn tất đăng ký…", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.createAccountTitle", "module": "common", "en": "Create DingTalk Account", "zh": "创建钉钉账户", "vi": "Tạo tài khoản DingTalk", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.corp_rejected", "module": "common", "en": "Your DingTalk account is not part of this organization. Please contact administrator", "zh": "您的钉钉账号不属于本企业，请联系管理员", "vi": "Tài khoản DingTalk của bạn không thuộc tổ chức này. Vui lòng liên hệ quản trị viên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.csrf", "module": "common", "en": "Login session expired, please scan again", "zh": "登录会话已过期，请重新扫码登录", "vi": "Phiên đăng nhập đã hết hạn, vui lòng quét lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.dingtalk_not_enabled", "module": "common", "en": "DingTalk login is not enabled", "zh": "钉钉登录暂未启用", "vi": "Đăng nhập DingTalk chưa được bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.invalid_state", "module": "common", "en": "Invalid login state", "zh": "登录状态异常", "vi": "Trạng thái đăng nhập không hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.missing_browser_session", "module": "common", "en": "Browser session lost. Please login again", "zh": "浏览器会话丢失，请重新登录", "vi": "Mất phiên trình duyệt. Vui lòng đăng nhập lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.missing_params", "module": "common", "en": "Request parameters are incomplete", "zh": "请求参数不完整", "vi": "Tham số yêu cầu chưa đầy đủ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.provider_error", "module": "common", "en": "DingTalk authorization failed", "zh": "钉钉授权失败", "vi": "Ủy quyền DingTalk thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.retry", "module": "common", "en": "Retry Login", "zh": "重新登录", "vi": "Thử đăng nhập lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.session_error", "module": "common", "en": "Failed to create session. Please retry", "zh": "会话创建失败，请重试", "vi": "Không thể tạo phiên. Vui lòng thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.title", "module": "common", "en": "DingTalk Sign-in Failed", "zh": "钉钉登录失败", "vi": "Đăng nhập DingTalk thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.error.upstream_error", "module": "common", "en": "DingTalk service is temporarily unavailable. Please try again later", "zh": "钉钉服务暂时不可用，请稍后重试", "vi": "Dịch vụ DingTalk tạm thời không khả dụng. Vui lòng thử lại sau", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.invalidPendingToken", "module": "common", "en": "The registration token has expired. Please sign in with DingTalk again.", "zh": "注册凭证已失效，请重新使用钉钉登录。", "vi": "Token đăng ký đã hết hạn. Vui lòng đăng nhập lại bằng DingTalk.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.invitationRequired", "module": "common", "en": "This DingTalk account is not yet registered. The site requires an invitation code — please enter one to complete registration.", "zh": "该钉钉账号尚未注册，站点已开启邀请码注册，请输入邀请码以完成注册。", "vi": "Tài khoản DingTalk này chưa được đăng ký. Trang web yêu cầu mã mời — vui lòng nhập mã để hoàn tất đăng ký.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.registrationDisabledRedirectToBind", "module": "common", "en": "New account registration is currently disabled. Please bind to your existing account with its email and password.", "zh": "当前已禁止注册新账户，请使用已有账户邮箱和密码绑定钉钉登录", "vi": "Đăng ký tài khoản mới hiện đã tắt. Vui lòng liên kết tài khoản hiện có bằng email và mật khẩu.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalk.signIn", "module": "common", "en": "Continue with DingTalk", "zh": "钉钉登录", "vi": "Tiếp tục với DingTalk", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalkCallbackPageTitle", "module": "common", "en": "DingTalk Sign-In Callback", "zh": "钉钉登录回调", "vi": "Callback đăng nhập DingTalk", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.dingtalkProviderName", "module": "common", "en": "DingTalk", "zh": "钉钉", "vi": "DingTalk", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "auth.dontHaveAccount", "module": "common", "en": "Don't have an account?", "zh": "还没有账户？", "vi": "Chưa có tài khoản?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.emailLabel", "module": "common", "en": "Email", "zh": "邮箱", "vi": "Email", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "auth.emailOAuth.signIn", "module": "common", "en": "Continue with {providerName}", "zh": "使用 {providerName} 登录", "vi": "Tiếp tục với {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.emailPlaceholder", "module": "common", "en": "Enter your email", "zh": "请输入邮箱", "vi": "Nhập email của bạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.emailRequired", "module": "common", "en": "Email is required", "zh": "请输入邮箱", "vi": "Email là bắt buộc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.emailSuffixAllowedMore", "module": "common", "en": "and {count} more", "zh": "等 {count} 项", "vi": "và {count} miền khác", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "auth.emailSuffixNotAllowed", "module": "common", "en": "This email domain is not allowed for registration.", "zh": "该邮箱域名不在允许注册范围内。", "vi": "Tên miền email này không được phép đăng ký.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.emailSuffixNotAllowedWithAllowed", "module": "common", "en": "This email domain is not allowed. Allowed domains: {suffixes}", "zh": "该邮箱域名不被允许。可用域名：{suffixes}", "vi": "Tên miền email không được phép. Miền cho phép: {suffixes}", "status": "draft", "placeholders": ["suffixes"], "notes": ""}
+{"key": "auth.errors.USER_NOT_ACTIVE", "module": "common", "en": "Account has been disabled.", "zh": "账号已被禁用", "vi": "Tài khoản đã bị vô hiệu.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.forgotPassword", "module": "common", "en": "Forgot password?", "zh": "忘记密码？", "vi": "Quên mật khẩu?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.forgotPasswordHint", "module": "common", "en": "Enter your email address and we will send you a link to reset your password.", "zh": "输入您的邮箱地址，我们将向您发送密码重置链接。", "vi": "Nhập địa chỉ email và chúng tôi sẽ gửi liên kết đặt lại mật khẩu.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.forgotPasswordTitle", "module": "common", "en": "Reset Your Password", "zh": "重置密码", "vi": "Đặt lại mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invalidCode", "module": "common", "en": "Please enter a valid 6-digit code", "zh": "请输入有效的6位验证码", "vi": "Vui lòng nhập mã 6 số hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invalidEmail", "module": "common", "en": "Please enter a valid email address", "zh": "请输入有效的邮箱地址", "vi": "Vui lòng nhập email hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invalidOrExpiredToken", "module": "common", "en": "The password reset link is invalid or has expired. Please request a new one.", "zh": "密码重置链接无效或已过期。请重新请求一个新链接。", "vi": "Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu liên kết mới.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invalidResetLink", "module": "common", "en": "Invalid Reset Link", "zh": "无效的重置链接", "vi": "Liên kết đặt lại không hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invalidResetLinkHint", "module": "common", "en": "This password reset link is invalid or has expired. Please request a new one.", "zh": "此密码重置链接无效或已过期。请重新请求一个新链接。", "vi": "Liên kết đặt lại mật khẩu này không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu liên kết mới.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodeInvalid", "module": "common", "en": "Invalid or used invitation code", "zh": "邀请码无效或已被使用", "vi": "Mã mời không hợp lệ hoặc đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodeInvalidCannotRegister", "module": "common", "en": "Invalid invitation code. Please check and try again", "zh": "邀请码无效，请检查后重试", "vi": "Mã mời không hợp lệ. Vui lòng kiểm tra và thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodeLabel", "module": "common", "en": "Invitation Code", "zh": "邀请码", "vi": "Mã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodePlaceholder", "module": "common", "en": "Enter invitation code", "zh": "请输入邀请码", "vi": "Nhập mã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodeRequired", "module": "common", "en": "Invitation code is required", "zh": "请输入邀请码", "vi": "Cần mã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodeValid", "module": "common", "en": "Invitation code is valid", "zh": "邀请码有效", "vi": "Mã mời hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.invitationCodeValidating", "module": "common", "en": "Validating invitation code...", "zh": "正在验证邀请码...", "vi": "Đang xác thực mã mời...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.backToLogin", "module": "common", "en": "Back to Login", "zh": "返回登录", "vi": "Quay lại đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.callbackHint", "module": "common", "en": "If you are not redirected automatically, go back to the login page and try again.", "zh": "如果页面未自动跳转，请返回登录页重试。", "vi": "Nếu không được tự động chuyển hướng, hãy quay lại trang đăng nhập và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.callbackMissingToken", "module": "common", "en": "Missing login token, please try again.", "zh": "登录信息缺失，请返回重试。", "vi": "Thiếu token đăng nhập, vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.callbackProcessing", "module": "common", "en": "Completing login, please wait...", "zh": "正在验证登录信息，请稍候...", "vi": "Đang hoàn tất đăng nhập, vui lòng chờ...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.callbackTitle", "module": "common", "en": "Signing you in", "zh": "正在完成登录", "vi": "Đang đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.completeRegistration", "module": "common", "en": "Complete Registration", "zh": "完成注册", "vi": "Hoàn tất đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.completeRegistrationFailed", "module": "common", "en": "Registration failed. Please check your invitation code and try again.", "zh": "注册失败，请检查邀请码后重试。", "vi": "Đăng ký thất bại. Vui lòng kiểm tra mã mời và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.completing", "module": "common", "en": "Completing registration…", "zh": "正在完成注册...", "vi": "Đang hoàn tất đăng ký…", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.invalidPendingToken", "module": "common", "en": "The registration token has expired. Please sign in with Linux.do again.", "zh": "注册凭证已失效，请重新使用 Linux.do 登录。", "vi": "Token đăng ký đã hết hạn. Vui lòng đăng nhập lại bằng Linux.do.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.invitationRequired", "module": "common", "en": "This Linux.do account is not yet registered. The site requires an invitation code — please enter one to complete registration.", "zh": "该 Linux.do 账号尚未注册，站点已开启邀请码注册，请输入邀请码以完成注册。", "vi": "Tài khoản Linux.do này chưa được đăng ký. Trang web yêu cầu mã mời — vui lòng nhập mã để hoàn tất đăng ký.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.orContinue", "module": "common", "en": "or continue with email", "zh": "或使用邮箱密码继续", "vi": "hoặc tiếp tục bằng email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdo.signIn", "module": "common", "en": "Continue with Linux.do", "zh": "使用 Linux.do 登录", "vi": "Tiếp tục với Linux.do", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.linuxdoCallbackPageTitle", "module": "common", "en": "LinuxDo Sign-In Callback", "zh": "LinuxDo 登录回调", "vi": "Callback đăng nhập LinuxDo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.loginFailed", "module": "common", "en": "Login failed. Please check your credentials and try again.", "zh": "登录失败，请检查您的凭据后重试。", "vi": "Đăng nhập thất bại. Kiểm tra thông tin và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.loginSuccess", "module": "common", "en": "Login successful! Welcome back.", "zh": "登录成功！欢迎回来。", "vi": "Đăng nhập thành công! Chào mừng trở lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.newPassword", "module": "common", "en": "New Password", "zh": "新密码", "vi": "Mật khẩu mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.newPasswordPlaceholder", "module": "common", "en": "Enter your new password", "zh": "输入新密码", "vi": "Nhập mật khẩu mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.callbackHint", "module": "common", "en": "Copy the code and state back to the admin authorization flow when needed.", "zh": "按需将授权码和状态值复制回后台授权流程。", "vi": "Sao chép mã và trạng thái trở lại luồng ủy quyền quản trị khi cần.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.callbackTitle", "module": "common", "en": "OAuth Callback", "zh": "OAuth 回调", "vi": "Callback OAuth", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.code", "module": "common", "en": "Code", "zh": "授权码", "vi": "Mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.fullUrl", "module": "common", "en": "Full URL", "zh": "完整URL", "vi": "URL đầy đủ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.invalidCallbackHint", "module": "common", "en": "This page does not contain a valid authorization result. Return to the login page and start quick sign-in again.", "zh": "当前页面缺少有效的授权结果，请返回登录页重新发起快捷登录。", "vi": "Trang này không chứa kết quả ủy quyền hợp lệ. Hãy quay lại trang đăng nhập và bắt đầu lại đăng nhập nhanh.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.invalidCallbackTitle", "module": "common", "en": "Invalid sign-in callback", "zh": "无效的登录回调", "vi": "Callback đăng nhập không hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauth.state", "module": "common", "en": "State", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthCallbackPageTitle", "module": "common", "en": "OAuth Callback", "zh": "OAuth 回调", "vi": "Callback OAuth", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.avatarAlt", "module": "common", "en": "{providerName} avatar", "zh": "{providerName} 头像", "vi": "Ảnh đại diện {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.backToOptions", "module": "common", "en": "Back to options", "zh": "返回选项", "vi": "Quay lại tùy chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.bindCurrentAccount", "module": "common", "en": "Bind current account", "zh": "绑定当前账户", "vi": "Liên kết tài khoản hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.bindCurrentAccountDescription", "module": "common", "en": "Bind this {providerName} sign-in to the account currently signed in on this browser.", "zh": "将此次 {providerName} 登录绑定到当前浏览器已登录的账户。", "vi": "Liên kết phương thức đăng nhập {providerName} với tài khoản đang đăng nhập trên trình duyệt này.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.bindCurrentAccountTitle", "module": "common", "en": "Bind the current account", "zh": "绑定当前账户", "vi": "Liên kết tài khoản hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.bindExistingAccount", "module": "common", "en": "Bind existing account", "zh": "绑定已有账户", "vi": "Liên kết tài khoản hiện có", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.bindLoginHint", "module": "common", "en": "Log in to an existing account to bind this {providerName} sign-in.", "zh": "登录一个已有账户以绑定此次 {providerName} 登录。", "vi": "Đăng nhập tài khoản hiện có để liên kết phương thức đăng nhập {providerName}.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.bindSignInToExistingAccount", "module": "common", "en": "Bind this {providerName} sign-in to an existing account.", "zh": "将此次 {providerName} 登录绑定到已有账户。", "vi": "Liên kết phương thức đăng nhập {providerName} với tài khoản hiện có.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.chooseAccountActionHint", "module": "common", "en": "Choose whether to bind an existing account or create a new one.", "zh": "请选择绑定已有账户，或创建一个新账户。", "vi": "Chọn liên kết tài khoản hiện có hoặc tạo tài khoản mới.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.chooseHowToContinue", "module": "common", "en": "Choose how to continue", "zh": "选择后续操作", "vi": "Chọn cách tiếp tục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.createAccountHint", "module": "common", "en": "Enter an email address to create your account and continue.", "zh": "请输入邮箱地址以创建账户并继续。", "vi": "Nhập địa chỉ email để tạo tài khoản và tiếp tục.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.createNewAccount", "module": "common", "en": "Create new account", "zh": "创建新账户", "vi": "Tạo tài khoản mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.logInAndBind", "module": "common", "en": "Log in and bind", "zh": "登录并绑定", "vi": "Đăng nhập và liên kết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.profileDetailsDescription", "module": "common", "en": "Choose whether to apply the nickname or avatar from {providerName} to this account.", "zh": "选择是否将 {providerName} 的昵称或头像应用到当前账户。", "vi": "Chọn có áp dụng biệt danh hoặc ảnh đại diện từ {providerName} cho tài khoản này hay không.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.profileDetailsTitle", "module": "common", "en": "Use {providerName} profile details", "zh": "使用 {providerName} 资料", "vi": "Dùng thông tin hồ sơ {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.reviewProfileBeforeContinue", "module": "common", "en": "Review the {providerName} profile details before continuing.", "zh": "请先确认 {providerName} 资料后再继续。", "vi": "Kiểm tra thông tin hồ sơ {providerName} trước khi tiếp tục.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.signInThenBindDescription", "module": "common", "en": "Sign in to an existing account, then bind this {providerName} sign-in to it.", "zh": "请先登录已有账户，再将此次 {providerName} 登录绑定到该账户。", "vi": "Đăng nhập tài khoản hiện có, sau đó liên kết phương thức đăng nhập {providerName}.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oauthFlow.suggestedEmail", "module": "common", "en": "Suggested email: {email}", "zh": "建议邮箱：{email}", "vi": "Email đề xuất: {email}", "status": "draft", "placeholders": ["email"], "notes": ""}
+{"key": "auth.oauthFlow.totpHint", "module": "common", "en": "Enter the 6-digit verification code for {account} to finish binding this {providerName} sign-in.", "zh": "请输入 {account} 的 6 位验证码，以完成此次 {providerName} 登录绑定。", "vi": "Nhập mã xác minh 6 chữ số cho {account} để hoàn tất liên kết phương thức đăng nhập {providerName}.", "status": "draft", "placeholders": ["account", "providerName"], "notes": ""}
+{"key": "auth.oauthFlow.useAvatar", "module": "common", "en": "Use avatar", "zh": "使用头像", "vi": "Dùng ảnh đại diện", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.useDifferentEmail", "module": "common", "en": "Use a different email", "zh": "使用其他邮箱", "vi": "Dùng email khác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.useDisplayName", "module": "common", "en": "Use display name", "zh": "使用昵称", "vi": "Dùng tên hiển thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.verifyAndContinue", "module": "common", "en": "Verify and continue", "zh": "验证并继续", "vi": "Xác minh và tiếp tục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.wechatAvailabilityUnknown", "module": "common", "en": "WeChat sign-in availability could not be confirmed. Refresh and retry.", "zh": "暂时无法确认微信登录可用性，请刷新后重试。", "vi": "Không thể xác nhận khả dụng của đăng nhập WeChat. Hãy làm mới và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.wechatBrowserOnly", "module": "common", "en": "This WeChat sign-in flow is only available inside the WeChat browser.", "zh": "当前微信登录流程仅支持在微信内置浏览器中继续。", "vi": "Luồng đăng nhập WeChat này chỉ khả dụng bên trong trình duyệt WeChat.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.wechatNotConfigured", "module": "common", "en": "WeChat sign-in is not configured yet.", "zh": "微信登录尚未配置。", "vi": "Đăng nhập WeChat chưa được cấu hình.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.wechatSystemBrowserOnly", "module": "common", "en": "This WeChat sign-in flow is only available in your system browser.", "zh": "当前微信登录流程仅支持在系统浏览器中继续。", "vi": "Luồng đăng nhập WeChat này chỉ khả dụng trong trình duyệt hệ thống.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthFlow.yourAccount", "module": "common", "en": "your account", "zh": "当前账户", "vi": "tài khoản của bạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oauthOrContinue", "module": "common", "en": "or continue with others", "zh": "或使用其他继续", "vi": "hoặc tiếp tục bằng phương thức khác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.backToLogin", "module": "common", "en": "Back to Login", "zh": "返回登录", "vi": "Quay lại đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.callbackHint", "module": "common", "en": "If you are not redirected automatically, go back to the login page and try again.", "zh": "如果页面未自动跳转，请返回登录页重试。", "vi": "Nếu không được tự động chuyển hướng, hãy quay lại trang đăng nhập và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.callbackMissingToken", "module": "common", "en": "Missing login token, please try again.", "zh": "登录信息缺失，请返回重试。", "vi": "Thiếu token đăng nhập, vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.callbackProcessing", "module": "common", "en": "Completing login with {providerName}, please wait...", "zh": "正在验证 {providerName} 登录信息，请稍候...", "vi": "Đang hoàn tất đăng nhập bằng {providerName}, vui lòng chờ...", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oidc.callbackTitle", "module": "common", "en": "Signing you in with {providerName}", "zh": "正在完成 {providerName} 登录", "vi": "Đang đăng nhập bằng {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oidc.completeRegistration", "module": "common", "en": "Complete Registration", "zh": "完成注册", "vi": "Hoàn tất đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.completeRegistrationFailed", "module": "common", "en": "Registration failed. Please check your invitation code and try again.", "zh": "注册失败，请检查邀请码后重试。", "vi": "Đăng ký thất bại. Vui lòng kiểm tra mã mời và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.completing", "module": "common", "en": "Completing registration…", "zh": "正在完成注册...", "vi": "Đang hoàn tất đăng ký…", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.invalidPendingToken", "module": "common", "en": "The registration token has expired. Please sign in again.", "zh": "注册凭证已失效，请重新登录。", "vi": "Token đăng ký đã hết hạn. Vui lòng đăng nhập lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.oidc.invitationRequired", "module": "common", "en": "This {providerName} account is not yet registered. The site requires an invitation code — please enter one to complete registration.", "zh": "该 {providerName} 账号尚未注册，站点已开启邀请码注册，请输入邀请码以完成注册。", "vi": "Tài khoản {providerName} này chưa được đăng ký. Trang web yêu cầu mã mời — vui lòng nhập mã để hoàn tất đăng ký.", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oidc.signIn", "module": "common", "en": "Continue with {providerName}", "zh": "使用 {providerName} 登录", "vi": "Tiếp tục với {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "auth.oidcCallbackPageTitle", "module": "common", "en": "OIDC Sign-In Callback", "zh": "OIDC 登录回调", "vi": "Callback đăng nhập OIDC", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordHint", "module": "common", "en": "At least 6 characters", "zh": "至少 6 个字符", "vi": "Ít nhất 6 ký tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordLabel", "module": "common", "en": "Password", "zh": "密码", "vi": "Mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordMinLength", "module": "common", "en": "Password must be at least 6 characters", "zh": "密码至少需要 6 个字符", "vi": "Mật khẩu phải có ít nhất 6 ký tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordPlaceholder", "module": "common", "en": "Enter your password", "zh": "请输入密码", "vi": "Nhập mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordRequired", "module": "common", "en": "Password is required", "zh": "请输入密码", "vi": "Mật khẩu là bắt buộc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordResetSuccess", "module": "common", "en": "Password Reset Successful", "zh": "密码重置成功", "vi": "Đặt lại mật khẩu thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordResetSuccessHint", "module": "common", "en": "Your password has been reset. You can now sign in with your new password.", "zh": "您的密码已重置。现在可以使用新密码登录。", "vi": "Mật khẩu đã được đặt lại. Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.passwordsDoNotMatch", "module": "common", "en": "Passwords do not match", "zh": "两次输入的密码不一致", "vi": "Mật khẩu không khớp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.processing", "module": "common", "en": "Processing...", "zh": "处理中...", "vi": "Đang xử lý...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeAlreadyUsed", "module": "common", "en": "You have already used this promo code", "zh": "您已使用过此优惠码", "vi": "Bạn đã dùng mã khuyến mại này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeDisabled", "module": "common", "en": "This promo code is disabled", "zh": "此优惠码已被禁用", "vi": "Mã khuyến mại đã bị tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeExpired", "module": "common", "en": "This promo code has expired", "zh": "此优惠码已过期", "vi": "Mã khuyến mại đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeInvalid", "module": "common", "en": "Invalid promo code", "zh": "无效的优惠码", "vi": "Mã khuyến mại không hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeInvalidCannotRegister", "module": "common", "en": "Invalid promo code. Please check and try again or clear the promo code field", "zh": "优惠码无效，请检查后重试或清空优惠码", "vi": "Mã khuyến mại không hợp lệ. Kiểm tra lại hoặc xoá trường mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeLabel", "module": "common", "en": "Promo Code", "zh": "优惠码", "vi": "Mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeMaxUsed", "module": "common", "en": "This promo code has reached its usage limit", "zh": "此优惠码已达到使用上限", "vi": "Mã khuyến mại đã hết lượt dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeNotFound", "module": "common", "en": "Promo code not found", "zh": "优惠码不存在", "vi": "Không tìm thấy mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodePlaceholder", "module": "common", "en": "Enter promo code (optional)", "zh": "输入优惠码（可选）", "vi": "Nhập mã khuyến mại (tuỳ chọn)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.promoCodeValid", "module": "common", "en": "Valid! You will receive ${amount} bonus balance", "zh": "有效！注册后将获得 ${amount} 赠送余额", "vi": "Hợp lệ! Bạn sẽ nhận ${amount} số dư thưởng", "status": "draft", "placeholders": ["amount"], "notes": ""}
+{"key": "auth.promoCodeValidating", "module": "common", "en": "Promo code is being validated, please wait", "zh": "优惠码正在验证中，请稍候", "vi": "Đang kiểm tra mã khuyến mại, vui lòng chờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.registrationDisabled", "module": "common", "en": "Registration is currently disabled. Please contact the administrator.", "zh": "注册功能暂时关闭，请联系管理员。", "vi": "Đăng ký hiện đang tắt. Vui lòng liên hệ quản trị viên.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.registrationFailed", "module": "common", "en": "Registration failed. Please try again.", "zh": "注册失败，请重试。", "vi": "Đăng ký thất bại. Vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.reloginRequired", "module": "common", "en": "Session expired. Please log in again.", "zh": "会话已过期，请重新登录。", "vi": "Phiên đã hết hạn. Vui lòng đăng nhập lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.rememberMe", "module": "common", "en": "Remember me", "zh": "记住我", "vi": "Ghi nhớ đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.rememberedPassword", "module": "common", "en": "Remembered your password?", "zh": "想起密码了？", "vi": "Đã nhớ mật khẩu?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.requestNewResetLink", "module": "common", "en": "Request New Reset Link", "zh": "请求新的重置链接", "vi": "Yêu cầu liên kết đặt lại mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resendCode", "module": "common", "en": "Resend verification code", "zh": "重新发送验证码", "vi": "Gửi lại mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resendCountdown", "module": "common", "en": "Resend code in {countdown}s", "zh": "{countdown}秒后可重新发送", "vi": "Gửi lại mã sau {countdown}s", "status": "draft", "placeholders": ["countdown"], "notes": ""}
+{"key": "auth.resetEmailSent", "module": "common", "en": "Reset Link Sent", "zh": "重置链接已发送", "vi": "Đã gửi liên kết đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resetEmailSentHint", "module": "common", "en": "If an account exists with this email, you will receive a password reset link shortly. Please check your inbox and spam folder.", "zh": "如果该邮箱已注册，您将很快收到密码重置链接。请检查您的收件箱和垃圾邮件文件夹。", "vi": "Nếu có tài khoản với email này, bạn sẽ sớm nhận được liên kết đặt lại mật khẩu. Vui lòng kiểm tra hộp thư đến và thư rác.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resetPassword", "module": "common", "en": "Reset Password", "zh": "重置密码", "vi": "Đặt lại mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resetPasswordFailed", "module": "common", "en": "Failed to reset password. Please try again.", "zh": "重置密码失败，请重试。", "vi": "Không thể đặt lại mật khẩu. Vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resetPasswordHint", "module": "common", "en": "Enter your new password below.", "zh": "请在下方输入您的新密码。", "vi": "Nhập mật khẩu mới bên dưới.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resetPasswordTitle", "module": "common", "en": "Set New Password", "zh": "设置新密码", "vi": "Đặt mật khẩu mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.resettingPassword", "module": "common", "en": "Resetting...", "zh": "重置中...", "vi": "Đang đặt lại...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendCode", "module": "common", "en": "Send code", "zh": "发送验证码", "vi": "Gửi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendCodeDesc", "module": "common", "en": "We'll send a verification code to", "zh": "我们将发送验证码到", "vi": "Chúng tôi sẽ gửi mã xác minh tới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendCodeFailed", "module": "common", "en": "Failed to send verification code. Please try again.", "zh": "发送验证码失败，请重试。", "vi": "Gửi mã xác minh thất bại. Vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendResetLink", "module": "common", "en": "Send Reset Link", "zh": "发送重置链接", "vi": "Gửi liên kết đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendResetLinkFailed", "module": "common", "en": "Failed to send reset link. Please try again.", "zh": "发送重置链接失败，请重试。", "vi": "Không thể gửi liên kết đặt lại. Vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendingCode", "module": "common", "en": "Sending...", "zh": "发送中...", "vi": "Đang gửi...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sendingResetLink", "module": "common", "en": "Sending...", "zh": "发送中...", "vi": "Đang gửi...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sessionExpired", "module": "common", "en": "Session expired", "zh": "会话已过期", "vi": "Phiên đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.sessionExpiredDesc", "module": "common", "en": "Please go back to the registration page and start again.", "zh": "请返回注册页面重新开始。", "vi": "Hãy quay lại trang đăng ký và bắt đầu lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.signIn", "module": "common", "en": "Sign In", "zh": "登录", "vi": "Đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.signInToAccount", "module": "common", "en": "Sign in to your account to continue", "zh": "登录您的账户以继续", "vi": "Đăng nhập để tiếp tục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.signUp", "module": "common", "en": "Sign up", "zh": "注册", "vi": "Đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.signUpToStart", "module": "common", "en": "Sign up to start using {siteName}", "zh": "注册以开始使用 {siteName}", "vi": "Đăng ký để bắt đầu dùng {siteName}", "status": "draft", "placeholders": ["siteName"], "notes": ""}
+{"key": "auth.signingIn", "module": "common", "en": "Signing in...", "zh": "登录中...", "vi": "Đang đăng nhập...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.turnstileExpired", "module": "common", "en": "Verification expired, please try again", "zh": "验证已过期，请重试", "vi": "Xác minh hết hạn, vui lòng thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.turnstileFailed", "module": "common", "en": "Verification failed, please try again", "zh": "验证失败，请重试", "vi": "Xác minh thất bại, vui lòng thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.verificationCode", "module": "common", "en": "Verification Code", "zh": "验证码", "vi": "Mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.verificationCodeHint", "module": "common", "en": "Enter the 6-digit code sent to your email", "zh": "请输入发送到您邮箱的6位验证码", "vi": "Nhập mã 6 số đã gửi tới email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.verifyAndCreate", "module": "common", "en": "Verify & Create Account", "zh": "验证并创建账户", "vi": "Xác minh & tạo tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.verifyFailed", "module": "common", "en": "Verification failed. Please try again.", "zh": "验证失败，请重试。", "vi": "Xác minh thất bại. Vui lòng thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.verifyYourEmail", "module": "common", "en": "Verify Your Email", "zh": "验证您的邮箱", "vi": "Xác minh email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.verifying", "module": "common", "en": "Verifying...", "zh": "验证中...", "vi": "Đang xác minh...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatCallbackPageTitle", "module": "common", "en": "WeChat Sign-In Callback", "zh": "微信登录回调", "vi": "Callback đăng nhập WeChat", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatPayment.backToPayment", "module": "common", "en": "Back to payment", "zh": "返回支付页", "vi": "Quay lại thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatPayment.callbackMissingResumeToken", "module": "common", "en": "The WeChat payment callback is missing the resume token.", "zh": "微信支付回调缺少恢复令牌。", "vi": "Callback thanh toán WeChat thiếu token tiếp tục.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatPayment.callbackProcessing", "module": "common", "en": "Resuming WeChat payment...", "zh": "正在恢复微信支付...", "vi": "Đang tiếp tục thanh toán WeChat...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatPayment.callbackTitle", "module": "common", "en": "Resuming WeChat payment", "zh": "正在恢复微信支付", "vi": "Đang tiếp tục thanh toán WeChat", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatPaymentCallbackPageTitle", "module": "common", "en": "WeChat Payment Callback", "zh": "微信支付回调", "vi": "Callback thanh toán WeChat", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "auth.wechatProviderName", "module": "common", "en": "WeChat", "zh": "微信", "vi": "WeChat", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "auth.welcomeBack", "module": "common", "en": "Welcome Back", "zh": "欢迎回来", "vi": "Chào mừng trở lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.actions", "module": "common", "en": "Actions", "zh": "操作", "vi": "Thao tác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.active", "module": "common", "en": "Active", "zh": "启用", "vi": "Hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.add", "module": "common", "en": "Add", "zh": "添加", "vi": "Thêm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.all", "module": "common", "en": "All", "zh": "全部", "vi": "Tất cả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.autoRefresh.countdown", "module": "common", "en": "Auto refresh: {seconds}s", "zh": "自动刷新: {seconds}s", "vi": "Tự động làm mới: {seconds}s", "status": "draft", "placeholders": ["seconds"], "notes": ""}
+{"key": "common.autoRefresh.enable", "module": "common", "en": "Enable auto refresh", "zh": "启用自动刷新", "vi": "Bật tự động làm mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.autoRefresh.seconds", "module": "common", "en": "{n} seconds", "zh": "{n} 秒", "vi": "{n} giây", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "common.autoRefresh.title", "module": "common", "en": "Auto Refresh", "zh": "自动刷新", "vi": "Tự động làm mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.available", "module": "common", "en": "Available", "zh": "可用", "vi": "Khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.availableBalance", "module": "common", "en": "Available balance", "zh": "可用余额", "vi": "Số dư khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.back", "module": "common", "en": "Back", "zh": "返回", "vi": "Quay lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.balance", "module": "common", "en": "Balance", "zh": "余额", "vi": "Số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.cancel", "module": "common", "en": "Cancel", "zh": "取消", "vi": "Huỷ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.chooseFile", "module": "common", "en": "Choose File", "zh": "选择文件", "vi": "Chọn tệp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.close", "module": "common", "en": "Close", "zh": "关闭", "vi": "Đóng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.collapse", "module": "common", "en": "Collapse", "zh": "收起", "vi": "Thu gọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.confirm", "module": "common", "en": "Confirm", "zh": "确认", "vi": "Xác nhận", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.contactSupport", "module": "common", "en": "Contact Support", "zh": "联系客服", "vi": "Liên hệ hỗ trợ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.copied", "module": "common", "en": "Copied", "zh": "已复制", "vi": "Đã sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.copiedToClipboard", "module": "common", "en": "Copied to clipboard", "zh": "已复制到剪贴板", "vi": "Đã sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.copy", "module": "common", "en": "Copy", "zh": "复制", "vi": "Sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.copyFailed", "module": "common", "en": "Failed to copy", "zh": "复制失败", "vi": "Sao chép thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.create", "module": "common", "en": "Create", "zh": "创建", "vi": "Tạo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.critical", "module": "common", "en": "Critical", "zh": "严重", "vi": "Nghiêm trọng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.delete", "module": "common", "en": "Delete", "zh": "删除", "vi": "Xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.deleted", "module": "common", "en": "Deleted successfully", "zh": "删除成功", "vi": "Đã xóa thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.disabled", "module": "common", "en": "Disabled", "zh": "已禁用", "vi": "Đã tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.edit", "module": "common", "en": "Edit", "zh": "编辑", "vi": "Sửa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.email", "module": "common", "en": "Email", "zh": "邮箱", "vi": "Email", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "common.enabled", "module": "common", "en": "Enabled", "zh": "已启用", "vi": "Đã bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.error", "module": "common", "en": "Error", "zh": "错误", "vi": "Lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.expand", "module": "common", "en": "Expand", "zh": "展开", "vi": "Mở rộng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.export", "module": "common", "en": "Export", "zh": "导出", "vi": "Xuất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.filter", "module": "common", "en": "Filter", "zh": "筛选", "vi": "Lọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.frozenBalance", "module": "common", "en": "Frozen balance", "zh": "冻结金额", "vi": "Số dư tạm giữ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.import", "module": "common", "en": "Import", "zh": "导入", "vi": "Nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.inactive", "module": "common", "en": "Inactive", "zh": "禁用", "vi": "Không hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.info", "module": "common", "en": "Info", "zh": "提示", "vi": "Thông tin", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.invalidEmail", "module": "common", "en": "Please enter a valid email address", "zh": "请输入有效的邮箱地址", "vi": "Vui lòng nhập email hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.justNow", "module": "common", "en": "just now", "zh": "刚刚", "vi": "vừa xong", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.loading", "module": "common", "en": "Loading...", "zh": "加载中...", "vi": "Đang tải...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.minutes", "module": "common", "en": "min", "zh": "分钟", "vi": "phút", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.more", "module": "common", "en": "More", "zh": "更多", "vi": "Thêm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.name", "module": "common", "en": "Name", "zh": "名称", "vi": "Tên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.next", "module": "common", "en": "Next", "zh": "下一步", "vi": "Tiếp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.no", "module": "common", "en": "No", "zh": "否", "vi": "Không", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.noData", "module": "common", "en": "No data", "zh": "暂无数据", "vi": "Không có dữ liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.noGroupsAvailable", "module": "common", "en": "No groups available", "zh": "无可用分组", "vi": "Không có nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.noOptionsFound", "module": "common", "en": "No options found", "zh": "无匹配选项", "vi": "Không tìm thấy lựa chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.none", "module": "common", "en": "None", "zh": "无", "vi": "Không có", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.notAvailable", "module": "common", "en": "N/A", "zh": "不可用", "vi": "N/A", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "common.now", "module": "common", "en": "Now", "zh": "现在", "vi": "Bây giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.optional", "module": "common", "en": "optional", "zh": "可选", "vi": "tuỳ chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.password", "module": "common", "en": "Password", "zh": "密码", "vi": "Mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.peakRateImageNote", "module": "common", "en": "; image tokens billed as tokens are also affected, per-image billing is unaffected", "zh": "；token 计费的图片 token 同样适用，图片按次计费不受高峰影响", "vi": "; token hình ảnh được tính phí theo token cũng bị ảnh hưởng, cách tính phí theo từng hình ảnh không đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.peakRateTooltip", "module": "common", "en": "Peak rate: {window}", "zh": "高峰倍率：{window}", "vi": "Mức giá giờ cao điểm: {window}", "status": "draft", "placeholders": ["window"], "notes": ""}
+{"key": "common.processing", "module": "common", "en": "Processing...", "zh": "处理中...", "vi": "Đang xử lý...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.refresh", "module": "common", "en": "Refresh", "zh": "刷新", "vi": "Làm mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.reset", "module": "common", "en": "Reset", "zh": "重置", "vi": "Đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.save", "module": "common", "en": "Save", "zh": "保存", "vi": "Lưu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.saved", "module": "common", "en": "Saved successfully", "zh": "保存成功", "vi": "Đã lưu thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.saving", "module": "common", "en": "Saving...", "zh": "保存中...", "vi": "Đang lưu...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.search", "module": "common", "en": "Search", "zh": "搜索", "vi": "Tìm kiếm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.searchPlaceholder", "module": "common", "en": "Search...", "zh": "搜索...", "vi": "Tìm kiếm...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.selectAll", "module": "common", "en": "Select all", "zh": "全选", "vi": "Chọn tất cả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.selectOption", "module": "common", "en": "Select an option", "zh": "请选择", "vi": "Chọn một mục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.selectedCount", "module": "common", "en": "({count} selected)", "zh": "（已选 {count} 个）", "vi": "({count} đã chọn)", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "common.settings", "module": "common", "en": "Settings", "zh": "设置", "vi": "Cài đặt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.status", "module": "common", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.submit", "module": "common", "en": "Submit", "zh": "提交", "vi": "Gửi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.submitting", "module": "common", "en": "Submitting...", "zh": "提交中...", "vi": "Đang gửi...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.success", "module": "common", "en": "Success", "zh": "成功", "vi": "Thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.time.countdown.daysHours", "module": "common", "en": "{d}d {h}h", "zh": "{d}d {h}h", "vi": "{d} ngày {h} giờ", "status": "draft", "placeholders": ["d", "h"], "notes": ""}
+{"key": "common.time.countdown.hoursMinutes", "module": "common", "en": "{h}h {m}m", "zh": "{h}h {m}m", "vi": "{h} giờ {m} phút", "status": "draft", "placeholders": ["h", "m"], "notes": ""}
+{"key": "common.time.countdown.minutes", "module": "common", "en": "{m}m", "zh": "{m}m", "vi": "{m} phút", "status": "draft", "placeholders": ["m"], "notes": ""}
+{"key": "common.time.countdown.withSuffix", "module": "common", "en": "{time} to lift", "zh": "{time} 后解除", "vi": "gỡ sau {time}", "status": "draft", "placeholders": ["time"], "notes": ""}
+{"key": "common.time.daysAgo", "module": "common", "en": "{n}d ago", "zh": "{n}天前", "vi": "{n} ngày trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "common.time.hoursAgo", "module": "common", "en": "{n}h ago", "zh": "{n}小时前", "vi": "{n} giờ trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "common.time.justNow", "module": "common", "en": "Just now", "zh": "刚刚", "vi": "Vừa xong", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.time.minutesAgo", "module": "common", "en": "{n}m ago", "zh": "{n}分钟前", "vi": "{n} phút trước", "status": "draft", "placeholders": ["n"], "notes": ""}
+{"key": "common.time.never", "module": "common", "en": "Never", "zh": "从未", "vi": "Chưa bao giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.today", "module": "common", "en": "Today", "zh": "今天", "vi": "Hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.tomorrow", "module": "common", "en": "Tomorrow", "zh": "明天", "vi": "Ngày mai", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.total", "module": "common", "en": "Total", "zh": "总计", "vi": "Tổng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.totalBalance", "module": "common", "en": "Total balance", "zh": "总余额", "vi": "Tổng số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.unknown", "module": "common", "en": "Unknown", "zh": "未知", "vi": "Không rõ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.unknownError", "module": "common", "en": "Unknown error occurred", "zh": "发生未知错误", "vi": "Đã xảy ra lỗi không xác định", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.update", "module": "common", "en": "Update", "zh": "更新", "vi": "Cập nhật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.verifying", "module": "common", "en": "Verifying...", "zh": "验证中...", "vi": "Đang xác minh...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.view", "module": "common", "en": "View", "zh": "查看", "vi": "Xem", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.warning", "module": "common", "en": "Warning", "zh": "警告", "vi": "Cảnh báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "common.yes", "module": "common", "en": "Yes", "zh": "是", "vi": "Có", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.accounts", "module": "common", "en": "Accounts", "zh": "账号管理", "vi": "Tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.affiliate", "module": "common", "en": "Affiliate Rebates", "zh": "邀请返利", "vi": "Hoa hồng tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.affiliateInviteRecords", "module": "common", "en": "Invite Records", "zh": "邀请记录", "vi": "Lịch sử lời mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.affiliateManagement", "module": "common", "en": "Affiliate Rebates", "zh": "邀请返利", "vi": "Hoàn tiền tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.affiliateRebateRecords", "module": "common", "en": "Rebate Records", "zh": "返利记录", "vi": "Lịch sử hoàn tiền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.affiliateTransferRecords", "module": "common", "en": "Transfer Records", "zh": "提取记录", "vi": "Lịch sử chuyển khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.announcements", "module": "common", "en": "Announcements", "zh": "公告", "vi": "Thông báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.apiKeys", "module": "common", "en": "API Keys", "zh": "API 密钥", "vi": "Khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.availableChannels", "module": "common", "en": "Available Channels", "zh": "可用渠道", "vi": "Kênh khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.batchImage", "module": "common", "en": "Batch Images", "zh": "批量生图", "vi": "Sinh ảnh hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.buySubscription", "module": "common", "en": "Recharge / Subscription", "zh": "充值/订阅", "vi": "Nạp / Đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.channelManagement", "module": "common", "en": "Channels", "zh": "渠道管理", "vi": "Kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.channelMonitor", "module": "common", "en": "Channel Monitor", "zh": "渠道监控", "vi": "Giám sát kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.channelPricing", "module": "common", "en": "Channel Pricing", "zh": "渠道定价", "vi": "Giá kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.channelStatus", "module": "common", "en": "Channel Status", "zh": "渠道状态", "vi": "Trạng thái kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.channels", "module": "common", "en": "Channels", "zh": "渠道管理", "vi": "Kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.collapse", "module": "common", "en": "Collapse", "zh": "收起", "vi": "Thu gọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.darkMode", "module": "common", "en": "Dark Mode", "zh": "深色模式", "vi": "Giao diện tối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.dashboard", "module": "common", "en": "Dashboard", "zh": "仪表盘", "vi": "Bảng điều khiển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.docs", "module": "common", "en": "Docs", "zh": "文档", "vi": "Tài liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.expand", "module": "common", "en": "Expand", "zh": "展开", "vi": "Mở rộng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.github", "module": "common", "en": "GitHub", "zh": "GitHub", "vi": "GitHub", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "nav.groups", "module": "common", "en": "Groups", "zh": "分组管理", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.lightMode", "module": "common", "en": "Light Mode", "zh": "浅色模式", "vi": "Giao diện sáng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.logout", "module": "common", "en": "Logout", "zh": "退出登录", "vi": "Đăng xuất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.myAccount", "module": "common", "en": "My Account", "zh": "我的账户", "vi": "Tài khoản của tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.myOrders", "module": "common", "en": "My Orders", "zh": "我的订单", "vi": "Đơn hàng của tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.mySubscriptions", "module": "common", "en": "My Subscriptions", "zh": "我的订阅", "vi": "Gói của tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.ops", "module": "common", "en": "Ops", "zh": "运维监控", "vi": "Vận hành", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.orderManagement", "module": "common", "en": "Orders", "zh": "订单管理", "vi": "Đơn hàng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.paymentConfig", "module": "common", "en": "Payment Config", "zh": "支付配置", "vi": "Cấu hình thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.paymentDashboard", "module": "common", "en": "Payment Dashboard", "zh": "支付概览", "vi": "Bảng thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.paymentPlans", "module": "common", "en": "Plans", "zh": "订阅套餐", "vi": "Gói", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.profile", "module": "common", "en": "Profile", "zh": "个人资料", "vi": "Hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.promoCodes", "module": "common", "en": "Promo Codes", "zh": "优惠码", "vi": "Mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.proxies", "module": "common", "en": "Proxies", "zh": "IP管理", "vi": "Proxy", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.redeem", "module": "common", "en": "Redeem", "zh": "兑换", "vi": "Đổi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.redeemCodes", "module": "common", "en": "Redeem Codes", "zh": "兑换码", "vi": "Mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.riskControl", "module": "common", "en": "Risk Control", "zh": "风控中心", "vi": "Kiểm soát rủi ro", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.settings", "module": "common", "en": "Settings", "zh": "系统设置", "vi": "Cài đặt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.subscriptions", "module": "common", "en": "Subscriptions", "zh": "订阅管理", "vi": "Gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.usage", "module": "common", "en": "Usage", "zh": "使用记录", "vi": "Mức dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "nav.users", "module": "common", "en": "Users", "zh": "用户管理", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}

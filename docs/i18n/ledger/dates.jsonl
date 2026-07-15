@@ -1,0 +1,15 @@
+{"key": "dates.apply", "module": "dates", "en": "Apply", "zh": "应用", "vi": "Áp dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.custom", "module": "dates", "en": "Custom", "zh": "自定义", "vi": "Tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.endDate", "module": "dates", "en": "End Date", "zh": "结束日期", "vi": "Ngày kết thúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.last14Days", "module": "dates", "en": "Last 14 Days", "zh": "近 14 天", "vi": "14 ngày qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.last24Hours", "module": "dates", "en": "Last 24 Hours", "zh": "近24小时", "vi": "24 giờ qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.last30Days", "module": "dates", "en": "Last 30 Days", "zh": "近 30 天", "vi": "30 ngày qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.last7Days", "module": "dates", "en": "Last 7 Days", "zh": "近 7 天", "vi": "7 ngày qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.lastMonth", "module": "dates", "en": "Last Month", "zh": "上月", "vi": "Tháng trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.lastWeek", "module": "dates", "en": "Last Week", "zh": "上周", "vi": "Tuần trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.selectDateRange", "module": "dates", "en": "Select date range", "zh": "选择日期范围", "vi": "Chọn khoảng ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.startDate", "module": "dates", "en": "Start Date", "zh": "开始日期", "vi": "Ngày bắt đầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.thisMonth", "module": "dates", "en": "This Month", "zh": "本月", "vi": "Tháng này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.thisWeek", "module": "dates", "en": "This Week", "zh": "本周", "vi": "Tuần này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.today", "module": "dates", "en": "Today", "zh": "今天", "vi": "Hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dates.yesterday", "module": "dates", "en": "Yesterday", "zh": "昨天", "vi": "Hôm qua", "status": "draft", "placeholders": [], "notes": ""}

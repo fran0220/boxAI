@@ -32,11 +32,17 @@ Lock these before translating a wave. Update this table when introducing a new p
 | Turnstile | Turnstile | Turnstile | Cloudflare product |
 | Compliance | 合规 | Tuân thủ | Admin legal ack (content stays Sub2API en/zh) |
 | Ops | 运维 | Vận hành | Admin ops dashboard |
-| Affliate | 推广 / 返佣 | Tiếp thị liên kết | |
+| Affiliate | 推广 / 返佣 | Tiếp thị liên kết | |
+| Rebate | 返佣 | Hoàn tiền | Invite-based rebate, not a price discount |
 | Announcement | 公告 | Thông báo | |
 | Setup wizard | 安装向导 | Trình cài đặt | |
 | Email verification code | 邮箱验证码 | Mã xác minh email | |
 | Password reset | 密码重置 | Đặt lại mật khẩu | |
+| Upstream | 上游 | Thượng nguồn | Provider/account traffic |
+| Endpoint | 端点 | Điểm cuối | Keep literal URLs and paths unchanged |
+| Client ID / Client Secret | 客户端 ID / 客户端密钥 | Client ID / Client Secret | OAuth field names stay technical |
+| Cache | 缓存 | Bộ nhớ đệm | |
+| Content moderation | 内容审计 / 内容审核 | Kiểm duyệt nội dung | |
 
 ## Do not translate
 

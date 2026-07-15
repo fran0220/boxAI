@@ -78,6 +78,13 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/i18n/locales/{en,zh,vi}/*` | Product copy (landing/dashboard/settings/misc/batchImage + admin) |
 | `frontend/src/i18n/localeMeta.ts` | Locale codes, BCP-47, compliance language map |
 | `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage (+ legacy key) |
+| `frontend/src/components/auth/WechatOAuthSection.vue` | Explicit Vietnamese WeChat availability guidance |
+| `frontend/src/views/admin/SettingsView.vue` | Product settings copy and documentation links support zh/en/vi |
+| `frontend/src/views/admin/settings/EmailTemplateEditor.vue` | Vietnamese email-event metadata and locale-aware administration copy |
+| `frontend/src/views/user/BatchImageGuideView.vue` | Vietnamese page guidance and downloadable Agent Skill instructions |
+| `frontend/src/views/KeyUsageView.vue` | Locale-backed quota period abbreviations |
+| `frontend/src/components/payment/PaymentProviderDialog.vue` | Locale-backed custom payment-method placeholder |
+| `frontend/src/components/payment/__tests__/PaymentProviderDialog.spec.ts` | Locale-backed payment placeholder regression coverage |
 | `backend/internal/service/notification_email_templates_vi.go` | Official Vietnamese email templates |
 | `backend/internal/service/notification_email_service.go` | BOXAI: `vi` in locale list + normalize |
 | Related views/components listed in brand rollout | Prefer import from `brand.ts` |

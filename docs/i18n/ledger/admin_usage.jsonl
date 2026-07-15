@@ -1,0 +1,79 @@
+{"key": "admin.usage.account", "module": "admin.usage", "en": "Account", "zh": "账户", "vi": "Tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.allAccounts", "module": "admin.usage", "en": "All Accounts", "zh": "全部账户", "vi": "Tất cả tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.allBillingModes", "module": "admin.usage", "en": "All Billing Modes", "zh": "全部计费模式", "vi": "Tất cả chế độ thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.allBillingTypes", "module": "admin.usage", "en": "All Billing Types", "zh": "全部计费类型", "vi": "Tất cả loại thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.allGroups", "module": "admin.usage", "en": "All Groups", "zh": "全部分组", "vi": "Tất cả nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.allModels", "module": "admin.usage", "en": "All Models", "zh": "全部模型", "vi": "Tất cả mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.allTypes", "module": "admin.usage", "en": "All Types", "zh": "全部类型", "vi": "Tất cả loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.billingMode", "module": "admin.usage", "en": "Billing Mode", "zh": "计费模式", "vi": "Chế độ thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.billingModeImage", "module": "admin.usage", "en": "Image", "zh": "按次(图片)", "vi": "Hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.billingModePerRequest", "module": "admin.usage", "en": "Per Request", "zh": "按次", "vi": "Theo yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.billingModeToken", "module": "admin.usage", "en": "Token", "zh": "按量", "vi": "Token", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "admin.usage.billingModeVideo", "module": "admin.usage", "en": "Video", "zh": "按次(视频)", "vi": "Video", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "admin.usage.billingType", "module": "admin.usage", "en": "Billing Type", "zh": "计费类型", "vi": "Loại thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.billingTypeBalance", "module": "admin.usage", "en": "Balance", "zh": "钱包余额", "vi": "Số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.billingTypeSubscription", "module": "admin.usage", "en": "Subscription", "zh": "订阅套餐", "vi": "Gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cacheCreation1hTokens", "module": "admin.usage", "en": "Cache Write", "zh": "缓存创建", "vi": "Ghi bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cacheCreation5mTokens", "module": "admin.usage", "en": "Cache Write", "zh": "缓存创建", "vi": "Ghi bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cacheCreationCost", "module": "admin.usage", "en": "Cache Creation Cost", "zh": "缓存创建费用", "vi": "Chi phí tạo bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cacheCreationTokens", "module": "admin.usage", "en": "Cache Creation Tokens", "zh": "缓存创建 Token", "vi": "Token tạo bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cacheReadCost", "module": "admin.usage", "en": "Cache Read Cost", "zh": "缓存读取费用", "vi": "Chi phí đọc bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cacheReadTokens", "module": "admin.usage", "en": "Cache Read Tokens", "zh": "缓存读取 Token", "vi": "Token đọc bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.button", "module": "admin.usage", "en": "Cleanup", "zh": "清理", "vi": "Dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.cancel", "module": "admin.usage", "en": "Cancel", "zh": "取消任务", "vi": "Hủy", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.cancelConfirm", "module": "admin.usage", "en": "Confirm Cancel", "zh": "确认取消", "vi": "Xác nhận hủy", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.cancelConfirmMessage", "module": "admin.usage", "en": "Are you sure you want to cancel this cleanup task?", "zh": "确定要取消该清理任务吗？", "vi": "Bạn có chắc muốn hủy tác vụ dọn dẹp này không?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.cancelConfirmTitle", "module": "admin.usage", "en": "Confirm Cancel", "zh": "确认取消", "vi": "Xác nhận hủy", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.cancelFailed", "module": "admin.usage", "en": "Failed to cancel cleanup task", "zh": "取消清理任务失败", "vi": "Không thể hủy tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.cancelSuccess", "module": "admin.usage", "en": "Cleanup task canceled", "zh": "清理任务已取消", "vi": "Đã hủy tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.confirmMessage", "module": "admin.usage", "en": "Are you sure you want to submit this cleanup task? This action cannot be undone.", "zh": "确定要提交清理任务吗？清理不可恢复。", "vi": "Bạn có chắc muốn gửi tác vụ dọn dẹp này không? Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.confirmSubmit", "module": "admin.usage", "en": "Confirm Cleanup", "zh": "确认清理", "vi": "Xác nhận dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.confirmTitle", "module": "admin.usage", "en": "Confirm Cleanup", "zh": "确认清理", "vi": "Xác nhận dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.deletedRows", "module": "admin.usage", "en": "Deleted", "zh": "删除数量", "vi": "Đã xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.loadFailed", "module": "admin.usage", "en": "Failed to load cleanup tasks", "zh": "加载清理任务失败", "vi": "Không thể tải tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.loadingTasks", "module": "admin.usage", "en": "Loading tasks...", "zh": "正在加载任务...", "vi": "Đang tải tác vụ...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.missingRange", "module": "admin.usage", "en": "Please select a date range", "zh": "请选择时间范围", "vi": "Vui lòng chọn khoảng ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.noTasks", "module": "admin.usage", "en": "No cleanup tasks yet", "zh": "暂无清理任务", "vi": "Chưa có tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.range", "module": "admin.usage", "en": "Range", "zh": "时间范围", "vi": "Phạm vi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.recentTasks", "module": "admin.usage", "en": "Recent Cleanup Tasks", "zh": "最近清理任务", "vi": "Tác vụ dọn dẹp gần đây", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.status.canceled", "module": "admin.usage", "en": "Canceled", "zh": "已取消", "vi": "Đã hủy", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.status.failed", "module": "admin.usage", "en": "Failed", "zh": "失败", "vi": "Thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.status.pending", "module": "admin.usage", "en": "Pending", "zh": "待执行", "vi": "Đang chờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.status.running", "module": "admin.usage", "en": "Running", "zh": "执行中", "vi": "Đang chạy", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.status.succeeded", "module": "admin.usage", "en": "Succeeded", "zh": "已完成", "vi": "Thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.submit", "module": "admin.usage", "en": "Submit Cleanup", "zh": "提交清理", "vi": "Gửi tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.submitFailed", "module": "admin.usage", "en": "Failed to create cleanup task", "zh": "创建清理任务失败", "vi": "Không thể tạo tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.submitSuccess", "module": "admin.usage", "en": "Cleanup task created", "zh": "清理任务已创建", "vi": "Đã tạo tác vụ dọn dẹp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.submitting", "module": "admin.usage", "en": "Submitting...", "zh": "提交中...", "vi": "Đang gửi...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.title", "module": "admin.usage", "en": "Cleanup Usage Records", "zh": "清理使用记录", "vi": "Dọn dẹp bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.cleanup.warning", "module": "admin.usage", "en": "Cleanup is irreversible and will affect historical stats.", "zh": "清理不可恢复，且会影响历史统计回看。", "vi": "Không thể hoàn tác việc dọn dẹp và thao tác này sẽ ảnh hưởng đến thống kê lịch sử.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.clickToViewBalance", "module": "admin.usage", "en": "Click to view balance history", "zh": "点击查看充值记录", "vi": "Nhấp để xem lịch sử số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.description", "module": "admin.usage", "en": "View and manage all user usage records", "zh": "查看和管理所有用户的使用记录", "vi": "Xem và quản lý tất cả bản ghi sử dụng của người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.failedToLoad", "module": "admin.usage", "en": "Failed to load usage records", "zh": "加载使用记录失败", "vi": "Không thể tải bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.failedToLoadUser", "module": "admin.usage", "en": "Failed to load user info", "zh": "加载用户信息失败", "vi": "Không thể tải thông tin người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.group", "module": "admin.usage", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.inputCost", "module": "admin.usage", "en": "Input Cost", "zh": "输入费用", "vi": "Chi phí đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.inputTokens", "module": "admin.usage", "en": "Input Tokens", "zh": "输入 Token", "vi": "Token đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.ipAddress", "module": "admin.usage", "en": "IP", "zh": "IP", "vi": "IP", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "admin.usage.outputCost", "module": "admin.usage", "en": "Output Cost", "zh": "输出费用", "vi": "Chi phí đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.outputTokens", "module": "admin.usage", "en": "Output Tokens", "zh": "输出 Token", "vi": "Token đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.requestId", "module": "admin.usage", "en": "Request ID", "zh": "请求ID", "vi": "Request ID", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "admin.usage.requestIdCopied", "module": "admin.usage", "en": "Request ID copied", "zh": "请求ID已复制", "vi": "Đã sao chép ID yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.searchAccountPlaceholder", "module": "admin.usage", "en": "Search account by name...", "zh": "按名称搜索账号...", "vi": "Tìm tài khoản theo tên...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.searchApiKeyPlaceholder", "module": "admin.usage", "en": "Search API key by name...", "zh": "按名称搜索 API 密钥...", "vi": "Tìm khóa API theo tên...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.searchUserPlaceholder", "module": "admin.usage", "en": "Search user by email...", "zh": "按邮箱搜索用户...", "vi": "Tìm người dùng theo email...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.selectedUser", "module": "admin.usage", "en": "Selected", "zh": "已选择", "vi": "Đã chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.title", "module": "admin.usage", "en": "Usage Records", "zh": "使用记录", "vi": "Bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.cacheTokens", "module": "admin.usage", "en": "Cache Tokens", "zh": "缓存 Token", "vi": "Token bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.cost", "module": "admin.usage", "en": "Cost", "zh": "费用", "vi": "Chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.inputTokens", "module": "admin.usage", "en": "Input Tokens", "zh": "输入 Token", "vi": "Token đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.outputTokens", "module": "admin.usage", "en": "Output Tokens", "zh": "输出 Token", "vi": "Token đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.requests", "module": "admin.usage", "en": "Requests", "zh": "请求数", "vi": "Yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.totalTokens", "module": "admin.usage", "en": "Total Tokens", "zh": "总 Token", "vi": "Tổng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.columns.user", "module": "admin.usage", "en": "User", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.rowHint", "module": "admin.usage", "en": "Click to view this user's usage details", "zh": "点击查看该用户的用量明细", "vi": "Nhấp để xem chi tiết sử dụng của người dùng này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.subtitle", "module": "admin.usage", "en": "Per-user token usage for the current filters and time range", "zh": "按当前筛选与时间范围统计每个用户的 Token 用量", "vi": "Mức sử dụng token theo người dùng với bộ lọc và khoảng thời gian hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.tokenRanking.userCount", "module": "admin.usage", "en": "{count} users", "zh": "共 {count} 位用户", "vi": "{count} người dùng", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "admin.usage.user", "module": "admin.usage", "en": "User", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.userDeletedBadge", "module": "admin.usage", "en": "Deleted", "zh": "已删除", "vi": "Đã xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.usage.userFilter", "module": "admin.usage", "en": "User", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}

@@ -45,6 +45,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# i18n tooling temp bundles
+tools/i18n/.bundle_*.mjs
+
 # ===================
 # 环境配置
 # ===================

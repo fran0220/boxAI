@@ -137,6 +137,10 @@ export default {
 
   // Key Usage Query Page
   keyUsage: {
+    // BOXAI: Quota period abbreviations are locale data for explicit vi support.
+    dailyShort: '日',
+    weeklyShort: '周',
+    monthlyShort: '月',
     title: 'API Key 用量查询',
     subtitle: '输入您的 API Key 以查看实时消费金额与使用状态',
     placeholder: 'sk-ant-mirror-xxxxxxxxxxxx',

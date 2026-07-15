@@ -1,0 +1,114 @@
+{"key": "admin.redeem.allStatus", "module": "admin.redeem", "en": "All Status", "zh": "全部状态", "vi": "Tất cả trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.allTypes", "module": "admin.redeem", "en": "All Types", "zh": "全部类型", "vi": "Tất cả loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.amount", "module": "admin.redeem", "en": "Amount ($)", "zh": "金额 ($)", "vi": "Số tiền ($)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.balance", "module": "admin.redeem", "en": "Balance", "zh": "余额", "vi": "Số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchFields.expiresAt", "module": "admin.redeem", "en": "Expires At", "zh": "过期时间", "vi": "Hết hạn lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchFields.group", "module": "admin.redeem", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchFields.notes", "module": "admin.redeem", "en": "Notes", "zh": "备注", "vi": "Ghi chú", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchFields.status", "module": "admin.redeem", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchNotesPlaceholder", "module": "admin.redeem", "en": "Enter the new note, or leave blank to clear it", "zh": "输入新的备注，留空可清空备注", "vi": "Nhập ghi chú mới hoặc để trống để xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchUpdate", "module": "admin.redeem", "en": "Batch Update", "zh": "批量修改", "vi": "Cập nhật hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.batchUpdateSuccess", "module": "admin.redeem", "en": "Updated {count} redeem code(s)", "zh": "成功修改 {count} 个兑换码", "vi": "Đã cập nhật {count} mã đổi", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "admin.redeem.batchUpdateTitle", "module": "admin.redeem", "en": "Batch Update Redeem Codes", "zh": "批量修改兑换码", "vi": "Cập nhật mã đổi hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.clearGroup", "module": "admin.redeem", "en": "Clear group", "zh": "清空分组", "vi": "Xóa nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.clearSelection", "module": "admin.redeem", "en": "Clear selection", "zh": "清空选择", "vi": "Bỏ lựa chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codeDeleted", "module": "admin.redeem", "en": "Redeem code deleted successfully", "zh": "兑换码删除成功", "vi": "Đã xóa mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codeDeletedSuccess", "module": "admin.redeem", "en": "Redeem code deleted successfully", "zh": "兑换码删除成功", "vi": "Đã xóa mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codeDisabledSuccess", "module": "admin.redeem", "en": "Redeem code disabled", "zh": "兑换码已禁用", "vi": "Đã tắt mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codeEnabledSuccess", "module": "admin.redeem", "en": "Redeem code enabled", "zh": "兑换码已启用", "vi": "Đã bật mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codeExpiry", "module": "admin.redeem", "en": "Code Expiry", "zh": "兑换码过期", "vi": "Thời hạn mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codeType", "module": "admin.redeem", "en": "Code Type", "zh": "类型", "vi": "Loại mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codesCreated", "module": "admin.redeem", "en": "{count} redeem code(s) created", "zh": "已创建 {count} 个兑换码", "vi": "Đã tạo {count} mã đổi", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "admin.redeem.codesDeleted", "module": "admin.redeem", "en": "Successfully deleted {count} unused code(s)", "zh": "成功删除 {count} 个未使用的兑换码", "vi": "Đã xóa {count} mã chưa dùng", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "admin.redeem.codesExported", "module": "admin.redeem", "en": "Codes exported successfully", "zh": "兑换码导出成功", "vi": "Đã xuất mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.codesGeneratedSuccess", "module": "admin.redeem", "en": "Redeem codes generated successfully, {count} total", "zh": "兑换码生成成功，共 {count} 个", "vi": "Đã tạo mã đổi, tổng cộng {count}", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "admin.redeem.columns.actions", "module": "admin.redeem", "en": "Actions", "zh": "操作", "vi": "Thao tác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.code", "module": "admin.redeem", "en": "Code", "zh": "兑换码", "vi": "Mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.createdAt", "module": "admin.redeem", "en": "Created At", "zh": "创建时间", "vi": "Tạo lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.expiresAt", "module": "admin.redeem", "en": "Expires At", "zh": "过期时间", "vi": "Hết hạn lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.status", "module": "admin.redeem", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.type", "module": "admin.redeem", "en": "Type", "zh": "类型", "vi": "Loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.usedAt", "module": "admin.redeem", "en": "Used At", "zh": "使用时间", "vi": "Dùng lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.usedBy", "module": "admin.redeem", "en": "Used By", "zh": "使用者", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.columns.value", "module": "admin.redeem", "en": "Value", "zh": "面值", "vi": "Giá trị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.concurrency", "module": "admin.redeem", "en": "Concurrency", "zh": "并发数", "vi": "Mức đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.copied", "module": "admin.redeem", "en": "Copied!", "zh": "已复制！", "vi": "Đã sao chép!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.copyAll", "module": "admin.redeem", "en": "Copy All", "zh": "全部复制", "vi": "Sao chép tất cả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.copyCode", "module": "admin.redeem", "en": "Copy", "zh": "复制", "vi": "Sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.count", "module": "admin.redeem", "en": "Count", "zh": "数量", "vi": "Số lượng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.customExpiry", "module": "admin.redeem", "en": "Custom", "zh": "自定义", "vi": "Tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.customExpiryDays", "module": "admin.redeem", "en": "Custom days", "zh": "自定义天数", "vi": "Số ngày tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.days", "module": "admin.redeem", "en": " days", "zh": "天", "vi": " ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.deleteAll", "module": "admin.redeem", "en": "Delete All", "zh": "全部删除", "vi": "Xóa tất cả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.deleteAllUnused", "module": "admin.redeem", "en": "Delete All Unused Codes", "zh": "删除全部未使用", "vi": "Xóa tất cả mã chưa dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.deleteAllUnusedConfirm", "module": "admin.redeem", "en": "Are you sure you want to delete all unused (active) redeem codes? This action cannot be undone.", "zh": "确定要删除全部未使用的兑换码吗？此操作无法撤销。", "vi": "Bạn có chắc muốn xóa tất cả mã đổi chưa dùng (đang hoạt động)? Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.deleteCode", "module": "admin.redeem", "en": "Delete Redeem Code", "zh": "删除", "vi": "Xóa mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.deleteCodeConfirm", "module": "admin.redeem", "en": "Are you sure you want to delete this redeem code? This action cannot be undone.", "zh": "确定要删除此兑换码吗？此操作无法撤销。", "vi": "Bạn có chắc muốn xóa mã đổi này? Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.deleteConfirmMessage", "module": "admin.redeem", "en": "Are you sure you want to delete this redeem code?", "zh": "确定要删除此兑换码吗？", "vi": "Bạn có chắc muốn xóa mã đổi này?", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.description", "module": "admin.redeem", "en": "Generate and manage redeem codes", "zh": "生成和管理兑换码", "vi": "Tạo và quản lý mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.disableCode", "module": "admin.redeem", "en": "Disable", "zh": "禁用", "vi": "Tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.download", "module": "admin.redeem", "en": "Download", "zh": "下载", "vi": "Tải xuống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.enableCode", "module": "admin.redeem", "en": "Enable", "zh": "启用", "vi": "Bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.expiryDaysRequired", "module": "admin.redeem", "en": "Please enter a valid expiry day count", "zh": "请输入有效的过期天数", "vi": "Vui lòng nhập số ngày hết hạn hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.expiryPresetDays", "module": "admin.redeem", "en": "{days} days", "zh": "{days} 天", "vi": "{days} ngày", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "admin.redeem.exportCsv", "module": "admin.redeem", "en": "Export CSV", "zh": "导出 CSV", "vi": "Xuất CSV", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToBatchUpdate", "module": "admin.redeem", "en": "Failed to batch update redeem codes", "zh": "批量修改兑换码失败", "vi": "Không thể cập nhật mã đổi hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToCopy", "module": "admin.redeem", "en": "Failed to copy codes", "zh": "复制失败", "vi": "Không thể sao chép mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToDelete", "module": "admin.redeem", "en": "Failed to delete code", "zh": "删除兑换码失败", "vi": "Không thể xóa mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToDeleteUnused", "module": "admin.redeem", "en": "Failed to delete unused codes", "zh": "删除未使用的兑换码失败", "vi": "Không thể xóa mã chưa dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToExport", "module": "admin.redeem", "en": "Failed to export codes", "zh": "导出兑换码失败", "vi": "Không thể xuất mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToGenerate", "module": "admin.redeem", "en": "Failed to generate codes", "zh": "生成兑换码失败", "vi": "Không thể tạo mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToLoad", "module": "admin.redeem", "en": "Failed to load redeem codes", "zh": "加载兑换码列表失败", "vi": "Không thể tải mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.failedToUpdate", "module": "admin.redeem", "en": "Failed to update redeem code", "zh": "更新兑换码失败", "vi": "Không thể cập nhật mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.filters.allStatuses", "module": "admin.redeem", "en": "All Status", "zh": "全部状态", "vi": "Tất cả trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.filters.allTypes", "module": "admin.redeem", "en": "All Types", "zh": "全部类型", "vi": "Tất cả loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.filters.search", "module": "admin.redeem", "en": "Search codes", "zh": "搜索兑换码", "vi": "Tìm mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.filters.status", "module": "admin.redeem", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.filters.type", "module": "admin.redeem", "en": "Type", "zh": "类型", "vi": "Loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.balanceHint", "module": "admin.redeem", "en": "Balance amount (USD)", "zh": "余额金额（美元）", "vi": "Số tiền số dư (USD)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.concurrencyHint", "module": "admin.redeem", "en": "Concurrency increment", "zh": "并发数增量", "vi": "Mức tăng đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.countHint", "module": "admin.redeem", "en": "Number of redeem codes to generate", "zh": "要生成的兑换码数量", "vi": "Số mã đổi cần tạo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.countLabel", "module": "admin.redeem", "en": "Count", "zh": "数量", "vi": "Số lượng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.countPlaceholder", "module": "admin.redeem", "en": "Enter count", "zh": "请输入数量", "vi": "Nhập số lượng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.expiresLabel", "module": "admin.redeem", "en": "Expires At (Optional)", "zh": "过期时间（可选）", "vi": "Hết hạn lúc (Tùy chọn)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.prefixLabel", "module": "admin.redeem", "en": "Prefix (Optional)", "zh": "前缀（可选）", "vi": "Tiền tố (Tùy chọn)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.prefixPlaceholder", "module": "admin.redeem", "en": "e.g., GIFT", "zh": "例如：GIFT", "vi": "ví dụ: GIFT", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.selectType", "module": "admin.redeem", "en": "Select type", "zh": "选择类型", "vi": "Chọn loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.typeLabel", "module": "admin.redeem", "en": "Type", "zh": "类型", "vi": "Loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.valueLabel", "module": "admin.redeem", "en": "Value", "zh": "面值", "vi": "Giá trị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.form.valuePlaceholder", "module": "admin.redeem", "en": "Enter value", "zh": "请输入面值", "vi": "Nhập giá trị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.generate", "module": "admin.redeem", "en": "Generate", "zh": "生成", "vi": "Tạo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.generateCodes", "module": "admin.redeem", "en": "Generate Codes", "zh": "生成兑换码", "vi": "Tạo mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.generateCodesTitle", "module": "admin.redeem", "en": "Generate Redeem Codes", "zh": "生成兑换码", "vi": "Tạo mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.generatedSuccessfully", "module": "admin.redeem", "en": "Generated Successfully", "zh": "生成成功", "vi": "Tạo thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.generating", "module": "admin.redeem", "en": "Generating...", "zh": "生成中...", "vi": "Đang tạo...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.groupRequired", "module": "admin.redeem", "en": "Please select a subscription group", "zh": "请选择订阅分组", "vi": "Vui lòng chọn nhóm đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.invitation", "module": "admin.redeem", "en": "Invitation", "zh": "邀请码", "vi": "Lời mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.invitationHint", "module": "admin.redeem", "en": "Invitation codes are used to restrict user registration. They are automatically marked as used after use.", "zh": "邀请码用于限制用户注册，使用后自动标记为已使用。", "vi": "Mã mời dùng để giới hạn đăng ký người dùng. Mã tự động được đánh dấu đã dùng sau khi sử dụng.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.neverExpires", "module": "admin.redeem", "en": "Never expires", "zh": "永不过期", "vi": "Không hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.noBatchFieldsSelected", "module": "admin.redeem", "en": "Select at least one field to update", "zh": "请至少勾选一个要修改的字段", "vi": "Chọn ít nhất một trường cần cập nhật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.noCodes", "module": "admin.redeem", "en": "No redeem codes yet", "zh": "暂无兑换码", "vi": "Chưa có mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.noCodesDescription", "module": "admin.redeem", "en": "Generate redeem codes to distribute balance or concurrency to users.", "zh": "生成兑换码以向用户分发余额或并发数。", "vi": "Tạo mã đổi để phân phối số dư hoặc mức đồng thời cho người dùng.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.noUnusedCodes", "module": "admin.redeem", "en": "No unused codes to delete", "zh": "没有未使用的兑换码可删除", "vi": "Không có mã chưa dùng để xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.searchCodes", "module": "admin.redeem", "en": "Search codes or email...", "zh": "搜索兑换码或邮箱...", "vi": "Tìm mã hoặc email...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.selectCodesFirst", "module": "admin.redeem", "en": "Select redeem codes first", "zh": "请先选择兑换码", "vi": "Chọn mã đổi trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.selectGroup", "module": "admin.redeem", "en": "Select Group", "zh": "选择分组", "vi": "Chọn nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.selectGroupPlaceholder", "module": "admin.redeem", "en": "Choose a subscription group", "zh": "选择订阅分组", "vi": "Chọn nhóm đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.selectedCount", "module": "admin.redeem", "en": "{count} redeem code(s) selected", "zh": "已选择 {count} 个兑换码", "vi": "Đã chọn {count} mã đổi", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "admin.redeem.status.disabled", "module": "admin.redeem", "en": "Disabled", "zh": "已禁用", "vi": "Đã tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.status.expired", "module": "admin.redeem", "en": "Expired", "zh": "已过期", "vi": "Đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.status.unused", "module": "admin.redeem", "en": "Unused", "zh": "未使用", "vi": "Chưa dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.status.used", "module": "admin.redeem", "en": "Used", "zh": "已使用", "vi": "Đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.subscription", "module": "admin.redeem", "en": "Subscription", "zh": "订阅", "vi": "Gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.title", "module": "admin.redeem", "en": "Redeem Code Management", "zh": "兑换码管理", "vi": "Quản lý mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.types.admin_balance", "module": "admin.redeem", "en": "Balance (Admin)", "zh": "余额（管理员）", "vi": "Số dư (Quản trị viên)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.types.admin_concurrency", "module": "admin.redeem", "en": "Concurrency (Admin)", "zh": "并发数（管理员）", "vi": "Mức đồng thời (Quản trị viên)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.types.balance", "module": "admin.redeem", "en": "Balance", "zh": "余额", "vi": "Số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.types.concurrency", "module": "admin.redeem", "en": "Concurrency", "zh": "并发数", "vi": "Mức đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.types.invitation", "module": "admin.redeem", "en": "Invitation", "zh": "邀请码", "vi": "Lời mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.types.subscription", "module": "admin.redeem", "en": "Subscription", "zh": "订阅", "vi": "Gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.unused", "module": "admin.redeem", "en": "Unused", "zh": "未使用", "vi": "Chưa dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.used", "module": "admin.redeem", "en": "Used", "zh": "已使用", "vi": "Đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.userPrefix", "module": "admin.redeem", "en": "User #{id}", "zh": "用户 #{id}", "vi": "Người dùng #{id}", "status": "draft", "placeholders": ["id"], "notes": ""}
+{"key": "admin.redeem.validityDays", "module": "admin.redeem", "en": "Validity Days", "zh": "有效天数", "vi": "Số ngày hiệu lực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.redeem.value", "module": "admin.redeem", "en": "Value", "zh": "面值", "vi": "Giá trị", "status": "draft", "placeholders": [], "notes": ""}

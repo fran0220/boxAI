@@ -1,0 +1,37 @@
+{"key": "version.copied", "module": "version", "en": "Copied", "zh": "已复制", "vi": "Đã sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.copyCommand", "module": "version", "en": "Copy", "zh": "复制", "vi": "Sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.currentVersion", "module": "version", "en": "Current Version", "zh": "当前版本", "vi": "Phiên bản hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.deployDocker", "module": "version", "en": "Docker", "zh": "Docker", "vi": "Docker", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "version.deployScript", "module": "version", "en": "Script", "zh": "脚本部署", "vi": "Tập lệnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.dockerEditCompose", "module": "version", "en": "Edit the image tag in docker-compose.yml", "zh": "修改 docker-compose.yml 中的镜像版本", "vi": "Sửa thẻ image trong docker-compose.yml", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.dockerRecreate", "module": "version", "en": "Recreate the container", "zh": "重新创建容器", "vi": "Tạo lại container", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.latestVersion", "module": "version", "en": "Latest Version", "zh": "最新版本", "vi": "Phiên bản mới nhất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.loadVersionsFailed", "module": "version", "en": "Failed to load versions", "zh": "获取版本列表失败", "vi": "Không thể tải danh sách phiên bản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.manualRollbackCommand", "module": "version", "en": "Manual rollback", "zh": "手动回退方式", "vi": "Quay về thủ công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.noReleaseNotes", "module": "version", "en": "No release notes", "zh": "暂无更新日志", "vi": "Không có ghi chú phát hành", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.noRollbackVersions", "module": "version", "en": "No versions available for rollback", "zh": "暂无可回退的版本", "vi": "Không có phiên bản để quay về", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.refresh", "module": "version", "en": "Refresh", "zh": "刷新", "vi": "Làm mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.releaseNotes", "module": "version", "en": "Release Notes", "zh": "更新日志", "vi": "Ghi chú phát hành", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.restartNow", "module": "version", "en": "Restart Now", "zh": "立即重启", "vi": "Khởi động lại ngay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.restartRequired", "module": "version", "en": "Please restart the service to apply the update", "zh": "请重启服务以应用更新", "vi": "Vui lòng khởi động lại dịch vụ để áp dụng bản cập nhật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.restarting", "module": "version", "en": "Restarting...", "zh": "正在重启...", "vi": "Đang khởi động lại...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.retry", "module": "version", "en": "Retry", "zh": "重试", "vi": "Thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollback", "module": "version", "en": "Version Rollback", "zh": "版本回退", "vi": "Quay về phiên bản cũ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollbackComplete", "module": "version", "en": "Rollback Complete", "zh": "回退完成", "vi": "Đã quay về phiên bản cũ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollbackConfirm", "module": "version", "en": "Roll back to {version}", "zh": "回退到 {version}", "vi": "Quay về {version}", "status": "draft", "placeholders": ["version"], "notes": ""}
+{"key": "version.rollbackFailed", "module": "version", "en": "Rollback Failed", "zh": "回退失败", "vi": "Quay về thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollbackSelectVersion", "module": "version", "en": "Select a version to roll back to (last 3 versions)", "zh": "选择要回退到的版本（近 3 个版本）", "vi": "Chọn phiên bản muốn quay về (3 phiên bản gần nhất)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollbackSourceHint", "module": "version", "en": "Online rollback is not available for source builds", "zh": "源码构建不支持在线回退", "vi": "Không hỗ trợ quay về trực tuyến cho bản dựng từ mã nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollbackWarning", "module": "version", "en": "Rollback downloads the selected version and replaces the current binary. A service restart is required afterwards.", "zh": "回退将下载所选版本并替换当前程序，完成后需重启服务", "vi": "Thao tác quay về sẽ tải phiên bản đã chọn và thay thế tệp nhị phân hiện tại. Sau đó cần khởi động lại dịch vụ.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.rollingBack", "module": "version", "en": "Rolling back...", "zh": "正在回退...", "vi": "Đang quay về...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.sourceMode", "module": "version", "en": "Source Build", "zh": "源码构建", "vi": "Bản dựng từ mã nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.sourceModeHint", "module": "version", "en": "Source build, use git pull to update", "zh": "源码构建请使用 git pull 更新", "vi": "Bản dựng từ mã nguồn, dùng git pull để cập nhật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.upToDate", "module": "version", "en": "You're running the latest version.", "zh": "已是最新版本", "vi": "Bạn đang dùng phiên bản mới nhất.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.updateAvailable", "module": "version", "en": "A new version is available!", "zh": "有新版本可用！", "vi": "Đã có phiên bản mới!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.updateComplete", "module": "version", "en": "Update Complete", "zh": "更新完成", "vi": "Cập nhật hoàn tất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.updateFailed", "module": "version", "en": "Update Failed", "zh": "更新失败", "vi": "Cập nhật thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.updateNow", "module": "version", "en": "Update Now", "zh": "立即更新", "vi": "Cập nhật ngay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.updating", "module": "version", "en": "Updating...", "zh": "正在更新...", "vi": "Đang cập nhật...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.viewChangelog", "module": "version", "en": "View Changelog", "zh": "查看更新日志", "vi": "Xem nhật ký thay đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.viewRelease", "module": "version", "en": "View Release", "zh": "查看发布", "vi": "Xem bản phát hành", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "version.viewUpdate", "module": "version", "en": "View Update", "zh": "查看更新", "vi": "Xem bản cập nhật", "status": "draft", "placeholders": [], "notes": ""}

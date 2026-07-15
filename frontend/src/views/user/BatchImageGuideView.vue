@@ -707,10 +707,11 @@
 	        <section class="space-y-3">
 	          <h3 class="text-sm font-semibold text-[color:var(--bx-text)]">{{ t('batchImage.guideUiTitle') }}</h3>
 	          <div class="rounded-lg border border-[color:var(--bx-border)] bg-[color:var(--bx-bg-muted)] p-3 text-sm leading-6 text-[color:var(--bx-text-soft)]   ">
+	            <!-- BOXAI: Keep all four guide steps in the locale bundle. -->
 	            <p>{{ t('batchImage.guideUi1') }}</p>
 	            <p>{{ t('batchImage.guideUi2') }}</p>
 	            <p>{{ t('batchImage.guideUi3') }}</p>
-	            <p>4. 完成后可以下载 ZIP；部分失败时，更多菜单里可以只{{ t('batchImage.retryFailedItems') }}。当前结算仍按成功输出图张数计算，不单独对参考图加价。</p>
+	            <p>{{ t('batchImage.guideUi4') }}</p>
 	          </div>
 	        </section>
 	        <section class="space-y-3">
@@ -1052,6 +1053,7 @@ function referenceImageLimitForModel(model: string) {
   return 0
 }
 
+// BOXAI: The downloadable Agent Skill follows the full zh/en/vi product locale set.
 const agentInstruction = computed(() => {
   const base = endpointBase.value
   if (getLocale() === 'zh') {
@@ -1074,6 +1076,27 @@ ${base}
 6. 选择 API Key/模型后调用批量生图 API 提交、轮询、下载。
 7. 不要把 API Key 或参考图 base64 写入仓库或公开回复。
 8. 完成后报告任务名、id、成功/失败数、扣费与保存路径。`
+  }
+  if (getLocale().startsWith('vi')) {
+    return `---
+name: sub2api-batch-image
+description: Dùng khi người dùng muốn tạo ảnh hàng loạt bằng Gemini/Vertex, chạy hàng loạt prompt, tải kết quả hoặc thử lại ảnh bị lỗi.
+---
+
+Bạn là agent tạo ảnh hàng loạt trong Codex. Không yêu cầu người dùng điền biểu mẫu web; hãy lấy tên tác vụ, danh sách prompt và thư mục đầu ra từ cuộc trò chuyện hoặc tệp. Chỉ hỏi khi thiếu một quyết định quan trọng.
+
+Endpoint mặc định:
+${base}
+
+Bạn phải:
+1. Trích xuất prompt và tạo custom_id ổn định theo thứ tự (img_001, img_002, …).
+2. Suy ra tên tác vụ; nếu không có tên rõ ràng, dùng thời gian hiện tại.
+3. Suy ra thư mục đầu ra; chỉ hỏi người dùng khi không có thông tin này.
+4. Tính expected_output_count trước khi gửi. Mỗi tác vụ tối đa 200 ảnh đầu ra; chia thành nhiều tác vụ nếu vượt giới hạn.
+5. Ảnh tham chiếu là đầu vào, không tính vào số ảnh đầu ra (Flash Image tối đa 3 ảnh/mục, Pro Image tối đa 14 ảnh/mục).
+6. Chọn API Key và mô hình, sau đó gọi API tạo ảnh hàng loạt để gửi, thăm dò trạng thái và tải kết quả.
+7. Không ghi API Key hoặc base64 của ảnh tham chiếu vào kho mã hay câu trả lời công khai.
+8. Khi hoàn tất, báo cáo tên và ID tác vụ, số mục thành công/thất bại, chi phí và đường dẫn lưu.`
   }
   return `---
 name: sub2api-batch-image
@@ -2376,14 +2399,18 @@ function isZhLocale(): boolean {
   return getLocale().startsWith('zh')
 }
 
+function isViLocale(): boolean {
+  return getLocale().startsWith('vi')
+}
+
 function batchImageErrorReference(error: any): string {
   const parts: string[] = []
   const code = String(error?.code || '').trim()
   const requestId = String(error?.requestId || error?.request_id || '').trim()
   const status = String(error?.status || '').trim()
-  if (code) parts.push(isZhLocale() ? `错误码：${code}` : `code: ${code}`)
-  if (requestId) parts.push(isZhLocale() ? `请求 ID：${requestId}` : `request ID: ${requestId}`)
-  if (!code && status) parts.push(isZhLocale() ? `HTTP 状态：${status}` : `HTTP status: ${status}`)
+  if (code) parts.push(isZhLocale() ? `错误码：${code}` : isViLocale() ? `mã lỗi: ${code}` : `code: ${code}`)
+  if (requestId) parts.push(isZhLocale() ? `请求 ID：${requestId}` : isViLocale() ? `ID yêu cầu: ${requestId}` : `request ID: ${requestId}`)
+  if (!code && status) parts.push(isZhLocale() ? `HTTP 状态：${status}` : isViLocale() ? `trạng thái HTTP: ${status}` : `HTTP status: ${status}`)
   return parts.length ? `（${parts.join('，')}）` : ''
 }
 
@@ -2495,6 +2522,10 @@ function batchImageErrorMessage(error: any, fallback: string) {
   if (isZhLocale()) {
     const detail = message ? `${t('batchImage.errorReference')}：${message}` : t('batchImage.adminReference')
     return `${fallback}。${detail} ${batchImageErrorReference(error)}`
+  }
+  if (isViLocale()) {
+    const detail = message ? `${t('batchImage.errorReference')}: ${message}` : t('batchImage.adminReference')
+    return `${fallback}. ${detail} ${batchImageErrorReference(error)}`
   }
   return message || fallback
 }

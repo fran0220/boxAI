@@ -1,0 +1,10 @@
+{"key": "customPage.copiedCode", "module": "customPage", "en": "Copied", "zh": "已复制", "vi": "Đã sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.copyCode", "module": "customPage", "en": "Copy", "zh": "复制", "vi": "Sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.copyCodeFailed", "module": "customPage", "en": "Failed", "zh": "失败", "vi": "Thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.notConfiguredDesc", "module": "customPage", "en": "The URL for this custom page has not been properly configured.", "zh": "该自定义页面的 URL 未正确配置。", "vi": "URL của trang tùy chỉnh này chưa được cấu hình đúng.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.notConfiguredTitle", "module": "customPage", "en": "Page URL not configured", "zh": "页面链接未配置", "vi": "Chưa cấu hình URL trang", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.notFoundDesc", "module": "customPage", "en": "This custom page does not exist or has been removed.", "zh": "该自定义页面不存在或已被删除。", "vi": "Trang tùy chỉnh này không tồn tại hoặc đã bị xóa.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.notFoundTitle", "module": "customPage", "en": "Page not found", "zh": "页面不存在", "vi": "Không tìm thấy trang", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.openInNewTab", "module": "customPage", "en": "Open in new tab", "zh": "新窗口打开", "vi": "Mở trong tab mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.tableOfContents", "module": "customPage", "en": "Contents", "zh": "目录", "vi": "Mục lục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "customPage.title", "module": "customPage", "en": "Custom Page", "zh": "自定义页面", "vi": "Trang tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}

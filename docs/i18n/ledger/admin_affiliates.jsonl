@@ -1,0 +1,34 @@
+{"key": "admin.affiliates.errors.loadFailed", "module": "admin.affiliates", "en": "Failed to load affiliate records", "zh": "加载邀请返利记录失败", "vi": "Không thể tải bản ghi tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.invitesDescription", "module": "admin.affiliates", "en": "View site-wide inviter and invitee relationships", "zh": "查看全站邀请关系和被邀请用户累计返利", "vi": "Xem quan hệ người mời và người được mời trên toàn trang", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.affCode", "module": "admin.affiliates", "en": "Invite Code", "zh": "邀请码", "vi": "Mã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.availableQuota", "module": "admin.affiliates", "en": "Available Quota", "zh": "可提余额", "vi": "Hạn mức khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.historyQuota", "module": "admin.affiliates", "en": "Historical Rebate", "zh": "历史返利", "vi": "Hoa hồng lịch sử", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.invitedCount", "module": "admin.affiliates", "en": "Invited Users", "zh": "邀请人数", "vi": "Người dùng đã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.rebateRate", "module": "admin.affiliates", "en": "Rebate Rate", "zh": "返利比例", "vi": "Tỷ lệ hoa hồng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.rebatedInviteeCount", "module": "admin.affiliates", "en": "Rebated Invitees", "zh": "已产生返利人数", "vi": "Người được mời đã tạo hoa hồng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.overview.title", "module": "admin.affiliates", "en": "Affiliate User Overview", "zh": "用户返利概览", "vi": "Tổng quan người dùng tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.rebatesDescription", "module": "admin.affiliates", "en": "View recharge orders that generated affiliate rebates", "zh": "查看每一笔产生返利的充值订单", "vi": "Xem các đơn nạp tiền đã tạo hoa hồng tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.affCode", "module": "admin.affiliates", "en": "Invite Code", "zh": "邀请码", "vi": "Mã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.availableQuotaAfter", "module": "admin.affiliates", "en": "Available After", "zh": "提取后可提", "vi": "Khả dụng sau chuyển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.balanceAfter", "module": "admin.affiliates", "en": "Balance After", "zh": "提取后余额", "vi": "Số dư sau chuyển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.endAt", "module": "admin.affiliates", "en": "End date", "zh": "结束日期", "vi": "Ngày kết thúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.frozenQuotaAfter", "module": "admin.affiliates", "en": "Frozen After", "zh": "提取后冻结", "vi": "Tạm giữ sau chuyển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.historyQuotaAfter", "module": "admin.affiliates", "en": "Historical Rebate After", "zh": "提取后历史返利", "vi": "Hoa hồng lịch sử sau chuyển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.invitedAt", "module": "admin.affiliates", "en": "Invited At", "zh": "邀请时间", "vi": "Mời lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.invitee", "module": "admin.affiliates", "en": "Invitee", "zh": "被邀请人", "vi": "Người được mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.inviter", "module": "admin.affiliates", "en": "Inviter", "zh": "邀请人", "vi": "Người mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.order", "module": "admin.affiliates", "en": "Order", "zh": "订单", "vi": "Đơn hàng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.orderAmount", "module": "admin.affiliates", "en": "Top-up Amount", "zh": "充值金额", "vi": "Số tiền nạp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.orderStatus", "module": "admin.affiliates", "en": "Order Status", "zh": "订单状态", "vi": "Trạng thái đơn hàng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.payAmount", "module": "admin.affiliates", "en": "Paid Amount", "zh": "支付金额", "vi": "Số tiền đã trả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.paymentType", "module": "admin.affiliates", "en": "Payment Method", "zh": "支付方式", "vi": "Phương thức thanh toán", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.rebateAmount", "module": "admin.affiliates", "en": "Rebate Amount", "zh": "返利金额", "vi": "Số tiền hoa hồng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.rebatedAt", "module": "admin.affiliates", "en": "Rebated At", "zh": "返利时间", "vi": "Nhận hoa hồng lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.search", "module": "admin.affiliates", "en": "Search", "zh": "搜索", "vi": "Tìm kiếm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.searchPlaceholder", "module": "admin.affiliates", "en": "Email, username, user ID, or order number", "zh": "邮箱、用户名、用户 ID、订单号", "vi": "Email, tên người dùng, ID người dùng hoặc mã đơn hàng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.startAt", "module": "admin.affiliates", "en": "Start date", "zh": "开始日期", "vi": "Ngày bắt đầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.totalRebate", "module": "admin.affiliates", "en": "Total Rebate", "zh": "累计返利", "vi": "Tổng hoa hồng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.transferAmount", "module": "admin.affiliates", "en": "Transfer Amount", "zh": "提取金额", "vi": "Số tiền chuyển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.transferredAt", "module": "admin.affiliates", "en": "Transferred At", "zh": "提取时间", "vi": "Chuyển lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.records.user", "module": "admin.affiliates", "en": "User", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.affiliates.transfersDescription", "module": "admin.affiliates", "en": "View affiliate quota transfers into account balance", "zh": "查看返利额度转入账户余额的提取流水", "vi": "Xem các lần chuyển hạn mức hoa hồng vào số dư tài khoản", "status": "draft", "placeholders": [], "notes": ""}

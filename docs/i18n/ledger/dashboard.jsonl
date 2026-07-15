@@ -1,0 +1,697 @@
+{"key": "affiliate.codeCopied", "module": "dashboard", "en": "Affiliate code copied", "zh": "邀请码已复制", "vi": "Đã sao chép mã tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.copyCode", "module": "dashboard", "en": "Copy Code", "zh": "复制邀请码", "vi": "Sao chép mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.copyLink", "module": "dashboard", "en": "Copy Link", "zh": "复制链接", "vi": "Sao chép liên kết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.description", "module": "dashboard", "en": "Invite new users and convert your rebate quota into account balance", "zh": "邀请新用户注册，并将返利额度转入账户余额", "vi": "Mời người dùng mới và chuyển hạn mức hoàn tiền thành số dư tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.inviteLink", "module": "dashboard", "en": "Invite Link", "zh": "邀请链接", "vi": "Liên kết mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.invitees.columns.email", "module": "dashboard", "en": "Email", "zh": "邮箱", "vi": "Email", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "affiliate.invitees.columns.joinedAt", "module": "dashboard", "en": "Joined At", "zh": "注册时间", "vi": "Tham gia lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.invitees.columns.rebate", "module": "dashboard", "en": "Rebate", "zh": "返利明细", "vi": "Hoàn tiền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.invitees.columns.username", "module": "dashboard", "en": "Username", "zh": "用户名", "vi": "Tên người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.invitees.empty", "module": "dashboard", "en": "No invited users yet", "zh": "暂无邀请记录", "vi": "Chưa có người dùng được mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.invitees.title", "module": "dashboard", "en": "Invited Users", "zh": "已邀请用户", "vi": "Người dùng đã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.linkCopied", "module": "dashboard", "en": "Invite link copied", "zh": "邀请链接已复制", "vi": "Đã sao chép liên kết mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.loadFailed", "module": "dashboard", "en": "Failed to load affiliate data", "zh": "加载邀请返利数据失败", "vi": "Không thể tải dữ liệu tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.availableQuota", "module": "dashboard", "en": "Available Rebate Quota", "zh": "可转返利额度", "vi": "Hạn mức hoàn tiền khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.frozenQuota", "module": "dashboard", "en": "Frozen", "zh": "冻结中", "vi": "Đang đóng băng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.frozenQuotaHint", "module": "dashboard", "en": "Recently earned rebates pending release", "zh": "新产生的返利正在冻结期中", "vi": "Khoản hoàn tiền mới nhận đang chờ mở khóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.invitedUsers", "module": "dashboard", "en": "Invited Users", "zh": "邀请人数", "vi": "Người dùng đã mời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.rebateRate", "module": "dashboard", "en": "My Rebate Rate", "zh": "我的返利比例", "vi": "Tỷ lệ hoàn tiền của tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.rebateRateHint", "module": "dashboard", "en": "What you earn each time an invitee recharges", "zh": "被邀请用户每次充值后你可获得的返利比例", "vi": "Số tiền bạn nhận mỗi khi người được mời nạp tiền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.stats.totalQuota", "module": "dashboard", "en": "Historical Rebate Quota", "zh": "历史返利额度", "vi": "Tổng hạn mức hoàn tiền lịch sử", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.tips.line1", "module": "dashboard", "en": "Share your affiliate code or invite link with new users.", "zh": "将邀请码或邀请链接分享给新用户。", "vi": "Chia sẻ mã tiếp thị hoặc liên kết mời với người dùng mới.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.tips.line2", "module": "dashboard", "en": "When invitees recharge, you receive {rate} of the recharge as rebate quota.", "zh": "被邀请用户充值后，你可获得 {rate} 的返利额度。", "vi": "Khi người được mời nạp tiền, bạn nhận {rate} số tiền nạp dưới dạng hạn mức hoàn tiền.", "status": "draft", "placeholders": ["rate"], "notes": ""}
+{"key": "affiliate.tips.line3", "module": "dashboard", "en": "Transfer rebate quota to balance at any time.", "zh": "返利额度可随时转入账户余额。", "vi": "Chuyển hạn mức hoàn tiền vào số dư bất cứ lúc nào.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.tips.line4", "module": "dashboard", "en": "Newly earned rebates may have a waiting period before they can be transferred.", "zh": "新产生的返利需要经过冻结期后才能提现。", "vi": "Khoản hoàn tiền mới nhận có thể cần chờ trước khi được chuyển.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.tips.title", "module": "dashboard", "en": "How It Works", "zh": "使用说明", "vi": "Cách hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.title", "module": "dashboard", "en": "Affiliate Rebates", "zh": "邀请返利", "vi": "Hoàn tiền tiếp thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.transfer.button", "module": "dashboard", "en": "Transfer to Balance", "zh": "转入余额", "vi": "Chuyển vào số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.transfer.description", "module": "dashboard", "en": "Move available rebate quota into your account balance", "zh": "将当前可用返利额度一键转入账户余额", "vi": "Chuyển hạn mức hoàn tiền khả dụng vào số dư tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.transfer.empty", "module": "dashboard", "en": "No available rebate quota", "zh": "当前没有可转入额度", "vi": "Không có hạn mức hoàn tiền khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.transfer.success", "module": "dashboard", "en": "{amount} has been transferred to your balance", "zh": "已转入余额：{amount}", "vi": "Đã chuyển {amount} vào số dư của bạn", "status": "draft", "placeholders": ["amount"], "notes": ""}
+{"key": "affiliate.transfer.title", "module": "dashboard", "en": "Transfer Rebate Quota", "zh": "返利额度转余额", "vi": "Chuyển hạn mức hoàn tiền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.transfer.transferring", "module": "dashboard", "en": "Transferring...", "zh": "转入中...", "vi": "Đang chuyển...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.transferFailed", "module": "dashboard", "en": "Failed to transfer affiliate quota", "zh": "转入余额失败", "vi": "Không thể chuyển hạn mức hoàn tiền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "affiliate.yourCode", "module": "dashboard", "en": "Your Affiliate Code", "zh": "我的邀请码", "vi": "Mã tiếp thị của bạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.columns.description", "module": "dashboard", "en": "Description", "zh": "描述", "vi": "Mô tả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.columns.groups", "module": "dashboard", "en": "Your Accessible Groups", "zh": "我可访问的分组", "vi": "Nhóm bạn có thể truy cập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.columns.name", "module": "dashboard", "en": "Channel", "zh": "渠道名", "vi": "Kênh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.columns.platform", "module": "dashboard", "en": "Platform", "zh": "平台", "vi": "Nền tảng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.columns.supportedModels", "module": "dashboard", "en": "Supported Models", "zh": "支持模型", "vi": "Mô hình được hỗ trợ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.description", "module": "dashboard", "en": "Channels you can access, along with their supported models and pricing", "zh": "查看您可访问的渠道与其支持的模型、定价", "vi": "Các kênh bạn có thể truy cập, cùng mô hình được hỗ trợ và giá", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.empty", "module": "dashboard", "en": "No available channels", "zh": "暂无可用渠道", "vi": "Không có kênh khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.exclusive", "module": "dashboard", "en": "Exclusive", "zh": "专属", "vi": "Độc quyền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.exclusiveTooltip", "module": "dashboard", "en": "Exclusive groups granted to you by an admin", "zh": "管理员授权给你的专属分组", "vi": "Nhóm độc quyền do quản trị viên cấp cho bạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.noModels", "module": "dashboard", "en": "No models configured", "zh": "未配置模型", "vi": "Chưa cấu hình mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.noPricing", "module": "dashboard", "en": "Pricing not configured", "zh": "未配置定价", "vi": "Chưa cấu hình giá", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.billingMode", "module": "dashboard", "en": "Billing Mode", "zh": "计费模式", "vi": "Chế độ tính phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.billingModeImage", "module": "dashboard", "en": "Per Image", "zh": "按图片", "vi": "Theo hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.billingModePerRequest", "module": "dashboard", "en": "Per Request", "zh": "按次", "vi": "Theo yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.billingModeToken", "module": "dashboard", "en": "Per Token", "zh": "按 Token", "vi": "Theo token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.billingModeVideo", "module": "dashboard", "en": "Per Video", "zh": "按视频", "vi": "Theo video", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.cacheReadPrice", "module": "dashboard", "en": "Cache Read", "zh": "缓存读取", "vi": "Đọc bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.cacheWritePrice", "module": "dashboard", "en": "Cache Write", "zh": "缓存写入", "vi": "Ghi bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.imageOutputPrice", "module": "dashboard", "en": "Image Output", "zh": "图片输出", "vi": "Đầu ra hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.inputPrice", "module": "dashboard", "en": "Input", "zh": "输入", "vi": "Đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.intervals", "module": "dashboard", "en": "Tiered Pricing", "zh": "阶梯定价", "vi": "Giá theo bậc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.outputPrice", "module": "dashboard", "en": "Output", "zh": "输出", "vi": "Đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.perRequestPrice", "module": "dashboard", "en": "Per Request", "zh": "每次请求", "vi": "Mỗi yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.unitPerMillion", "module": "dashboard", "en": "/ 1M tokens", "zh": "/ 1M token", "vi": "/ 1 triệu token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.pricing.unitPerRequest", "module": "dashboard", "en": "/ request", "zh": "/ 次", "vi": "/ yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.public", "module": "dashboard", "en": "Public", "zh": "公开", "vi": "Công khai", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.publicTooltip", "module": "dashboard", "en": "Groups open to all users", "zh": "对所有用户公开的分组", "vi": "Nhóm mở cho mọi người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.searchPlaceholder", "module": "dashboard", "en": "Search channels or models...", "zh": "搜索渠道或模型...", "vi": "Tìm kênh hoặc mô hình...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "availableChannels.title", "module": "dashboard", "en": "Available Channels", "zh": "可用渠道", "vi": "Kênh khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.actual", "module": "dashboard", "en": "Actual", "zh": "实际", "vi": "Thực tế", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.addBalanceWithCode", "module": "dashboard", "en": "Add balance with a code", "zh": "使用兑换码充值", "vi": "Thêm số dư bằng mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.apiKeys", "module": "dashboard", "en": "API Keys", "zh": "API 密钥", "vi": "API Keys", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "dashboard.averageTime", "module": "dashboard", "en": "Average time", "zh": "平均时间", "vi": "Thời gian trung bình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.avgResponse", "module": "dashboard", "en": "Avg Response", "zh": "平均响应", "vi": "Phản hồi trung bình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.balance", "module": "dashboard", "en": "Balance", "zh": "余额", "vi": "Số dư", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.batchImageAgent", "module": "dashboard", "en": "Batch Image Assistant", "zh": "批量生图助手", "vi": "Trợ lý sinh ảnh hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.batchImageAgentDesc", "module": "dashboard", "en": "Copy instructions for an agent", "zh": "复制给 Agent 的任务说明", "vi": "Sao chép hướng dẫn cho agent", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.cache", "module": "dashboard", "en": "Cache", "zh": "缓存", "vi": "Bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.cacheToday", "module": "dashboard", "en": "Cache (Today)", "zh": "今日缓存", "vi": "Bộ nhớ đệm (hôm nay)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.checkDetailedLogs", "module": "dashboard", "en": "Check detailed usage logs", "zh": "查看详细的使用日志", "vi": "Xem nhật ký sử dụng chi tiết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.createApiKey", "module": "dashboard", "en": "Create API Key", "zh": "创建 API 密钥", "vi": "Tạo khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.day", "module": "dashboard", "en": "Day", "zh": "按天", "vi": "Ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.generateNewKey", "module": "dashboard", "en": "Generate a new API key", "zh": "生成新的 API 密钥", "vi": "Tạo khóa API mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.granularity", "module": "dashboard", "en": "Granularity", "zh": "粒度", "vi": "Độ chi tiết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.group", "module": "dashboard", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.groupDistribution", "module": "dashboard", "en": "Group Usage Distribution", "zh": "分组使用分布", "vi": "Phân bố mức sử dụng theo nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.hour", "module": "dashboard", "en": "Hour", "zh": "按小时", "vi": "Giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.input", "module": "dashboard", "en": "Input", "zh": "输入", "vi": "Đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.last7Days", "module": "dashboard", "en": "Last 7 days", "zh": "近 7 天", "vi": "7 ngày qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.model", "module": "dashboard", "en": "Model", "zh": "模型", "vi": "Mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.modelDistribution", "module": "dashboard", "en": "Model Distribution", "zh": "模型分布", "vi": "Phân bố mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.noDataAvailable", "module": "dashboard", "en": "No data available", "zh": "暂无数据", "vi": "Không có dữ liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.noGroup", "module": "dashboard", "en": "No Group", "zh": "无分组", "vi": "Không có nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.noUsageRecords", "module": "dashboard", "en": "No usage records", "zh": "暂无使用记录", "vi": "Không có bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.output", "module": "dashboard", "en": "Output", "zh": "输出", "vi": "Đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.performance", "module": "dashboard", "en": "Performance", "zh": "性能指标", "vi": "Hiệu năng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformBreakdown", "module": "dashboard", "en": "Per-platform Breakdown", "zh": "按平台拆分", "vi": "Phân tích theo nền tảng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformBreakdownEmpty", "module": "dashboard", "en": "No platform usage yet", "zh": "暂无平台用量", "vi": "Chưa có mức sử dụng nền tảng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformCount", "module": "dashboard", "en": "{count} platforms", "zh": "{count} 个平台", "vi": "{count} nền tảng", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "dashboard.platformOther", "module": "dashboard", "en": "Other", "zh": "其他", "vi": "Khác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformQuota.daily", "module": "dashboard", "en": "Daily", "zh": "日", "vi": "Hằng ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformQuota.disabled", "module": "dashboard", "en": "Disabled", "zh": "已禁用", "vi": "Đã tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformQuota.monthly", "module": "dashboard", "en": "Monthly (30-day rolling)", "zh": "月（近30天）", "vi": "Hằng tháng (cửa sổ 30 ngày)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformQuota.noLimit", "module": "dashboard", "en": "unlimited", "zh": "不限制", "vi": "không giới hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformQuota.resetsAt", "module": "dashboard", "en": "Resets {time}", "zh": "{time} 重置", "vi": "Đặt lại {time}", "status": "draft", "placeholders": ["time"], "notes": ""}
+{"key": "dashboard.platformQuota.title", "module": "dashboard", "en": "Quota Usage", "zh": "配额用量", "vi": "Mức sử dụng hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.platformQuota.weekly", "module": "dashboard", "en": "Weekly", "zh": "周", "vi": "Hằng tuần", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.quickActions", "module": "dashboard", "en": "Quick Actions", "zh": "快捷操作", "vi": "Thao tác nhanh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.recentUsage", "module": "dashboard", "en": "Recent Usage", "zh": "最近使用", "vi": "Mức sử dụng gần đây", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.redeemCode", "module": "dashboard", "en": "Redeem Code", "zh": "兑换码", "vi": "Đổi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.requests", "module": "dashboard", "en": "Requests", "zh": "请求", "vi": "Yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.standard", "module": "dashboard", "en": "Standard", "zh": "标准", "vi": "Tiêu chuẩn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.startUsingApi", "module": "dashboard", "en": "Start using the API to see your usage history here.", "zh": "开始使用 API 后，您的使用历史将显示在这里。", "vi": "Bắt đầu sử dụng API để xem lịch sử sử dụng tại đây.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.timeRange", "module": "dashboard", "en": "Time Range", "zh": "时间范围", "vi": "Khoảng thời gian", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.title", "module": "dashboard", "en": "Dashboard", "zh": "仪表盘", "vi": "Bảng điều khiển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.todayCost", "module": "dashboard", "en": "Today Cost", "zh": "今日消费", "vi": "Chi phí hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.todayRequests", "module": "dashboard", "en": "Today Requests", "zh": "今日请求", "vi": "Yêu cầu hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.todayTokens", "module": "dashboard", "en": "Today Tokens", "zh": "今日 Token", "vi": "Token hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.tokenUsageTrend", "module": "dashboard", "en": "Token Usage Trend", "zh": "Token 使用趋势", "vi": "Xu hướng sử dụng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.tokens", "module": "dashboard", "en": "Tokens", "zh": "Token", "vi": "Token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.totalTokens", "module": "dashboard", "en": "Total Tokens", "zh": "累计 Token", "vi": "Tổng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.viewAllUsage", "module": "dashboard", "en": "View all usage", "zh": "查看全部", "vi": "Xem toàn bộ mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.viewUsage", "module": "dashboard", "en": "View Usage", "zh": "查看使用记录", "vi": "Xem mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "dashboard.welcomeMessage", "module": "dashboard", "en": "Welcome back! Here's an overview of your account.", "zh": "欢迎回来！这是您账户的概览。", "vi": "Chào mừng trở lại! Đây là tổng quan tài khoản của bạn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.apply", "module": "dashboard", "en": "Apply", "zh": "应用", "vi": "Áp dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.avgDuration", "module": "dashboard", "en": "Avg Duration", "zh": "平均耗时", "vi": "Thời gian TB", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.cacheCreationTokens", "module": "dashboard", "en": "Cache Creation", "zh": "缓存创建", "vi": "Tạo cache", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.cacheReadTokens", "module": "dashboard", "en": "Cache Read", "zh": "缓存读取", "vi": "Đọc cache", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.cacheWriteTokens", "module": "dashboard", "en": "Cache Write", "zh": "缓存写入", "vi": "Ghi cache", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.cost", "module": "dashboard", "en": "Cost", "zh": "费用", "vi": "Chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dailyDetail", "module": "dashboard", "en": "Daily Detail", "zh": "按日明细", "vi": "Chi tiết theo ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dailyShort", "module": "dashboard", "en": "D", "zh": "日", "vi": "N", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.date", "module": "dashboard", "en": "Date", "zh": "日期", "vi": "Ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dateRange", "module": "dashboard", "en": "Date Range:", "zh": "统计范围:", "vi": "Khoảng ngày:", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dateRange30d", "module": "dashboard", "en": "30 Days", "zh": "30 天", "vi": "30 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dateRange7d", "module": "dashboard", "en": "7 Days", "zh": "7 天", "vi": "7 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dateRange90d", "module": "dashboard", "en": "90 Days", "zh": "90 天", "vi": "90 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dateRangeCustom", "module": "dashboard", "en": "Custom", "zh": "自定义", "vi": "Tuỳ chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.dateRangeToday", "module": "dashboard", "en": "Today", "zh": "今日", "vi": "Hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.daysLeft", "module": "dashboard", "en": "({days} days)", "zh": "({days} 天)", "vi": "({days} ngày)", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "keyUsage.detailInfo", "module": "dashboard", "en": "Detail Information", "zh": "详细信息", "vi": "Thông tin chi tiết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.enterApiKey", "module": "dashboard", "en": "Please enter an API Key", "zh": "请输入 API Key", "vi": "Vui lòng nhập Khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.expiresAt", "module": "dashboard", "en": "Expires At", "zh": "过期时间", "vi": "Hết hạn lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.inputTokens", "module": "dashboard", "en": "Input Tokens", "zh": "输入 Tokens", "vi": "Token đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.limit5h", "module": "dashboard", "en": "5-Hour Limit", "zh": "5 小时限额", "vi": "Giới hạn 5 giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.limit7d", "module": "dashboard", "en": "7-Day Limit", "zh": "7 天限额", "vi": "Giới hạn 7 ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.limitDaily", "module": "dashboard", "en": "Daily Limit", "zh": "日限额", "vi": "Giới hạn ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.limitMonthly", "module": "dashboard", "en": "Monthly Limit", "zh": "月限额", "vi": "Giới hạn tháng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.limitWeekly", "module": "dashboard", "en": "Weekly Limit", "zh": "周限额", "vi": "Giới hạn tuần", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.model", "module": "dashboard", "en": "Model", "zh": "模型", "vi": "Mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.modelStats", "module": "dashboard", "en": "Model Usage Statistics", "zh": "模型用量统计", "vi": "Thống kê theo mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.monthlyShort", "module": "dashboard", "en": "M", "zh": "月", "vi": "Th", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.noDailyUsage", "module": "dashboard", "en": "No daily usage data", "zh": "暂无按日用量数据", "vi": "Không có dữ liệu dùng theo ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.outputTokens", "module": "dashboard", "en": "Output Tokens", "zh": "输出 Tokens", "vi": "Token đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.placeholder", "module": "dashboard", "en": "sk-ant-mirror-xxxxxxxxxxxx", "zh": "sk-ant-mirror-xxxxxxxxxxxx", "vi": "sk-ant-mirror-xxxxxxxxxxxx", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keyUsage.privacyNote", "module": "dashboard", "en": "Your Key is processed locally in the browser and will not be stored", "zh": "您的 Key 仅在浏览器本地处理，不会被存储", "vi": "Khóa được xử lý cục bộ trên trình duyệt và không được lưu trữ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.query", "module": "dashboard", "en": "Query", "zh": "查询", "vi": "Truy vấn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.queryFailed", "module": "dashboard", "en": "Query failed", "zh": "查询失败", "vi": "Truy vấn thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.queryFailedRetry", "module": "dashboard", "en": "Query failed, please try again later", "zh": "查询失败，请稍后重试", "vi": "Truy vấn thất bại, hãy thử lại sau", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.querySuccess", "module": "dashboard", "en": "Query successful", "zh": "查询成功", "vi": "Truy vấn thành công", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.querying", "module": "dashboard", "en": "Querying...", "zh": "查询中...", "vi": "Đang truy vấn...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.quotaMode", "module": "dashboard", "en": "Key Quota Mode", "zh": "Key 限额模式", "vi": "Chế độ hạn mức khóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.remainingQuota", "module": "dashboard", "en": "Remaining Quota", "zh": "剩余额度", "vi": "Hạn mức còn lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.requests", "module": "dashboard", "en": "Requests", "zh": "请求数", "vi": "Yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.resetNow", "module": "dashboard", "en": "Resetting soon", "zh": "即将重置", "vi": "Sắp đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.rpmTpm", "module": "dashboard", "en": "RPM / TPM", "zh": "RPM / TPM", "vi": "RPM / TPM", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keyUsage.subscriptionExpires", "module": "dashboard", "en": "Subscription Expires", "zh": "订阅到期", "vi": "Gói hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.subscriptionType", "module": "dashboard", "en": "Subscription Type", "zh": "订阅类型", "vi": "Loại gói", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.subtitle", "module": "dashboard", "en": "Enter your API Key to view real-time spending and usage status", "zh": "输入您的 API Key 以查看实时消费金额与使用状态", "vi": "Nhập Khóa API để xem chi tiêu và trạng thái dùng theo thời gian thực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.title", "module": "dashboard", "en": "API Key Usage", "zh": "API Key 用量查询", "vi": "Mức dùng Khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayCacheCreation", "module": "dashboard", "en": "Today Cache Creation", "zh": "今日缓存创建", "vi": "Tạo cache hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayCacheRead", "module": "dashboard", "en": "Today Cache Read", "zh": "今日缓存读取", "vi": "Đọc cache hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayCost", "module": "dashboard", "en": "Today Cost", "zh": "今日费用", "vi": "Chi phí hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayExpires", "module": "dashboard", "en": "(expires today)", "zh": "(今日到期)", "vi": "(hết hạn hôm nay)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayInputTokens", "module": "dashboard", "en": "Today Input", "zh": "今日输入", "vi": "Đầu vào hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayOutputTokens", "module": "dashboard", "en": "Today Output", "zh": "今日输出", "vi": "Đầu ra hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayRequests", "module": "dashboard", "en": "Today Requests", "zh": "今日请求", "vi": "Yêu cầu hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.todayTokens", "module": "dashboard", "en": "Today Tokens", "zh": "今日 Tokens", "vi": "Token hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.tokenStats", "module": "dashboard", "en": "Token Statistics", "zh": "Token 统计", "vi": "Thống kê token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalCacheCreation", "module": "dashboard", "en": "Total Cache Creation", "zh": "累计缓存创建", "vi": "Tổng tạo cache", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalCacheRead", "module": "dashboard", "en": "Total Cache Read", "zh": "累计缓存读取", "vi": "Tổng đọc cache", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalCost", "module": "dashboard", "en": "Total Cost", "zh": "累计费用", "vi": "Tổng chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalInputTokens", "module": "dashboard", "en": "Total Input", "zh": "累计输入", "vi": "Tổng đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalOutputTokens", "module": "dashboard", "en": "Total Output", "zh": "累计输出", "vi": "Tổng đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalQuota", "module": "dashboard", "en": "Total Quota", "zh": "总额度", "vi": "Tổng hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalRequests", "module": "dashboard", "en": "Total Requests", "zh": "累计请求", "vi": "Tổng yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalTokens", "module": "dashboard", "en": "Total Tokens", "zh": "总 Tokens", "vi": "Tổng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.totalTokensLabel", "module": "dashboard", "en": "Total Tokens", "zh": "累计 Tokens", "vi": "Tổng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.used", "module": "dashboard", "en": "Used", "zh": "已使用", "vi": "Đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.usedQuota", "module": "dashboard", "en": "Used Quota", "zh": "已用额度", "vi": "Hạn mức đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.walletBalance", "module": "dashboard", "en": "Wallet Balance", "zh": "钱包余额", "vi": "Số dư ví", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keyUsage.weeklyShort", "module": "dashboard", "en": "W", "zh": "周", "vi": "T", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.allGroups", "module": "dashboard", "en": "All Groups", "zh": "全部分组", "vi": "Tất cả nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.allStatus", "module": "dashboard", "en": "All Status", "zh": "全部状态", "vi": "Tất cả trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.apiKey", "module": "dashboard", "en": "API Key", "zh": "API 密钥", "vi": "API Key", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.ccSwitchNotInstalled", "module": "dashboard", "en": "CC-Switch is not installed or the protocol handler is not registered. Please install CC-Switch first or manually copy the API key.", "zh": "CC-Switch 未安装或协议处理程序未注册。请先安装 CC-Switch 或手动复制 API 密钥。", "vi": "CC-Switch chưa được cài đặt hoặc trình xử lý giao thức chưa đăng ký. Vui lòng cài CC-Switch trước hoặc tự sao chép khóa API.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ccsClientSelect.claudeCode", "module": "dashboard", "en": "Claude Code", "zh": "Claude Code", "vi": "Claude Code", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.ccsClientSelect.claudeCodeDesc", "module": "dashboard", "en": "Import as Claude Code configuration", "zh": "导入为 Claude Code 配置", "vi": "Nhập dưới dạng cấu hình Claude Code", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ccsClientSelect.description", "module": "dashboard", "en": "Please select the client type to import to CC-Switch:", "zh": "请选择您要导入到 CC-Switch 的客户端类型：", "vi": "Vui lòng chọn loại ứng dụng khách để nhập vào CC-Switch:", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ccsClientSelect.geminiCli", "module": "dashboard", "en": "Gemini CLI", "zh": "Gemini CLI", "vi": "Gemini CLI", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.ccsClientSelect.geminiCliDesc", "module": "dashboard", "en": "Import as Gemini CLI configuration", "zh": "导入为 Gemini CLI 配置", "vi": "Nhập dưới dạng cấu hình Gemini CLI", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ccsClientSelect.title", "module": "dashboard", "en": "Select Client", "zh": "选择客户端", "vi": "Chọn ứng dụng khách", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.clickToChangeGroup", "module": "dashboard", "en": "Click to change group", "zh": "点击更换分组", "vi": "Nhấp để đổi nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.columnAlwaysVisible", "module": "dashboard", "en": "This column is always visible", "zh": "该列固定显示，不可隐藏", "vi": "Cột này luôn hiển thị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.columnSettings", "module": "dashboard", "en": "Column Settings", "zh": "列设置", "vi": "Cài đặt cột", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.copied", "module": "dashboard", "en": "Copied!", "zh": "已复制！", "vi": "Đã sao chép!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.copyToClipboard", "module": "dashboard", "en": "Copy to clipboard", "zh": "复制到剪贴板", "vi": "Sao chép vào bộ nhớ tạm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.createFirstKey", "module": "dashboard", "en": "Create your first API key to get started with the API.", "zh": "创建您的第一个 API 密钥以开始使用 API。", "vi": "Tạo khóa API đầu tiên để bắt đầu sử dụng API.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.createKey", "module": "dashboard", "en": "Create API Key", "zh": "创建密钥", "vi": "Tạo khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.created", "module": "dashboard", "en": "Created", "zh": "创建时间", "vi": "Đã tạo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.currentConcurrency", "module": "dashboard", "en": "Current Concurrency", "zh": "当前并发", "vi": "Mức đồng thời hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.currentExpiration", "module": "dashboard", "en": "Current expiration", "zh": "当前过期时间", "vi": "Hạn hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customDate", "module": "dashboard", "en": "Custom", "zh": "自定义", "vi": "Tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customKeyHint", "module": "dashboard", "en": "Only letters, numbers, underscores and hyphens allowed. Minimum 16 characters.", "zh": "仅允许字母、数字、下划线和连字符，最少16个字符。", "vi": "Chỉ cho phép chữ cái, số, dấu gạch dưới và gạch nối. Tối thiểu 16 ký tự.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customKeyInvalidChars", "module": "dashboard", "en": "Custom key can only contain letters, numbers, underscores, and hyphens", "zh": "自定义密钥只能包含字母、数字、下划线和连字符", "vi": "Khóa tùy chỉnh chỉ được chứa chữ cái, số, dấu gạch dưới và gạch nối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customKeyLabel", "module": "dashboard", "en": "Custom Key", "zh": "自定义密钥", "vi": "Khóa tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customKeyPlaceholder", "module": "dashboard", "en": "Enter your custom key (min 16 chars)", "zh": "输入自定义密钥（至少16个字符）", "vi": "Nhập khóa tùy chỉnh (tối thiểu 16 ký tự)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customKeyRequired", "module": "dashboard", "en": "Please enter a custom key", "zh": "请输入自定义密钥", "vi": "Vui lòng nhập khóa tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.customKeyTooShort", "module": "dashboard", "en": "Custom key must be at least 16 characters", "zh": "自定义密钥至少需要16个字符", "vi": "Khóa tùy chỉnh phải có ít nhất 16 ký tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.deleteConfirmMessage", "module": "dashboard", "en": "Are you sure you want to delete '{name}'? This action cannot be undone.", "zh": "确定要删除 '{name}' 吗？此操作无法撤销。", "vi": "Bạn có chắc muốn xóa '{name}'? Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": ["name"], "notes": ""}
+{"key": "keys.deleteKey", "module": "dashboard", "en": "Delete API Key", "zh": "删除密钥", "vi": "Xóa khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.description", "module": "dashboard", "en": "Manage your API keys and access tokens", "zh": "管理您的 API 密钥和访问令牌", "vi": "Quản lý khóa API và token truy cập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.disable", "module": "dashboard", "en": "Disable", "zh": "禁用", "vi": "Tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.editKey", "module": "dashboard", "en": "Edit API Key", "zh": "编辑密钥", "vi": "Sửa khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.enable", "module": "dashboard", "en": "Enable", "zh": "启用", "vi": "Bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.endpoints.clickToCopy", "module": "dashboard", "en": "Click to copy this endpoint", "zh": "点击可复制此端点", "vi": "Nhấp để sao chép điểm cuối này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.endpoints.copied", "module": "dashboard", "en": "Copied", "zh": "已复制", "vi": "Đã sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.endpoints.copiedHint", "module": "dashboard", "en": "Copied to clipboard", "zh": "已复制到剪贴板", "vi": "Đã sao chép vào bộ nhớ tạm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.endpoints.default", "module": "dashboard", "en": "Default", "zh": "默认", "vi": "Mặc định", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.endpoints.speedTest", "module": "dashboard", "en": "Speed Test", "zh": "测速", "vi": "Kiểm tra tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.endpoints.title", "module": "dashboard", "en": "API Endpoints", "zh": "API 端点", "vi": "Điểm cuối API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.expiration", "module": "dashboard", "en": "Expiration", "zh": "密钥有效期", "vi": "Hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.expirationDate", "module": "dashboard", "en": "Expiration Date", "zh": "过期时间", "vi": "Ngày hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.expirationDateHint", "module": "dashboard", "en": "Select when this API key should expire.", "zh": "选择此 API 密钥的过期时间。", "vi": "Chọn thời điểm khóa API này hết hạn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.expiresAt", "module": "dashboard", "en": "Expires", "zh": "过期时间", "vi": "Hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.expiresInDays", "module": "dashboard", "en": "{days} days", "zh": "{days} 天", "vi": "{days} ngày", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "keys.extendDays", "module": "dashboard", "en": "+{days} days", "zh": "+{days} 天", "vi": "+{days} ngày", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "keys.failedToChangeGroup", "module": "dashboard", "en": "Failed to change group", "zh": "更换分组失败", "vi": "Không thể đổi nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.failedToDelete", "module": "dashboard", "en": "Failed to delete API key", "zh": "删除 API 密钥失败", "vi": "Không thể xóa khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.failedToLoad", "module": "dashboard", "en": "Failed to load API keys", "zh": "加载 API 密钥失败", "vi": "Không thể tải khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.failedToResetQuota", "module": "dashboard", "en": "Failed to reset quota", "zh": "重置额度失败", "vi": "Không thể đặt lại hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.failedToResetRateLimit", "module": "dashboard", "en": "Failed to reset rate limit usage", "zh": "重置速率限制失败", "vi": "Không thể đặt lại mức sử dụng giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.failedToSave", "module": "dashboard", "en": "Failed to save API key", "zh": "保存 API 密钥失败", "vi": "Không thể lưu khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.failedToUpdateStatus", "module": "dashboard", "en": "Failed to update API key status", "zh": "更新 API 密钥状态失败", "vi": "Không thể cập nhật trạng thái khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.group", "module": "dashboard", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.groupChangedSuccess", "module": "dashboard", "en": "Group changed successfully", "zh": "分组更换成功", "vi": "Đã đổi nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.groupLabel", "module": "dashboard", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.groupRequired", "module": "dashboard", "en": "Please select a group", "zh": "请选择分组", "vi": "Vui lòng chọn một nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.importToCcSwitch", "module": "dashboard", "en": "Import to CCS", "zh": "导入到 CCS", "vi": "Nhập vào CCS", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipBlacklist", "module": "dashboard", "en": "IP Blacklist", "zh": "IP 黑名单", "vi": "Danh sách IP chặn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipBlacklistHint", "module": "dashboard", "en": "One IP or CIDR per line. These IPs will be blocked from using this key.", "zh": "每行一个 IP 或 CIDR，这些 IP 将被禁止使用此密钥", "vi": "Mỗi dòng một IP hoặc CIDR. Các IP này sẽ bị chặn sử dụng khóa.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipBlacklistPlaceholder", "module": "dashboard", "en": "1.2.3.4\n5.6.0.0/16", "zh": "1.2.3.4\n5.6.0.0/16", "vi": "1.2.3.4\n5.6.0.0/16", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.ipRestriction", "module": "dashboard", "en": "IP Restriction", "zh": "IP 限制", "vi": "Giới hạn IP", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipRestrictionEnabled", "module": "dashboard", "en": "IP restriction enabled", "zh": "已配置 IP 限制", "vi": "Đã bật giới hạn IP", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipWhitelist", "module": "dashboard", "en": "IP Whitelist", "zh": "IP 白名单", "vi": "Danh sách IP cho phép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipWhitelistHint", "module": "dashboard", "en": "One IP or CIDR per line. Only these IPs can use this key when set.", "zh": "每行一个 IP 或 CIDR，设置后仅允许这些 IP 使用此密钥", "vi": "Mỗi dòng một IP hoặc CIDR. Khi thiết lập, chỉ các IP này có thể dùng khóa.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.ipWhitelistPlaceholder", "module": "dashboard", "en": "192.168.1.100\n10.0.0.0/8", "zh": "192.168.1.100\n10.0.0.0/8", "vi": "192.168.1.100\n10.0.0.0/8", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.keyCreatedSuccess", "module": "dashboard", "en": "API key created successfully", "zh": "API 密钥创建成功", "vi": "Đã tạo khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.keyDeletedSuccess", "module": "dashboard", "en": "API key deleted successfully", "zh": "API 密钥删除成功", "vi": "Đã xóa khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.keyDisabledSuccess", "module": "dashboard", "en": "API key disabled successfully", "zh": "API 密钥已禁用", "vi": "Đã tắt khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.keyEnabledSuccess", "module": "dashboard", "en": "API key enabled successfully", "zh": "API 密钥已启用", "vi": "Đã bật khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.keyUpdatedSuccess", "module": "dashboard", "en": "API key updated successfully", "zh": "API 密钥更新成功", "vi": "Đã cập nhật khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.lastUsedAt", "module": "dashboard", "en": "Last Used", "zh": "上次使用时间", "vi": "Dùng gần nhất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.lastUsedIP", "module": "dashboard", "en": "Last Used IP", "zh": "最近使用 IP", "vi": "IP dùng gần nhất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.nameLabel", "module": "dashboard", "en": "Name", "zh": "名称", "vi": "Tên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.namePlaceholder", "module": "dashboard", "en": "My API Key", "zh": "我的 API 密钥", "vi": "My API Key", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.noExpiration", "module": "dashboard", "en": "Never", "zh": "永久有效", "vi": "Không bao giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.noGroup", "module": "dashboard", "en": "No group", "zh": "无分组", "vi": "Không có nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.noGroupFound", "module": "dashboard", "en": "No groups found", "zh": "未找到匹配的分组", "vi": "Không tìm thấy nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.noKeysYet", "module": "dashboard", "en": "No API keys yet", "zh": "暂无 API 密钥", "vi": "Chưa có khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quota", "module": "dashboard", "en": "Quota", "zh": "额度", "vi": "Hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quotaAmount", "module": "dashboard", "en": "Quota Amount (USD)", "zh": "额度金额 (USD)", "vi": "Số tiền hạn mức (USD)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quotaAmountHint", "module": "dashboard", "en": "Set the maximum amount this key can spend. 0 = unlimited.", "zh": "设置此密钥可消费的最大金额。0 = 无限制。", "vi": "Đặt số tiền tối đa khóa này có thể chi tiêu. 0 = không giới hạn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quotaAmountPlaceholder", "module": "dashboard", "en": "Enter quota limit in USD", "zh": "输入 USD 额度限制", "vi": "Nhập giới hạn hạn mức bằng USD", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quotaLimit", "module": "dashboard", "en": "Quota Limit", "zh": "额度限制", "vi": "Giới hạn hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quotaResetSuccess", "module": "dashboard", "en": "Quota reset successfully", "zh": "额度重置成功", "vi": "Đã đặt lại hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.quotaUsed", "module": "dashboard", "en": "Quota Used", "zh": "已用额度", "vi": "Hạn mức đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimit1d", "module": "dashboard", "en": "Daily Limit (USD)", "zh": "日限额 (USD)", "vi": "Giới hạn hằng ngày (USD)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimit5h", "module": "dashboard", "en": "5-Hour Limit (USD)", "zh": "5小时限额 (USD)", "vi": "Giới hạn 5 giờ (USD)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimit7d", "module": "dashboard", "en": "7-Day Limit (USD)", "zh": "7天限额 (USD)", "vi": "Giới hạn 7 ngày (USD)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimitColumn", "module": "dashboard", "en": "Rate Limit", "zh": "速率限制", "vi": "Giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimitHint", "module": "dashboard", "en": "Set the maximum spending for this key within each time window. 0 = unlimited.", "zh": "设置此密钥在指定时间窗口内的最大消费额。0 = 无限制。", "vi": "Đặt mức chi tiêu tối đa cho khóa trong mỗi cửa sổ thời gian. 0 = không giới hạn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimitResetSuccess", "module": "dashboard", "en": "Rate limit usage reset successfully", "zh": "速率限制已重置", "vi": "Đã đặt lại mức sử dụng giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimitSection", "module": "dashboard", "en": "Rate Limit", "zh": "速率限制", "vi": "Giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.rateLimitUsage", "module": "dashboard", "en": "Rate Limit Usage", "zh": "速率限制用量", "vi": "Mức sử dụng giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.reset", "module": "dashboard", "en": "Reset", "zh": "重置", "vi": "Đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.resetNow", "module": "dashboard", "en": "Resetting soon", "zh": "即将重置", "vi": "Sắp đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.resetQuotaConfirmMessage", "module": "dashboard", "en": "Are you sure you want to reset the used quota (${used}) for key \"{name}\" to 0? This action cannot be undone.", "zh": "确定要将密钥 \"{name}\" 的已用额度（${used}）重置为 0 吗？此操作不可撤销。", "vi": "Bạn có chắc muốn đặt hạn mức đã dùng (${used}) của khóa \"{name}\" về 0? Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": ["name", "used"], "notes": ""}
+{"key": "keys.resetQuotaTitle", "module": "dashboard", "en": "Confirm Reset Quota", "zh": "确认重置额度", "vi": "Xác nhận đặt lại hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.resetQuotaUsed", "module": "dashboard", "en": "Reset used quota to 0", "zh": "将已用额度重置为 0", "vi": "Đặt hạn mức đã dùng về 0", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.resetRateLimitConfirmMessage", "module": "dashboard", "en": "Are you sure you want to reset the rate limit usage for key \"{name}\"? All time window usage will be reset to zero. This action cannot be undone.", "zh": "确定要重置密钥 \"{name}\" 的速率限制用量吗？所有时间窗口的已用额度将归零。此操作不可撤销。", "vi": "Bạn có chắc muốn đặt lại mức sử dụng giới hạn tốc độ của khóa \"{name}\"? Mức sử dụng của mọi cửa sổ thời gian sẽ về 0. Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": ["name"], "notes": ""}
+{"key": "keys.resetRateLimitTitle", "module": "dashboard", "en": "Confirm Reset Rate Limit", "zh": "确认重置速率限制", "vi": "Xác nhận đặt lại giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.resetRateLimitUsage", "module": "dashboard", "en": "Reset Rate Limit Usage", "zh": "重置速率限制用量", "vi": "Đặt lại mức sử dụng giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.resetUsage", "module": "dashboard", "en": "Reset", "zh": "重置", "vi": "Đặt lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.saving", "module": "dashboard", "en": "Saving...", "zh": "保存中...", "vi": "Đang lưu...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.searchGroup", "module": "dashboard", "en": "Search groups...", "zh": "搜索分组...", "vi": "Tìm nhóm...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.searchPlaceholder", "module": "dashboard", "en": "Search name or key...", "zh": "搜索名称或Key...", "vi": "Tìm tên hoặc khóa...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.selectGroup", "module": "dashboard", "en": "Select a group", "zh": "选择分组", "vi": "Chọn một nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.selectStatus", "module": "dashboard", "en": "Select status", "zh": "选择状态", "vi": "Chọn trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.status.active", "module": "dashboard", "en": "Active", "zh": "活跃", "vi": "Hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.status.expired", "module": "dashboard", "en": "Expired", "zh": "已过期", "vi": "Đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.status.inactive", "module": "dashboard", "en": "Inactive", "zh": "已停用", "vi": "Không hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.status.quota_exhausted", "module": "dashboard", "en": "Quota Exhausted", "zh": "额度耗尽", "vi": "Đã hết hạn mức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.statusLabel", "module": "dashboard", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.title", "module": "dashboard", "en": "API Keys", "zh": "API 密钥", "vi": "Khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.today", "module": "dashboard", "en": "Today", "zh": "今日", "vi": "Hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.total", "module": "dashboard", "en": "Last 30d", "zh": "近30天", "vi": "30 ngày qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.usage", "module": "dashboard", "en": "Usage", "zh": "用量", "vi": "Mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKey", "module": "dashboard", "en": "Use Key", "zh": "使用密钥", "vi": "Sử dụng khóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.antigravity.claudeCode", "module": "dashboard", "en": "Claude Code", "zh": "Claude Code", "vi": "Claude Code", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.antigravity.claudeNote", "module": "dashboard", "en": "These environment variables will be active in the current terminal session. For permanent configuration, add them to ~/.bashrc, ~/.zshrc, or the appropriate configuration file.", "zh": "这些环境变量将在当前终端会话中生效。如需永久配置，请将其添加到 ~/.bashrc、~/.zshrc 或相应的配置文件中。", "vi": "Các biến môi trường này có hiệu lực trong phiên terminal hiện tại. Để cấu hình vĩnh viễn, hãy thêm vào ~/.bashrc, ~/.zshrc hoặc tệp cấu hình phù hợp.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.antigravity.description", "module": "dashboard", "en": "Configure API access for Antigravity group. Select the configuration method based on your client.", "zh": "为 Antigravity 分组配置 API 访问。请根据您使用的客户端选择对应的配置方式。", "vi": "Cấu hình truy cập API cho nhóm Antigravity. Chọn phương thức cấu hình theo ứng dụng khách.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.antigravity.geminiCli", "module": "dashboard", "en": "Gemini CLI", "zh": "Gemini CLI", "vi": "Gemini CLI", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.antigravity.geminiNote", "module": "dashboard", "en": "These environment variables will be active in the current terminal session. For permanent configuration, add them to ~/.bashrc, ~/.zshrc, or the appropriate configuration file.", "zh": "这些环境变量将在当前终端会话中生效。如需永久配置，请将其添加到 ~/.bashrc、~/.zshrc 或相应的配置文件中。", "vi": "Các biến môi trường này có hiệu lực trong phiên terminal hiện tại. Để cấu hình vĩnh viễn, hãy thêm vào ~/.bashrc, ~/.zshrc hoặc tệp cấu hình phù hợp.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.cliTabs.claudeCode", "module": "dashboard", "en": "Claude Code", "zh": "Claude Code", "vi": "Claude Code", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.cliTabs.codexCli", "module": "dashboard", "en": "Codex CLI", "zh": "Codex CLI", "vi": "Codex CLI", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.cliTabs.codexCliWs", "module": "dashboard", "en": "Codex CLI (WebSocket)", "zh": "Codex CLI (WebSocket)", "vi": "Codex CLI (WebSocket)", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.cliTabs.geminiCli", "module": "dashboard", "en": "Gemini CLI", "zh": "Gemini CLI", "vi": "Gemini CLI", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.cliTabs.grokCli", "module": "dashboard", "en": "Grok CLI", "zh": "Grok CLI", "vi": "Grok CLI", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.cliTabs.opencode", "module": "dashboard", "en": "OpenCode", "zh": "OpenCode", "vi": "OpenCode", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.copied", "module": "dashboard", "en": "Copied", "zh": "已复制", "vi": "Đã sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.copy", "module": "dashboard", "en": "Copy", "zh": "复制", "vi": "Sao chép", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.description", "module": "dashboard", "en": "Add the following environment variables to your terminal profile or run directly in terminal to configure API access.", "zh": "将以下环境变量添加到您的终端配置文件或直接在终端中运行。", "vi": "Thêm các biến môi trường sau vào hồ sơ terminal hoặc chạy trực tiếp trong terminal để cấu hình truy cập API.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.gemini.description", "module": "dashboard", "en": "Add the following environment variables to your terminal profile or run directly in terminal to configure Gemini CLI access.", "zh": "将以下环境变量添加到您的终端配置文件或直接在终端中运行，以配置 Gemini CLI 访问。", "vi": "Thêm các biến môi trường sau vào hồ sơ terminal hoặc chạy trực tiếp để cấu hình truy cập Gemini CLI.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.gemini.modelComment", "module": "dashboard", "en": "If you have Gemini 3 access, you can use: gemini-3-pro-preview", "zh": "如果你有 Gemini 3 权限可以填：gemini-3-pro-preview", "vi": "Nếu có quyền truy cập Gemini 3, bạn có thể dùng: gemini-3-pro-preview", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.gemini.note", "module": "dashboard", "en": "These environment variables will be active in the current terminal session. For permanent configuration, add them to ~/.bashrc, ~/.zshrc, or the appropriate configuration file.", "zh": "这些环境变量将在当前终端会话中生效。如需永久配置，请将其添加到 ~/.bashrc、~/.zshrc 或相应的配置文件中。", "vi": "Các biến môi trường này có hiệu lực trong phiên terminal hiện tại. Để cấu hình vĩnh viễn, hãy thêm vào ~/.bashrc, ~/.zshrc hoặc tệp cấu hình phù hợp.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.grok.configTomlHint", "module": "dashboard", "en": "Back up an existing config.toml before merging this model entry. Run grok inspect after saving to verify the effective configuration.", "zh": "如已有 config.toml，请先备份再合并此模型配置。保存后运行 grok inspect 验证生效配置。", "vi": "Sao lưu config.toml hiện có trước khi hợp nhất mục mô hình này. Chạy grok inspect sau khi lưu để xác minh cấu hình có hiệu lực.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.grok.description", "module": "dashboard", "en": "Configure Grok Build or OpenCode to send Responses API traffic through your BoxAI Grok group.", "zh": "配置 Grok Build 或 OpenCode，让 Responses API 请求通过当前 BoxAI Grok 分组发送。", "vi": "Cấu hình Grok Build hoặc OpenCode để gửi lưu lượng Responses API qua nhóm BoxAI Grok.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.grok.note", "module": "dashboard", "en": "Save the file as ~/.grok/config.toml, then run grok inspect and select sub2api-grok from /model.", "zh": "保存为 ~/.grok/config.toml，然后运行 grok inspect，并在 /model 中选择 sub2api-grok。", "vi": "Lưu tệp thành ~/.grok/config.toml, sau đó chạy grok inspect và chọn sub2api-grok từ /model.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.grok.noteWindows", "module": "dashboard", "en": "Save the file as %USERPROFILE%\\.grok\\config.toml, then run grok inspect and select sub2api-grok from /model.", "zh": "保存为 %USERPROFILE%\\.grok\\config.toml，然后运行 grok inspect，并在 /model 中选择 sub2api-grok。", "vi": "Lưu tệp thành %USERPROFILE%\\.grok\\config.toml, sau đó chạy grok inspect và chọn sub2api-grok từ /model.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.noGroupDescription", "module": "dashboard", "en": "This API key has not been assigned to a group. Please click the group column in the key list to assign one before viewing the configuration.", "zh": "此 API 密钥尚未分配分组，请先在密钥列表中点击分组列进行分配，然后才能查看使用配置。", "vi": "Khóa API này chưa được gán vào nhóm. Hãy nhấp vào cột nhóm trong danh sách khóa để gán trước khi xem cấu hình.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.noGroupTitle", "module": "dashboard", "en": "Please assign a group first", "zh": "请先分配分组", "vi": "Vui lòng gán nhóm trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.note", "module": "dashboard", "en": "These environment variables will be active in the current terminal session. For permanent configuration, add them to ~/.bashrc, ~/.zshrc, or the appropriate configuration file.", "zh": "这些环境变量将在当前终端会话中生效。如需永久配置，请将其添加到 ~/.bashrc、~/.zshrc 或相应的配置文件中。", "vi": "Các biến môi trường này có hiệu lực trong phiên terminal hiện tại. Để cấu hình vĩnh viễn, hãy thêm chúng vào ~/.bashrc, ~/.zshrc hoặc tệp cấu hình phù hợp.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.openai.configTomlHint", "module": "dashboard", "en": "Make sure the following content is at the beginning of the config.toml file", "zh": "请确保以下内容位于 config.toml 文件的开头部分", "vi": "Đảm bảo nội dung sau nằm ở đầu tệp config.toml", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.openai.description", "module": "dashboard", "en": "Add the following configuration files to your Codex CLI config directory.", "zh": "将以下配置文件添加到 Codex CLI 配置目录中。", "vi": "Thêm các tệp cấu hình sau vào thư mục cấu hình Codex CLI.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.openai.note", "module": "dashboard", "en": "Make sure the config directory exists. macOS/Linux users can run mkdir -p ~/.codex to create it.", "zh": "请确保配置目录存在。macOS/Linux 用户可运行 mkdir -p ~/.codex 创建目录。", "vi": "Đảm bảo thư mục cấu hình tồn tại. Người dùng macOS/Linux có thể chạy mkdir -p ~/.codex để tạo.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.openai.noteWindows", "module": "dashboard", "en": "Press Win+R and enter %userprofile%\\.codex to open the config directory. Create it manually if it does not exist.", "zh": "按 Win+R，输入 %userprofile%\\.codex 打开配置目录。如目录不存在，请先手动创建。", "vi": "Nhấn Win+R và nhập %userprofile%\\.codex để mở thư mục cấu hình. Hãy tạo thủ công nếu chưa tồn tại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.opencode.hint", "module": "dashboard", "en": "Config path: ~/.config/opencode/opencode.json (or opencode.jsonc), create if not exists. Use default providers (openai/anthropic/google) or custom provider_id. API Key can be configured directly or via /connect command. This is an example, adjust models and options as needed.", "zh": "配置文件路径：~/.config/opencode/opencode.json（或 opencode.jsonc），不存在需手动创建。可使用默认 provider（openai/anthropic/google）或自定义 provider_id。API Key 支持直接配置或通过客户端 /connect 命令配置。示例仅供参考，模型与选项可按需调整。", "vi": "Đường dẫn cấu hình: ~/.config/opencode/opencode.json (hoặc opencode.jsonc), hãy tạo nếu chưa có. Dùng nhà cung cấp mặc định (openai/anthropic/google) hoặc provider_id tùy chỉnh. Có thể cấu hình khóa API trực tiếp hoặc qua lệnh /connect. Đây là ví dụ, hãy điều chỉnh mô hình và tùy chọn khi cần.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.opencode.subtitle", "module": "dashboard", "en": "opencode.json", "zh": "opencode.json", "vi": "opencode.json", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "keys.useKeyModal.opencode.title", "module": "dashboard", "en": "OpenCode Example", "zh": "OpenCode 配置示例", "vi": "Ví dụ OpenCode", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "keys.useKeyModal.title", "module": "dashboard", "en": "Use API Key", "zh": "使用 API 密钥", "vi": "Sử dụng khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.accountBalance", "module": "dashboard", "en": "Account Balance", "zh": "账户余额", "vi": "Số dư tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.administrator", "module": "dashboard", "en": "Administrator", "zh": "管理员", "vi": "Quản trị viên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.bindAction", "module": "dashboard", "en": "Bind {providerName}", "zh": "绑定 {providerName}", "vi": "Liên kết {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "profile.authBindings.bindSuccess", "module": "dashboard", "en": "Account linked successfully", "zh": "账号绑定成功", "vi": "Đã liên kết tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.boundCount", "module": "dashboard", "en": "{count} linked records", "zh": "已关联 {count} 条记录", "vi": "{count} bản ghi đã liên kết", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "profile.authBindings.codePlaceholder", "module": "dashboard", "en": "Enter verification code", "zh": "输入验证码", "vi": "Nhập mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.codeSentTo", "module": "dashboard", "en": "Code sent to {email}", "zh": "验证码已发送到 {email}", "vi": "Đã gửi mã đến {email}", "status": "draft", "placeholders": ["email"], "notes": ""}
+{"key": "profile.authBindings.confirmEmailBindAction", "module": "dashboard", "en": "Bind email", "zh": "绑定邮箱", "vi": "Liên kết email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.confirmEmailReplaceAction", "module": "dashboard", "en": "Replace primary email", "zh": "更换主邮箱", "vi": "Thay email chính", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.description", "module": "dashboard", "en": "View current bindings and connect another provider to this account.", "zh": "查看当前绑定状态，并将更多第三方登录方式关联到这个账号。", "vi": "Xem liên kết hiện tại và kết nối nhà cung cấp khác với tài khoản này.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.emailPlaceholder", "module": "dashboard", "en": "Enter email address", "zh": "输入邮箱地址", "vi": "Nhập địa chỉ email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.hideEmailFormAction", "module": "dashboard", "en": "Hide email form", "zh": "收起邮箱表单", "vi": "Ẩn biểu mẫu email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.manageEmailAction", "module": "dashboard", "en": "Manage email", "zh": "管理邮箱", "vi": "Quản lý email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.notes.bindAnotherBeforeUnbind", "module": "dashboard", "en": "Bind another sign-in method before unbinding", "zh": "请先绑定其他登录方式，再解除当前绑定。", "vi": "Liên kết phương thức đăng nhập khác trước khi hủy liên kết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.notes.canUnbind", "module": "dashboard", "en": "You can unbind this sign-in method", "zh": "你可以解绑这个登录方式。", "vi": "Bạn có thể hủy liên kết phương thức đăng nhập này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.notes.emailManagedFromProfile", "module": "dashboard", "en": "Primary email is managed in the profile form", "zh": "主邮箱在资料表单中管理", "vi": "Email chính được quản lý trong biểu mẫu hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.passwordPlaceholder", "module": "dashboard", "en": "Set a login password", "zh": "设置登录密码", "vi": "Đặt mật khẩu đăng nhập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.providers.dingtalk", "module": "dashboard", "en": "DingTalk", "zh": "钉钉", "vi": "DingTalk", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "profile.authBindings.providers.email", "module": "dashboard", "en": "Email", "zh": "邮箱", "vi": "Email", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "profile.authBindings.providers.linuxdo", "module": "dashboard", "en": "LinuxDo", "zh": "LinuxDo", "vi": "LinuxDo", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "profile.authBindings.providers.oidc", "module": "dashboard", "en": "{providerName}", "zh": "{providerName}", "vi": "{providerName}", "status": "draft", "placeholders": ["providerName"], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "profile.authBindings.providers.wechat", "module": "dashboard", "en": "WeChat", "zh": "微信", "vi": "WeChat", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "profile.authBindings.replaceEmailPasswordPlaceholder", "module": "dashboard", "en": "Enter current password", "zh": "输入当前密码", "vi": "Nhập mật khẩu hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.replaceSuccess", "module": "dashboard", "en": "Primary email updated", "zh": "主邮箱已更新", "vi": "Đã cập nhật email chính", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.sendCodeAction", "module": "dashboard", "en": "Send code", "zh": "发送验证码", "vi": "Gửi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.source.avatar", "module": "dashboard", "en": "Avatar is currently synced from {providerName}", "zh": "头像当前来自 {providerName}", "vi": "Ảnh đại diện hiện được đồng bộ từ {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "profile.authBindings.source.username", "module": "dashboard", "en": "Nickname is currently synced from {providerName}", "zh": "昵称当前来自 {providerName}", "vi": "Biệt danh hiện được đồng bộ từ {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "profile.authBindings.status.bound", "module": "dashboard", "en": "Bound", "zh": "已绑定", "vi": "Đã liên kết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.status.notBound", "module": "dashboard", "en": "Not bound", "zh": "未绑定", "vi": "Chưa liên kết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.title", "module": "dashboard", "en": "Connected Sign-In Methods", "zh": "登录方式绑定", "vi": "Phương thức đăng nhập đã kết nối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.unbindAction", "module": "dashboard", "en": "Unbind", "zh": "解绑", "vi": "Hủy liên kết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.authBindings.unbindSuccess", "module": "dashboard", "en": "{providerName} unbound", "zh": "{providerName} 已解绑", "vi": "Đã hủy liên kết {providerName}", "status": "draft", "placeholders": ["providerName"], "notes": ""}
+{"key": "profile.avatar.compressFailed", "module": "dashboard", "en": "Failed to compress the selected image.", "zh": "压缩所选图片失败", "vi": "Không thể nén ảnh đã chọn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.compressTooLarge", "module": "dashboard", "en": "Unable to compress this image below 20KB. Try a smaller image.", "zh": "无法将图片压缩到 20KB 以内，请换一张更小的图片", "vi": "Không thể nén ảnh xuống dưới 20KB. Hãy thử ảnh nhỏ hơn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.deleteSuccess", "module": "dashboard", "en": "Avatar removed", "zh": "头像已删除", "vi": "Đã xóa ảnh đại diện", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.description", "module": "dashboard", "en": "Upload an avatar image. Static uploads are compressed to 20KB before saving.", "zh": "仅支持上传头像图片；静态图片会自动压缩到 20KB 以内后再保存。", "vi": "Tải ảnh đại diện lên. Ảnh tĩnh được nén xuống 20KB trước khi lưu.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.emptyDeleteHint", "module": "dashboard", "en": "Avatar is already empty", "zh": "当前没有可删除的头像", "vi": "Ảnh đại diện đã trống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.gifTooLarge", "module": "dashboard", "en": "GIF avatars must already be 20KB or smaller", "zh": "GIF 头像必须在 20KB 以内", "vi": "Ảnh đại diện GIF phải có kích thước không quá 20KB", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.invalidType", "module": "dashboard", "en": "Please choose an image file", "zh": "请选择图片文件", "vi": "Vui lòng chọn tệp hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.readFailed", "module": "dashboard", "en": "Failed to read the selected image.", "zh": "读取所选图片失败", "vi": "Không thể đọc ảnh đã chọn.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.saveSuccess", "module": "dashboard", "en": "Avatar updated", "zh": "头像已更新", "vi": "Đã cập nhật ảnh đại diện", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.title", "module": "dashboard", "en": "Profile Avatar", "zh": "资料头像", "vi": "Ảnh đại diện hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.uploadAction", "module": "dashboard", "en": "Upload image", "zh": "上传图片", "vi": "Tải ảnh lên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.uploadHint", "module": "dashboard", "en": "Static uploads are compressed to 20KB when possible. GIF uploads must already be within 20KB.", "zh": "上传图片时会自动压缩静态图片到 20KB 以内，GIF 需自行控制在 20KB 以内", "vi": "Ảnh tĩnh được nén xuống 20KB khi có thể. Ảnh GIF phải sẵn có kích thước không quá 20KB.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.avatar.uploadRequired", "module": "dashboard", "en": "Upload an avatar image first", "zh": "请先上传头像图片", "vi": "Vui lòng tải ảnh đại diện lên trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.addEmail", "module": "dashboard", "en": "Add Email", "zh": "添加邮箱", "vi": "Thêm email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.codePlaceholder", "module": "dashboard", "en": "6-digit code", "zh": "6位验证码", "vi": "Mã 6 chữ số", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.codeSent", "module": "dashboard", "en": "Verification code sent", "zh": "验证码已发送", "vi": "Đã gửi mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.codeSentTo", "module": "dashboard", "en": "Code sent to {email}", "zh": "验证码已发送到 {email}", "vi": "Đã gửi mã đến {email}", "status": "draft", "placeholders": ["email"], "notes": ""}
+{"key": "profile.balanceNotify.description", "module": "dashboard", "en": "Send email alert when account balance falls below threshold", "zh": "当账户余额低于阈值时发送邮件提醒", "vi": "Gửi cảnh báo email khi số dư tài khoản thấp hơn ngưỡng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.emailAdded", "module": "dashboard", "en": "Email added", "zh": "邮箱已添加", "vi": "Đã thêm email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.emailDuplicate", "module": "dashboard", "en": "This email already exists", "zh": "该邮箱已存在", "vi": "Email này đã tồn tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.emailPlaceholder", "module": "dashboard", "en": "Enter email address", "zh": "输入邮箱地址", "vi": "Nhập địa chỉ email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.emailRemoved", "module": "dashboard", "en": "Email removed", "zh": "邮箱已移除", "vi": "Đã xóa email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.enabled", "module": "dashboard", "en": "Enable Balance Low Notification", "zh": "启用余额不足提醒", "vi": "Bật thông báo số dư thấp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.enterCode", "module": "dashboard", "en": "Enter verification code", "zh": "输入验证码", "vi": "Nhập mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.enterEmail", "module": "dashboard", "en": "Enter email address", "zh": "输入邮箱地址", "vi": "Nhập địa chỉ email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.extraEmails", "module": "dashboard", "en": "Notification Emails", "zh": "通知邮箱", "vi": "Email nhận thông báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.extraEmailsHint", "module": "dashboard", "en": "You must add and verify an email address to receive low balance alerts", "zh": "必须添加并验证邮箱后，余额不足时才能收到提醒邮件", "vi": "Bạn phải thêm và xác minh địa chỉ email để nhận cảnh báo số dư thấp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.maxEmailsReached", "module": "dashboard", "en": "Maximum number of notification emails reached", "zh": "已达到通知邮箱数量上限", "vi": "Đã đạt số email thông báo tối đa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.noExtraEmails", "module": "dashboard", "en": "No extra notification emails", "zh": "暂无额外通知邮箱", "vi": "Không có email thông báo bổ sung", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.primaryEmail", "module": "dashboard", "en": "Primary", "zh": "主邮箱", "vi": "Chính", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.removeEmail", "module": "dashboard", "en": "Remove", "zh": "移除", "vi": "Xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.removeSuccess", "module": "dashboard", "en": "Email removed", "zh": "邮箱已移除", "vi": "Đã xóa email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.resend", "module": "dashboard", "en": "Resend", "zh": "重发", "vi": "Gửi lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.sendCode", "module": "dashboard", "en": "Send Code", "zh": "发送验证码", "vi": "Gửi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.systemDefault", "module": "dashboard", "en": "System Default", "zh": "系统默认值", "vi": "Mặc định hệ thống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.threshold", "module": "dashboard", "en": "Custom Threshold", "zh": "自定义提醒阈值", "vi": "Ngưỡng tùy chỉnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.thresholdHint", "module": "dashboard", "en": "Leave empty to use system default", "zh": "留空使用系统默认值", "vi": "Để trống để dùng mặc định hệ thống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.thresholdPlaceholder", "module": "dashboard", "en": "Enter amount", "zh": "输入金额", "vi": "Nhập số tiền", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.title", "module": "dashboard", "en": "Balance Low Notification", "zh": "余额不足提醒", "vi": "Thông báo số dư thấp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.unverified", "module": "dashboard", "en": "Unverified", "zh": "未验证", "vi": "Chưa xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.verified", "module": "dashboard", "en": "Verified", "zh": "已验证", "vi": "Đã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.verify", "module": "dashboard", "en": "Verify", "zh": "验证", "vi": "Xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.balanceNotify.verifySuccess", "module": "dashboard", "en": "Email added successfully", "zh": "邮箱添加成功", "vi": "Đã thêm email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.basicsDescription", "module": "dashboard", "en": "Keep your public profile details and avatar aligned.", "zh": "维护公开展示信息，并保持头像与昵称风格一致。", "vi": "Giữ thông tin hồ sơ công khai và ảnh đại diện nhất quán.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.basicsTitle", "module": "dashboard", "en": "Profile & Avatar", "zh": "资料与头像", "vi": "Hồ sơ & Ảnh đại diện", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.changePassword", "module": "dashboard", "en": "Change Password", "zh": "修改密码", "vi": "Đổi mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.changePasswordButton", "module": "dashboard", "en": "Change Password", "zh": "修改密码", "vi": "Đổi mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.changingPassword", "module": "dashboard", "en": "Changing...", "zh": "修改中...", "vi": "Đang đổi...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.concurrencyLimit", "module": "dashboard", "en": "Concurrency Limit", "zh": "并发限制", "vi": "Giới hạn đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.confirmNewPassword", "module": "dashboard", "en": "Confirm New Password", "zh": "确认新密码", "vi": "Xác nhận mật khẩu mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.currentPassword", "module": "dashboard", "en": "Current Password", "zh": "当前密码", "vi": "Mật khẩu hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.description", "module": "dashboard", "en": "Manage your account information and settings", "zh": "管理您的账户信息和设置", "vi": "Quản lý thông tin và cài đặt tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.editProfile", "module": "dashboard", "en": "Edit Profile", "zh": "编辑个人资料", "vi": "Sửa hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.email", "module": "dashboard", "en": "Email", "zh": "邮箱", "vi": "Email", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "profile.enterUsername", "module": "dashboard", "en": "Enter username", "zh": "输入用户名", "vi": "Nhập tên người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.linkedProfileSources", "module": "dashboard", "en": "Profile Sources", "zh": "资料来源", "vi": "Nguồn hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.linkedProfileSourcesDescription", "module": "dashboard", "en": "Some profile details may stay synced from third-party sign-in methods.", "zh": "部分头像和昵称可能同步自第三方登录方式。", "vi": "Một số thông tin hồ sơ có thể được đồng bộ từ phương thức đăng nhập bên thứ ba.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.memberSince", "module": "dashboard", "en": "Member Since", "zh": "注册时间", "vi": "Thành viên từ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.newPassword", "module": "dashboard", "en": "New Password", "zh": "新密码", "vi": "Mật khẩu mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.overviewDescription", "module": "dashboard", "en": "Check account status, profile sources, and common actions at a glance.", "zh": "快速查看账号状态、资料来源与常用设置。", "vi": "Xem nhanh trạng thái tài khoản, nguồn hồ sơ và các thao tác thường dùng.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.overviewTitle", "module": "dashboard", "en": "Account Overview", "zh": "账户总览", "vi": "Tổng quan tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.passwordChangeFailed", "module": "dashboard", "en": "Failed to change password", "zh": "密码修改失败", "vi": "Không thể đổi mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.passwordChangeSuccess", "module": "dashboard", "en": "Password changed successfully", "zh": "密码修改成功", "vi": "Đã đổi mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.passwordHint", "module": "dashboard", "en": "Password must be at least 8 characters long", "zh": "密码至少需要 8 个字符", "vi": "Mật khẩu phải dài ít nhất 8 ký tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.passwordTooShort", "module": "dashboard", "en": "Password must be at least 8 characters long", "zh": "密码至少需要 8 个字符", "vi": "Mật khẩu phải dài ít nhất 8 ký tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.passwordsNotMatch", "module": "dashboard", "en": "New passwords do not match", "zh": "两次输入的密码不一致", "vi": "Mật khẩu mới không khớp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.role", "module": "dashboard", "en": "Role", "zh": "角色", "vi": "Vai trò", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.rpmLimit", "module": "dashboard", "en": "RPM Limit", "zh": "RPM 限制", "vi": "Giới hạn RPM", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.rpmUnlimited", "module": "dashboard", "en": "Unlimited", "zh": "不限制", "vi": "Không giới hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.securityDescription", "module": "dashboard", "en": "Password, two-factor authentication, and alerts live in the right rail.", "zh": "密码、双因素认证和通知提醒集中放在右侧。", "vi": "Mật khẩu, xác thực hai yếu tố và cảnh báo nằm ở cột bên phải.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.securityTitle", "module": "dashboard", "en": "Security Settings", "zh": "安全设置", "vi": "Cài đặt bảo mật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.status", "module": "dashboard", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.title", "module": "dashboard", "en": "Profile Settings", "zh": "个人设置", "vi": "Cài đặt hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.codeSent", "module": "dashboard", "en": "Verification code sent to your email", "zh": "验证码已发送到您的邮箱", "vi": "Đã gửi mã xác minh đến email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.confirmDisable", "module": "dashboard", "en": "Confirm Disable", "zh": "确认禁用", "vi": "Xác nhận tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.description", "module": "dashboard", "en": "Enhance account security with Google Authenticator or similar apps", "zh": "使用 Google Authenticator 等应用增强账户安全", "vi": "Tăng cường bảo mật tài khoản bằng Google Authenticator hoặc ứng dụng tương tự", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.disable", "module": "dashboard", "en": "Disable", "zh": "禁用", "vi": "Tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.disableFailed", "module": "dashboard", "en": "Failed to disable, please check your password", "zh": "禁用失败，请检查密码是否正确", "vi": "Không thể tắt, vui lòng kiểm tra mật khẩu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.disableSuccess", "module": "dashboard", "en": "Two-factor authentication disabled", "zh": "双因素认证已禁用", "vi": "Đã tắt xác thực hai yếu tố", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.disableTitle", "module": "dashboard", "en": "Disable Two-Factor Authentication", "zh": "禁用双因素认证", "vi": "Tắt xác thực hai yếu tố", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.disableWarning", "module": "dashboard", "en": "After disabling, you will no longer need a verification code to log in. This may reduce your account security.", "zh": "禁用后，登录时将不再需要验证码。这可能会降低您的账户安全性。", "vi": "Sau khi tắt, bạn không cần mã xác minh để đăng nhập. Điều này có thể làm giảm bảo mật tài khoản.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.emailCode", "module": "dashboard", "en": "Email Verification Code", "zh": "邮箱验证码", "vi": "Mã xác minh email", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enable", "module": "dashboard", "en": "Enable", "zh": "启用", "vi": "Bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enableSuccess", "module": "dashboard", "en": "Two-factor authentication enabled", "zh": "双因素认证已启用", "vi": "Đã bật xác thực hai yếu tố", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enabled", "module": "dashboard", "en": "Enabled", "zh": "已启用", "vi": "Đã bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enabledAt", "module": "dashboard", "en": "Enabled at", "zh": "启用时间", "vi": "Bật lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enterCode", "module": "dashboard", "en": "Enter 6-digit code", "zh": "输入 6 位验证码", "vi": "Nhập mã 6 chữ số", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enterEmailCode", "module": "dashboard", "en": "Enter 6-digit code", "zh": "请输入 6 位验证码", "vi": "Nhập mã 6 chữ số", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.enterPassword", "module": "dashboard", "en": "Enter your current password to confirm", "zh": "请输入当前密码确认", "vi": "Nhập mật khẩu hiện tại để xác nhận", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.featureDisabled", "module": "dashboard", "en": "Feature Unavailable", "zh": "功能未开放", "vi": "Tính năng không khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.featureDisabledHint", "module": "dashboard", "en": "Two-factor authentication has not been enabled by the administrator", "zh": "管理员尚未开放双因素认证功能", "vi": "Quản trị viên chưa bật xác thực hai yếu tố", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.loginFailed", "module": "dashboard", "en": "Verification failed, please try again", "zh": "验证失败，请重试", "vi": "Xác minh thất bại, vui lòng thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.loginHint", "module": "dashboard", "en": "Enter the 6-digit code from your authenticator app", "zh": "请输入您认证器应用显示的 6 位验证码", "vi": "Nhập mã 6 chữ số từ ứng dụng xác thực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.loginTitle", "module": "dashboard", "en": "Two-Factor Authentication", "zh": "双因素认证", "vi": "Xác thực hai yếu tố", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.manualEntry", "module": "dashboard", "en": "Can't scan? Enter the key manually:", "zh": "无法扫码？手动输入密钥：", "vi": "Không thể quét? Nhập khóa thủ công:", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.notEnabled", "module": "dashboard", "en": "Not Enabled", "zh": "未启用", "vi": "Chưa bật", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.notEnabledHint", "module": "dashboard", "en": "Enable two-factor authentication to enhance account security", "zh": "启用双因素认证可以增强账户安全性", "vi": "Bật xác thực hai yếu tố để tăng cường bảo mật tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.sendCode", "module": "dashboard", "en": "Send Code", "zh": "发送验证码", "vi": "Gửi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.sendCodeFailed", "module": "dashboard", "en": "Failed to send verification code", "zh": "发送验证码失败", "vi": "Không thể gửi mã xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.setupFailed", "module": "dashboard", "en": "Failed to get setup information", "zh": "获取设置信息失败", "vi": "Không thể lấy thông tin thiết lập", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.setupStep1", "module": "dashboard", "en": "Scan the QR code below with your authenticator app", "zh": "使用认证器应用扫描下方二维码", "vi": "Quét mã QR bên dưới bằng ứng dụng xác thực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.setupStep2", "module": "dashboard", "en": "Enter the 6-digit code from your app", "zh": "输入应用显示的 6 位验证码", "vi": "Nhập mã 6 chữ số từ ứng dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.setupTitle", "module": "dashboard", "en": "Set Up Two-Factor Authentication", "zh": "设置双因素认证", "vi": "Thiết lập xác thực hai yếu tố", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.title", "module": "dashboard", "en": "Two-Factor Authentication (2FA)", "zh": "双因素认证 (2FA)", "vi": "Xác thực hai yếu tố (2FA)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.verify", "module": "dashboard", "en": "Verify", "zh": "验证", "vi": "Xác minh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.verifyEmailFirst", "module": "dashboard", "en": "Please verify your email first", "zh": "请先验证您的邮箱", "vi": "Vui lòng xác minh email trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.verifyFailed", "module": "dashboard", "en": "Invalid code, please try again", "zh": "验证码错误，请重试", "vi": "Mã không hợp lệ, vui lòng thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.totp.verifyPasswordFirst", "module": "dashboard", "en": "Please verify your identity first", "zh": "请先验证您的身份", "vi": "Vui lòng xác minh danh tính trước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.updateFailed", "module": "dashboard", "en": "Failed to update profile", "zh": "资料更新失败", "vi": "Không thể cập nhật hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.updateProfile", "module": "dashboard", "en": "Update Profile", "zh": "更新资料", "vi": "Cập nhật hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.updateSuccess", "module": "dashboard", "en": "Profile updated successfully", "zh": "资料更新成功", "vi": "Đã cập nhật hồ sơ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.updating", "module": "dashboard", "en": "Updating...", "zh": "更新中...", "vi": "Đang cập nhật...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.user", "module": "dashboard", "en": "User", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.username", "module": "dashboard", "en": "Username", "zh": "用户名", "vi": "Tên người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "profile.usernameRequired", "module": "dashboard", "en": "Username is required", "zh": "用户名不能为空", "vi": "Bắt buộc nhập tên người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.aboutCodes", "module": "dashboard", "en": "About Redeem Codes", "zh": "关于兑换码", "vi": "Giới thiệu mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.added", "module": "dashboard", "en": "Added", "zh": "已添加", "vi": "Đã thêm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.adminAdjustment", "module": "dashboard", "en": "Admin Adjustment", "zh": "管理员调整", "vi": "Điều chỉnh của quản trị viên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.balanceAddedAdmin", "module": "dashboard", "en": "Balance Added (Admin)", "zh": "余额充值（管理员）", "vi": "Đã thêm số dư (Quản trị viên)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.balanceAddedAffiliate", "module": "dashboard", "en": "Balance Added (Affiliate Transfer)", "zh": "余额充值（返利转入）", "vi": "Đã thêm số dư (Chuyển hoàn tiền)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.balanceAddedRedeem", "module": "dashboard", "en": "Balance Added (Redeem)", "zh": "余额充值（兑换）", "vi": "Đã thêm số dư (Đổi mã)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.balanceDeductedAdmin", "module": "dashboard", "en": "Balance Deducted (Admin)", "zh": "余额扣除（管理员）", "vi": "Đã trừ số dư (Quản trị viên)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.codeRedeemSuccess", "module": "dashboard", "en": "Code redeemed successfully!", "zh": "兑换成功！", "vi": "Đổi mã thành công!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.codeRule1", "module": "dashboard", "en": "Each code can only be used once", "zh": "每个兑换码只能使用一次", "vi": "Mỗi mã chỉ có thể sử dụng một lần", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.codeRule2", "module": "dashboard", "en": "Codes may add balance, increase concurrency, or grant trial access", "zh": "兑换码可以增加余额、并发数或试用权限", "vi": "Mã có thể thêm số dư, tăng mức đồng thời hoặc cấp quyền dùng thử", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.codeRule3", "module": "dashboard", "en": "Contact support if you have issues redeeming a code", "zh": "如有兑换问题，请联系客服", "vi": "Liên hệ hỗ trợ nếu gặp vấn đề khi đổi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.codeRule4", "module": "dashboard", "en": "Balance and concurrency updates are immediate", "zh": "余额和并发数即时更新", "vi": "Số dư và mức đồng thời được cập nhật ngay lập tức", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.concurrency", "module": "dashboard", "en": "Concurrency", "zh": "并发数", "vi": "Mức đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.concurrencyAddedAdmin", "module": "dashboard", "en": "Concurrency Added (Admin)", "zh": "并发增加（管理员）", "vi": "Đã tăng mức đồng thời (Quản trị viên)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.concurrencyAddedRedeem", "module": "dashboard", "en": "Concurrency Added (Redeem)", "zh": "并发增加（兑换）", "vi": "Đã tăng mức đồng thời (Đổi mã)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.concurrencyReducedAdmin", "module": "dashboard", "en": "Concurrency Reduced (Admin)", "zh": "并发减少（管理员）", "vi": "Đã giảm mức đồng thời (Quản trị viên)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.concurrentRequests", "module": "dashboard", "en": "concurrent requests", "zh": "并发请求", "vi": "yêu cầu đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.currentBalance", "module": "dashboard", "en": "Current Balance", "zh": "当前余额", "vi": "Số dư hiện tại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.days", "module": "dashboard", "en": " days", "zh": "天", "vi": " ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.description", "module": "dashboard", "en": "Enter your redeem code to add balance or increase concurrency", "zh": "输入兑换码以充值余额或增加并发数", "vi": "Nhập mã đổi để thêm số dư hoặc tăng mức đồng thời", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.failedToRedeem", "module": "dashboard", "en": "Failed to redeem code. Please check the code and try again.", "zh": "兑换失败，请检查兑换码后重试。", "vi": "Không thể đổi mã. Vui lòng kiểm tra mã và thử lại.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.historyWillAppear", "module": "dashboard", "en": "Your redemption history will appear here", "zh": "您的兑换历史将显示在这里", "vi": "Lịch sử đổi mã sẽ xuất hiện tại đây", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.newBalance", "module": "dashboard", "en": "New Balance", "zh": "新余额", "vi": "Số dư mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.newConcurrency", "module": "dashboard", "en": "New Concurrency", "zh": "新并发数", "vi": "Mức đồng thời mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.pleaseEnterCode", "module": "dashboard", "en": "Please enter a redeem code", "zh": "请输入兑换码", "vi": "Vui lòng nhập mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.recentActivity", "module": "dashboard", "en": "Recent Activity", "zh": "最近活动", "vi": "Hoạt động gần đây", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeemButton", "module": "dashboard", "en": "Redeem Code", "zh": "兑换", "vi": "Đổi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeemCodeHint", "module": "dashboard", "en": "Redeem codes are case-sensitive", "zh": "兑换码区分大小写", "vi": "Mã đổi phân biệt chữ hoa chữ thường", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeemCodeLabel", "module": "dashboard", "en": "Redeem Code", "zh": "兑换码", "vi": "Mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeemCodePlaceholder", "module": "dashboard", "en": "Enter your redeem code", "zh": "请输入兑换码", "vi": "Nhập mã đổi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeemFailed", "module": "dashboard", "en": "Redemption Failed", "zh": "兑换失败", "vi": "Đổi mã thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeemSuccess", "module": "dashboard", "en": "Code Redeemed Successfully!", "zh": "兑换成功！", "vi": "Đổi mã thành công!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.redeeming", "module": "dashboard", "en": "Redeeming...", "zh": "兑换中...", "vi": "Đang đổi...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.requests", "module": "dashboard", "en": "requests", "zh": "请求", "vi": "yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.subscriptionAssigned", "module": "dashboard", "en": "Subscription Assigned", "zh": "订阅已分配", "vi": "Đã cấp gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.subscriptionAssignedDesc", "module": "dashboard", "en": "You have been granted access to {groupName}", "zh": "您已获得 {groupName} 的访问权限", "vi": "Bạn đã được cấp quyền truy cập {groupName}", "status": "draft", "placeholders": ["groupName"], "notes": ""}
+{"key": "redeem.subscriptionDays", "module": "dashboard", "en": "{days} days", "zh": "{days} 天", "vi": "{days} ngày", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "redeem.subscriptionRefreshFailed", "module": "dashboard", "en": "Redeemed successfully, but failed to refresh subscription status.", "zh": "兑换成功，但订阅状态刷新失败。", "vi": "Đổi mã thành công nhưng không thể làm mới trạng thái gói đăng ký.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "redeem.title", "module": "dashboard", "en": "Redeem Code", "zh": "兑换码", "vi": "Đổi mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.accountBilled", "module": "dashboard", "en": "Account billed", "zh": "账号计费", "vi": "Tài khoản được tính phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.accountCost", "module": "dashboard", "en": "Cost", "zh": "成本", "vi": "Chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.accountMultiplier", "module": "dashboard", "en": "Account rate", "zh": "账号倍率", "vi": "Hệ số tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.actualCost", "module": "dashboard", "en": "Actual", "zh": "实际", "vi": "Thực tế", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.allApiKeys", "module": "dashboard", "en": "All API Keys", "zh": "全部密钥", "vi": "Tất cả khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.apiKeyFilter", "module": "dashboard", "en": "API Key", "zh": "API 密钥", "vi": "API Key", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.avgDuration", "module": "dashboard", "en": "Avg Duration", "zh": "平均耗时", "vi": "Thời lượng trung bình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.billed", "module": "dashboard", "en": "Billed", "zh": "计费", "vi": "Đã tính phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheBreakdown", "module": "dashboard", "en": "Cache Token Breakdown", "zh": "缓存 Token 明细", "vi": "Phân tích token bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheCreate", "module": "dashboard", "en": "Cache create", "zh": "缓存创建", "vi": "Tạo bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheCreationTokensLabel", "module": "dashboard", "en": "Cache Creation", "zh": "缓存创建", "vi": "Tạo bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheHit", "module": "dashboard", "en": "Cache hit", "zh": "缓存命中", "vi": "Trúng bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheHitRate", "module": "dashboard", "en": "Cache hit rate", "zh": "缓存命中率", "vi": "Tỷ lệ trúng bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheRead", "module": "dashboard", "en": "Read", "zh": "读取", "vi": "Đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheReadTokensLabel", "module": "dashboard", "en": "Cache Read", "zh": "缓存读取", "vi": "Đọc bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheTotal", "module": "dashboard", "en": "Cache", "zh": "缓存", "vi": "Bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheTtlOverridden1h", "module": "dashboard", "en": "Billed as 1h", "zh": "按 1h 计费", "vi": "Tính phí như 1 giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheTtlOverridden5m", "module": "dashboard", "en": "Billed as 5m", "zh": "按 5m 计费", "vi": "Tính phí như 5 phút", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheTtlOverriddenHint", "module": "dashboard", "en": "Cache TTL Override enabled", "zh": "缓存 TTL Override 已启用", "vi": "Đã bật ghi đè TTL bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheTtlOverriddenLabel", "module": "dashboard", "en": "TTL Override", "zh": "TTL 替换", "vi": "Ghi đè TTL", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cacheWrite", "module": "dashboard", "en": "Write", "zh": "写入", "vi": "Ghi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cancelExport", "module": "dashboard", "en": "Cancel Export", "zh": "取消导出", "vi": "Hủy xuất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cost", "module": "dashboard", "en": "Cost", "zh": "费用", "vi": "Chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.costDetails", "module": "dashboard", "en": "Cost Breakdown", "zh": "费用明细", "vi": "Phân tích chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.cyber", "module": "dashboard", "en": "Cyber", "zh": "安全策略", "vi": "Cyber", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.description", "module": "dashboard", "en": "View and analyze your API usage history", "zh": "查看和分析您的 API 使用历史", "vi": "Xem và phân tích lịch sử sử dụng API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.duration", "module": "dashboard", "en": "Duration", "zh": "耗时", "vi": "Thời lượng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.endpoint", "module": "dashboard", "en": "Endpoint", "zh": "端点", "vi": "Điểm cuối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.endpointDistribution", "module": "dashboard", "en": "Endpoint Distribution", "zh": "端点分布", "vi": "Phân bố điểm cuối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.allCategories", "module": "dashboard", "en": "All categories", "zh": "全部分类", "vi": "Tất cả danh mục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.allKeys", "module": "dashboard", "en": "All keys", "zh": "全部 Key", "vi": "Tất cả khóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.allStatuses", "module": "dashboard", "en": "All status codes", "zh": "全部状态码", "vi": "Tất cả mã trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.auth", "module": "dashboard", "en": "Auth failed", "zh": "认证失败", "vi": "Xác thực thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.cyber", "module": "dashboard", "en": "Cyber policy", "zh": "安全策略", "vi": "Chính sách Cyber", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.internal", "module": "dashboard", "en": "Platform error", "zh": "平台错误", "vi": "Lỗi nền tảng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.invalid_request", "module": "dashboard", "en": "Invalid request", "zh": "参数错误", "vi": "Yêu cầu không hợp lệ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.other", "module": "dashboard", "en": "Other", "zh": "其他", "vi": "Khác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.quota", "module": "dashboard", "en": "Balance/Subscription", "zh": "余额/订阅", "vi": "Số dư/Gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.rate_limit", "module": "dashboard", "en": "Rate limited", "zh": "限流", "vi": "Bị giới hạn tốc độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.service_unavailable", "module": "dashboard", "en": "Service unavailable", "zh": "服务暂时不可用", "vi": "Dịch vụ không khả dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.categories.upstream", "module": "dashboard", "en": "Upstream error", "zh": "上游错误", "vi": "Lỗi thượng nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.category", "module": "dashboard", "en": "Category", "zh": "分类", "vi": "Danh mục", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.detail.loadFailed", "module": "dashboard", "en": "Failed to load detail, please try again", "zh": "加载详情失败，请稍后重试", "vi": "Không thể tải chi tiết, vui lòng thử lại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.detail.responseBody", "module": "dashboard", "en": "Response Body", "zh": "上游响应内容", "vi": "Nội dung phản hồi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.detail.title", "module": "dashboard", "en": "Error Request Detail", "zh": "错误请求详情", "vi": "Chi tiết yêu cầu lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.detail.upstreamStatus", "module": "dashboard", "en": "Upstream Status", "zh": "上游状态码", "vi": "Trạng thái thượng nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.empty", "module": "dashboard", "en": "No error requests", "zh": "暂无错误请求", "vi": "Không có yêu cầu lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.endpoint", "module": "dashboard", "en": "Endpoint", "zh": "端点", "vi": "Điểm cuối", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.failedToLoad", "module": "dashboard", "en": "Failed to load error requests", "zh": "加载错误请求失败", "vi": "Không thể tải yêu cầu lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.keyDeleted", "module": "dashboard", "en": "Deleted", "zh": "已删除", "vi": "Đã xóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.keyName", "module": "dashboard", "en": "Key Name", "zh": "Key 名称", "vi": "Tên khóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.message", "module": "dashboard", "en": "Message", "zh": "错误信息", "vi": "Thông báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.model", "module": "dashboard", "en": "Model", "zh": "模型", "vi": "Mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.modelPlaceholder", "module": "dashboard", "en": "Search model", "zh": "搜索模型", "vi": "Tìm mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.platform", "module": "dashboard", "en": "Platform", "zh": "平台", "vi": "Nền tảng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.status", "module": "dashboard", "en": "Status", "zh": "状态码", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.errors.time", "module": "dashboard", "en": "Time", "zh": "时间", "vi": "Thời gian", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.estimatedTime", "module": "dashboard", "en": "Estimated time remaining: {time}", "zh": "预计剩余时间：{time}", "vi": "Thời gian còn lại ước tính: {time}", "status": "draft", "placeholders": ["time"], "notes": ""}
+{"key": "usage.exportCancelled", "module": "dashboard", "en": "Export cancelled", "zh": "导出已取消", "vi": "Đã hủy xuất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportCsv", "module": "dashboard", "en": "Export CSV", "zh": "导出 CSV", "vi": "Xuất CSV", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportExcel", "module": "dashboard", "en": "Export Excel", "zh": "导出 Excel", "vi": "Xuất Excel", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportExcelFailed", "module": "dashboard", "en": "Failed to export usage data", "zh": "使用数据导出失败", "vi": "Không thể xuất dữ liệu sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportExcelSuccess", "module": "dashboard", "en": "Usage data exported successfully (Excel format)", "zh": "使用数据导出成功（Excel格式）", "vi": "Đã xuất dữ liệu sử dụng (định dạng Excel)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportFailed", "module": "dashboard", "en": "Failed to export usage data", "zh": "使用数据导出失败", "vi": "Không thể xuất dữ liệu sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportSuccess", "module": "dashboard", "en": "Usage data exported successfully", "zh": "使用数据导出成功", "vi": "Đã xuất dữ liệu sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportedCount", "module": "dashboard", "en": "Exported {current}/{total} records", "zh": "已导出 {current}/{total} 条", "vi": "Đã xuất {current}/{total} bản ghi", "status": "draft", "placeholders": ["current", "total"], "notes": ""}
+{"key": "usage.exporting", "module": "dashboard", "en": "Exporting...", "zh": "导出中...", "vi": "Đang xuất...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.exportingProgress", "module": "dashboard", "en": "Exporting data...", "zh": "正在导出数据...", "vi": "Đang xuất dữ liệu...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.failedToLoad", "module": "dashboard", "en": "Failed to load usage logs", "zh": "加载使用记录失败", "vi": "Không thể tải nhật ký sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.firstToken", "module": "dashboard", "en": "First Token", "zh": "首 Token", "vi": "Token đầu tiên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageBillingSize", "module": "dashboard", "en": "Billing size", "zh": "计费尺寸", "vi": "Kích thước tính phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageCount", "module": "dashboard", "en": "Image count", "zh": "图片张数", "vi": "Số hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageInputSize", "module": "dashboard", "en": "Input size", "zh": "输入尺寸", "vi": "Kích thước đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageOutputCost", "module": "dashboard", "en": "Image Output Cost", "zh": "图片输出费用", "vi": "Chi phí đầu ra hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageOutputSize", "module": "dashboard", "en": "Output size", "zh": "输出尺寸", "vi": "Kích thước đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageOutputTokenPrice", "module": "dashboard", "en": "Image Output Price", "zh": "图片输出单价", "vi": "Giá đầu ra hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageOutputTokens", "module": "dashboard", "en": "Image Output Tokens", "zh": "图片输出 Token", "vi": "Token đầu ra hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeBreakdown", "module": "dashboard", "en": "Size breakdown", "zh": "尺寸明细", "vi": "Phân tích kích thước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeLegacyUnstandardized", "module": "dashboard", "en": "legacy unstandardized", "zh": "历史非标准", "vi": "dữ liệu cũ chưa chuẩn hóa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeNotRecorded", "module": "dashboard", "en": "not recorded", "zh": "未记录", "vi": "chưa ghi nhận", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeSource", "module": "dashboard", "en": "Size source", "zh": "尺寸来源", "vi": "Nguồn kích thước", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeSourceDefault", "module": "dashboard", "en": "Default billing tier", "zh": "默认计费档位", "vi": "Bậc tính phí mặc định", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeSourceInput", "module": "dashboard", "en": "Request input", "zh": "请求输入", "vi": "Đầu vào yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeSourceLegacy", "module": "dashboard", "en": "Legacy record", "zh": "历史记录", "vi": "Bản ghi cũ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeSourceMissing", "module": "dashboard", "en": "Not recorded", "zh": "未记录", "vi": "Chưa ghi nhận", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeSourceOutput", "module": "dashboard", "en": "Upstream output", "zh": "上游输出", "vi": "Đầu ra thượng nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageSizeUnknown", "module": "dashboard", "en": "unknown", "zh": "未知", "vi": "không rõ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageTotalPrice", "module": "dashboard", "en": "Image total price", "zh": "图片总价", "vi": "Tổng giá hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageUnit", "module": "dashboard", "en": " images", "zh": "张", "vi": " hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.imageUnitPrice", "module": "dashboard", "en": "Per-image price", "zh": "单张价格", "vi": "Giá mỗi hình ảnh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.in", "module": "dashboard", "en": "In", "zh": "输入", "vi": "Vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.inSelectedRange", "module": "dashboard", "en": "in selected range", "zh": "所选范围内", "vi": "trong khoảng đã chọn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.inbound", "module": "dashboard", "en": "Inbound", "zh": "入站", "vi": "Đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.inboundEndpoint", "module": "dashboard", "en": "Inbound Endpoint", "zh": "入站端点", "vi": "Điểm cuối đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.inputTokenPrice", "module": "dashboard", "en": "Input price", "zh": "输入单价", "vi": "Giá đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.batchFailed", "module": "dashboard", "en": "Failed to batch fetch IP regions", "zh": "批量获取地区信息失败", "vi": "Không thể lấy hàng loạt khu vực IP", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.batchFetch", "module": "dashboard", "en": "Batch fetch regions", "zh": "批量获取地区", "vi": "Lấy hàng loạt khu vực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.batchFetching", "module": "dashboard", "en": "Fetching...", "zh": "获取中...", "vi": "Đang lấy...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.detailAccuracy", "module": "dashboard", "en": "Accuracy", "zh": "定位精度", "vi": "Độ chính xác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.detailCoordinates", "module": "dashboard", "en": "Coordinates", "zh": "坐标", "vi": "Tọa độ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.detailOrg", "module": "dashboard", "en": "ISP", "zh": "运营商", "vi": "ISP", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.ipGeo.detailTimezone", "module": "dashboard", "en": "Timezone", "zh": "时区", "vi": "Múi giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.failed", "module": "dashboard", "en": "Failed", "zh": "获取失败", "vi": "Thất bại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.fetch", "module": "dashboard", "en": "Fetch region", "zh": "获取地区", "vi": "Lấy khu vực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.fetching", "module": "dashboard", "en": "Fetching...", "zh": "获取中...", "vi": "Đang lấy...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.pending", "module": "dashboard", "en": "{count} IPs pending", "zh": "{count} 个 IP 待获取地区", "vi": "{count} IP đang chờ", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "usage.ipGeo.private", "module": "dashboard", "en": "Private address", "zh": "内网地址", "vi": "Địa chỉ riêng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ipGeo.refreshTitle", "module": "dashboard", "en": "Refresh region info", "zh": "刷新地区信息", "vi": "Làm mới thông tin khu vực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.latency", "module": "dashboard", "en": "Latency", "zh": "延迟", "vi": "Độ trễ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.latencyDuration", "module": "dashboard", "en": "Total", "zh": "总耗时", "vi": "Tổng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.latencyFirstToken", "module": "dashboard", "en": "First", "zh": "首字", "vi": "Đầu tiên", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.mapping", "module": "dashboard", "en": "Mapping", "zh": "映射", "vi": "Ánh xạ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.model", "module": "dashboard", "en": "Model", "zh": "模型", "vi": "Mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.noDataToExport", "module": "dashboard", "en": "No data to export", "zh": "没有可导出的数据", "vi": "Không có dữ liệu để xuất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.noRecords", "module": "dashboard", "en": "No usage records found. Try adjusting your filters.", "zh": "未找到使用记录，请尝试调整筛选条件。", "vi": "Không tìm thấy bản ghi sử dụng. Hãy điều chỉnh bộ lọc.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.original", "module": "dashboard", "en": "Original", "zh": "原始", "vi": "Gốc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.out", "module": "dashboard", "en": "Out", "zh": "输出", "vi": "Ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.outputTokenPrice", "module": "dashboard", "en": "Output price", "zh": "输出单价", "vi": "Giá đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.path", "module": "dashboard", "en": "Path", "zh": "路径", "vi": "Đường dẫn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.perMillionTokens", "module": "dashboard", "en": "/ 1M tokens", "zh": "/ 1M Token", "vi": "/ 1 triệu token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.perRequest", "module": "dashboard", "en": "per request", "zh": "每次请求", "vi": "mỗi yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.preparingExport", "module": "dashboard", "en": "Preparing export...", "zh": "正在准备导出...", "vi": "Đang chuẩn bị xuất...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.rate", "module": "dashboard", "en": "Rate", "zh": "倍率", "vi": "Hệ số", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.reasoningEffort", "module": "dashboard", "en": "Reasoning Effort", "zh": "推理强度", "vi": "Mức suy luận", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.requestedModel", "module": "dashboard", "en": "Requested", "zh": "请求", "vi": "Được yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.resetNow", "module": "dashboard", "en": "Now", "zh": "现在", "vi": "Bây giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.resetPending", "module": "dashboard", "en": "Pending refresh", "zh": "待刷新", "vi": "Đang chờ làm mới", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.serviceTier", "module": "dashboard", "en": "Service tier", "zh": "服务档位", "vi": "Bậc dịch vụ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.serviceTierFlex", "module": "dashboard", "en": "Flex", "zh": "Flex", "vi": "Flex", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.serviceTierPriority", "module": "dashboard", "en": "Fast", "zh": "Fast", "vi": "Nhanh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.serviceTierStandard", "module": "dashboard", "en": "Standard", "zh": "Standard", "vi": "Standard", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.standardCost", "module": "dashboard", "en": "Standard", "zh": "标准", "vi": "Tiêu chuẩn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.stream", "module": "dashboard", "en": "Stream", "zh": "流式", "vi": "Truyền trực tiếp", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.sync", "module": "dashboard", "en": "Sync", "zh": "同步", "vi": "Đồng bộ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.tabs.errors", "module": "dashboard", "en": "Error Requests", "zh": "错误请求", "vi": "Yêu cầu lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.tabs.ranking", "module": "dashboard", "en": "User Ranking", "zh": "用户排行", "vi": "Xếp hạng người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.tabs.usage", "module": "dashboard", "en": "Usage", "zh": "用量明细", "vi": "Mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.time", "module": "dashboard", "en": "Time", "zh": "时间", "vi": "Thời gian", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.timeRange", "module": "dashboard", "en": "Time Range", "zh": "时间范围", "vi": "Khoảng thời gian", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.title", "module": "dashboard", "en": "Usage Records", "zh": "使用记录", "vi": "Bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.tokenDetails", "module": "dashboard", "en": "Token Breakdown", "zh": "Token 明细", "vi": "Phân tích token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.tokens", "module": "dashboard", "en": "Tokens", "zh": "Token", "vi": "Tokens", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.totalCost", "module": "dashboard", "en": "Total Cost", "zh": "总消费", "vi": "Tổng chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.totalRequests", "module": "dashboard", "en": "Total Requests", "zh": "总请求数", "vi": "Tổng yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.totalTokens", "module": "dashboard", "en": "Total Tokens", "zh": "总 Token", "vi": "Tổng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.type", "module": "dashboard", "en": "Type", "zh": "类型", "vi": "Loại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.unitPrice", "module": "dashboard", "en": "Per-request price", "zh": "单次价格", "vi": "Giá mỗi yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.unknown", "module": "dashboard", "en": "Unknown", "zh": "未知", "vi": "Không rõ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.upstream", "module": "dashboard", "en": "Upstream", "zh": "上游", "vi": "Thượng nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.upstreamEndpoint", "module": "dashboard", "en": "Upstream Endpoint", "zh": "上游端点", "vi": "Điểm cuối thượng nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.upstreamModel", "module": "dashboard", "en": "Upstream", "zh": "上游", "vi": "Thượng nguồn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.userAgent", "module": "dashboard", "en": "User-Agent", "zh": "User-Agent", "vi": "User-Agent", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "usage.userBilled", "module": "dashboard", "en": "User billed", "zh": "用户扣费", "vi": "Người dùng được tính phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "usage.ws", "module": "dashboard", "en": "WS", "zh": "WS", "vi": "WS", "status": "draft", "placeholders": [], "notes": "Intentional untranslated provider/product name, protocol token, identifier, example, or raw configuration value."}
+{"key": "userSubscriptions.daily", "module": "dashboard", "en": "Daily", "zh": "每日", "vi": "Hằng ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.daysRemaining", "module": "dashboard", "en": "{days} days remaining", "zh": "剩余 {days} 天", "vi": "Còn {days} ngày", "status": "draft", "placeholders": ["days"], "notes": ""}
+{"key": "userSubscriptions.description", "module": "dashboard", "en": "View your subscription plans and usage", "zh": "查看您的订阅计划和用量", "vi": "Xem các gói đăng ký và mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.expires", "module": "dashboard", "en": "Expires", "zh": "到期时间", "vi": "Hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.expiresOn", "module": "dashboard", "en": "Expires on {date}", "zh": "{date} 到期", "vi": "Hết hạn vào {date}", "status": "draft", "placeholders": ["date"], "notes": ""}
+{"key": "userSubscriptions.failedToLoad", "module": "dashboard", "en": "Failed to load subscriptions", "zh": "加载订阅失败", "vi": "Không thể tải gói đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.monthly", "module": "dashboard", "en": "Monthly", "zh": "每月", "vi": "Hằng tháng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.noActiveSubscriptions", "module": "dashboard", "en": "No Active Subscriptions", "zh": "暂无有效订阅", "vi": "Không có gói đang hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.noActiveSubscriptionsDesc", "module": "dashboard", "en": "You don't have any active subscriptions. Contact administrator to get one.", "zh": "您没有任何有效订阅。请联系管理员获取订阅。", "vi": "Bạn không có gói đăng ký đang hoạt động. Hãy liên hệ quản trị viên để được cấp.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.noExpiration", "module": "dashboard", "en": "No expiration", "zh": "无到期时间", "vi": "Không hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.quotaEndsIn", "module": "dashboard", "en": "Quota ends in {time}", "zh": "额度将在 {time} 后结束", "vi": "Hạn mức kết thúc sau {time}", "status": "draft", "placeholders": ["time"], "notes": ""}
+{"key": "userSubscriptions.resetIn", "module": "dashboard", "en": "Resets in {time}", "zh": "{time} 后重置", "vi": "Đặt lại sau {time}", "status": "draft", "placeholders": ["time"], "notes": ""}
+{"key": "userSubscriptions.status.active", "module": "dashboard", "en": "Active", "zh": "有效", "vi": "Đang hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.status.expired", "module": "dashboard", "en": "Expired", "zh": "已过期", "vi": "Đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.status.revoked", "module": "dashboard", "en": "Revoked", "zh": "已撤销", "vi": "Đã thu hồi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.title", "module": "dashboard", "en": "My Subscriptions", "zh": "我的订阅", "vi": "Gói đăng ký của tôi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.unlimited", "module": "dashboard", "en": "Unlimited", "zh": "无限制", "vi": "Không giới hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.unlimitedDesc", "module": "dashboard", "en": "No usage limits on this subscription", "zh": "该订阅无用量限制", "vi": "Gói đăng ký này không giới hạn mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.usage", "module": "dashboard", "en": "Usage", "zh": "用量", "vi": "Mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.usageOf", "module": "dashboard", "en": "{used} of {limit}", "zh": "已用 {used} / {limit}", "vi": "{used} trên {limit}", "status": "draft", "placeholders": ["limit", "used"], "notes": ""}
+{"key": "userSubscriptions.weekly", "module": "dashboard", "en": "Weekly", "zh": "每周", "vi": "Hằng tuần", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "userSubscriptions.windowNotActive", "module": "dashboard", "en": "Awaiting first use", "zh": "等待首次使用", "vi": "Đang chờ lần sử dụng đầu tiên", "status": "draft", "placeholders": [], "notes": ""}

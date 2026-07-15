@@ -1,0 +1,49 @@
+{"key": "admin.promo.allStatus", "module": "admin.promo", "en": "All Status", "zh": "全部状态", "vi": "Tất cả trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.autoGenerate", "module": "admin.promo", "en": "auto-generate if empty", "zh": "留空自动生成", "vi": "tự động tạo nếu trống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.bonusAmount", "module": "admin.promo", "en": "Bonus Amount ($)", "zh": "赠送金额 ($)", "vi": "Số tiền thưởng ($)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.code", "module": "admin.promo", "en": "Promo Code", "zh": "优惠码", "vi": "Mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.codeCreated", "module": "admin.promo", "en": "Promo code created successfully", "zh": "优惠码创建成功", "vi": "Đã tạo mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.codeDeleted", "module": "admin.promo", "en": "Promo code deleted successfully", "zh": "优惠码删除成功", "vi": "Đã xóa mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.codePlaceholder", "module": "admin.promo", "en": "Enter promo code or leave empty", "zh": "输入优惠码或留空", "vi": "Nhập mã khuyến mại hoặc để trống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.codeUpdated", "module": "admin.promo", "en": "Promo code updated successfully", "zh": "优惠码更新成功", "vi": "Đã cập nhật mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.actions", "module": "admin.promo", "en": "Actions", "zh": "操作", "vi": "Thao tác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.bonusAmount", "module": "admin.promo", "en": "Bonus Amount", "zh": "赠送金额", "vi": "Số tiền thưởng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.code", "module": "admin.promo", "en": "Code", "zh": "优惠码", "vi": "Mã", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.createdAt", "module": "admin.promo", "en": "Created At", "zh": "创建时间", "vi": "Tạo lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.expiresAt", "module": "admin.promo", "en": "Expires At", "zh": "过期时间", "vi": "Hết hạn lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.maxUses", "module": "admin.promo", "en": "Max Uses", "zh": "最大使用次数", "vi": "Lượt dùng tối đa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.status", "module": "admin.promo", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.usage", "module": "admin.promo", "en": "Usage", "zh": "使用量", "vi": "Mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.columns.usedCount", "module": "admin.promo", "en": "Used", "zh": "已使用", "vi": "Đã dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.copied", "module": "admin.promo", "en": "Copied!", "zh": "已复制！", "vi": "Đã sao chép!", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.copyRegisterLink", "module": "admin.promo", "en": "Copy register link", "zh": "复制注册链接", "vi": "Sao chép liên kết đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.createCode", "module": "admin.promo", "en": "Create Promo Code", "zh": "创建优惠码", "vi": "Tạo mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.createFirstCode", "module": "admin.promo", "en": "Create your first promo code to offer registration bonuses.", "zh": "创建您的第一个优惠码，为新用户提供注册奖励。", "vi": "Tạo mã khuyến mại đầu tiên để tặng thưởng đăng ký.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.deleteCode", "module": "admin.promo", "en": "Delete Promo Code", "zh": "删除优惠码", "vi": "Xóa mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.deleteCodeConfirm", "module": "admin.promo", "en": "Are you sure you want to delete this promo code? This action cannot be undone.", "zh": "确定要删除此优惠码吗？此操作无法撤销。", "vi": "Bạn có chắc muốn xóa mã khuyến mại này? Không thể hoàn tác thao tác này.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.description", "module": "admin.promo", "en": "Create and manage registration promo codes", "zh": "创建和管理注册优惠码", "vi": "Tạo và quản lý mã khuyến mại đăng ký", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.editCode", "module": "admin.promo", "en": "Edit Promo Code", "zh": "编辑优惠码", "vi": "Sửa mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.expiresAt", "module": "admin.promo", "en": "Expires At", "zh": "过期时间", "vi": "Hết hạn lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.failedToCreate", "module": "admin.promo", "en": "Failed to create promo code", "zh": "创建优惠码失败", "vi": "Không thể tạo mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.failedToDelete", "module": "admin.promo", "en": "Failed to delete promo code", "zh": "删除优惠码失败", "vi": "Không thể xóa mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.failedToLoad", "module": "admin.promo", "en": "Failed to load promo codes", "zh": "加载优惠码失败", "vi": "Không thể tải mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.failedToLoadUsages", "module": "admin.promo", "en": "Failed to load usage records", "zh": "加载使用记录失败", "vi": "Không thể tải bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.failedToUpdate", "module": "admin.promo", "en": "Failed to update promo code", "zh": "更新优惠码失败", "vi": "Không thể cập nhật mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.maxUses", "module": "admin.promo", "en": "Max Uses", "zh": "最大使用次数", "vi": "Lượt dùng tối đa", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.neverExpires", "module": "admin.promo", "en": "Never expires", "zh": "永不过期", "vi": "Không hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.noCodesYet", "module": "admin.promo", "en": "No promo codes yet", "zh": "暂无优惠码", "vi": "Chưa có mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.noUsages", "module": "admin.promo", "en": "No usage records yet", "zh": "暂无使用记录", "vi": "Chưa có bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.notes", "module": "admin.promo", "en": "Notes", "zh": "备注", "vi": "Ghi chú", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.notesPlaceholder", "module": "admin.promo", "en": "Optional notes for this code", "zh": "可选备注信息", "vi": "Ghi chú tùy chọn cho mã này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.registerLinkCopied", "module": "admin.promo", "en": "Register link copied to clipboard", "zh": "注册链接已复制到剪贴板", "vi": "Đã sao chép liên kết đăng ký vào bộ nhớ tạm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.searchCodes", "module": "admin.promo", "en": "Search codes...", "zh": "搜索优惠码...", "vi": "Tìm mã...", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.status", "module": "admin.promo", "en": "Status", "zh": "状态", "vi": "Trạng thái", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.statusActive", "module": "admin.promo", "en": "Active", "zh": "启用", "vi": "Đang hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.statusDisabled", "module": "admin.promo", "en": "Disabled", "zh": "禁用", "vi": "Đã tắt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.statusExpired", "module": "admin.promo", "en": "Expired", "zh": "已过期", "vi": "Đã hết hạn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.statusMaxUsed", "module": "admin.promo", "en": "Used Up", "zh": "已用完", "vi": "Đã hết lượt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.title", "module": "admin.promo", "en": "Promo Code Management", "zh": "优惠码管理", "vi": "Quản lý mã khuyến mại", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.usageRecords", "module": "admin.promo", "en": "Usage Records", "zh": "使用记录", "vi": "Bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.userPrefix", "module": "admin.promo", "en": "User #{id}", "zh": "用户 #{id}", "vi": "Người dùng #{id}", "status": "draft", "placeholders": ["id"], "notes": ""}
+{"key": "admin.promo.viewUsages", "module": "admin.promo", "en": "View Usages", "zh": "查看使用记录", "vi": "Xem mức sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.promo.zeroUnlimited", "module": "admin.promo", "en": "0 = unlimited", "zh": "0 = 无限制", "vi": "0 = không giới hạn", "status": "draft", "placeholders": [], "notes": ""}

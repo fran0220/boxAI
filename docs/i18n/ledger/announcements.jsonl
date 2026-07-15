@@ -1,0 +1,20 @@
+{"key": "announcements.allMarkedAsRead", "module": "announcements", "en": "All announcements marked as read", "zh": "所有公告已标记为已读", "vi": "Đã đánh dấu tất cả thông báo là đã đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.description", "module": "announcements", "en": "View system announcements", "zh": "查看系统公告", "vi": "Xem thông báo hệ thống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.empty", "module": "announcements", "en": "No announcements", "zh": "暂无公告", "vi": "Không có thông báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.emptyDescription", "module": "announcements", "en": "There are no system announcements at this time", "zh": "暂时没有任何系统公告", "vi": "Hiện không có thông báo hệ thống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.emptyUnread", "module": "announcements", "en": "No unread announcements", "zh": "暂无未读公告", "vi": "Không có thông báo chưa đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.endsAt", "module": "announcements", "en": "Ends at", "zh": "结束时间", "vi": "Kết thúc lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.markAllRead", "module": "announcements", "en": "Mark all as read", "zh": "全部已读", "vi": "Đánh dấu tất cả đã đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.markRead", "module": "announcements", "en": "Mark as read", "zh": "标记已读", "vi": "Đánh dấu đã đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.markReadHint", "module": "announcements", "en": "Click \"Mark as read\" to mark this announcement", "zh": "点击\"已读\"标记此公告", "vi": "Nhấp \"Đánh dấu đã đọc\" để đánh dấu thông báo này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.markedAsRead", "module": "announcements", "en": "Marked as read", "zh": "已标记为已读", "vi": "Đã đánh dấu đã đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.newCount", "module": "announcements", "en": "{count} new announcement | {count} new announcements", "zh": "有 {count} 条新公告", "vi": "{count} thông báo mới", "status": "draft", "placeholders": ["count"], "notes": ""}
+{"key": "announcements.read", "module": "announcements", "en": "Read", "zh": "已读", "vi": "Đã đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.readAt", "module": "announcements", "en": "Read at", "zh": "已读时间", "vi": "Đọc lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.readStatus", "module": "announcements", "en": "You have read this announcement", "zh": "您已阅读此公告", "vi": "Bạn đã đọc thông báo này", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.startsAt", "module": "announcements", "en": "Starts at", "zh": "开始时间", "vi": "Bắt đầu lúc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.title", "module": "announcements", "en": "Announcements", "zh": "公告", "vi": "Thông báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.total", "module": "announcements", "en": "announcements", "zh": "条公告", "vi": "thông báo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.unread", "module": "announcements", "en": "Unread", "zh": "未读", "vi": "Chưa đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.unreadOnly", "module": "announcements", "en": "Show unread only", "zh": "仅显示未读", "vi": "Chỉ hiện chưa đọc", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "announcements.viewAll", "module": "announcements", "en": "View all announcements", "zh": "查看全部公告", "vi": "Xem tất cả thông báo", "status": "draft", "placeholders": [], "notes": ""}

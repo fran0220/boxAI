@@ -1,0 +1,77 @@
+{"key": "admin.dashboard.accountCost", "module": "admin.dashboard", "en": "Cost", "zh": "成本", "vi": "Chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.accounts", "module": "admin.dashboard", "en": "Accounts", "zh": "账号", "vi": "Tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.active", "module": "admin.dashboard", "en": "active", "zh": "活跃", "vi": "hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.activeAccounts", "module": "admin.dashboard", "en": "Active Accounts", "zh": "活跃账号", "vi": "Tài khoản đang hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.activeApiKeys", "module": "admin.dashboard", "en": "Active Keys", "zh": "活跃密钥", "vi": "Khóa đang hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.activeUsers", "module": "admin.dashboard", "en": "active users", "zh": "活跃用户", "vi": "người dùng hoạt động", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.actual", "module": "admin.dashboard", "en": "Actual", "zh": "实际", "vi": "Thực tế", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.apiKeys", "module": "admin.dashboard", "en": "API Keys", "zh": "API 密钥", "vi": "Khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.averageTime", "module": "admin.dashboard", "en": "Average Time", "zh": "平均时间", "vi": "Thời gian trung bình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.avgResponse", "module": "admin.dashboard", "en": "Avg Response", "zh": "平均响应", "vi": "Phản hồi trung bình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.batchImage", "module": "admin.dashboard", "en": "Batch Image", "zh": "批量生图", "vi": "Sinh ảnh hàng loạt", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.batchImageDesc", "module": "admin.dashboard", "en": "Submit jobs and copy agent instructions", "zh": "提交任务、复制 Agent 调用说明", "vi": "Gửi tác vụ và sao chép hướng dẫn cho agent", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.cache", "module": "admin.dashboard", "en": "Cache", "zh": "缓存", "vi": "Bộ nhớ đệm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.cacheToday", "module": "admin.dashboard", "en": "Cache (Today)", "zh": "今日缓存", "vi": "Bộ nhớ đệm (hôm nay)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.configureAiAccounts", "module": "admin.dashboard", "en": "Configure AI platform accounts", "zh": "配置 AI 平台账号", "vi": "Cấu hình tài khoản nền tảng AI", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.configureSystem", "module": "admin.dashboard", "en": "Configure system settings", "zh": "配置系统设置", "vi": "Cấu hình cài đặt hệ thống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.create", "module": "admin.dashboard", "en": "Create", "zh": "创建", "vi": "Tạo", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.day", "module": "admin.dashboard", "en": "Day", "zh": "按天", "vi": "Ngày", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.description", "module": "admin.dashboard", "en": "System overview and real-time statistics", "zh": "系统概览与统计数据", "vi": "Tổng quan hệ thống và số liệu theo thời gian thực", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.err", "module": "admin.dashboard", "en": "err", "zh": "错误", "vi": "lỗi", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.failedToLoad", "module": "admin.dashboard", "en": "Failed to load dashboard statistics", "zh": "加载仪表盘数据失败", "vi": "Không thể tải số liệu bảng điều khiển", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.granularity", "module": "admin.dashboard", "en": "Granularity", "zh": "粒度", "vi": "Độ chi tiết", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.group", "module": "admin.dashboard", "en": "Group", "zh": "分组", "vi": "Nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.groupDistribution", "module": "admin.dashboard", "en": "Group Usage Distribution", "zh": "分组使用分布", "vi": "Phân bố mức dùng theo nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.groupPricing", "module": "admin.dashboard", "en": "Group Pricing", "zh": "分组定价", "vi": "Giá theo nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.groupPricingDesc", "module": "admin.dashboard", "en": "Configure batch discount and hold ratio", "zh": "设置批量折扣和冻结比例", "vi": "Cấu hình chiết khấu theo lô và tỷ lệ tạm giữ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.hour", "module": "admin.dashboard", "en": "Hour", "zh": "按小时", "vi": "Giờ", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.input", "module": "admin.dashboard", "en": "Input", "zh": "输入", "vi": "Đầu vào", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.last7Days", "module": "admin.dashboard", "en": "Last 7 days", "zh": "近 7 天", "vi": "7 ngày qua", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.manageAccounts", "module": "admin.dashboard", "en": "Manage Accounts", "zh": "管理账号", "vi": "Quản lý tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.manageUsers", "module": "admin.dashboard", "en": "Manage Users", "zh": "管理用户", "vi": "Quản lý người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.metricActualCost", "module": "admin.dashboard", "en": "By Actual Cost", "zh": "按实际消费", "vi": "Theo chi phí thực tế", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.metricTokens", "module": "admin.dashboard", "en": "By Tokens", "zh": "按 Token", "vi": "Theo token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.model", "module": "admin.dashboard", "en": "Model", "zh": "模型", "vi": "Mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.modelDistribution", "module": "admin.dashboard", "en": "Model Distribution", "zh": "模型分布", "vi": "Phân bố mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.newUsersToday", "module": "admin.dashboard", "en": "New Users Today", "zh": "今日新增用户", "vi": "Người dùng mới hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.noDataAvailable", "module": "admin.dashboard", "en": "No data available", "zh": "暂无数据", "vi": "Không có dữ liệu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.noGroup", "module": "admin.dashboard", "en": "No Group", "zh": "无分组", "vi": "Không có nhóm", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.noUsageRecords", "module": "admin.dashboard", "en": "No usage records", "zh": "暂无使用记录", "vi": "Không có bản ghi sử dụng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.ok", "module": "admin.dashboard", "en": "ok", "zh": "正常", "vi": "bình thường", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.output", "module": "admin.dashboard", "en": "Output", "zh": "输出", "vi": "Đầu ra", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.performance", "module": "admin.dashboard", "en": "Performance", "zh": "性能指标", "vi": "Hiệu suất", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.quickActions", "module": "admin.dashboard", "en": "Quick Actions", "zh": "快捷操作", "vi": "Thao tác nhanh", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.recentUsage", "module": "admin.dashboard", "en": "Recent Usage", "zh": "最近使用", "vi": "Mức dùng gần đây", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.requests", "module": "admin.dashboard", "en": "Requests", "zh": "请求", "vi": "Yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.requestsShort", "module": "admin.dashboard", "en": "Req", "zh": "请求", "vi": "Yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendShort", "module": "admin.dashboard", "en": "Spend", "zh": "消费", "vi": "Chi tiêu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingOther", "module": "admin.dashboard", "en": "Others", "zh": "其他", "vi": "Khác", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingRequests", "module": "admin.dashboard", "en": "Requests", "zh": "请求", "vi": "Yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingSpend", "module": "admin.dashboard", "en": "Spend", "zh": "消费", "vi": "Chi tiêu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingTitle", "module": "admin.dashboard", "en": "User Spending Ranking", "zh": "用户消费榜", "vi": "Xếp hạng chi tiêu người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingTokens", "module": "admin.dashboard", "en": "Tokens", "zh": "Token", "vi": "Token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingUsage", "module": "admin.dashboard", "en": "Usage", "zh": "用量", "vi": "Mức dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.spendingRankingUser", "module": "admin.dashboard", "en": "User", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.standard", "module": "admin.dashboard", "en": "Standard", "zh": "标准", "vi": "Tiêu chuẩn", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.startUsingApi", "module": "admin.dashboard", "en": "Once you start using the API, your usage history will appear here.", "zh": "开始使用 API 后，使用历史将显示在这里。", "vi": "Sau khi bắt đầu dùng API, lịch sử sử dụng sẽ xuất hiện tại đây.", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.systemSettings", "module": "admin.dashboard", "en": "System Settings", "zh": "系统设置", "vi": "Cài đặt hệ thống", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.timeRange", "module": "admin.dashboard", "en": "Time Range", "zh": "时间范围", "vi": "Khoảng thời gian", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.title", "module": "admin.dashboard", "en": "Admin Dashboard", "zh": "管理控制台", "vi": "Bảng điều khiển quản trị", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.todayCost", "module": "admin.dashboard", "en": "Today Cost", "zh": "今日消费", "vi": "Chi phí hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.todayRequests", "module": "admin.dashboard", "en": "Today Requests", "zh": "今日请求", "vi": "Yêu cầu hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.todayTokens", "module": "admin.dashboard", "en": "Today Tokens", "zh": "今日 Token", "vi": "Token hôm nay", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.tokenUsageTrend", "module": "admin.dashboard", "en": "Token Usage Trend", "zh": "Token 使用趋势", "vi": "Xu hướng sử dụng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.tokens", "module": "admin.dashboard", "en": "Tokens", "zh": "Token", "vi": "Token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.tokensShort", "module": "admin.dashboard", "en": "Tok", "zh": "Token", "vi": "Token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.totalAccounts", "module": "admin.dashboard", "en": "Total Accounts", "zh": "账号总数", "vi": "Tổng tài khoản", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.totalApiKeys", "module": "admin.dashboard", "en": "Total API Keys", "zh": "API 密钥总数", "vi": "Tổng khóa API", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.totalCost", "module": "admin.dashboard", "en": "Total Cost", "zh": "总消费", "vi": "Tổng chi phí", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.totalRequests", "module": "admin.dashboard", "en": "Total Requests", "zh": "总请求数", "vi": "Tổng yêu cầu", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.totalTokens", "module": "admin.dashboard", "en": "Total Tokens", "zh": "总 Token", "vi": "Tổng token", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.totalUsers", "module": "admin.dashboard", "en": "Total Users", "zh": "用户总数", "vi": "Tổng người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.userUsageTrend", "module": "admin.dashboard", "en": "User Usage Trend (Top 12)", "zh": "用户使用趋势（Top 12）", "vi": "Xu hướng sử dụng của người dùng (12 cao nhất)", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.users", "module": "admin.dashboard", "en": "Users", "zh": "用户", "vi": "Người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.viewAllUsage", "module": "admin.dashboard", "en": "View all", "zh": "查看全部", "vi": "Xem tất cả", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.viewModelDistribution", "module": "admin.dashboard", "en": "Model Distribution", "zh": "模型分布", "vi": "Phân bố mô hình", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.viewSpendingRanking", "module": "admin.dashboard", "en": "User Spending Ranking", "zh": "用户消费榜", "vi": "Xếp hạng chi tiêu người dùng", "status": "draft", "placeholders": [], "notes": ""}
+{"key": "admin.dashboard.viewUserAccounts", "module": "admin.dashboard", "en": "View and manage user accounts", "zh": "查看和管理用户账户", "vi": "Xem và quản lý tài khoản người dùng", "status": "draft", "placeholders": [], "notes": ""}

@@ -752,6 +752,8 @@ export default {
         locale: 'Locale',
         localeEn: 'English',
         localeZh: 'Chinese',
+        // BOXAI: Official notification templates include Vietnamese.
+        localeVi: 'Vietnamese',
         subject: 'Subject',
         subjectPlaceholder: 'Enter the email subject',
         html: 'HTML Template',

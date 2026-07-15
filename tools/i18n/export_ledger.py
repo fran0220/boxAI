@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import defaultdict
 import json
 import sys
 from pathlib import Path
@@ -14,6 +15,7 @@ from locale_lib import (  # noqa: E402
     die,
     infer_status,
     load_flat,
+    load_notes_overrides,
     load_status_overrides,
     module_name,
     placeholders,
@@ -72,6 +74,11 @@ def main() -> None:
         help="Output JSONL path (default stdout or docs/i18n/ledger/<module>.jsonl)",
     )
     parser.add_argument("--locales", default="en,zh,vi")
+    parser.add_argument(
+        "--all-modules",
+        action="store_true",
+        help="Write one JSONL file per detected module under docs/i18n/ledger.",
+    )
     args = parser.parse_args()
 
     codes = [c.strip() for c in args.locales.split(",") if c.strip()]
@@ -88,6 +95,7 @@ def main() -> None:
     zh = flats.get("zh", {})
     vi = flats.get("vi", {})
     overrides = load_status_overrides()
+    notes = load_notes_overrides()
 
     rows = []
     for key in sorted(en.keys()):
@@ -105,9 +113,21 @@ def main() -> None:
             "vi": vi_v,
             "status": infer_status(en_v, vi_v, overrides.get(key)),
             "placeholders": placeholders(en_v),
-            "notes": "",
+            "notes": notes.get(key, ""),
         }
         rows.append(row)
+
+    if args.all_modules:
+        grouped: dict[str, list[dict[str, object]]] = defaultdict(list)
+        for row in rows:
+            grouped[str(row["module"])].append(row)
+        out_dir = REPO_ROOT / "docs" / "i18n" / "ledger"
+        for mod, module_rows in sorted(grouped.items()):
+            path = out_dir / f"{mod.replace('.', '_')}.jsonl"
+            text = "\n".join(json.dumps(row, ensure_ascii=False) for row in module_rows) + "\n"
+            path.write_text(text, encoding="utf-8")
+            print(f"wrote {len(module_rows)} rows → {path}")
+        return
 
     out_path = args.out
     if not out_path and args.module:
