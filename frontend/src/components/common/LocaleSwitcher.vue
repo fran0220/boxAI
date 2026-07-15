@@ -23,18 +23,12 @@
     </button>
 
     <Teleport to="body">
-      <transition name="dropdown">
+      <transition name="locale-dropdown">
         <div
           v-if="isOpen"
           ref="menuRef"
-          class="fixed z-[200] w-36 overflow-hidden rounded-lg border py-1 shadow-lg"
-          style="
-            background: var(--bx-bg-elevated);
-            border-color: var(--bx-border-strong);
-            color: var(--bx-text);
-            top: var(--bx-locale-top, 0);
-            left: var(--bx-locale-left, 0);
-          "
+          class="locale-menu fixed z-[200] w-36 overflow-hidden rounded-lg border py-1 shadow-lg"
+          :style="menuStyle"
           role="listbox"
           @click.stop
         >
@@ -45,18 +39,8 @@
             role="option"
             :aria-selected="item.code === currentLocaleCode"
             :disabled="switching"
-            class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
-            :style="{
-              color:
-                item.code === currentLocaleCode ? 'var(--bx-teal-bright)' : 'var(--bx-text-soft)',
-              background:
-                item.code === currentLocaleCode ? 'var(--bx-active)' : 'transparent'
-            }"
-            @mouseenter="($event.target as HTMLElement).style.background = 'var(--bx-hover)'"
-            @mouseleave="
-              ($event.target as HTMLElement).style.background =
-                item.code === currentLocaleCode ? 'var(--bx-active)' : 'transparent'
-            "
+            class="locale-option flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
+            :class="item.code === currentLocaleCode ? 'locale-option-active' : ''"
             @click="selectLocale(item.code)"
           >
             <span class="text-base leading-none">{{ item.flag }}</span>
@@ -76,10 +60,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Icon from '@/components/icons/Icon.vue'
 import { setLocale, availableLocales, type LocaleCode } from '@/i18n'
+
+const MENU_WIDTH = 144 // w-36
 
 const { locale } = useI18n()
 
@@ -87,31 +73,53 @@ const isOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 const switching = ref(false)
+/** Set before open so first paint is already at the trigger (no mid-screen jump). */
+const menuTop = ref(0)
+const menuLeft = ref(0)
 
 const currentLocaleCode = computed(() => String(locale.value))
 const currentLocale = computed(() => availableLocales.find((l) => l.code === locale.value))
 
-function positionMenu() {
+const menuStyle = computed(() => ({
+  top: `${menuTop.value}px`,
+  left: `${menuLeft.value}px`,
+  background: 'var(--bx-bg-elevated)',
+  borderColor: 'var(--bx-border-strong)',
+  color: 'var(--bx-text)'
+}))
+
+/** Position relative to trigger — works before menu is mounted (uses fixed width). */
+function calcMenuPosition(actualWidth?: number) {
   const trigger = dropdownRef.value
-  const menu = menuRef.value
-  if (!trigger || !menu) return
+  if (!trigger) return { top: 0, left: 0 }
   const rect = trigger.getBoundingClientRect()
-  const menuWidth = menu.offsetWidth || 144
+  const width = actualWidth && actualWidth > 0 ? actualWidth : MENU_WIDTH
   const left = Math.min(
-    Math.max(8, rect.right - menuWidth),
-    window.innerWidth - menuWidth - 8
+    Math.max(8, rect.right - width),
+    Math.max(8, window.innerWidth - width - 8)
   )
   const top = rect.bottom + 6
-  menu.style.setProperty('--bx-locale-top', `${top}px`)
-  menu.style.setProperty('--bx-locale-left', `${left}px`)
+  return { top, left }
 }
 
-async function toggleDropdown() {
-  isOpen.value = !isOpen.value
+function applyMenuPosition() {
+  const pos = calcMenuPosition(menuRef.value?.offsetWidth)
+  menuTop.value = pos.top
+  menuLeft.value = pos.left
+}
+
+function toggleDropdown() {
   if (isOpen.value) {
-    await nextTick()
-    positionMenu()
+    isOpen.value = false
+    return
   }
+  // Pre-position using trigger rect so enter animation never starts at (0,0)
+  applyMenuPosition()
+  isOpen.value = true
+  // Refine after mount in case real width differs
+  requestAnimationFrame(() => {
+    applyMenuPosition()
+  })
 }
 
 async function selectLocale(code: string) {
@@ -139,39 +147,54 @@ function handlePointerDown(event: MouseEvent | TouchEvent) {
   isOpen.value = false
 }
 
-function handleResize() {
-  if (isOpen.value) positionMenu()
+function handleReposition() {
+  if (isOpen.value) applyMenuPosition()
 }
-
-watch(isOpen, async (open) => {
-  if (open) {
-    await nextTick()
-    positionMenu()
-  }
-})
 
 onMounted(() => {
   document.addEventListener('pointerdown', handlePointerDown, true)
-  window.addEventListener('resize', handleResize)
-  window.addEventListener('scroll', handleResize, true)
+  window.addEventListener('resize', handleReposition)
+  window.addEventListener('scroll', handleReposition, true)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', handlePointerDown, true)
-  window.removeEventListener('resize', handleResize)
-  window.removeEventListener('scroll', handleResize, true)
+  window.removeEventListener('resize', handleReposition)
+  window.removeEventListener('scroll', handleReposition, true)
 })
 </script>
 
 <style scoped>
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: all 0.15s ease;
+.locale-option {
+  color: var(--bx-text-soft);
+  background: transparent;
+}
+.locale-option:hover {
+  background: var(--bx-hover);
+  color: var(--bx-text);
+}
+.locale-option-active {
+  color: var(--bx-teal-bright);
+  background: var(--bx-active);
+}
+.locale-option-active:hover {
+  background: var(--bx-active);
+  color: var(--bx-teal-bright);
 }
 
-.dropdown-enter-from,
-.dropdown-leave-to {
+/* Origin at top-right (menu anchors under the language button) */
+.locale-dropdown-enter-active,
+.locale-dropdown-leave-active {
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease;
+  transform-origin: top right;
+}
+
+.locale-dropdown-enter-from,
+.locale-dropdown-leave-to {
   opacity: 0;
-  transform: scale(0.95) translateY(-4px);
+  transform: scale(0.96) translateY(-4px);
+  transform-origin: top right;
 }
 </style>
