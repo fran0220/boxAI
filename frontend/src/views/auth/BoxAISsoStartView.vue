@@ -86,7 +86,10 @@ function marketingAuthorizeUrl(challenge: string, state: string, redirectUri: st
 
 onMounted(async () => {
   try {
-    const returnTo = safeReturnPath(firstQueryValue(route.query.return_to) || '/', '/')
+    // Empty / missing return_to → callback picks admin or user dashboard.
+    // Explicit deep-links from marketing (?return_to=/keys) are preserved.
+    const rawReturn = firstQueryValue(route.query.return_to)
+    const returnTo = rawReturn ? safeReturnPath(rawReturn, '') : ''
     const { verifier, challenge, state } = await createPkce()
     const redirectUri = `${window.location.origin}/boxai/sso/callback`
 

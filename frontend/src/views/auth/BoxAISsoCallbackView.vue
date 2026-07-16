@@ -27,6 +27,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { exchangeWebSsoToken } from '@/api/auth'
 import { useAuthStore } from '@/stores/auth'
+import { resolveCompletedSetupRedirectPath } from '@/router/setupRedirect'
 import { safeReturnPath } from '@/utils/safeReturnPath'
 
 const router = useRouter()
@@ -49,12 +50,21 @@ function parseCodeState(): { code: string; state: string } {
   }
 }
 
+/** Explicit deep-links (/keys, /purchase, …) win; bare "/" or "/home" → role dashboard. */
+function resolveSsoDestination(raw: string | null | undefined): string {
+  const path = safeReturnPath(raw, '')
+  if (!path || path === '/' || path === '/home') {
+    return resolveCompletedSetupRedirectPath(true, authStore.isAdmin)
+  }
+  return path
+}
+
 onMounted(async () => {
   try {
     const { code, state } = parseCodeState()
     const verifier = sessionStorage.getItem(SSO_VERIFIER_KEY) || ''
     const expectedState = sessionStorage.getItem(SSO_STATE_KEY) || ''
-    const returnToRaw = sessionStorage.getItem(SSO_RETURN_KEY) || '/'
+    const returnToRaw = sessionStorage.getItem(SSO_RETURN_KEY) || ''
 
     sessionStorage.removeItem(SSO_VERIFIER_KEY)
     sessionStorage.removeItem(SSO_STATE_KEY)
@@ -86,7 +96,8 @@ onMounted(async () => {
 
     authStore.setAuthFromResponse(data)
     window.history.replaceState(null, '', window.location.pathname)
-    await router.replace(safeReturnPath(returnToRaw, '/'))
+    // Admin → /admin/dashboard; user → /dashboard (same as post-login).
+    await router.replace(resolveSsoDestination(returnToRaw))
   } catch (error) {
     status.value = 'error'
     errorMessage.value =
