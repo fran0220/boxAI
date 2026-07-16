@@ -84,6 +84,8 @@ describe('useAuthStore', () => {
     it('成功登录后设置 token 和 user', async () => {
       mockLogin.mockResolvedValue(fakeAuthResponse)
       const store = useAuthStore()
+      // Exercise the production order: route guards evaluate this while anonymous.
+      expect(store.isAuthenticated).toBe(false)
 
       await store.login({ email: 'test@example.com', password: '123456' })
 

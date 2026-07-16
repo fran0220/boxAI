@@ -47,7 +47,10 @@ export const useAuthStore = defineStore('auth', () => {
   // ==================== Computed ====================
 
   const isAuthenticated = computed(() => {
-    return !!getAccessToken() && !!user.value
+    // BOXAI: read reactive state before the framework-free session accessor.
+    // Otherwise the initial anonymous evaluation short-circuits without a
+    // Pinia dependency and remains cached after a successful login.
+    return !!token.value && !!user.value && !!getAccessToken()
   })
 
   const isAdmin = computed(() => {
