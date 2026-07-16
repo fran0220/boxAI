@@ -16,6 +16,7 @@ const login2FA = vi.fn()
 const apiClientPost = vi.fn()
 const sendVerifyCode = vi.fn()
 const sendPendingOAuthVerifyCode = vi.fn()
+const finalizeBrowserOAuth = vi.fn()
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({
@@ -62,6 +63,10 @@ vi.mock('@/api/client', () => ({
   }
 }))
 
+vi.mock('@/auth/finalizeOAuth', () => ({
+  finalizeBrowserOAuth: (...args: any[]) => finalizeBrowserOAuth(...args)
+}))
+
 vi.mock('@/api/auth', async () => {
   const actual = await vi.importActual<typeof import('@/api/auth')>('@/api/auth')
   return {
@@ -90,6 +95,11 @@ describe('OidcCallbackView', () => {
     apiClientPost.mockReset()
     sendVerifyCode.mockReset()
     sendPendingOAuthVerifyCode.mockReset()
+    finalizeBrowserOAuth.mockReset()
+    finalizeBrowserOAuth.mockImplementation(async (result, store) => {
+      if (result.access_token) await store.setToken(result.access_token)
+      return Boolean(result.access_token || result.auth_result === 'session')
+    })
     getPublicSettings.mockResolvedValue({
       oidc_oauth_provider_name: 'ExampleID',
       turnstile_enabled: false,
@@ -120,8 +130,9 @@ describe('OidcCallbackView', () => {
 
     expect(exchangePendingOAuthCompletion).not.toHaveBeenCalled()
     expect(setToken).toHaveBeenCalledWith('legacy-access-token')
-    expect(localStorage.getItem('refresh_token')).toBe('legacy-refresh-token')
-    expect(localStorage.getItem('token_expires_at')).not.toBeNull()
+    expect(finalizeBrowserOAuth).toHaveBeenCalled()
+    expect(localStorage.getItem('refresh_token')).toBeNull()
+    expect(localStorage.getItem('token_expires_at')).toBeNull()
     expect(showSuccess).toHaveBeenCalledWith('auth.loginSuccess')
     expect(replace).toHaveBeenCalledWith('/legacy-dashboard')
   })

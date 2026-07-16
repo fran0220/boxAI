@@ -585,12 +585,8 @@ func (h *AuthHandler) CompleteWeChatOAuthRegistration(c *gin.Context) {
 	clearOAuthPendingSessionCookie(c, secureCookie)
 	clearOAuthPendingBrowserCookie(c, secureCookie)
 
-	c.JSON(http.StatusOK, gin.H{
-		"access_token":  tokenPair.AccessToken,
-		"refresh_token": tokenPair.RefreshToken,
-		"expires_in":    tokenPair.ExpiresIn,
-		"token_type":    "Bearer",
-	})
+	// BOXAI: Browser completions exchange the generated pair for a host-bound session.
+	h.writeOAuthTokenPairResponse(c, tokenPair, user)
 }
 
 func (h *AuthHandler) createWeChatPendingSession(

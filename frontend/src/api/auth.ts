@@ -7,6 +7,8 @@ import { apiClient } from './client'
 import type {
   LoginRequest,
   RegisterRequest,
+  RegistrationTransaction,
+  CompleteRegistrationRequest,
   AuthResponse,
   CurrentUserResponse,
   SendVerifyCodeRequest,
@@ -15,6 +17,7 @@ import type {
   TotpLoginResponse,
   TotpLogin2FARequest
 } from '@/types'
+import { getAccessToken, logoutBrowserSession } from '@/auth/browserSession'
 
 /**
  * Login response type - can be either full auth or 2FA required
@@ -32,14 +35,16 @@ export function isTotp2FARequired(response: LoginResponse): response is TotpLogi
  * Store authentication token in localStorage
  */
 export function setAuthToken(token: string): void {
-  localStorage.setItem('auth_token', token)
+  // BOXAI: compatibility shim only; browser access tokens are owned by browserSession.
+  void token
 }
 
 /**
  * Store refresh token in localStorage
  */
 export function setRefreshToken(token: string): void {
-  localStorage.setItem('refresh_token', token)
+  // BOXAI: never persist user-login refresh credentials.
+  void token
 }
 
 /**
@@ -47,32 +52,20 @@ export function setRefreshToken(token: string): void {
  * Converts expires_in (seconds) to absolute timestamp (milliseconds)
  */
 export function setTokenExpiresAt(expiresIn: number): void {
-  const expiresAt = Date.now() + expiresIn * 1000
-  localStorage.setItem('token_expires_at', String(expiresAt))
+  // BOXAI: expiry belongs to the in-memory browser session.
+  void expiresIn
 }
 
 /**
  * Get authentication token from localStorage
  */
 export function getAuthToken(): string | null {
-  return localStorage.getItem('auth_token')
+  return getAccessToken()
 }
 
 /**
  * Get refresh token from localStorage
  */
-export function getRefreshToken(): string | null {
-  return localStorage.getItem('refresh_token')
-}
-
-/**
- * Get token expiration timestamp from localStorage
- */
-export function getTokenExpiresAt(): number | null {
-  const value = localStorage.getItem('token_expires_at')
-  return value ? parseInt(value, 10) : null
-}
-
 /**
  * Clear authentication token from localStorage
  */
@@ -144,19 +137,6 @@ export async function exchangeWebSsoToken(params: {
  */
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   const { data } = await apiClient.post<LoginResponse>('/auth/login', credentials)
-
-  // Only store token if 2FA is not required
-  if (!isTotp2FARequired(data)) {
-    setAuthToken(data.access_token)
-    if (data.refresh_token) {
-      setRefreshToken(data.refresh_token)
-    }
-    if (data.expires_in) {
-      setTokenExpiresAt(data.expires_in)
-    }
-    localStorage.setItem('auth_user', JSON.stringify(data.user))
-  }
-
   return data
 }
 
@@ -167,16 +147,6 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
  */
 export async function login2FA(request: TotpLogin2FARequest): Promise<AuthResponse> {
   const { data } = await apiClient.post<AuthResponse>('/auth/login/2fa', request)
-
-  // Store token and user data
-  setAuthToken(data.access_token)
-  if (data.refresh_token) {
-    setRefreshToken(data.refresh_token)
-  }
-  if (data.expires_in) {
-    setTokenExpiresAt(data.expires_in)
-  }
-  localStorage.setItem('auth_user', JSON.stringify(data.user))
 
   return data
 }
@@ -189,16 +159,17 @@ export async function login2FA(request: TotpLogin2FARequest): Promise<AuthRespon
 export async function register(userData: RegisterRequest): Promise<AuthResponse> {
   const { data } = await apiClient.post<AuthResponse>('/auth/register', userData)
 
-  // Store token and user data
-  setAuthToken(data.access_token)
-  if (data.refresh_token) {
-    setRefreshToken(data.refresh_token)
-  }
-  if (data.expires_in) {
-    setTokenExpiresAt(data.expires_in)
-  }
-  localStorage.setItem('auth_user', JSON.stringify(data.user))
+  return data
+}
 
+// BOXAI: prepare/complete keeps the plaintext password on the registration page only.
+export async function prepareRegistration(userData: RegisterRequest): Promise<RegistrationTransaction> {
+  const { data } = await apiClient.post<RegistrationTransaction>('/auth/registration/prepare', userData)
+  return data
+}
+
+export async function completeRegistration(request: CompleteRegistrationRequest): Promise<AuthResponse> {
+  const { data } = await apiClient.post<AuthResponse>('/auth/registration/complete', request)
   return data
 }
 
@@ -216,35 +187,20 @@ export async function getCurrentUser() {
  * Optionally revokes the refresh token on the server
  */
 export async function logout(): Promise<void> {
-  const refreshToken = getRefreshToken()
-
-  // Try to revoke the refresh token on the server
-  if (refreshToken) {
-    try {
-      await apiClient.post('/auth/logout', { refresh_token: refreshToken })
-    } catch {
-      // Ignore errors - we still want to clear local state
-    }
-  }
-
-  clearAuthToken()
+  await logoutBrowserSession()
 }
 
 /**
  * Refresh token response
  */
-export interface RefreshTokenResponse {
-  access_token: string
-  refresh_token: string
-  expires_in: number
-  token_type: string
-}
-
 export interface OAuthTokenResponse {
   access_token: string
   refresh_token?: string
   expires_in?: number
   token_type?: string
+  user?: AuthResponse['user']
+  auth_result?: string
+  redirect?: string
 }
 
 export interface PendingOAuthBindLoginResponse extends Partial<OAuthTokenResponse> {
@@ -327,12 +283,8 @@ export function hasPendingOAuthSuggestedProfile(
 }
 
 export function persistOAuthTokenContext(tokens: Partial<OAuthTokenResponse>): void {
-  if (tokens.refresh_token) {
-    setRefreshToken(tokens.refresh_token)
-  }
-  if (tokens.expires_in) {
-    setTokenExpiresAt(tokens.expires_in)
-  }
+  // BOXAI: retained for callback source compatibility; intentionally memory/storage neutral.
+  void tokens
 }
 
 export async function prepareOAuthBindAccessTokenCookie(): Promise<void> {
@@ -346,24 +298,6 @@ export async function prepareOAuthBindAccessTokenCookie(): Promise<void> {
  * Refresh the access token using the refresh token
  * @returns New token pair
  */
-export async function refreshToken(): Promise<RefreshTokenResponse> {
-  const currentRefreshToken = getRefreshToken()
-  if (!currentRefreshToken) {
-    throw new Error('No refresh token available')
-  }
-
-  const { data } = await apiClient.post<RefreshTokenResponse>('/auth/refresh', {
-    refresh_token: currentRefreshToken
-  })
-
-  // Update tokens in localStorage
-  setAuthToken(data.access_token)
-  setRefreshToken(data.refresh_token)
-  setTokenExpiresAt(data.expires_in)
-
-  return data
-}
-
 /**
  * Revoke all sessions for the current user
  * @returns Response with message
@@ -716,6 +650,8 @@ export const authAPI = {
   login2FA,
   isTotp2FARequired,
   register,
+  prepareRegistration,
+  completeRegistration,
   getCurrentUser,
   logout,
   isAuthenticated,
@@ -723,8 +659,6 @@ export const authAPI = {
   setRefreshToken,
   setTokenExpiresAt,
   getAuthToken,
-  getRefreshToken,
-  getTokenExpiresAt,
   clearAuthToken,
   getPublicSettings,
   sendVerifyCode,
@@ -733,7 +667,6 @@ export const authAPI = {
   validateInvitationCode,
   forgotPassword,
   resetPassword,
-  refreshToken,
   revokeAllSessions,
   getPendingOAuthBindLoginKind,
   isPendingOAuthCreateAccountRequired,

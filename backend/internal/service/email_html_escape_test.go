@@ -65,3 +65,19 @@ func TestBuildPasswordResetEmailBody_EscapesSiteName(t *testing.T) {
 		assert.Contains(t, body, `href="https://example.com/reset?a=1&amp;b=2"`)
 	})
 }
+
+// BOXAI: reset credentials remain client-side until the Vue page submits them.
+func TestBuildPasswordResetURL_KeepsCredentialsInFragment(t *testing.T) {
+	resetURL := buildPasswordResetURL(
+		"https://console.you-box.com/reset-password",
+		"user+box@example.com",
+		"token&value",
+	)
+
+	assert.Equal(
+		t,
+		"https://console.you-box.com/reset-password#email=user%2Bbox%40example.com&token=token%26value",
+		resetURL,
+	)
+	assert.NotContains(t, resetURL, "reset-password?")
+}

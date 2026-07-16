@@ -708,12 +708,8 @@ func (h *AuthHandler) CompleteOIDCOAuthRegistration(c *gin.Context) {
 	clearOAuthPendingSessionCookie(c, secureCookie)
 	clearOAuthPendingBrowserCookie(c, secureCookie)
 
-	c.JSON(http.StatusOK, gin.H{
-		"access_token":  tokenPair.AccessToken,
-		"refresh_token": tokenPair.RefreshToken,
-		"expires_in":    tokenPair.ExpiresIn,
-		"token_type":    "Bearer",
-	})
+	// BOXAI: Browser completions exchange the generated pair for a host-bound session.
+	h.writeOAuthTokenPairResponse(c, tokenPair, user)
 }
 
 func (h *AuthHandler) getOIDCOAuthConfig(ctx context.Context) (config.OIDCConnectConfig, error) {
@@ -1268,7 +1264,7 @@ func (h *AuthHandler) tryOIDCVerifiedEmailFastPath(
 		AvatarURL:        pendingSessionStringValue(upstreamClaims, "suggested_avatar_url"),
 		UpstreamMetadata: upstreamMetadata,
 	}
-	tokenPair, _, err := h.authService.LoginOrRegisterVerifiedEmailOAuthWithSignupCodes(
+	tokenPair, user, err := h.authService.LoginOrRegisterVerifiedEmailOAuthWithSignupCodes(
 		ctx,
 		input,
 		"",
@@ -1280,14 +1276,9 @@ func (h *AuthHandler) tryOIDCVerifiedEmailFastPath(
 		return false
 	}
 
-	fragment := url.Values{}
-	fragment.Set("access_token", tokenPair.AccessToken)
-	fragment.Set("refresh_token", tokenPair.RefreshToken)
-	fragment.Set("expires_in", fmt.Sprintf("%d", tokenPair.ExpiresIn))
-	fragment.Set("token_type", "Bearer")
-	fragment.Set("redirect", redirectTo)
 	clearOAuthPendingSessionCookie(c, isRequestHTTPS(c))
 	clearOAuthPendingBrowserCookie(c, isRequestHTTPS(c))
-	redirectWithFragment(c, frontendCallback, fragment)
+	// BOXAI: exact production console callbacks establish a host-only session.
+	h.redirectOAuthTokenPairOrBrowserSession(c, frontendCallback, tokenPair, user, redirectTo)
 	return true
 }

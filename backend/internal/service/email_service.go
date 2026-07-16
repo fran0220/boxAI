@@ -512,6 +512,11 @@ func (s *EmailService) GeneratePasswordResetToken() (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
+// BOXAI: fragments keep password-reset credentials out of HTTP requests and referrers.
+func buildPasswordResetURL(resetURL, email, token string) string {
+	return fmt.Sprintf("%s#email=%s&token=%s", resetURL, url.QueryEscape(email), url.QueryEscape(token))
+}
+
 // SendPasswordResetEmail sends a password reset email with a reset link
 func (s *EmailService) SendPasswordResetEmail(ctx context.Context, email, siteName, resetURL string, locale ...string) error {
 	var token string
@@ -543,8 +548,8 @@ func (s *EmailService) SendPasswordResetEmail(ctx context.Context, email, siteNa
 		}
 	}
 
-	// Build full reset URL with URL-encoded token and email
-	fullResetURL := fmt.Sprintf("%s?email=%s&token=%s", resetURL, url.QueryEscape(email), url.QueryEscape(token))
+	// The console captures this fragment synchronously and still accepts legacy query links.
+	fullResetURL := buildPasswordResetURL(resetURL, email, token)
 
 	if s.notificationEmailService != nil {
 		err := s.notificationEmailService.Send(ctx, NotificationEmailSendInput{

@@ -156,14 +156,15 @@ import Icon from '@/components/icons/Icon.vue'
 import TurnstileWidget from '@/components/TurnstileWidget.vue'
 import { useAuthStore, useAppStore } from '@/stores'
 import {
-  persistOAuthTokenContext,
   getPublicSettings,
   isOAuthLoginCompletion,
   type PendingOAuthSendVerifyCodeResponse,
   sendPendingOAuthVerifyCode,
   sendVerifyCode,
 } from '@/api/auth'
+import { finalizeBrowserOAuth } from '@/auth/finalizeOAuth'
 import { apiClient } from '@/api/client'
+import { clearRegistrationDraft, getRegistrationDraft } from '@/auth/registrationDraft'
 import { buildAuthErrorMessage } from '@/utils/authError'
 import {
   formatRegistrationEmailSuffixWhitelistForMessage,
@@ -214,6 +215,7 @@ type PendingOAuthCreateAccountResponse = {
 
 const email = ref<string>('')
 const password = ref<string>('')
+const transactionId = ref<string>('')
 const initialTurnstileToken = ref<string>('')
 const promoCode = ref<string>('')
 const invitationCode = ref<string>('')
@@ -259,12 +261,12 @@ watch(validationToastMessage, (value, previousValue) => {
 onMounted(async () => {
   const activePendingSession = authStore.pendingAuthSession as PendingAuthSessionSummary | null
 
-  // Load registration data from sessionStorage
-  const registerDataStr = sessionStorage.getItem('register_data')
-  if (registerDataStr) {
+  // BOXAI: registration secrets are transferred in memory only.
+  const registerData = getRegistrationDraft()
+  if (registerData) {
     try {
-      const registerData = JSON.parse(registerDataStr)
       email.value = registerData.email || ''
+      transactionId.value = registerData.transaction_id || ''
       password.value = registerData.password || ''
       initialTurnstileToken.value = registerData.turnstile_token || ''
       promoCode.value = registerData.promo_code || ''
@@ -274,13 +276,18 @@ onMounted(async () => {
       pendingAuthTokenField.value = registerData.pending_auth_token_field || activePendingSession?.token_field || 'pending_auth_token'
       pendingProvider.value = registerData.pending_provider || activePendingSession?.provider || ''
       pendingRedirect.value = registerData.pending_redirect || activePendingSession?.redirect || ''
+      if (!pendingRedirect.value) pendingRedirect.value = registerData.redirect || ''
       pendingAdoptionDecision.value = registerData.pending_adoption_decision
         ? {
             adoptDisplayName: registerData.pending_adoption_decision.adopt_display_name === true,
             adoptAvatar: registerData.pending_adoption_decision.adopt_avatar === true
           }
         : null
-      hasRegisterData.value = !!(email.value && password.value)
+      hasRegisterData.value = !!(email.value && (transactionId.value || password.value))
+      if (transactionId.value) {
+        codeSent.value = true
+        startCountdown(registerData.countdown || 0)
+      }
     } catch {
       hasRegisterData.value = false
     }
@@ -305,7 +312,7 @@ onMounted(async () => {
   }
 
   // Auto-send verification code if we have valid data
-  if (hasRegisterData.value) {
+  if (hasRegisterData.value && !transactionId.value) {
     await sendCode()
   }
 })
@@ -422,7 +429,7 @@ async function sendCode(): Promise<void> {
       ? getPendingOAuthSendCodeSessionResponse(response as PendingOAuthSendVerifyCodeResponse)
       : null
     if (pendingSendCodeSession) {
-      sessionStorage.removeItem('register_data')
+      clearRegistrationDraft()
       persistPendingOAuthSession(
         pendingSendCodeSession.provider || pendingProvider.value,
         pendingSendCodeSession.redirect,
@@ -523,7 +530,7 @@ async function handleVerify(): Promise<void> {
         payload
       )
       if (isPendingOAuthSessionResponse(data)) {
-        sessionStorage.removeItem('register_data')
+        clearRegistrationDraft()
         persistPendingOAuthSession(data.provider || pendingProvider.value, data.redirect)
         await router.push(resolvePendingOAuthCallbackRoute(data.provider || pendingProvider.value))
         return
@@ -532,24 +539,27 @@ async function handleVerify(): Promise<void> {
         throw new Error(t('auth.verifyFailed'))
       }
 
-      persistOAuthTokenContext(data)
-      await authStore.setToken(data.access_token)
+      await finalizeBrowserOAuth(data, authStore)
       authStore.clearPendingAuthSession?.()
     } else {
-      // Register with verification code
-      await authStore.register({
-        email: email.value,
-        password: password.value,
-        verify_code: verifyCode.value.trim(),
-        turnstile_token: initialTurnstileToken.value || undefined,
-        promo_code: promoCode.value || undefined,
-        invitation_code: invitationCode.value || undefined,
-        ...(affCode.value ? { aff_code: affCode.value } : {})
-      })
+      if (transactionId.value) {
+        await authStore.completeRegistration(transactionId.value, verifyCode.value.trim())
+      } else {
+        // Legacy in-memory draft compatibility.
+        await authStore.register({
+          email: email.value,
+          password: password.value,
+          verify_code: verifyCode.value.trim(),
+          turnstile_token: initialTurnstileToken.value || undefined,
+          promo_code: promoCode.value || undefined,
+          invitation_code: invitationCode.value || undefined,
+          ...(affCode.value ? { aff_code: affCode.value } : {})
+        })
+      }
     }
 
     // Clear session data
-    sessionStorage.removeItem('register_data')
+    clearRegistrationDraft()
     clearAllAffiliateReferralCodes()
 
     // Show success toast
@@ -570,7 +580,7 @@ async function handleVerify(): Promise<void> {
 
 function handleBack(): void {
   // Clear session data
-  sessionStorage.removeItem('register_data')
+  clearRegistrationDraft()
 
   // Go back to registration
   router.push('/register')

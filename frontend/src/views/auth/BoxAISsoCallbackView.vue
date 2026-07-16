@@ -62,6 +62,8 @@ function resolveSsoDestination(raw: string | null | undefined): string {
 onMounted(async () => {
   try {
     const { code, state } = parseCodeState()
+    // BOXAI: remove authorization material before the first await.
+    window.history.replaceState(null, '', window.location.pathname)
     const verifier = sessionStorage.getItem(SSO_VERIFIER_KEY) || ''
     const expectedState = sessionStorage.getItem(SSO_STATE_KEY) || ''
     const returnToRaw = sessionStorage.getItem(SSO_RETURN_KEY) || ''

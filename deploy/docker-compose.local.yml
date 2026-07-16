@@ -101,6 +101,12 @@ services:
       # Generate a secure secret: openssl rand -hex 32
       - JWT_SECRET=${JWT_SECRET:-}
       - JWT_EXPIRE_HOUR=${JWT_EXPIRE_HOUR:-24}
+      # BOXAI: short-lived browser access JWT; refresh authority stays in the host-only session cookie.
+      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-15}
+      - BOXAI_BROWSER_SESSION=${BOXAI_BROWSER_SESSION:-true}
+      - BOXAI_LEGACY_BROWSER_ADOPTION=${BOXAI_LEGACY_BROWSER_ADOPTION:-true}
+      - BOXAI_WEB_SSO=${BOXAI_WEB_SSO:-true}
+      - BOXAI_WEB_SSO_REDIRECT_URIS=${BOXAI_WEB_SSO_REDIRECT_URIS:-}
 
       # =======================================================================
       # Setup Configuration

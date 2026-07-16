@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { BRAND_LOGO_SVG } from '@/lib/brand'
 import { consoleOrigin } from '@/lib/brand'
 import { createPkcePair } from '@/lib/pkce'
-import { isAuthenticated, saveSsoPending } from '@/lib/storage'
+import { saveSsoPending } from '@/lib/storage'
+import { useAuth } from '@/lib/use-auth'
 import { safeReturnPath } from '@/lib/safe-return'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
@@ -25,6 +26,7 @@ export function AuthRedirect({ mode }: { mode: 'login' | 'register' }) {
   const location = useLocation()
   const navigate = useNavigate()
   const [error, setError] = useState('')
+  const { status } = useAuth()
 
   useEffect(() => {
     let cancelled = false
@@ -33,7 +35,8 @@ export function AuthRedirect({ mode }: { mode: 'login' | 'register' }) {
       const params = new URLSearchParams(location.search)
       const returnTo = safeReturnPath(state?.from || params.get('return_to'), '/create')
 
-      if (isAuthenticated()) {
+      if (status === 'bootstrapping') return
+      if (status === 'authenticated') {
         navigate(returnTo, { replace: true })
         return
       }
@@ -62,7 +65,7 @@ export function AuthRedirect({ mode }: { mode: 'login' | 'register' }) {
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode])
+  }, [mode, status])
 
   if (error) {
     return (

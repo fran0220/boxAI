@@ -790,7 +790,8 @@ router.beforeEach(async (to, _from, next) => {
 
   // Restore auth state from localStorage on first navigation (page refresh)
   if (!authInitialized) {
-    authStore.checkAuth()
+    // BOXAI: protected-route decisions wait for cookie bootstrap/adoption.
+    await authStore.checkAuth()
     authInitialized = true
   }
 

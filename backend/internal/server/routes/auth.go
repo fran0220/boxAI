@@ -27,6 +27,18 @@ func RegisterAuthRoutes(
 	auth := v1.Group("/auth")
 	auth.Use(servermiddleware.BackendModeAuthGuard(settingService))
 	{
+		// BOXAI: opaque registration transactions keep plaintext credentials out of browser storage.
+		registrationStore := NewBoxAICodeStore(redisClient)
+		auth.POST("/registration/prepare", rateLimiter.LimitWithOptions("auth-registration-prepare", 5, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIRegistrationPrepare(registrationStore))
+		auth.POST("/registration/complete", rateLimiter.LimitWithOptions("auth-registration-complete", 10, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIRegistrationComplete(registrationStore))
+		// BOXAI: CSRF-protected host-bound browser session lifecycle.
+		auth.POST("/session", h.Auth.BrowserSession)
+		auth.POST("/session/adopt", h.Auth.AdoptBrowserSession)
+		auth.POST("/session/logout", h.Auth.LogoutBrowserSession)
 		// 注册/登录/2FA/验证码发送均属于高风险入口，增加服务端兜底限流（Redis 故障时 fail-close）
 		auth.POST("/register", rateLimiter.LimitWithOptions("auth-register", 5, time.Minute, middleware.RateLimitOptions{
 			FailureMode: middleware.RateLimitFailClose,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { authorizeSso, ApiError } from '@/lib/api'
-import { isAuthenticated } from '@/lib/storage'
+import { useAuth } from '@/lib/use-auth'
 import { Spinner } from '@/components/ui/Spinner'
 import { useI18n } from '@/i18n'
 
@@ -22,6 +22,7 @@ export function SsoAuthorize() {
   const navigate = useNavigate()
   const { d } = useI18n()
   const [error, setError] = useState('')
+  const { status } = useAuth()
 
   useEffect(() => {
     let cancelled = false
@@ -30,7 +31,8 @@ export function SsoAuthorize() {
       const redirectUri = params.get('redirect_uri') || ''
       const state = params.get('state') || ''
 
-      if (!isAuthenticated()) {
+      if (status === 'bootstrapping') return
+      if (status !== 'authenticated') {
         // Preserve the full authorize query so we resume minting after login.
         const returnUrl = `/sso/authorize?${params.toString()}`
         navigate('/login', { replace: true, state: { from: returnUrl } })
@@ -56,7 +58,7 @@ export function SsoAuthorize() {
     return () => {
       cancelled = true
     }
-  }, [navigate, params])
+  }, [navigate, params, status])
 
   if (error) {
     return (

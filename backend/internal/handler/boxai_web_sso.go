@@ -42,12 +42,15 @@ const (
 	webSSOCodeKeyPrefix = "boxai:web_sso:code:"
 	webSSOEnvKey        = "BOXAI_WEB_SSO"
 	webSSOAllowlistEnv  = "BOXAI_WEB_SSO_REDIRECT_URIS"
+	webSSOLocalEnv      = "BOXAI_WEB_SSO_ALLOW_LOCALHOST"
 )
 
-// Default production + local-dev allowlist. Operators extend via env.
+// BOXAI: Secure production defaults. Local callbacks require explicit opt-in.
 var defaultWebSSORedirectURIs = []string{
 	"https://you-box.com/sso/callback",
 	"https://console.you-box.com/boxai/sso/callback",
+}
+var localWebSSORedirectURIs = []string{
 	"http://localhost:5173/sso/callback",
 	"http://127.0.0.1:5173/sso/callback",
 	"http://localhost:3000/boxai/sso/callback",
@@ -102,6 +105,11 @@ func loadWebSSOAllowlist() map[string]struct{} {
 		}
 		for _, uri := range defaultWebSSORedirectURIs {
 			add(uri)
+		}
+		if strings.EqualFold(strings.TrimSpace(os.Getenv(webSSOLocalEnv)), "true") || strings.TrimSpace(os.Getenv(webSSOLocalEnv)) == "1" {
+			for _, uri := range localWebSSORedirectURIs {
+				add(uri)
+			}
 		}
 		if extra := strings.TrimSpace(os.Getenv(webSSOAllowlistEnv)); extra != "" {
 			for _, part := range strings.Split(extra, ",") {
@@ -220,7 +228,16 @@ func (h *AuthHandler) BoxAIWebSSOToken(store BoxAICodeStore) gin.HandlerFunc {
 			return
 		}
 
-		payload, err := store.Take(c.Request.Context(), webSSOCodeKeyPrefix+code)
+		key := webSSOCodeKeyPrefix + code
+		// BOXAI: Verify bindings before atomic consumption where the backing
+		// store supports a non-consuming read (the production Redis store does).
+		payload := ""
+		var err error
+		if verifying, ok := store.(BoxAICodeVerifyingStore); ok {
+			payload, err = verifying.Get(c.Request.Context(), key)
+		} else {
+			payload, err = store.Take(c.Request.Context(), key)
+		}
 		if err != nil {
 			if errors.Is(err, ErrBoxAICodeNotFound) {
 				response.Unauthorized(c, "Invalid or expired code")
@@ -239,12 +256,19 @@ func (h *AuthHandler) BoxAIWebSSOToken(store BoxAICodeStore) gin.HandlerFunc {
 			return
 		}
 		if !verifyPKCE(record.CodeChallenge, strings.TrimSpace(req.CodeVerifier)) {
-			response.Unauthorized(c, "PKCE verification failed")
+			response.Unauthorized(c, "Invalid or expired sign-in code")
 			return
 		}
 		if normalizeRedirectURI(req.RedirectURI) != record.RedirectURI {
-			response.Unauthorized(c, "redirect_uri mismatch")
+			response.Unauthorized(c, "Invalid or expired sign-in code")
 			return
+		}
+		if _, ok := store.(BoxAICodeVerifyingStore); ok {
+			consumed, takeErr := store.Take(c.Request.Context(), key)
+			if takeErr != nil || consumed != payload {
+				response.Unauthorized(c, "Invalid or expired code")
+				return
+			}
 		}
 
 		user, err := h.userService.GetByID(c.Request.Context(), record.UserID)
@@ -257,6 +281,10 @@ func (h *AuthHandler) BoxAIWebSSOToken(store BoxAICodeStore) gin.HandlerFunc {
 			return
 		}
 
+		// BOXAI: Cookie mode uses the same centralized issuance helper as login.
+		if h.maybeRespondWithBrowserSession(c, user) {
+			return
+		}
 		tokenPair, err := h.authService.GenerateTokenPair(c.Request.Context(), user, "")
 		if err != nil {
 			response.InternalError(c, "Failed to generate tokens")

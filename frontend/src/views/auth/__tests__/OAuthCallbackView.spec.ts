@@ -12,6 +12,7 @@ const {
   copyToClipboardMock,
   exchangePendingOAuthCompletionMock,
   apiPostMock,
+  finalizeBrowserOAuthMock,
 } = vi.hoisted(() => ({
   routeState: {
     path: '/auth/callback',
@@ -30,6 +31,11 @@ const {
   copyToClipboardMock: vi.fn(),
   exchangePendingOAuthCompletionMock: vi.fn(),
   apiPostMock: vi.fn(),
+  finalizeBrowserOAuthMock: vi.fn(),
+}))
+
+vi.mock('@/auth/finalizeOAuth', () => ({
+  finalizeBrowserOAuth: (...args: any[]) => finalizeBrowserOAuthMock(...args),
 }))
 
 vi.mock('vue-router', () => ({
@@ -95,6 +101,11 @@ describe('OAuthCallbackView', () => {
     copyToClipboardMock.mockReset()
     exchangePendingOAuthCompletionMock.mockReset()
     apiPostMock.mockReset()
+    finalizeBrowserOAuthMock.mockReset()
+    finalizeBrowserOAuthMock.mockImplementation(async (result, store) => {
+      if (result.access_token) await store.setToken(result.access_token)
+      return Boolean(result.access_token || result.auth_result === 'session')
+    })
     window.sessionStorage.clear()
   })
 

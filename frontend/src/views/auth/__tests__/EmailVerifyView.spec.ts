@@ -7,6 +7,7 @@ const {
   showSuccessMock,
   showErrorMock,
   registerMock,
+  completeRegistrationMock,
   setTokenMock,
   setPendingAuthSessionMock,
   clearPendingAuthSessionMock,
@@ -16,11 +17,14 @@ const {
   persistOAuthTokenContextMock,
   apiClientPostMock,
   authStoreState,
+  registrationDraftState,
+  finalizeBrowserOAuthMock,
 } = vi.hoisted(() => ({
   pushMock: vi.fn(),
   showSuccessMock: vi.fn(),
   showErrorMock: vi.fn(),
   registerMock: vi.fn(),
+  completeRegistrationMock: vi.fn(),
   setTokenMock: vi.fn(),
   setPendingAuthSessionMock: vi.fn(),
   clearPendingAuthSessionMock: vi.fn(),
@@ -40,6 +44,18 @@ const {
       suggested_avatar_url?: string
     }
   },
+  registrationDraftState: { current: null as Record<string, any> | null },
+  finalizeBrowserOAuthMock: vi.fn(),
+}))
+
+vi.mock('@/auth/registrationDraft', () => ({
+  getRegistrationDraft: () => registrationDraftState.current,
+  clearRegistrationDraft: () => { registrationDraftState.current = null },
+  setRegistrationDraft: (value: Record<string, any>) => { registrationDraftState.current = value },
+}))
+
+vi.mock('@/auth/finalizeOAuth', () => ({
+  finalizeBrowserOAuth: (...args: any[]) => finalizeBrowserOAuthMock(...args),
 }))
 
 vi.mock('vue-router', () => ({
@@ -69,6 +85,7 @@ vi.mock('@/stores', () => ({
   useAuthStore: () => ({
     pendingAuthSession: authStoreState.pendingAuthSession,
     register: (...args: any[]) => registerMock(...args),
+    completeRegistration: (...args: any[]) => completeRegistrationMock(...args),
     setToken: (...args: any[]) => setTokenMock(...args),
     setPendingAuthSession: (...args: any[]) => setPendingAuthSessionMock(...args),
     clearPendingAuthSession: (...args: any[]) => clearPendingAuthSessionMock(...args),
@@ -102,6 +119,7 @@ describe('EmailVerifyView', () => {
     showSuccessMock.mockReset()
     showErrorMock.mockReset()
     registerMock.mockReset()
+    completeRegistrationMock.mockReset()
     setTokenMock.mockReset()
     setPendingAuthSessionMock.mockReset()
     clearPendingAuthSessionMock.mockReset()
@@ -111,6 +129,12 @@ describe('EmailVerifyView', () => {
     persistOAuthTokenContextMock.mockReset()
     apiClientPostMock.mockReset()
     authStoreState.pendingAuthSession = null
+    registrationDraftState.current = null
+    finalizeBrowserOAuthMock.mockReset()
+    finalizeBrowserOAuthMock.mockImplementation(async (result, store) => {
+      if (result.access_token) await store.setToken(result.access_token)
+      return Boolean(result.access_token || result.auth_result === 'session')
+    })
     sessionStorage.clear()
     localStorage.clear()
 
@@ -132,13 +156,10 @@ describe('EmailVerifyView', () => {
       provider: 'wechat',
       redirect: '/profile',
     }
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'fresh@example.com',
         password: 'secret-123',
-      })
-    )
+    }
 
     mount(EmailVerifyView, {
       global: {
@@ -173,13 +194,10 @@ describe('EmailVerifyView', () => {
       site_name: 'Sub2API',
       registration_email_suffix_whitelist: ['allowed.com'],
     })
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'fresh@example.com',
         password: 'secret-123',
-      })
-    )
+    }
 
     mount(EmailVerifyView, {
       global: {
@@ -214,13 +232,10 @@ describe('EmailVerifyView', () => {
       site_name: 'Sub2API',
       registration_email_suffix_whitelist: ['allowed.com'],
     })
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'fresh@example.com',
         password: 'secret-123',
-      })
-    )
+    }
 
     mount(EmailVerifyView, {
       global: {
@@ -261,13 +276,10 @@ describe('EmailVerifyView', () => {
       provider: 'oidc',
       redirect: '/profile/security',
     })
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'fresh@example.com',
         password: 'secret-123',
-      })
-    )
+    }
 
     mount(EmailVerifyView, {
       global: {
@@ -299,14 +311,11 @@ describe('EmailVerifyView', () => {
       provider: 'wechat',
       redirect: '/profile',
     }
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'fresh@example.com',
         password: 'secret-123',
         aff_code: 'AFF123',
-      })
-    )
+    }
     apiClientPostMock.mockResolvedValue({
       data: {
         access_token: 'oauth-access-token',
@@ -338,12 +347,13 @@ describe('EmailVerifyView', () => {
       verify_code: '123456',
       aff_code: 'AFF123',
     })
-    expect(persistOAuthTokenContextMock).toHaveBeenCalledWith({
+    expect(finalizeBrowserOAuthMock).toHaveBeenCalledWith({
       access_token: 'oauth-access-token',
       refresh_token: 'oauth-refresh-token',
       expires_in: 3600,
       token_type: 'Bearer',
-    })
+    }, expect.anything())
+    expect(persistOAuthTokenContextMock).not.toHaveBeenCalled()
     expect(setTokenMock).toHaveBeenCalledWith('oauth-access-token')
     expect(clearPendingAuthSessionMock).toHaveBeenCalled()
     expect(pushMock).toHaveBeenCalledWith('/profile')
@@ -363,13 +373,10 @@ describe('EmailVerifyView', () => {
       site_name: 'Sub2API',
       registration_email_suffix_whitelist: ['allowed.com'],
     })
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'fresh@example.com',
         password: 'secret-123',
-      })
-    )
+    }
     apiClientPostMock.mockResolvedValue({
       data: {
         auth_result: 'pending_session',
@@ -415,15 +422,12 @@ describe('EmailVerifyView', () => {
   })
 
   it('keeps the normal email registration flow unchanged', async () => {
-    sessionStorage.setItem(
-      'register_data',
-      JSON.stringify({
+    registrationDraftState.current = {
         email: 'normal@example.com',
         password: 'secret-456',
         promo_code: 'PROMO',
         invitation_code: 'INVITE',
-      })
-    )
+    }
     registerMock.mockResolvedValue({})
 
     const wrapper = mount(EmailVerifyView, {
@@ -451,6 +455,37 @@ describe('EmailVerifyView', () => {
       invitation_code: 'INVITE',
     })
     expect(apiClientPostMock).not.toHaveBeenCalled()
+    expect(pushMock).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('restores an opaque transaction, does not resend on entry, and completes it', async () => {
+    registrationDraftState.current = {
+      transaction_id: 't'.repeat(43),
+      email: 'normal@example.com',
+      countdown: 45,
+      redirect: '/dashboard',
+    }
+    completeRegistrationMock.mockResolvedValue({})
+
+    const wrapper = mount(EmailVerifyView, {
+      global: {
+        stubs: {
+          AuthLayout: { template: '<div><slot /><slot name="footer" /></div>' },
+          Icon: true,
+          TurnstileWidget: true,
+          transition: false,
+        },
+      },
+    })
+    await flushPromises()
+    expect(sendVerifyCodeMock).not.toHaveBeenCalled()
+
+    await wrapper.get('#code').setValue('123456')
+    await wrapper.get('form').trigger('submit.prevent')
+    await flushPromises()
+
+    expect(completeRegistrationMock).toHaveBeenCalledWith('t'.repeat(43), '123456')
+    expect(registerMock).not.toHaveBeenCalled()
     expect(pushMock).toHaveBeenCalledWith('/dashboard')
   })
 })

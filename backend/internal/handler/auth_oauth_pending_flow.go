@@ -17,6 +17,7 @@ import (
 	"github.com/Wei-Shaw/sub2api/ent/identityadoptiondecision"
 	"github.com/Wei-Shaw/sub2api/ent/predicate"
 	dbuser "github.com/Wei-Shaw/sub2api/ent/user"
+	"github.com/Wei-Shaw/sub2api/internal/handler/dto"
 	infraerrors "github.com/Wei-Shaw/sub2api/internal/pkg/errors"
 	"github.com/Wei-Shaw/sub2api/internal/pkg/ip"
 	"github.com/Wei-Shaw/sub2api/internal/pkg/oauth"
@@ -1605,15 +1606,6 @@ func (h *AuthHandler) transitionPendingOAuthAccountToChoiceState(
 	return session, nil
 }
 
-func writeOAuthTokenPairResponse(c *gin.Context, tokenPair *service.TokenPair) {
-	c.JSON(http.StatusOK, gin.H{
-		"access_token":  tokenPair.AccessToken,
-		"refresh_token": tokenPair.RefreshToken,
-		"expires_in":    tokenPair.ExpiresIn,
-		"token_type":    "Bearer",
-	})
-}
-
 func (h *AuthHandler) bindPendingOAuthLogin(c *gin.Context, provider string) {
 	var req bindPendingOAuthLoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -1689,7 +1681,7 @@ func (h *AuthHandler) bindPendingOAuthLogin(c *gin.Context, provider string) {
 	}
 
 	clearCookies()
-	writeOAuthTokenPairResponse(c, tokenPair)
+	h.writeOAuthTokenPairResponse(c, tokenPair, user)
 }
 
 func respondPendingOAuthBindingApplyError(c *gin.Context, err error) {
@@ -1879,13 +1871,24 @@ func (h *AuthHandler) createPendingOAuthAccount(c *gin.Context, provider string)
 	// createPendingOAuthAccount = 注册新账户，需要把钉钉昵称同步到 users.username 作为初始值
 	h.maybeSyncDingTalkAfterRegistration(c.Request.Context(), session, user.ID)
 	clearCookies()
-	writeOAuthTokenPairResponse(c, tokenPair)
+	h.writeOAuthTokenPairResponse(c, tokenPair, user)
 }
 
 // ExchangePendingOAuthCompletion redeems a pending OAuth browser session into a frontend-safe payload.
 // POST /api/v1/auth/oauth/pending/exchange
 func (h *AuthHandler) ExchangePendingOAuthCompletion(c *gin.Context) {
 	secureCookie := isRequestHTTPS(c)
+	// BOXAI: Authenticate browser-mode requests before loading or consuming the
+	// one-shot pending state. Legacy clients intentionally retain old behavior.
+	browserMode := c.GetHeader(browserSessionHeader) == "1"
+	browserSurface := ""
+	if browserMode {
+		var ok bool
+		browserSurface, ok = requireBrowserRequest(c)
+		if !ok {
+			return
+		}
+	}
 	clearCookies := func() {
 		clearOAuthPendingSessionCookie(c, secureCookie)
 		clearOAuthPendingBrowserCookie(c, secureCookie)
@@ -1928,6 +1931,11 @@ func (h *AuthHandler) ExchangePendingOAuthCompletion(c *gin.Context) {
 		clearCookies()
 		response.ErrorFrom(c, infraerrors.InternalServer("PENDING_AUTH_COMPLETION_INVALID", "pending auth completion payload is invalid"))
 		return
+	}
+	// BOXAI: Callback-created pairs are deliberately stripped from pending
+	// payloads. Revoke the refresh credential once it becomes undisclosed.
+	if hiddenRefresh, _ := payload["refresh_token"].(string); strings.TrimSpace(hiddenRefresh) != "" {
+		_ = h.authService.RevokeRefreshToken(c.Request.Context(), hiddenRefresh)
 	}
 	payload = normalizePendingOAuthCompletionResponse(payload)
 	if strings.TrimSpace(session.RedirectTo) != "" {
@@ -2029,10 +2037,24 @@ func (h *AuthHandler) ExchangePendingOAuthCompletion(c *gin.Context) {
 			return
 		}
 		h.authService.RecordSuccessfulLogin(c.Request.Context(), loginUser.ID)
-		payload["access_token"] = tokenPair.AccessToken
-		payload["refresh_token"] = tokenPair.RefreshToken
-		payload["expires_in"] = tokenPair.ExpiresIn
-		payload["token_type"] = "Bearer"
+		if browserMode {
+			_ = h.authService.RevokeRefreshToken(c.Request.Context(), tokenPair.RefreshToken)
+			session, ok := h.issueBrowserSession(c, loginUser, browserSurface)
+			if !ok {
+				clearCookies()
+				return
+			}
+			payload["access_token"] = session.AccessToken
+			payload["expires_in"] = session.ExpiresIn
+			payload["token_type"] = "Bearer"
+			payload["user"] = dto.UserFromService(loginUser)
+			payload["auth_result"] = "session"
+		} else {
+			payload["access_token"] = tokenPair.AccessToken
+			payload["refresh_token"] = tokenPair.RefreshToken
+			payload["expires_in"] = tokenPair.ExpiresIn
+			payload["token_type"] = "Bearer"
+		}
 	}
 
 	clearCookies()

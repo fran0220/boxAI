@@ -9,6 +9,19 @@ const mockLogout = vi.fn()
 const mockGetCurrentUser = vi.fn()
 const mockRegister = vi.fn()
 const mockRefreshToken = vi.fn()
+const setBrowserSession = vi.fn()
+const bootstrapWithLegacyAdoption = vi.fn()
+let memoryToken: string | null = null
+
+vi.mock('@/auth/browserSession', () => ({
+  setBrowserSession: (...args: any[]) => { memoryToken = args[0].access_token; return setBrowserSession(...args) },
+  bootstrapWithLegacyAdoption: (...args: any[]) => bootstrapWithLegacyAdoption(...args),
+  getAccessToken: () => memoryToken,
+  installLegacyAccessToken: (token: string) => { memoryToken = token },
+  clearBrowserSession: () => { memoryToken = null },
+  logoutBrowserSession: async () => { memoryToken = null },
+  subscribeBrowserSession: () => () => {}
+}))
 
 vi.mock('@/api', () => ({
   authAPI: {
@@ -57,6 +70,8 @@ describe('useAuthStore', () => {
     localStorage.clear()
     vi.useFakeTimers()
     vi.clearAllMocks()
+    memoryToken = null
+    bootstrapWithLegacyAdoption.mockResolvedValue(null)
   })
 
   afterEach(() => {
@@ -75,8 +90,9 @@ describe('useAuthStore', () => {
       expect(store.token).toBe('test-token-123')
       expect(store.user).toEqual(fakeUser)
       expect(store.isAuthenticated).toBe(true)
-      expect(localStorage.getItem('auth_token')).toBe('test-token-123')
-      expect(localStorage.getItem('auth_user')).toBe(JSON.stringify(fakeUser))
+      expect(setBrowserSession).toHaveBeenCalledWith(fakeAuthResponse)
+      expect(localStorage.getItem('auth_token')).toBeNull()
+      expect(localStorage.getItem('auth_user')).toBeNull()
     })
 
     it('登录失败时清除状态并抛出错误', async () => {
@@ -161,17 +177,13 @@ describe('useAuthStore', () => {
   // --- checkAuth ---
 
   describe('checkAuth', () => {
-    it('从 localStorage 恢复持久化状态', () => {
-      localStorage.setItem('auth_token', 'saved-token')
-      localStorage.setItem('auth_user', JSON.stringify(fakeUser))
-
-      // Mock refreshUser (getCurrentUser) 防止后台刷新报错
-      mockGetCurrentUser.mockResolvedValue({ data: fakeUser })
-
+    it('从浏览器 cookie 会话恢复内存状态', async () => {
+      bootstrapWithLegacyAdoption.mockResolvedValue(fakeAuthResponse)
       const store = useAuthStore()
-      store.checkAuth()
+      await store.checkAuth()
 
-      expect(store.token).toBe('saved-token')
+      expect(bootstrapWithLegacyAdoption).toHaveBeenCalledTimes(1)
+      expect(store.token).toBe('test-token-123')
       expect(store.user).toEqual(fakeUser)
       expect(store.isAuthenticated).toBe(true)
     })
@@ -185,34 +197,7 @@ describe('useAuthStore', () => {
       expect(store.isAuthenticated).toBe(false)
     })
 
-    it('localStorage 中用户数据损坏时清除状态', () => {
-      localStorage.setItem('auth_token', 'saved-token')
-      localStorage.setItem('auth_user', 'invalid-json{{{')
-
-      const store = useAuthStore()
-      store.checkAuth()
-
-      expect(store.token).toBeNull()
-      expect(store.user).toBeNull()
-      expect(localStorage.getItem('auth_token')).toBeNull()
-    })
-
-    it('恢复 refresh token 和过期时间', () => {
-      const futureTs = String(Date.now() + 3600_000)
-      localStorage.setItem('auth_token', 'saved-token')
-      localStorage.setItem('auth_user', JSON.stringify(fakeUser))
-      localStorage.setItem('refresh_token', 'saved-refresh')
-      localStorage.setItem('token_expires_at', futureTs)
-
-      mockGetCurrentUser.mockResolvedValue({ data: fakeUser })
-
-      const store = useAuthStore()
-      store.checkAuth()
-
-      expect(store.isAuthenticated).toBe(true)
-    })
-
-    it('恢复持久化 pending auth session', () => {
+    it('清除旧版持久化 pending auth credential 而不恢复', async () => {
       localStorage.setItem(
         'pending_auth_session',
         JSON.stringify({
@@ -224,20 +209,16 @@ describe('useAuthStore', () => {
       )
 
       const store = useAuthStore()
-      store.checkAuth()
+      await store.checkAuth()
 
-      expect(store.hasPendingAuthSession).toBe(true)
-      expect(store.pendingAuthSession).toEqual({
-        token: 'pending-token',
-        token_field: 'pending_auth_token',
-        provider: 'wechat',
-        redirect: '/profile',
-      })
+      expect(store.hasPendingAuthSession).toBe(false)
+      expect(store.pendingAuthSession).toBeNull()
+      expect(localStorage.getItem('pending_auth_session')).toBeNull()
     })
   })
 
   describe('pending auth session', () => {
-    it('persists and clears pending auth session state', () => {
+    it('keeps pending auth session memory-only and clears legacy storage', () => {
       const store = useAuthStore()
 
       store.setPendingAuthSession({
@@ -248,12 +229,8 @@ describe('useAuthStore', () => {
       })
 
       expect(store.hasPendingAuthSession).toBe(true)
-      expect(JSON.parse(localStorage.getItem('pending_auth_session') || 'null')).toEqual({
-        token: 'pending-token',
-        token_field: 'pending_auth_token',
-        provider: 'wechat',
-        redirect: '/profile',
-      })
+      expect(store.pendingAuthSession?.token).toBe('pending-token')
+      expect(localStorage.getItem('pending_auth_session')).toBeNull()
 
       store.clearPendingAuthSession()
 
@@ -261,7 +238,7 @@ describe('useAuthStore', () => {
       expect(localStorage.getItem('pending_auth_session')).toBeNull()
     })
 
-    it('restores a persisted pending oauth session without requiring a token value', () => {
+    it('does not restore a pending oauth session after a new store is created', async () => {
       const firstStore = useAuthStore()
 
       firstStore.setPendingAuthSession({
@@ -275,19 +252,11 @@ describe('useAuthStore', () => {
 
       setActivePinia(createPinia())
       const restoredStore = useAuthStore()
-      restoredStore.checkAuth()
+      await restoredStore.checkAuth()
 
       expect(restoredStore.isAuthenticated).toBe(false)
-      expect(restoredStore.hasPendingAuthSession).toBe(true)
-      expect(restoredStore.pendingAuthSession).toEqual({
-        token: '',
-        token_field: 'pending_oauth_token',
-        provider: 'oidc',
-        redirect: '/welcome',
-        adoption_required: true,
-        suggested_display_name: 'OIDC Nick',
-        suggested_avatar_url: undefined
-      })
+      expect(restoredStore.hasPendingAuthSession).toBe(false)
+      expect(restoredStore.pendingAuthSession).toBeNull()
     })
 
     it('preserves pending auth session when registration fails', async () => {
@@ -345,7 +314,7 @@ describe('useAuthStore', () => {
   // --- refreshUser ---
 
   describe('refreshUser', () => {
-    it('刷新用户数据并更新 localStorage', async () => {
+    it('刷新用户数据并仅更新内存用户', async () => {
       mockLogin.mockResolvedValue(fakeAuthResponse)
       const store = useAuthStore()
       await store.login({ email: 'test@example.com', password: '123456' })
@@ -357,7 +326,7 @@ describe('useAuthStore', () => {
 
       expect(result).toEqual(updatedUser)
       expect(store.user).toEqual(updatedUser)
-      expect(JSON.parse(localStorage.getItem('auth_user')!)).toEqual(updatedUser)
+      expect(localStorage.getItem('auth_user')).toBeNull()
     })
 
     it('未认证时抛出错误', async () => {

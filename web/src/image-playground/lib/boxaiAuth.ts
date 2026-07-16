@@ -7,7 +7,7 @@
  */
 
 import { apiBase } from '@/lib/brand'
-import { getAccessToken } from '@/lib/storage'
+import { getAccessToken, sessionRequestHeaders } from '@/lib/session'
 
 /** Marker profile id used for the locked BoxAI gateway profile. */
 export const BOXAI_PROFILE_ID = 'boxai-gateway'
@@ -62,10 +62,13 @@ export function isBoxaiGatewayUrl(url: string): boolean {
 export function createBoxaiRequestHeaders(url: string, extra: Record<string, string> = {}): Record<string, string> {
   const headers: Record<string, string> = { ...extra }
   if (!isBoxaiGatewayUrl(url)) {
-    // Never attach BoxAI JWT to third-party hosts.
+    // Never attach BoxAI browser-session credentials to third-party hosts.
     delete headers.Authorization
+    delete headers['X-BoxAI-Browser-Session']
+    delete headers['X-BoxAI-CSRF']
     return headers
   }
+  Object.assign(headers, sessionRequestHeaders(), extra)
   const token = getBoxaiSessionToken()
   if (token) {
     headers.Authorization = `Bearer ${token}`
@@ -80,7 +83,7 @@ export function createBoxaiRequestHeaders(url: string, extra: Record<string, str
 export function resolveAuthHeaders(profileApiKey: string, requestUrl: string): Record<string, string> {
   if (isBoxaiGatewayUrl(requestUrl)) {
     const token = getBoxaiSessionToken()
-    if (token) return { Authorization: `Bearer ${token}` }
+    if (token) return { ...sessionRequestHeaders(), Authorization: `Bearer ${token}` }
     // Fall through only if no session — empty key will fail with 401
   }
   if (profileApiKey.trim()) {

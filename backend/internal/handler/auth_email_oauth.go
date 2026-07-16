@@ -207,13 +207,8 @@ func (h *AuthHandler) emailOAuthCallbackWithProfile(
 		return
 	}
 
-	fragment := url.Values{}
-	fragment.Set("access_token", tokenPair.AccessToken)
-	fragment.Set("refresh_token", tokenPair.RefreshToken)
-	fragment.Set("expires_in", fmt.Sprintf("%d", tokenPair.ExpiresIn))
-	fragment.Set("token_type", "Bearer")
-	fragment.Set("redirect", redirectTo)
-	redirectWithFragment(c, frontendCallback, fragment)
+	// BOXAI: exact production console callbacks establish a host-only session.
+	h.redirectOAuthTokenPairOrBrowserSession(c, frontendCallback, tokenPair, user, redirectTo)
 }
 
 func (h *AuthHandler) emailOAuthShouldCreatePendingRegistration(ctx context.Context, input service.EmailOAuthIdentityInput) (bool, error) {
@@ -438,7 +433,8 @@ func (h *AuthHandler) completeEmailOAuthRegistration(c *gin.Context, provider st
 	h.authService.ApplyOAuthSignupPromoCode(c.Request.Context(), user.ID, pendingOAuthPromoCode(session))
 	h.authService.RecordSuccessfulLogin(c.Request.Context(), user.ID)
 	clearCookies()
-	writeOAuthTokenPairResponse(c, tokenPair)
+	// BOXAI: browser completions receive the centralized host-bound session response.
+	h.writeOAuthTokenPairResponse(c, tokenPair, user)
 }
 
 func (h *AuthHandler) getEmailOAuthConfig(ctx context.Context, provider string) (config.EmailOAuthProviderConfig, error) {

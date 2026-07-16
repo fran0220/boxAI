@@ -102,6 +102,11 @@ func (h *AuthHandler) respondWithTokenPair(c *gin.Context, user *service.User) {
 		response.ErrorFrom(c, err)
 		return
 	}
+	// BOXAI: Explicit browser mode exchanges the refresh token for an HttpOnly,
+	// host-bound cookie while preserving the legacy response for every other client.
+	if h.maybeRespondWithBrowserSession(c, user) {
+		return
+	}
 
 	tokenPair, err := h.authService.GenerateTokenPair(c.Request.Context(), user, "")
 	if err != nil {

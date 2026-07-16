@@ -6,7 +6,7 @@ Canonical product architecture for **you-box.com**: dual frontend, shared gatewa
 
 | Host | Serves | Origin of content |
 |------|--------|-------------------|
-| `you-box.com` | Marketing, Studio product + download (`/studio`), Creator (`/create/*`), Web SSO | React static (`web/dist` → `/var/www/you-box.com`); nginx proxies `/api/*`, `/v1/*`, `/health` to Go |
+| `you-box.com` | Marketing, Studio product + download (`/studio`), Creator (`/create/*`), Web SSO | React static (`web/dist` → `/var/www/you-box.com`); edge allowlists browser APIs and proxies `/v1/*`, `/health` |
 | `www.you-box.com` | Permanent redirect | → `https://you-box.com` |
 | `console.you-box.com` | User dashboard, admin, billing, keys, Desktop browser login | Go binary embeds Vue (`frontend/` build) |
 | `api.you-box.com` | Public model API + token exchange | Same Go process; **edge-filtered** paths only |
@@ -15,7 +15,35 @@ One Docker image (`ghcr.io/fran0220/boxai:<pin>`) runs the Go server (Vue embed 
 
 ## Auth
 
-Origins do **not** share cookies. Each origin keeps its own `localStorage` JWT pair.
+Each UI host owns an independent `HttpOnly; Secure; SameSite=Lax; Path=/`
+`__Host-boxai_session` cookie. The cookie has no `Domain`, cannot be read by
+JavaScript, and is never accepted on `api.you-box.com`. Browser code keeps only a
+short-lived, audience-scoped access JWT **in memory**; refresh tokens and JWT pairs
+must not be persisted in localStorage.
+
+Browser session API (same-origin UI hosts only):
+
+| Endpoint | Purpose |
+|----------|---------|
+| `POST /api/v1/auth/session` | Bootstrap: validate the host cookie and mint a short-lived access JWT for that host/audience |
+| `POST /api/v1/auth/session/adopt` | One-time rollout import of a legacy refresh token into a host cookie |
+| `POST /api/v1/auth/session/logout` | Revoke the browser session and clear its cookie |
+| `POST /api/v1/auth/registration/prepare` | Console-only: hash the password server-side, create a 15-minute opaque registration transaction, and send the first email code |
+| `POST /api/v1/auth/registration/complete` | Console-only: verify the email code, consume the transaction, create the account, and establish the console browser session |
+| `GET /api/v1/auth/me` | Resolve the current user with the in-memory access JWT |
+| `POST /api/v1/auth/revoke-all-sessions` | Revoke every session for the user |
+
+Browser-session requests carry `X-BoxAI-CSRF: 1`, an exact same-origin `Origin`,
+and (when supplied by the browser) a non-cross-site `Sec-Fetch-Site`. Never infer trust from `X-Forwarded-Host`;
+the edge preserves the exact request `Host` and strips forwarded-host input.
+
+Password-reset email links place the email and one-time reset token in the URL
+fragment. The Vue reset page captures and removes it before making requests;
+legacy query-string links remain readable only for migration compatibility.
+During email registration, the browser persists only the opaque transaction ID,
+email address, safe return path, and resend countdown in `sessionStorage`.
+Plaintext passwords and Turnstile responses never leave the registration page;
+Redis retains only the bcrypt password hash and registration business fields.
 
 **The console is the identity host.** All credential forms (login, register, 2FA,
 OAuth, Turnstile, email verification) live only in the Vue console. The apex React
@@ -40,15 +68,29 @@ Pages:
   `/boxai/sso/callback` → token exchange on console.
 - Console warm: console `/boxai/sso/start` mints locally → console callback.
 
-Either origin can **mint** a code when it already has a JWT. Only the console
-hosts **credential forms**. Origins never share `localStorage`.
+Either UI origin can mint a code with its in-memory access JWT. Only the console
+hosts credential forms. The PKCE verifier stays in memory/session-scoped state;
+the one-time code does not transfer a cookie between hosts.
 
 Rules:
 
 - Code is one-time, Redis-backed, short TTL; delivered in URL **fragment**.
 - `redirect_uri` is required and allowlisted.
-- Defaults include production callbacks and localhost (`:5173` / `:3000`).
-- Env: `BOXAI_WEB_SSO` (default on), `BOXAI_WEB_SSO_REDIRECT_URIS` (extra URIs; **restart** to apply).
+- Production callbacks are built in. Local callbacks require the explicit
+  `BOXAI_WEB_SSO_REDIRECT_URIS` opt-in; restart to apply.
+- Flags: `BOXAI_BROWSER_SESSION=true`, `BOXAI_LEGACY_BROWSER_ADOPTION=true`
+  during migration, and `BOXAI_WEB_SSO=true`.
+
+### Rollout and rollback
+
+1. Deploy backend/session schema and edge allowlist; set access lifetime to 15
+   minutes and enable browser sessions plus legacy adoption.
+2. Deploy Vue image and React static build. Each host adopts its old refresh token
+   once, deletes legacy storage, then bootstraps from its own cookie.
+3. After adoption telemetry has drained, set `BOXAI_LEGACY_BROWSER_ADOPTION=false`.
+4. Rollback UI first while adoption remains enabled. For an emergency backend
+   rollback, disable `BOXAI_BROWSER_SESSION`; users may need to sign in again.
+   Never re-expose login/register/admin APIs on the apex or session APIs on API host.
 
 **Desktop login** uses a separate PKCE pair:
 
@@ -105,6 +147,11 @@ JWT is translated to the user’s API key by `BOXAI_DESKTOP_JWT_GATEWAY` (shared
 - `/api/v1/auth/refresh`
 - `/api/v1/settings/public`
 - `/health`
+
+The apex allowlist is limited to public settings, browser session
+bootstrap (`/auth/session`)/adopt/logout, auth me/logout/revoke-all, Web SSO authorize/token, and
+Creator ensure-key. All other `/api/*` returns edge 404. Console continues to
+proxy the complete backend surface.
 
 ## Code map
 

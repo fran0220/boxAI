@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { exchangeSsoToken, ApiError } from '@/lib/api'
-import { takeSsoPending } from '@/lib/storage'
-import { safeReturnPath } from '@/lib/safe-return'
+import { captureSsoCallback, exchangeSsoOnce } from '@/lib/sso-exchange'
 import { useI18n } from '@/i18n'
 import { Spinner } from '@/components/ui/Spinner'
-
-function parseFragment(): { code: string; state: string } {
-  const hash = window.location.hash.replace(/^#/, '')
-  const qs = new URLSearchParams(hash || window.location.search)
-  return {
-    code: qs.get('code') || '',
-    state: qs.get('state') || '',
-  }
-}
 
 export function SsoCallback() {
   const navigate = useNavigate()
@@ -22,36 +12,17 @@ export function SsoCallback() {
 
   useEffect(() => {
     let cancelled = false
+    const input = captureSsoCallback()
     ;(async () => {
       try {
-        const { code, state } = parseFragment()
-        const pending = takeSsoPending()
-        if (!code) {
-          setError(d.auth.errMissingCode)
-          return
-        }
-        if (!pending?.verifier) {
-          setError(d.auth.errMissingVerifier)
-          return
-        }
-        // Fail closed on state: require stored expected state and exact match.
-        if (!pending.state || !state || pending.state !== state) {
-          setError(d.auth.errStateMismatch)
-          return
-        }
-        const redirectUri = `${window.location.origin}/sso/callback`
-        await exchangeSsoToken({
-          code,
-          codeVerifier: pending.verifier,
-          redirectUri,
-        })
-        window.history.replaceState(null, '', window.location.pathname)
+        const result = await exchangeSsoOnce(input, exchangeSsoToken)
         if (!cancelled) {
-          navigate(safeReturnPath(pending.returnTo, '/create'), { replace: true })
+          navigate(result.returnTo, { replace: true })
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof ApiError ? err.message : d.auth.errExchange)
+          const message = err instanceof Error ? err.message : ''
+          setError(message === 'missing-code' ? d.auth.errMissingCode : message === 'missing-verifier' ? d.auth.errMissingVerifier : message === 'state-mismatch' ? d.auth.errStateMismatch : err instanceof ApiError ? err.message : d.auth.errExchange)
         }
       }
     })()

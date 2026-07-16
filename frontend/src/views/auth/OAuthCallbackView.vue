@@ -152,10 +152,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { useClipboard } from '@/composables/useClipboard'
 import { useAppStore, useAuthStore } from '@/stores'
 import { apiClient } from '@/api/client'
+import { finalizeBrowserOAuth } from '@/auth/finalizeOAuth'
 import { buildApiUrl } from '@/api/url'
 import {
   exchangePendingOAuthCompletion,
-  persistOAuthTokenContext,
   type OAuthTokenResponse
 } from '@/api/auth'
 import {
@@ -272,8 +272,7 @@ function redirectProviderCallbackToBackend(provider: 'github' | 'google'): void 
 }
 
 async function finalizeTokenResponse(tokenResponse: OAuthTokenResponse, redirect: string) {
-  persistOAuthTokenContext(tokenResponse)
-  await authStore.setToken(tokenResponse.access_token)
+  if (!await finalizeBrowserOAuth(tokenResponse, authStore)) throw new Error(t('auth.loginFailed'))
   if (typeof window !== 'undefined') {
     window.sessionStorage.removeItem(EMAIL_OAUTH_PENDING_PROVIDER_KEY)
   }
@@ -365,6 +364,8 @@ async function handleSubmitRegistration() {
 
 onMounted(async () => {
   const params = parseFragmentParams()
+  // BOXAI: callback credentials must never remain visible or copyable.
+  window.history.replaceState(null, '', window.location.pathname)
   const tokenResponse = readTokenResponse(params)
   const fragmentError = params.get('error') || ''
   const fragmentErrorDescription =
@@ -372,6 +373,12 @@ onMounted(async () => {
 
   if (fragmentError) {
     appStore.showError(fragmentErrorDescription || fragmentError)
+    return
+  }
+  if (params.get('auth_result') === 'session') {
+    isProcessing.value = true
+    await finalizeBrowserOAuth({ auth_result: 'session' }, authStore)
+    await router.replace(params.get('redirect') || '/dashboard')
     return
   }
   if (!tokenResponse) {

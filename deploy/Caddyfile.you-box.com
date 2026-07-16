@@ -17,6 +17,7 @@
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Content-Security-Policy "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https:"
 		# Remove server fingerprint if present
 		-Server
 	}
@@ -26,7 +27,9 @@
 	header_up X-Real-IP {remote_host}
 	header_up X-Forwarded-For {remote_host}
 	header_up X-Forwarded-Proto {scheme}
-	header_up X-Forwarded-Host {host}
+	# BOXAI: preserve the exact public Host; never accept a client-supplied forwarded host.
+	header_up Host {http.request.host}
+	header_up -X-Forwarded-Host
 	header_up CF-Connecting-IP {http.request.header.CF-Connecting-IP}
 }
 
@@ -58,10 +61,20 @@ you-box.com {
 	}
 	header @static Cache-Control "public, max-age=31536000, immutable"
 
-	handle /api/* {
+	@apex_api {
+		path /api/v1/settings/public
+		path /api/v1/auth/session /api/v1/auth/session/adopt /api/v1/auth/session/logout
+		path /api/v1/auth/me /api/v1/auth/logout /api/v1/auth/revoke-all-sessions
+		path /api/v1/auth/boxai/sso/authorize /api/v1/auth/boxai/sso/token
+		path /api/v1/boxai/creator/ensure-key
+	}
+	handle @apex_api {
 		reverse_proxy 127.0.0.1:8080 {
 			import boxai_proxy_upstreams
 		}
+	}
+	handle /api/* {
+		respond "Not Found" 404
 	}
 	handle /v1/* {
 		reverse_proxy 127.0.0.1:8080 {

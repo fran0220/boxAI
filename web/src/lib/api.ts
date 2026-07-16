@@ -1,11 +1,13 @@
 import { apiBase } from './brand'
 import {
-  clearSession,
+  bootstrapSession,
   getAccessToken,
-  getRefreshToken,
+  logoutSession,
+  markSessionRejected,
+  sessionRequestHeaders,
   setSession,
   type AuthUser,
-} from './storage'
+} from './session'
 
 export class ApiError extends Error {
   status: number
@@ -32,31 +34,37 @@ async function parseEnvelope<T>(res: Response): Promise<T> {
   return body.data as T
 }
 
-function authHeaders(token?: string | null): HeadersInit {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  }
+function authHeaders(token?: string | null): Record<string, string> {
+  const headers = sessionRequestHeaders()
   const t = token ?? getAccessToken()
   if (t) headers.Authorization = `Bearer ${t}`
   return headers
 }
 
-export async function apiPost<T>(path: string, body?: unknown, token?: string | null): Promise<T> {
+async function apiRequest<T>(path: string, init: RequestInit, token?: string | null, retry = true): Promise<T> {
   const res = await fetch(`${apiBase()}${path}`, {
-    method: 'POST',
-    headers: authHeaders(token),
-    body: body === undefined ? undefined : JSON.stringify(body),
+    ...init,
+    credentials: 'include',
+    headers: { ...authHeaders(token), ...init.headers },
   })
+  if (res.status === 401 && retry && !path.startsWith('/api/v1/auth/')) {
+    const refreshed = await bootstrapSession(true)
+    if (refreshed.status === 'authenticated') return apiRequest<T>(path, init, refreshed.accessToken, false)
+    markSessionRejected()
+  }
   return parseEnvelope<T>(res)
 }
 
+export async function apiPost<T>(path: string, body?: unknown, token?: string | null): Promise<T> {
+  return apiRequest<T>(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  }, token)
+}
+
 export async function apiGet<T>(path: string, token?: string | null): Promise<T> {
-  const res = await fetch(`${apiBase()}${path}`, {
-    method: 'GET',
-    headers: authHeaders(token),
-  })
-  return parseEnvelope<T>(res)
+  return apiRequest<T>(path, { method: 'GET' }, token)
 }
 
 /**
@@ -77,13 +85,7 @@ export async function fetchMe(): Promise<AuthUser> {
 }
 
 export async function logout(): Promise<void> {
-  try {
-    const refresh = getRefreshToken()
-    await apiPost('/api/v1/auth/logout', refresh ? { refresh_token: refresh } : {})
-  } catch {
-    // ignore network errors on logout
-  }
-  clearSession()
+  await logoutSession()
 }
 
 export async function authorizeSso(params: {
@@ -106,12 +108,7 @@ export async function exchangeSsoToken(params: {
     code_verifier: params.codeVerifier,
     redirect_uri: params.redirectUri,
   })
-  setSession({
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    expiresIn: data.expires_in,
-    user: data.user,
-  })
+  setSession(data)
   return data
 }
 
@@ -129,12 +126,25 @@ export async function ensureCreatorKey(): Promise<{
 export async function gatewayFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const token = getAccessToken()
   if (!token) throw new ApiError('Not authenticated', 401)
+  return gatewayRequest(path, init, token, true)
+}
+
+async function gatewayRequest(path: string, init: RequestInit, token: string, retry: boolean): Promise<Response> {
   const headers = new Headers(init.headers)
   if (!headers.has('Authorization')) headers.set('Authorization', `Bearer ${token}`)
   if (!headers.has('Content-Type') && init.body && !(init.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json')
   }
-  return fetch(`${apiBase()}${path}`, { ...init, headers })
+  Object.entries(sessionRequestHeaders()).forEach(([key, value]) => {
+    headers.set(key, value)
+  })
+  const response = await fetch(`${apiBase()}${path}`, { ...init, credentials: 'include', headers })
+  if (response.status === 401 && retry) {
+    const refreshed = await bootstrapSession(true)
+    if (refreshed.accessToken) return gatewayRequest(path, init, refreshed.accessToken, false)
+    markSessionRejected()
+  }
+  return response
 }
 
 export async function imageGenerations(body: unknown): Promise<unknown> {

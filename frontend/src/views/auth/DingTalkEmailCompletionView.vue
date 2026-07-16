@@ -33,9 +33,9 @@ import PendingOAuthCreateAccountForm, {
 import { apiClient } from '@/api/client'
 import { useAuthStore, useAppStore } from '@/stores'
 import {
-  persistOAuthTokenContext,
   type PendingOAuthExchangeResponse
 } from '@/api/auth'
+import { finalizeBrowserOAuth } from '@/auth/finalizeOAuth'
 import { clearAllAffiliateReferralCodes } from '@/utils/oauthAffiliate'
 
 const route = useRoute()
@@ -89,8 +89,7 @@ async function handleCreateAccount(payload: PendingOAuthCreateAccountPayload) {
     const redirect = sanitizeRedirectPath(data.redirect || (route.query.redirect as string | undefined))
 
     if (data.access_token) {
-      persistOAuthTokenContext(data)
-      await authStore.setToken(data.access_token)
+      await finalizeBrowserOAuth(data, authStore)
       clearAllAffiliateReferralCodes()
       appStore.showSuccess(t('auth.loginSuccess'))
       await router.replace(redirect)

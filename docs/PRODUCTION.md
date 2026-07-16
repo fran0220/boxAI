@@ -13,7 +13,7 @@
 ```
 Internet
    │
-   ├─ you-box.com      React 静态 (/var/www/you-box.com) + 反代 /api /v1 /health → :8080
+   ├─ you-box.com      React 静态 + 浏览器 API 白名单 + /v1 /health → :8080
    ├─ www.you-box.com  301 → you-box.com
    ├─ console.you-box.com  反代全部 → :8080（Go 内嵌 Vue 控制台）
    └─ api.you-box.com  仅 /v1/*、SSO/desktop token、refresh、public settings、/health
@@ -119,6 +119,13 @@ ADMIN_EMAIL=admin@you-box.com
 ADMIN_PASSWORD=<初始管理员密码>
 
 AUTO_SETUP=true
+
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15
+BOXAI_BROWSER_SESSION=true
+BOXAI_LEGACY_BROWSER_ADOPTION=true
+BOXAI_WEB_SSO=true
+# 仅额外回调；生产内置回调无需填写。生产不要加入 localhost。
+BOXAI_WEB_SSO_REDIRECT_URIS=
 ```
 
 | 变量 | 说明 |
@@ -128,6 +135,10 @@ AUTO_SETUP=true
 | `TOTP_ENCRYPTION_KEY` | 固定后勿随意轮换，否则 TOTP 密文不可解密 |
 | `POSTGRES_PASSWORD` | DB 密码；与数据目录绑定 |
 | `AUTO_SETUP=true` | 首次启动写配置、跑迁移、创建管理员 |
+| `JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15` | 浏览器内存 access JWT 的短有效期；优先于 `JWT_EXPIRE_HOUR` |
+| `BOXAI_BROWSER_SESSION` | 启用每个 UI host 独立的 `__Host-boxai_session` |
+| `BOXAI_LEGACY_BROWSER_ADOPTION` | 迁移期一次性接收旧 localStorage refresh token；迁移完成后设为 `false` |
+| `BOXAI_WEB_SSO_REDIRECT_URIS` | 额外 PKCE callback 白名单；生产通常留空，本地必须显式加入 localhost |
 
 完整变量表见仓库 `deploy/.env.example`。
 
@@ -227,6 +238,8 @@ http {
 - [ ] `you-box.com/` 为 React（含 `id="root"`）  
 - [ ] `console.you-box.com` 可登录管理/用户台  
 - [ ] `./deploy/scripts/verify-topology.sh` 通过  
+- [ ] apex 登录/注册/admin API 为边缘 `404`；API host browser-session 为 `404`
+- [ ] 三个 HTTPS host 均返回 HSTS、nosniff、frame deny、referrer、Permissions-Policy、CSP
 - [ ] 磁盘：`df -h` 有余量；数据目录在 `/opt/boxAI/{data,postgres_data,redis_data}`
 
 ---
@@ -401,6 +414,17 @@ gh workflow run release.yml -R fran0220/boxAI \
 - Postgres / Redis **不**映射到公网  
 - 生产 pin 镜像 digest 或具体 tag  
 - 定期 `pg_dump`；升级前必备份  
+- UI host 各自使用无 `Domain` 的 `__Host-boxai_session`；refresh 凭据不进 localStorage，access JWT 仅存内存
+- browser-session 请求必须发送 `X-BoxAI-CSRF: 1` 和精确同源 `Origin`；跨 host 登录只用一次性 PKCE code
+- apex 只开放浏览器所需 API；console 全量反代；`api.you-box.com` 不开放 browser-session endpoint
+
+### Browser-session 发布与回滚
+
+先发布后端/迁移和边缘白名单，再发布 Vue 镜像与 React 静态资源。迁移期保持
+`BOXAI_LEGACY_BROWSER_ADOPTION=true`，客户端成功采用旧 refresh token 后必须删除
+旧 localStorage 凭据。观察采用率后设为 `false` 并重建应用容器。回滚时先回滚
+前端且暂留 adoption；紧急回滚后端可设 `BOXAI_BROWSER_SESSION=false`，可能要求用户
+重新登录，但不可通过重新开放 apex credential/admin API 或 API-host session API 回滚。
 
 ---
 

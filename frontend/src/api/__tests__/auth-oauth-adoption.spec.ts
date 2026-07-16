@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const post = vi.fn()
+let accessToken: string | null = null
+
+vi.mock('@/auth/browserSession', () => ({
+  getAccessToken: () => accessToken
+}))
 
 vi.mock('@/api/client', () => ({
   apiClient: {
@@ -13,6 +18,7 @@ describe('oauth adoption auth api', () => {
     post.mockReset()
     post.mockResolvedValue({ data: {} })
     localStorage.clear()
+    accessToken = null
     document.cookie = 'oauth_bind_access_token=; Max-Age=0; path=/'
   })
 
@@ -214,7 +220,7 @@ describe('oauth adoption auth api', () => {
   })
 
   it('requests an HttpOnly oauth bind cookie before redirect binding', async () => {
-    localStorage.setItem('auth_token', 'access-token-value')
+    accessToken = 'access-token-value'
     const { prepareOAuthBindAccessTokenCookie } = await import('@/api/auth')
 
     await prepareOAuthBindAccessTokenCookie()

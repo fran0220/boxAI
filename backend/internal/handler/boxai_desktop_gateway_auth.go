@@ -94,6 +94,13 @@ func desktopJWTGatewayAuth(enabled bool, auth desktopTokenValidator, users deskt
 			c.Next()
 			return
 		}
+		// BOXAI: audience-bearing browser JWTs are valid on the apex Creator
+		// gateway only. Desktop/legacy JWTs are audience-less and retain the
+		// existing bridge behavior; api.you-box.com still requires an API key.
+		if !gatewayBrowserAudienceAllowed(c.Request.Host, c.GetHeader("Origin"), claims.Audience, claims.Scope) {
+			middleware2.AbortWithError(c, 401, "INVALID_TOKEN_AUDIENCE", "Token is not valid for this site")
+			return
+		}
 
 		user, err := users.GetByID(c.Request.Context(), claims.UserID)
 		if err != nil || user == nil {
@@ -123,6 +130,30 @@ func desktopJWTGatewayAuth(enabled bool, auth desktopTokenValidator, users deskt
 		c.Request.Header.Del("x-goog-api-key")
 		c.Next()
 	}
+}
+
+func gatewayBrowserAudienceAllowed(host, origin string, audience []string, scope string) bool {
+	if len(audience) == 0 {
+		return true
+	}
+	host = strings.ToLower(strings.TrimSpace(strings.Split(host, ":")[0]))
+	if host == "localhost" || host == "127.0.0.1" {
+		origin = strings.TrimSpace(origin)
+		if origin != "http://localhost:5173" && origin != "http://127.0.0.1:5173" {
+			return false
+		}
+	} else if host != "you-box.com" {
+		return false
+	}
+	if !strings.Contains(" "+scope+" ", " creator ") {
+		return false
+	}
+	for _, value := range audience {
+		if value == service.BrowserSurfaceWeb {
+			return true
+		}
+	}
+	return false
 }
 
 // desktopCredentialToken extracts the presented credential across the header

@@ -8,6 +8,7 @@ import type { ApiResponse } from '@/types'
 import { getLocale } from '@/i18n'
 import { ADMIN_UI_REQUEST_HEADER, shouldMarkAdminUIRequest } from './adminUIRequest'
 import { getAPIBaseURL } from './url'
+import { bootstrap, clearBrowserSession, getAccessToken } from '@/auth/browserSession'
 export { buildApiUrl, buildGatewayUrl } from './url'
 
 // ==================== Axios Instance Configuration ====================
@@ -17,31 +18,12 @@ export const apiClient: AxiosInstance = axios.create({
   withCredentials: true,
   timeout: 30000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    // BOXAI: opt every console API request into host-cookie browser auth.
+    'X-BoxAI-Browser-Session': '1',
+    'X-BoxAI-CSRF': '1'
   }
 })
-
-// ==================== Token Refresh State ====================
-
-// Track if a token refresh is in progress to prevent multiple simultaneous refresh requests
-let isRefreshing = false
-// Queue of requests waiting for token refresh
-let refreshSubscribers: Array<(token: string) => void> = []
-
-/**
- * Subscribe to token refresh completion
- */
-function subscribeTokenRefresh(callback: (token: string) => void): void {
-  refreshSubscribers.push(callback)
-}
-
-/**
- * Notify all subscribers that token has been refreshed
- */
-function onTokenRefreshed(token: string): void {
-  refreshSubscribers.forEach((callback) => callback(token))
-  refreshSubscribers = []
-}
 
 // ==================== Request Interceptor ====================
 
@@ -56,8 +38,8 @@ const getUserTimezone = (): string => {
 
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Attach token from localStorage
-    const token = localStorage.getItem('auth_token')
+    // BOXAI: access JWTs are memory-only.
+    const token = getAccessToken()
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -170,125 +152,30 @@ apiClient.interceptors.response.use(
         })
       }
 
-      // 401: Try to refresh the token if we have a refresh token
+      // BOXAI: 401 gets exactly one cookie bootstrap and retry. Cookie rotation is server-owned.
       // This handles TOKEN_EXPIRED, INVALID_TOKEN, TOKEN_REVOKED, etc.
       if (status === 401 && !originalRequest._retry) {
-        const refreshToken = localStorage.getItem('refresh_token')
         const isAuthEndpoint =
-          url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh')
+          /\/auth\/(?:session|login|register|reset-password|forgot-password)/.test(url)
 
-        // If we have a refresh token and this is not an auth endpoint, try to refresh
-        if (refreshToken && !isAuthEndpoint) {
-          if (isRefreshing) {
-            // Wait for the ongoing refresh to complete
-            return new Promise((resolve, reject) => {
-              subscribeTokenRefresh((newToken: string) => {
-                if (newToken) {
-                  // Mark as retried to prevent infinite loop if retry also returns 401
-                  originalRequest._retry = true
-                  if (originalRequest.headers) {
-                    originalRequest.headers.Authorization = `Bearer ${newToken}`
-                  }
-                  resolve(apiClient(originalRequest))
-                } else {
-                  // Refresh failed, reject with original error
-                  reject({
-                    status,
-                    code: apiData.code,
-                    message: apiData.message || apiData.detail || error.message
-                  })
-                }
-              })
-            })
-          }
-
+        if (!isAuthEndpoint) {
           originalRequest._retry = true
-          isRefreshing = true
-
-          try {
-            // Call refresh endpoint directly to avoid circular dependency
-            const refreshResponse = await axios.post(
-              `${getAPIBaseURL()}/auth/refresh`,
-              { refresh_token: refreshToken },
-              // 显式设置超时：裸 axios 默认无限等待，若刷新请求挂起会导致 isRefreshing
-              // 永远为 true，所有排队的 401 重试请求永久卡死，页面 loading 无法恢复。
-              { headers: { 'Content-Type': 'application/json' }, timeout: 30000 }
-            )
-
-            const refreshData = refreshResponse.data as ApiResponse<{
-              access_token: string
-              refresh_token: string
-              expires_in: number
-            }>
-
-            if (refreshData.code === 0 && refreshData.data) {
-              const { access_token, refresh_token: newRefreshToken, expires_in } = refreshData.data
-
-              // Update tokens in localStorage (convert expires_in to timestamp)
-              localStorage.setItem('auth_token', access_token)
-              localStorage.setItem('refresh_token', newRefreshToken)
-              localStorage.setItem('token_expires_at', String(Date.now() + expires_in * 1000))
-
-              // Notify subscribers with new token
-              onTokenRefreshed(access_token)
-
-              // Retry the original request with new token
-              if (originalRequest.headers) {
-                originalRequest.headers.Authorization = `Bearer ${access_token}`
-              }
-
-              isRefreshing = false
-              return apiClient(originalRequest)
-            }
-
-            // Refresh response was not successful, fall through to clear auth
-            throw new Error('Token refresh failed')
-          } catch (refreshError) {
-            // Refresh failed - notify subscribers with empty token
-            onTokenRefreshed('')
-            isRefreshing = false
-
-            // Clear tokens and redirect to login
-            localStorage.removeItem('auth_token')
-            localStorage.removeItem('refresh_token')
-            localStorage.removeItem('auth_user')
-            localStorage.removeItem('token_expires_at')
-            sessionStorage.setItem('auth_expired', '1')
-
-            if (!window.location.pathname.includes('/login')) {
-              window.location.href = '/login'
-            }
-
-            return Promise.reject({
-              status: 401,
-              code: 'TOKEN_REFRESH_FAILED',
-              message: 'Session expired. Please log in again.'
-            })
+          const session = await bootstrap(true)
+          if (session) {
+            if (originalRequest.headers) originalRequest.headers.Authorization = `Bearer ${session.access_token}`
+            return apiClient(originalRequest)
+          }
+          clearBrowserSession()
+          sessionStorage.setItem('auth_expired', '1')
+          if (!window.location.pathname.includes('/login') && !window.location.pathname.startsWith('/auth/')) {
+            window.location.href = '/login'
           }
         }
-
-        // No refresh token or is auth endpoint - clear auth and redirect
-        const hasToken = !!localStorage.getItem('auth_token')
-        const headers = error.config?.headers as Record<string, unknown> | undefined
-        const authHeader = headers?.Authorization ?? headers?.authorization
-        const sentAuth =
-          typeof authHeader === 'string'
-            ? authHeader.trim() !== ''
-            : Array.isArray(authHeader)
-              ? authHeader.length > 0
-              : !!authHeader
-
+        // BOXAI: always finish legacy cleanup; auth/public endpoints surface errors in place.
         localStorage.removeItem('auth_token')
         localStorage.removeItem('refresh_token')
         localStorage.removeItem('auth_user')
         localStorage.removeItem('token_expires_at')
-        if ((hasToken || sentAuth) && !isAuthEndpoint) {
-          sessionStorage.setItem('auth_expired', '1')
-        }
-        // Only redirect if not already on login page
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login'
-        }
       }
 
       // Return structured error

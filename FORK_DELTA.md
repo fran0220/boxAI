@@ -30,6 +30,10 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/internal/handler/boxai_code_store.go` | BoxAICodeStore interface (depguard-safe code store) |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis adapter for BoxAICodeStore |
 | `backend/internal/handler/boxai_web_sso_test.go` | Unit tests for web SSO allowlist / PKCE helpers |
+| `backend/internal/handler/boxai_browser_session.go` | Host-only HttpOnly browser-session boundary, CSRF/origin enforcement, and OAuth browser response adapter |
+| `backend/internal/handler/boxai_browser_session_test.go` | Cookie, host/origin, browser OAuth response, and credential-leak regression tests |
+| `backend/internal/handler/boxai_registration.go` | Console-only opaque email-registration prepare/complete transaction handlers |
+| `backend/internal/handler/boxai_registration_test.go` | Registration transaction validation, retry, consumption, and response tests |
 | `backend/internal/handler/boxai_creator_key.go` | Idempotent `boxai-creator` API key ensure endpoint |
 | `backend/internal/handler/boxai_creator_key_test.go` | Unit tests for Creator ensure-key |
 | `web/` | React marketing + Creator SPA (Vite + TS + Tailwind); static dist on apex (not Go-embed) |
@@ -74,7 +78,11 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 |------|--------|
 | `backend/cmd/server/main.go` | Version / setup log product name |
 | `backend/internal/setup/cli.go` | Install wizard banner |
-| `backend/internal/service/auth_service.go` | Default site name for email flows |
+| `backend/internal/service/auth_service.go` | Default site name; browser JWT scope claim; server-only prepared bcrypt registration path |
+| `backend/internal/service/boxai_browser_session.go` | Audience-scoped access JWT issuance and refresh-cache-backed host-bound browser sessions |
+| `backend/internal/service/refresh_token_cache.go` | Browser surface binding and optional atomic refresh-token consumption contract |
+| `backend/internal/repository/refresh_token_cache.go` | Redis `GETDEL` implementation for single-winner legacy adoption |
+| `backend/internal/service/email_service.go` | Password-reset credentials delivered in URL fragments, not query strings |
 | `backend/internal/service/auth_email_binding.go` | Default site name |
 | `backend/internal/service/auth_oauth_email_flow.go` | Default site name |
 | `backend/internal/service/user_service.go` | Default site name for notify email |
@@ -87,7 +95,17 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/service/payment_order.go` | Payment subject product prefix |
 | `backend/internal/service/payment_order_result_test.go` | Subject assertion uses branding |
 | `backend/internal/server/routes/gateway.go` | BOXAI: desktop JWT-as-credential middleware wired before `apiKeyAuth` on `/v1` (flag `BOXAI_DESKTOP_JWT_GATEWAY`, default-on) |
-| `backend/internal/server/routes/auth.go` | BOXAI: desktop OAuth (PKCE) + web SSO routes — public token, authed authorize |
+| `backend/internal/server/routes/auth.go` | BOXAI: browser session + opaque registration + desktop OAuth (PKCE) + web SSO routes |
+| `backend/internal/server/middleware/jwt_auth.go` | Host/audience boundary for browser access JWTs; legacy audience-less JWT compatibility |
+| `backend/internal/server/middleware/admin_auth.go` | Console audience plus explicit admin scope required for browser admin JWTs |
+| `backend/internal/server/middleware/cors.go` | Browser-session opt-in and fixed CSRF request headers |
+| `backend/internal/handler/auth_handler.go` | Centralized cookie-mode login/register response with no browser refresh-token exposure |
+| `backend/internal/handler/auth_email_oauth.go` | Email-provider OAuth completion uses the centralized browser-session response |
+| `backend/internal/handler/auth_linuxdo_oauth.go` | Direct console callback cookie issuance and clean completion fragment |
+| `backend/internal/handler/auth_oauth_pending_flow.go` | Browser-safe pending OAuth exchange and centralized session issuance |
+| `backend/internal/handler/auth_oidc_oauth.go` | OIDC completion uses the centralized browser-session response |
+| `backend/internal/handler/auth_wechat_oauth.go` | WeChat completion uses the centralized browser-session response |
+| `backend/internal/handler/auth_dingtalk_oauth.go` | DingTalk completion uses the centralized browser-session response |
 | `backend/internal/server/routes/user.go` | BOXAI: `POST /boxai/creator/ensure-key` (apiKeyService arg) |
 | `backend/internal/server/router.go` | BOXAI: pass apiKeyService into RegisterUserRoutes |
 | `backend/internal/handler/boxai_desktop_gateway_auth.go` | BOXAI: prefer API key named `boxai-creator` in JWT bridge |
@@ -113,9 +131,13 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/i18n/localeMeta.ts` | Locale codes, BCP-47, compliance language map |
 | `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage |
 | `frontend/src/components/auth/WechatOAuthSection.vue` | Explicit Vietnamese WeChat availability guidance |
-| `frontend/src/api/auth.ts` | BOXAI: `authorizeDesktopLogin` + Web SSO authorize/token helpers |
+| `frontend/src/auth/browserSession.ts` | Console in-memory access-token owner, cookie bootstrap/adoption, expiry refresh, and cross-tab coordination |
+| `frontend/src/auth/finalizeOAuth.ts` | Centralized OAuth browser-session completion/adoption adapter |
+| `frontend/src/auth/registrationDraft.ts` | Sensitive in-memory OAuth draft plus safe opaque registration-transaction recovery metadata |
+| `frontend/src/api/auth.ts` | BOXAI: memory-only browser auth, opaque registration, desktop login, and Web SSO helpers |
+| `frontend/src/api/client.ts` | In-memory bearer injection plus one cookie-bootstrap retry on 401 |
 | `frontend/src/router/index.ts` | BOXAI: `/desktop-auth`, `/download/desktop`, `/boxai/sso/start`, `/boxai/sso/callback`, `/boxai/sso/authorize` |
-| `frontend/src/stores/auth.ts` | BOXAI: export `setAuthFromResponse` for Web SSO callback |
+| `frontend/src/stores/auth.ts` | BOXAI: Pinia view over the centralized in-memory browser session; no persisted JWT pair |
 | `frontend/src/views/auth/LoginView.vue` | BOXAI: register link carries `?redirect=` for SSO handoff |
 | `frontend/src/views/auth/RegisterView.vue` | BOXAI: direct-register success honors safe `?redirect=` |
 | `frontend/src/views/admin/SettingsView.vue` | Product settings copy and documentation links support zh/en/vi |
@@ -162,4 +184,3 @@ Hash pins: `tools/compliance-hash.pins`.
 1. Add/remove rows when markers or product-first paths change.
 2. On upstream sync land: bump **Baseline** tag.
 3. Prefer small, reviewable inventory edits over long prose.
-

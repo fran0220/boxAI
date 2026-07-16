@@ -65,6 +65,23 @@ func (c *refreshTokenCache) GetRefreshToken(ctx context.Context, tokenHash strin
 	return &data, nil
 }
 
+// ConsumeRefreshToken atomically returns and removes a refresh-token record.
+// BOXAI: GETDEL prevents concurrent legacy browser-session adoption winners.
+func (c *refreshTokenCache) ConsumeRefreshToken(ctx context.Context, tokenHash string) (*service.RefreshTokenData, error) {
+	val, err := c.rdb.GetDel(ctx, refreshTokenKey(tokenHash)).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, service.ErrRefreshTokenNotFound
+		}
+		return nil, err
+	}
+	var data service.RefreshTokenData
+	if err := json.Unmarshal([]byte(val), &data); err != nil {
+		return nil, fmt.Errorf("unmarshal consumed refresh token data: %w", err)
+	}
+	return &data, nil
+}
+
 func (c *refreshTokenCache) DeleteRefreshToken(ctx context.Context, tokenHash string) error {
 	key := refreshTokenKey(tokenHash)
 	return c.rdb.Del(ctx, key).Err()

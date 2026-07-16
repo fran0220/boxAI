@@ -20,3 +20,10 @@ type BoxAICodeStore interface {
 	// Take removes and returns the value, or ErrBoxAICodeNotFound.
 	Take(ctx context.Context, key string) (string, error)
 }
+
+// BOXAI: Stores implementing this extension allow binding checks before the
+// atomic Take, so invalid exchange attempts cannot burn a valid code.
+type BoxAICodeVerifyingStore interface {
+	BoxAICodeStore
+	Get(ctx context.Context, key string) (string, error)
+}

@@ -58,6 +58,8 @@ type JWTClaims struct {
 	Email        string `json:"email"`
 	Role         string `json:"role"`
 	TokenVersion int64  `json:"token_version"` // Used to invalidate tokens on password change
+	// BOXAI: Scope is attached only to host-bound browser access tokens.
+	Scope string `json:"scope,omitempty"`
 	jwt.RegisteredClaims
 }
 
@@ -136,6 +138,22 @@ func (s *AuthService) Register(ctx context.Context, email, password string) (str
 
 // RegisterWithVerification 用户注册（支持邮件验证、优惠码、邀请码和邀请返利码），返回token和用户。
 func (s *AuthService) RegisterWithVerification(ctx context.Context, email, password, verifyCode, promoCode, invitationCode, affiliateCode string) (string, *User, error) {
+	return s.registerWithVerification(ctx, email, password, false, verifyCode, promoCode, invitationCode, affiliateCode)
+}
+
+// RegisterWithPreparedPasswordHash completes a server-prepared registration.
+// BOXAI: The bcrypt hash is accepted only by the in-process product handler; no
+// public request schema permits clients to submit password hashes.
+func (s *AuthService) RegisterWithPreparedPasswordHash(ctx context.Context, email, passwordHash, verifyCode, promoCode, invitationCode, affiliateCode string) (string, *User, error) {
+	if _, err := bcrypt.Cost([]byte(passwordHash)); err != nil {
+		return "", nil, fmt.Errorf("invalid prepared password hash: %w", err)
+	}
+	return s.registerWithVerification(ctx, email, passwordHash, true, verifyCode, promoCode, invitationCode, affiliateCode)
+}
+
+// BOXAI: shared implementation preserves legacy registration ordering while
+// allowing the opaque transaction flow to avoid hashing an already hashed password.
+func (s *AuthService) registerWithVerification(ctx context.Context, email, password string, passwordPrepared bool, verifyCode, promoCode, invitationCode, affiliateCode string) (string, *User, error) {
 	// 检查是否开放注册（默认关闭：settingService 未配置时不允许注册）
 	if s.settingService == nil || !s.settingService.IsRegistrationEnabled(ctx) {
 		return "", nil, ErrRegDisabled
@@ -197,9 +215,12 @@ func (s *AuthService) RegisterWithVerification(ctx context.Context, email, passw
 	}
 
 	// 密码哈希
-	hashedPassword, err := s.HashPassword(password)
-	if err != nil {
-		return "", nil, fmt.Errorf("hash password: %w", err)
+	hashedPassword := password
+	if !passwordPrepared {
+		hashedPassword, err = s.HashPassword(password)
+		if err != nil {
+			return "", nil, fmt.Errorf("hash password: %w", err)
+		}
 	}
 
 	grantPlan := s.resolveSignupGrantPlan(ctx, "email")

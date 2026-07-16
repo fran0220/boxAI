@@ -365,7 +365,8 @@ func (h *AuthHandler) LinuxDoOAuthCallback(c *gin.Context) {
 			h.authService.RecordSuccessfulLogin(c.Request.Context(), user.ID)
 			clearOAuthPendingSessionCookie(c, secureCookie)
 			clearOAuthPendingBrowserCookie(c, secureCookie)
-			redirectOAuthTokenPair(c, frontendCallback, tokenPair, redirectTo)
+			// BOXAI: exact production console callbacks establish a host-only session.
+			h.redirectOAuthTokenPairOrBrowserSession(c, frontendCallback, tokenPair, user, redirectTo)
 			return
 		}
 		if !errors.Is(err, service.ErrOAuthInvitationRequired) {
@@ -605,12 +606,8 @@ func (h *AuthHandler) CompleteLinuxDoOAuthRegistration(c *gin.Context) {
 	clearOAuthPendingSessionCookie(c, secureCookie)
 	clearOAuthPendingBrowserCookie(c, secureCookie)
 
-	c.JSON(http.StatusOK, gin.H{
-		"access_token":  tokenPair.AccessToken,
-		"refresh_token": tokenPair.RefreshToken,
-		"expires_in":    tokenPair.ExpiresIn,
-		"token_type":    "Bearer",
-	})
+	// BOXAI: Browser completions exchange the generated pair for a host-bound session.
+	h.writeOAuthTokenPairResponse(c, tokenPair, user)
 }
 
 func (h *AuthHandler) getLinuxDoOAuthConfig(ctx context.Context) (config.LinuxDoConnectConfig, error) {
@@ -840,6 +837,16 @@ func redirectOAuthTokenPair(c *gin.Context, frontendCallback string, tokenPair *
 				redirect = originalRedirect
 			}
 		}
+		fragment.Set("redirect", truncateFragmentValue(redirect))
+	}
+	redirectWithFragment(c, frontendCallback, fragment)
+}
+
+// BOXAI: Clean OAuth completion fragment; no bearer or refresh credential is
+// exposed to browser history, extensions, or frontend logs.
+func redirectOAuthBrowserSession(c *gin.Context, frontendCallback, redirectTo string) {
+	fragment := url.Values{"auth_result": []string{"session"}}
+	if redirect := sanitizeFrontendRedirectPath(strings.TrimSpace(redirectTo)); redirect != "" {
 		fragment.Set("redirect", truncateFragmentValue(redirect))
 	}
 	redirectWithFragment(c, frontendCallback, fragment)

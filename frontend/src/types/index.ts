@@ -127,6 +127,18 @@ export interface RegisterRequest {
   aff_code?: string
 }
 
+// BOXAI: safe metadata returned by the opaque registration prepare endpoint.
+export interface RegistrationTransaction {
+  transaction_id: string
+  email: string
+  countdown: number
+}
+
+export interface CompleteRegistrationRequest {
+  transaction_id: string
+  verify_code: string
+}
+
 export interface AffiliateInvitee {
   user_id: number
   email: string
@@ -245,8 +257,8 @@ export interface PublicSettings {
 
 export interface AuthResponse {
   access_token: string
-  refresh_token?: string  // New: Refresh Token for token renewal
-  expires_in?: number     // New: Access Token expiry time in seconds
+  refresh_token?: string // BOXAI: accepted only as one-time legacy migration input.
+  expires_in?: number
   token_type: string
   user: User & { run_mode?: 'standard' | 'simple' }
 }

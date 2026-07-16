@@ -25,16 +25,24 @@ import (
 
 func TestIsAllowedWebSSORedirectURIDefaults(t *testing.T) {
 	t.Setenv(webSSOAllowlistEnv, "")
+	t.Setenv(webSSOLocalEnv, "")
 	ResetWebSSOAllowlistForTest()
 
 	require.True(t, isAllowedWebSSORedirectURI("https://you-box.com/sso/callback"))
 	require.True(t, isAllowedWebSSORedirectURI("https://console.you-box.com/boxai/sso/callback"))
-	require.True(t, isAllowedWebSSORedirectURI("http://localhost:5173/sso/callback"))
+	require.False(t, isAllowedWebSSORedirectURI("http://localhost:5173/sso/callback"))
 	require.True(t, isAllowedWebSSORedirectURI("https://you-box.com/sso/callback/")) // trailing slash normalized
 	require.False(t, isAllowedWebSSORedirectURI("https://evil.example.com/sso/callback"))
 	require.False(t, isAllowedWebSSORedirectURI("http://evil.example.com/sso/callback"))
 	require.False(t, isAllowedWebSSORedirectURI("boxai-desktop://auth/callback"))
 	require.False(t, isAllowedWebSSORedirectURI(""))
+}
+
+func TestIsAllowedWebSSORedirectURILocalhostRequiresOptIn(t *testing.T) {
+	t.Setenv(webSSOAllowlistEnv, "")
+	t.Setenv(webSSOLocalEnv, "true")
+	ResetWebSSOAllowlistForTest()
+	require.True(t, isAllowedWebSSORedirectURI("http://localhost:5173/sso/callback"))
 }
 
 func TestIsAllowedWebSSORedirectURIExtraEnv(t *testing.T) {

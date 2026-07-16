@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react'
 import { BRAND_LOGO_SVG, BRAND_NAME, consoleOrigin } from '@/lib/brand'
-import { clearSession } from '@/lib/storage'
+import { logout } from '@/lib/api'
 import { useAuth } from '@/lib/use-auth'
 import { useTheme } from '@/lib/theme'
 import { useI18n } from '@/i18n'
@@ -48,8 +48,8 @@ export function Header() {
 
   const email = (user?.email as string) || (user?.username as string) || ''
 
-  function onLogout() {
-    clearSession()
+  async function onLogout() {
+    await logout()
     window.location.href = '/'
   }
 

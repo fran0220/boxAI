@@ -167,6 +167,13 @@ func validateJWTForAdmin(
 		AbortWithError(c, 401, "INVALID_TOKEN", "Invalid token")
 		return false
 	}
+	// BOXAI: Admin JWT auth accepts legacy audience-less tokens and exact-host
+	// console browser tokens only. Audience-bearing tokens require both the
+	// console host binding and explicit admin scope.
+	if !adminBrowserRequestAllowed(c.Request.Host, c.GetHeader("Origin"), claims.Audience, claims.Scope) {
+		AbortWithError(c, 401, "INVALID_TOKEN_AUDIENCE", "Token is not valid for admin access")
+		return false
+	}
 
 	// 从数据库获取用户
 	user, err := userService.GetByID(c.Request.Context(), claims.UserID)
@@ -201,4 +208,23 @@ func validateJWTForAdmin(
 	c.Set("auth_method", "jwt")
 
 	return true
+}
+
+// BOXAI: Kept pure so the audience/scope boundary has exhaustive unit coverage.
+func adminBrowserAudienceAllowed(audience []string, scope string) bool {
+	if len(audience) == 0 {
+		return true
+	}
+	for _, value := range audience {
+		if value == service.BrowserSurfaceConsole {
+			return strings.Contains(" "+scope+" ", " admin ")
+		}
+	}
+	return false
+}
+
+// BOXAI: Admin routes must enforce the same direct-request host boundary as
+// ordinary JWT routes in addition to their stronger audience/scope policy.
+func adminBrowserRequestAllowed(host, origin string, audience []string, scope string) bool {
+	return browserAudienceAllowed(host, origin, audience) && adminBrowserAudienceAllowed(audience, scope)
 }

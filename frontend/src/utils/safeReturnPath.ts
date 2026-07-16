@@ -38,5 +38,18 @@ export function safeReturnPath(raw: string | null | undefined, fallback = '/'): 
   if (pathname.includes('\\')) return fallback
   if (pathname.includes('://')) return fallback
 
+  // BOXAI: never bounce a completed sign-in back into credential/callback flows.
+  const denied = pathname === '/login' || pathname === '/register' ||
+    pathname === '/reset-password' || pathname.startsWith('/auth/') ||
+    pathname.startsWith('/boxai/sso/')
+  if (denied) return fallback
+
   return pathname + rest
+}
+
+/** Login/register may intentionally return to the protected SSO authorize route. */
+export function safeLoginReturnPath(raw: string | null | undefined, fallback = '/'): string {
+  const input = raw?.trim() || ''
+  if (input.startsWith('/boxai/sso/authorize?')) return input
+  return safeReturnPath(input, fallback)
 }

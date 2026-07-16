@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, KeyRound, LogOut, PanelsTopLeft, Sparkles, Wallet } from 'lucide-react'
 import { ensureCreatorKey, fetchMe, logout, ApiError } from '@/lib/api'
-import { getUser, type AuthUser } from '@/lib/storage'
+import { type AuthUser } from '@/lib/session'
+import { useAuth } from '@/lib/use-auth'
 import { consoleOrigin } from '@/lib/brand'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
@@ -12,9 +13,14 @@ export function Account() {
   const { d } = useI18n()
   usePageMeta(d.account.metaTitle)
 
-  const [user, setUser] = useState<AuthUser | null>(getUser())
+  const { user: sessionUser } = useAuth()
+  const [user, setUser] = useState<AuthUser | null>(sessionUser)
   const [keyInfo, setKeyInfo] = useState('')
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (sessionUser) setUser(sessionUser)
+  }, [sessionUser])
 
   useEffect(() => {
     let cancelled = false

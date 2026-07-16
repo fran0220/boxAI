@@ -28,6 +28,15 @@ func (s *redisBoxAICodeStore) Put(ctx context.Context, key, value string, ttl ti
 	return s.rdb.Set(ctx, key, value, ttl).Err()
 }
 
+// BOXAI: Non-consuming read used to verify redirect and proof before GetDel.
+func (s *redisBoxAICodeStore) Get(ctx context.Context, key string) (string, error) {
+	val, err := s.rdb.Get(ctx, key).Result()
+	if errors.Is(err, redis.Nil) {
+		return "", handler.ErrBoxAICodeNotFound
+	}
+	return val, err
+}
+
 func (s *redisBoxAICodeStore) Take(ctx context.Context, key string) (string, error) {
 	val, err := s.rdb.GetDel(ctx, key).Result()
 	if err != nil {

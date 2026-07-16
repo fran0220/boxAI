@@ -7,11 +7,21 @@ vi.mock('@/i18n', () => ({
   getLocale: () => 'zh-CN',
 }))
 
+let accessToken: string | null = null
+const bootstrap = vi.fn()
+vi.mock('@/auth/browserSession', () => ({
+  getAccessToken: () => accessToken,
+  bootstrap: (...args: any[]) => bootstrap(...args),
+  clearBrowserSession: () => { accessToken = null }
+}))
+
 describe('API Client', () => {
   let apiClient: AxiosInstance
 
   beforeEach(async () => {
     localStorage.clear()
+    accessToken = null
+    bootstrap.mockReset()
     window.history.replaceState({}, '', '/')
     // 每次测试重新导入以获取干净的模块状态
     vi.resetModules()
@@ -40,7 +50,7 @@ describe('API Client', () => {
     })
 
     it('自动附加 Authorization 头', async () => {
-      localStorage.setItem('auth_token', 'my-jwt-token')
+      accessToken = 'my-jwt-token'
 
       // 拦截实际请求
       const adapter = vi.fn().mockResolvedValue({

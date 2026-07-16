@@ -17,6 +17,8 @@ type RefreshTokenData struct {
 	FamilyID     string    `json:"family_id"`     // Token家族ID，用于防重放攻击
 	CreatedAt    time.Time `json:"created_at"`
 	ExpiresAt    time.Time `json:"expires_at"`
+	// BOXAI: BrowserSurface binds opaque browser sessions to their UI host.
+	BrowserSurface string `json:"browser_surface,omitempty"`
 }
 
 // RefreshTokenCache 管理Refresh Token的Redis缓存
@@ -70,4 +72,11 @@ type RefreshTokenCache interface {
 	// IsTokenInFamily 检查Token是否属于指定家族
 	// 用于验证Token家族关系
 	IsTokenInFamily(ctx context.Context, familyID string, tokenHash string) (bool, error)
+}
+
+// BOXAI: AtomicRefreshTokenConsumer is an optional product extension. Keeping it
+// separate avoids breaking upstream cache fakes while production Redis can make
+// legacy-session adoption strictly single-use.
+type AtomicRefreshTokenConsumer interface {
+	ConsumeRefreshToken(ctx context.Context, tokenHash string) (*RefreshTokenData, error)
 }

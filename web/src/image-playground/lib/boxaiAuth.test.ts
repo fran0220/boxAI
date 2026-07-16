@@ -1,16 +1,17 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { isBoxaiGatewayUrl, resolveAuthHeaders, getBoxaiGatewayBaseUrl } from './boxaiAuth'
+import { createBoxaiRequestHeaders, isBoxaiGatewayUrl, resolveAuthHeaders, getBoxaiGatewayBaseUrl } from './boxaiAuth'
 
 vi.mock('@/lib/brand', () => ({
   apiBase: vi.fn(() => ''),
 }))
 
-vi.mock('@/lib/storage', () => ({
+vi.mock('@/lib/session', () => ({
   getAccessToken: vi.fn(() => 'test-jwt-token'),
+  sessionRequestHeaders: vi.fn(() => ({ 'X-BoxAI-Browser-Session': '1', 'X-BoxAI-CSRF': '1' })),
 }))
 
 import { apiBase } from '@/lib/brand'
-import { getAccessToken } from '@/lib/storage'
+import { getAccessToken } from '@/lib/session'
 
 describe('boxaiAuth', () => {
   afterEach(() => {
@@ -35,6 +36,16 @@ describe('boxaiAuth', () => {
   it('does not attach Authorization to third-party when profile key empty', () => {
     const headers = resolveAuthHeaders('', 'https://evil.example/api')
     expect(headers.Authorization).toBeUndefined()
+  })
+
+  it('strips BoxAI credential and security headers from third-party requests', () => {
+    const headers = createBoxaiRequestHeaders('https://evil.example/api', {
+      Authorization: 'Bearer boxai-token',
+      'X-BoxAI-Browser-Session': '1',
+      'X-BoxAI-CSRF': '1',
+      'X-Custom': 'safe',
+    })
+    expect(headers).toEqual({ 'X-Custom': 'safe' })
   })
 
   it('builds gateway base URL with /v1 suffix for absolute apiBase', () => {

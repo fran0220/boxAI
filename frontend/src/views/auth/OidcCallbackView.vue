@@ -259,11 +259,11 @@ import {
   getPublicSettings,
   isOAuthLoginCompletion,
   login2FA,
-  persistOAuthTokenContext,
   type OAuthAdoptionDecision,
   type OAuthTokenResponse,
   type PendingOAuthExchangeResponse
 } from '@/api/auth'
+import { finalizeBrowserOAuth } from '@/auth/finalizeOAuth'
 import {
   clearAllAffiliateReferralCodes,
   loadOAuthAffiliateCode,
@@ -607,8 +607,7 @@ async function finalizeCompletion(completion: PendingOAuthExchangeResponse, redi
     throw new Error(t('auth.oidc.callbackMissingToken'))
   }
 
-  persistOAuthTokenContext(completion)
-  await authStore.setToken(completion.access_token)
+  await finalizeBrowserOAuth(completion, authStore)
   clearAllAffiliateReferralCodes()
   appStore.showSuccess(t('auth.loginSuccess'))
   await router.replace(redirect)
@@ -753,7 +752,7 @@ async function handleSubmitTotpChallenge() {
       temp_token: totpTempToken.value,
       totp_code: code
     })
-    await authStore.setToken(completion.access_token)
+    await finalizeBrowserOAuth(completion, authStore)
     clearAllAffiliateReferralCodes()
     appStore.showSuccess(t('auth.loginSuccess'))
     await router.replace(redirectTo.value)
@@ -768,6 +767,8 @@ onMounted(async () => {
   void loadProviderName()
 
   const params = parseFragmentParams()
+  // BOXAI: scrub callback credentials before any asynchronous work.
+  window.history.replaceState(null, '', window.location.pathname)
   const legacyLogin = readLegacyFragmentLogin(params)
   const legacyPendingToken = params.get('pending_oauth_token')?.trim() || ''
   const error = params.get('error')
@@ -777,9 +778,13 @@ onMounted(async () => {
   )
 
   try {
+    if (params.get('auth_result') === 'session') {
+      await finalizeBrowserOAuth({ auth_result: 'session' }, authStore)
+      await router.replace(redirect)
+      return
+    }
     if (legacyLogin) {
-      persistOAuthTokenContext(legacyLogin)
-      await authStore.setToken(legacyLogin.access_token)
+      await finalizeBrowserOAuth(legacyLogin, authStore)
       clearAllAffiliateReferralCodes()
       appStore.showSuccess(t('auth.loginSuccess'))
       await router.replace(redirect)

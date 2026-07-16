@@ -1,20 +1,7 @@
 import { useSyncExternalStore } from 'react'
-import { AUTH_CHANGED_EVENT, getAccessToken, getUser, type AuthUser } from './storage'
+import { getSessionSnapshot, subscribeSession, type AuthUser, type SessionStatus } from './session'
 
-function subscribe(callback: () => void): () => void {
-  window.addEventListener(AUTH_CHANGED_EVENT, callback)
-  window.addEventListener('storage', callback)
-  return () => {
-    window.removeEventListener(AUTH_CHANGED_EVENT, callback)
-    window.removeEventListener('storage', callback)
-  }
-}
-
-function snapshot(): string {
-  return getAccessToken() || ''
-}
-
-export function useAuth(): { authed: boolean; user: AuthUser | null } {
-  const token = useSyncExternalStore(subscribe, snapshot, () => '')
-  return { authed: !!token, user: token ? getUser() : null }
+export function useAuth(): { authed: boolean; user: AuthUser | null; status: SessionStatus } {
+  const value = useSyncExternalStore(subscribeSession, getSessionSnapshot, getSessionSnapshot)
+  return { authed: value.status === 'authenticated', user: value.user, status: value.status }
 }

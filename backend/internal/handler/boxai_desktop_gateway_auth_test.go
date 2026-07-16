@@ -13,6 +13,7 @@ import (
 	"github.com/Wei-Shaw/sub2api/internal/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 )
 
@@ -147,6 +148,48 @@ func TestDesktopJWTGatewayAuthValidJWTRewritesAuthorization(t *testing.T) {
 	require.Equal(t, "Bearer sk-live-key", res.authHeader)
 	require.Empty(t, res.xAPIKey, "x-api-key must be cleared after rewrite")
 	require.Empty(t, res.xGoog, "x-goog-api-key must be cleared after rewrite")
+}
+
+func TestDesktopJWTGatewayAuthWebAudienceIsApexOnly(t *testing.T) {
+	claims := &service.JWTClaims{
+		UserID: 42, TokenVersion: 3, Scope: "web creator sso",
+		RegisteredClaims: jwt.RegisteredClaims{Audience: jwt.ClaimStrings{service.BrowserSurfaceWeb}},
+	}
+	mw := desktopJWTGatewayAuth(true,
+		&fakeDesktopTokenValidator{claims: claims},
+		&fakeDesktopUserReader{user: &service.User{ID: 42, Status: service.StatusActive, TokenVersion: 3}},
+		&fakeDesktopKeyLister{keys: []service.APIKey{groupedKey("sk-live-key", 9)}},
+	)
+
+	apexRequest := httptest.NewRequest(http.MethodPost, "https://you-box.com/v1/messages", nil)
+	apexRequest.Header.Set("Authorization", "Bearer header.payload.signature")
+	apex := runDesktopGatewayMW(t, mw, apexRequest)
+	require.True(t, apex.reached)
+	require.Equal(t, "Bearer sk-live-key", apex.authHeader)
+
+	apiRequest := httptest.NewRequest(http.MethodPost, "https://api.you-box.com/v1/messages", nil)
+	apiRequest.Header.Set("Authorization", "Bearer header.payload.signature")
+	api := runDesktopGatewayMW(t, mw, apiRequest)
+	require.False(t, api.reached)
+	require.Equal(t, http.StatusUnauthorized, api.status)
+}
+
+func TestDesktopJWTGatewayAuthRejectsConsoleAudienceOnApex(t *testing.T) {
+	claims := &service.JWTClaims{
+		UserID: 42, Scope: "console user sso",
+		RegisteredClaims: jwt.RegisteredClaims{Audience: jwt.ClaimStrings{service.BrowserSurfaceConsole}},
+	}
+	mw := desktopJWTGatewayAuth(true,
+		&fakeDesktopTokenValidator{claims: claims},
+		&fakeDesktopUserReader{user: &service.User{ID: 42, Status: service.StatusActive}},
+		&fakeDesktopKeyLister{keys: []service.APIKey{groupedKey("sk-live-key", 9)}},
+	)
+
+	req := httptest.NewRequest(http.MethodPost, "https://you-box.com/v1/messages", nil)
+	req.Header.Set("Authorization", "Bearer header.payload.signature")
+	res := runDesktopGatewayMW(t, mw, req)
+	require.False(t, res.reached)
+	require.Equal(t, http.StatusUnauthorized, res.status)
 }
 
 func TestDesktopJWTGatewayAuthValidJWTViaXAPIKeyHeader(t *testing.T) {

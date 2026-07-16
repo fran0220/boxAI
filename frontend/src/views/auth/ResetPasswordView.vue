@@ -253,9 +253,13 @@ const isInvalidLink = computed(() => !email.value || !token.value)
 // ==================== Lifecycle ====================
 
 onMounted(() => {
-  // Get email and token from URL query parameters
-  email.value = (route.query.email as string) || ''
-  token.value = (route.query.token as string) || ''
+  // BOXAI: new links carry secrets in the fragment; capture and scrub synchronously.
+  const fragment = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+  email.value = fragment.get('email') || (route.query.email as string) || ''
+  token.value = fragment.get('token') || (route.query.token as string) || ''
+  if (window.location.hash || route.query.token || route.query.email) {
+    window.history.replaceState(null, '', window.location.pathname)
+  }
 
   if (!email.value || !token.value) {
     appStore.showError(t('auth.invalidResetLink'))

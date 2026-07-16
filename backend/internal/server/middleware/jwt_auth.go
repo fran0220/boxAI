@@ -56,6 +56,12 @@ func jwtAuth(authService *service.AuthService, userService jwtUserReader, activi
 			AbortWithError(c, 401, "INVALID_TOKEN", "Invalid token")
 			return
 		}
+		// BOXAI: Audience-less JWTs remain valid during migration, but browser
+		// JWTs cannot cross the two exact UI hosts.
+		if !browserAudienceAllowed(c.Request.Host, c.GetHeader("Origin"), claims.Audience) {
+			AbortWithError(c, 401, "INVALID_TOKEN_AUDIENCE", "Token is not valid for this site")
+			return
+		}
 
 		// 从数据库获取最新的用户信息
 		user, err := userService.GetByID(c.Request.Context(), claims.UserID)
@@ -88,6 +94,37 @@ func jwtAuth(authService *service.AuthService, userService jwtUserReader, activi
 
 		c.Next()
 	}
+}
+
+// BOXAI: Do not inspect X-Forwarded-Host here.
+func browserAudienceAllowed(host, origin string, audience []string) bool {
+	if len(audience) == 0 {
+		return true
+	}
+	host = strings.ToLower(strings.TrimSpace(strings.Split(host, ":")[0]))
+	expected := ""
+	switch host {
+	case "you-box.com":
+		expected = service.BrowserSurfaceWeb
+	case "console.you-box.com":
+		expected = service.BrowserSurfaceConsole
+	case "localhost", "127.0.0.1":
+		switch strings.TrimSpace(origin) {
+		case "http://localhost:5173", "http://127.0.0.1:5173":
+			expected = service.BrowserSurfaceWeb
+		case "http://localhost:3000", "http://127.0.0.1:3000":
+			expected = service.BrowserSurfaceConsole
+		}
+	}
+	if expected == "" {
+		return false
+	}
+	for _, aud := range audience {
+		if aud == expected {
+			return true
+		}
+	}
+	return false
 }
 
 // Deprecated: prefer GetAuthSubjectFromContext in auth_subject.go.

@@ -472,6 +472,25 @@ func TestAuthService_Register_Success(t *testing.T) {
 	require.True(t, user.CheckPassword("password"))
 }
 
+// BOXAI: prepared registration hashes are validated and stored verbatim, while
+// the legacy plaintext registration contract remains unchanged above.
+func TestAuthService_RegisterWithPreparedPasswordHash_DoesNotHashTwice(t *testing.T) {
+	repo := &userRepoStub{nextID: 6}
+	service := newAuthService(repo, map[string]string{
+		SettingKeyRegistrationEnabled: "true",
+	}, nil, nil)
+
+	hash, err := service.HashPassword("prepared-password")
+	require.NoError(t, err)
+	_, user, err := service.RegisterWithPreparedPasswordHash(context.Background(), "prepared@test.com", hash, "", "", "", "")
+	require.NoError(t, err)
+	require.Equal(t, hash, user.PasswordHash)
+	require.True(t, user.CheckPassword("prepared-password"))
+
+	_, _, err = service.RegisterWithPreparedPasswordHash(context.Background(), "bad@test.com", "not-bcrypt", "", "", "", "")
+	require.ErrorContains(t, err, "invalid prepared password hash")
+}
+
 func TestAuthService_ValidateToken_ExpiredReturnsClaimsWithError(t *testing.T) {
 	repo := &userRepoStub{}
 	service := newAuthService(repo, nil, nil, nil)

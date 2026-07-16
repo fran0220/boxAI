@@ -316,11 +316,13 @@ import {
   getPublicSettings,
   isWeChatWebOAuthEnabled,
   validatePromoCode,
-  validateInvitationCode
+  validateInvitationCode,
+  prepareRegistration
 } from '@/api/auth'
 import { buildAuthErrorMessage } from '@/utils/authError'
 // BOXAI: safe post-registration redirect for marketing-origin SSO handoff
-import { safeReturnPath } from '@/utils/safeReturnPath'
+import { safeLoginReturnPath } from '@/utils/safeReturnPath'
+import { setRegistrationDraft } from '@/auth/registrationDraft'
 import {
   formatRegistrationEmailSuffixWhitelistForMessage,
   isRegistrationEmailSuffixAllowed,
@@ -867,18 +869,23 @@ async function handleRegister(): Promise<void> {
 
     // If email verification is enabled, redirect to verification page
     if (emailVerifyEnabled.value) {
-      // Store registration data in sessionStorage
-      sessionStorage.setItem(
-        'register_data',
-        JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          turnstile_token: turnstileToken.value,
-          promo_code: formData.promo_code || undefined,
-          invitation_code: formData.invitation_code || undefined,
-          ...(affCode ? { aff_code: affCode } : {})
-        })
-      )
+      // BOXAI: the server sends the first code and retains only a bcrypt hash;
+      // sessionStorage receives opaque, non-sensitive metadata.
+      const rawRedirect = typeof route.query.redirect === 'string' ? route.query.redirect : undefined
+      const prepared = await prepareRegistration({
+        email: formData.email,
+        password: formData.password,
+        turnstile_token: turnstileToken.value || undefined,
+        promo_code: formData.promo_code || undefined,
+        invitation_code: formData.invitation_code || undefined,
+        ...(affCode ? { aff_code: affCode } : {})
+      })
+      setRegistrationDraft({
+        transaction_id: prepared.transaction_id,
+        email: prepared.email,
+        countdown: prepared.countdown,
+        redirect: safeLoginReturnPath(rawRedirect, '/dashboard')
+      })
 
       // Navigate to email verification page
       await router.push('/email-verify')
@@ -903,7 +910,7 @@ async function handleRegister(): Promise<void> {
     // marketing origin return to the Web SSO authorize handoff; defaults to
     // the dashboard for plain console registrations.
     const rawRedirect = route.query.redirect
-    const redirectTo = safeReturnPath(
+    const redirectTo = safeLoginReturnPath(
       typeof rawRedirect === 'string' ? rawRedirect : undefined,
       '/dashboard'
     )
