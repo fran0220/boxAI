@@ -21,7 +21,7 @@ export function BoxaiPlaygroundRoot({ locationState, clearState }: BoxaiPlaygrou
   const handoffDone = useRef(false)
 
   useEffect(() => {
-    document.documentElement.classList.add('dark')
+    // Theme follows site ThemeProvider (html.dark); do not force dark here.
     installMobileViewportGuards()
     const stopMirror = startAssetMirrorSubscription()
     return () => {
@@ -40,7 +40,7 @@ export function BoxaiPlaygroundRoot({ locationState, clearState }: BoxaiPlaygrou
   }, [locationState, clearState])
 
   return (
-    <div className="image-playground dark h-full min-h-0 overflow-y-auto bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+    <div className="image-playground dark flex h-full min-h-0 flex-1 flex-col overflow-y-auto bg-[var(--bx-bg)] text-[var(--bx-text)]">
       <App />
     </div>
   )

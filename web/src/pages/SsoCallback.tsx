@@ -64,7 +64,7 @@ export function SsoCallback() {
   if (error) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
-        <h1 className="text-xl font-semibold">{d.auth.callbackFailedTitle}</h1>
+        <h1 className="bx-display text-xl font-semibold tracking-tight">{d.auth.callbackFailedTitle}</h1>
         <p className="mt-3 text-sm text-[var(--bx-text-muted)]">{error}</p>
         <button type="button" className="bx-btn bx-btn-primary mt-8" onClick={() => navigate('/login')}>
           {d.auth.backToLogin}

@@ -1,6 +1,7 @@
 import type { ImportedProviderSettings } from './apiProfiles'
 import { importCustomProviderSettingsFromJson } from './apiProfiles'
 import { readRuntimeEnv } from './runtimeEnv'
+import { tPg } from './pgI18n'
 
 const DEFAULT_API_URL = readRuntimeEnv(import.meta.env.VITE_DEFAULT_API_URL)
 
@@ -50,7 +51,7 @@ export async function loadCustomProviderSettingsFromUrl(
 
   const response = await fetcher(url, { cache: 'no-store' })
   if (!response.ok) {
-    throw new Error(`自定义服务商配置 URL 请求失败：HTTP ${response.status}`)
+    throw new Error(tPg('customProviderUrlHttpFail', { status: response.status }))
   }
 
   return importCustomProviderSettingsFromJson(await response.text())

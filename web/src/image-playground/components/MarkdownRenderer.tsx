@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from 'react'
 import type { Components, MathPlugin, StreamdownTranslations } from 'streamdown'
 import type { Components as ReactMarkdownComponents } from 'react-markdown'
+import { getPg } from '../lib/pgI18n'
 
 type MarkdownRendererProps = {
   content: string
@@ -68,27 +69,30 @@ const legacyMarkdownComponents: ReactMarkdownComponents = {
   },
 }
 
-const translations: Partial<StreamdownTranslations> = {
-  copied: '已复制',
-  copyCode: '复制代码',
-  copyLink: '复制链接',
-  copyTable: '复制表格',
-  copyTableAsCsv: '复制为 CSV',
-  copyTableAsMarkdown: '复制为 Markdown',
-  copyTableAsTsv: '复制为 TSV',
-  downloadFile: '下载文件',
-  downloadImage: '下载图片',
-  downloadTable: '下载表格',
-  downloadTableAsCsv: '下载为 CSV',
-  downloadTableAsMarkdown: '下载为 Markdown',
-  externalLinkWarning: '即将打开外部链接',
-  imageNotAvailable: '图片不可用',
-  openExternalLink: '打开外部链接',
-  openLink: '打开链接',
-  tableFormatCsv: 'CSV',
-  tableFormatMarkdown: 'Markdown',
-  tableFormatTsv: 'TSV',
-  viewFullscreen: '全屏查看',
+function getMarkdownTranslations(): Partial<StreamdownTranslations> {
+  const pg = getPg()
+  return {
+    copied: pg.mdCopied,
+    copyCode: pg.mdCopyCode,
+    copyLink: pg.mdCopyLink,
+    copyTable: pg.mdCopyTable,
+    copyTableAsCsv: pg.mdCopyTableCsv,
+    copyTableAsMarkdown: pg.mdCopyTableMd,
+    copyTableAsTsv: pg.mdCopyTableTsv,
+    downloadFile: pg.mdDownloadFile,
+    downloadImage: pg.mdDownloadImage,
+    downloadTable: pg.mdDownloadTable,
+    downloadTableAsCsv: pg.mdDownloadTableCsv,
+    downloadTableAsMarkdown: pg.mdDownloadTableMd,
+    externalLinkWarning: pg.mdExternalLinkWarning,
+    imageNotAvailable: pg.mdImageNotAvailable,
+    openExternalLink: pg.mdOpenExternalLink,
+    openLink: pg.mdOpenLink,
+    tableFormatCsv: 'CSV',
+    tableFormatMarkdown: 'Markdown',
+    tableFormatTsv: 'TSV',
+    viewFullscreen: pg.mdViewFullscreen,
+  }
 }
 
 const canLoadStreamdown = (() => {
@@ -213,7 +217,7 @@ const MarkdownRenderer = memo(function MarkdownRenderer({
       parseIncompleteMarkdown={streaming}
       plugins={{ math: renderer.math.math }}
       skipHtml
-      translations={translations}
+      translations={getMarkdownTranslations()}
       urlTransform={safeUrl}
     >
       {content}

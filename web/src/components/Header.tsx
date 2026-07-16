@@ -1,17 +1,29 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import { LogOut, Menu, PanelsTopLeft, User, X } from 'lucide-react'
+import {
+  LogOut,
+  Menu,
+  Moon,
+  PanelsTopLeft,
+  Sparkles,
+  Sun,
+  User,
+  X,
+} from 'lucide-react'
 import { BRAND_LOGO_SVG, BRAND_NAME, consoleOrigin } from '@/lib/brand'
 import { clearSession } from '@/lib/storage'
 import { useAuth } from '@/lib/use-auth'
+import { useTheme } from '@/lib/theme'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { BX_EASE } from '@/components/motion/Reveal'
 import { LangSwitcher } from './LangSwitcher'
 
 export function Header() {
   const { d } = useI18n()
   const { authed, user } = useAuth()
+  const { isDark, toggleTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
 
@@ -19,10 +31,19 @@ export function Header() {
     setMenuOpen(false)
   }, [location.pathname])
 
+  useEffect(() => {
+    if (!menuOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [menuOpen])
+
   const nav = [
-    { to: '/create', label: d.nav.creator },
-    { to: '/studio', label: d.nav.studio },
-    { to: '/pricing', label: d.nav.pricing },
+    { to: '/create', label: d.nav.creator, match: (p: string) => p.startsWith('/create') },
+    { to: '/studio', label: d.nav.studio, match: (p: string) => p.startsWith('/studio') },
+    { to: '/pricing', label: d.nav.pricing, match: (p: string) => p.startsWith('/pricing') },
   ]
 
   const email = (user?.email as string) || (user?.username as string) || ''
@@ -32,40 +53,56 @@ export function Header() {
     window.location.href = '/'
   }
 
-  const navLinkCls = ({ isActive }: { isActive: boolean }) =>
-    cx(
-      'rounded-full px-3 py-1.5 text-sm transition-colors',
-      isActive
-        ? 'bg-[var(--bx-active)] text-[var(--bx-teal)]'
-        : 'text-[var(--bx-text-muted)] hover:text-[var(--bx-text)]',
-    )
-
   return (
-    <header className="bx-glass sticky top-0 z-40 border-b border-[var(--bx-border)]">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
-        <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <img src={BRAND_LOGO_SVG} alt="" className="h-8 w-8" />
-          <span>{BRAND_NAME}</span>
+    <header className="bx-nav">
+      <div className="bx-nav-inner">
+        {/* Brand */}
+        <Link to="/" className="bx-nav-brand group">
+          <img
+            src={BRAND_LOGO_SVG}
+            alt=""
+            className="h-8 w-8 transition-transform duration-bx ease-expo group-hover:scale-105"
+          />
+          <span className="bx-display text-[15px] font-semibold tracking-tight">{BRAND_NAME}</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {nav.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkCls}>
-              {item.label}
-            </NavLink>
-          ))}
+        {/* Desktop center nav */}
+        <nav className="bx-nav-links" aria-label="Primary">
+          <div className="bx-nav-track">
+            {nav.map((item) => {
+              const active = item.match(location.pathname)
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={cx('bx-nav-link', active && 'is-active')}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </NavLink>
+              )
+            })}
+          </div>
         </nav>
 
-        <div className="flex items-center gap-1.5">
+        {/* Right actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="rounded-[var(--bx-radius-sm)] p-2 text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+            aria-label={isDark ? d.nav.themeDark : d.nav.themeLight}
+            title={isDark ? d.nav.themeDark : d.nav.themeLight}
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <LangSwitcher />
+
           {authed ? (
             <div className="hidden items-center gap-1.5 md:flex">
-              <Link
-                to="/account"
-                className="flex max-w-[180px] items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
-              >
-                <User size={15} />
-                <span className="truncate">{email || d.nav.account}</span>
+              <Link to="/account" className="bx-nav-account" title={email || d.nav.account}>
+                <span className="bx-nav-avatar">{(email || 'U').charAt(0).toUpperCase()}</span>
+                <span className="max-w-[120px] truncate text-sm">{email || d.nav.account}</span>
               </Link>
               <a
                 href={`${consoleOrigin()}/boxai/sso/start`}
@@ -77,7 +114,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={onLogout}
-                className="rounded-full p-2 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+                className="rounded-[var(--bx-radius-sm)] p-2 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
                 aria-label={d.nav.logout}
                 title={d.nav.logout}
               >
@@ -85,18 +122,23 @@ export function Header() {
               </button>
             </div>
           ) : (
-            <div className="hidden items-center gap-1.5 md:flex">
-              <Link to="/login" className="bx-btn bx-btn-ghost bx-btn-sm">
+            <div className="hidden items-center gap-2 md:flex">
+              <Link
+                to="/login"
+                className="rounded-[var(--bx-radius)] px-3 py-1.5 text-sm font-medium text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-text)]"
+              >
                 {d.nav.login}
               </Link>
               <Link to="/signup" className="bx-btn bx-btn-primary bx-btn-sm">
+                <Sparkles size={13} />
                 {d.nav.signup}
               </Link>
             </div>
           )}
+
           <button
             type="button"
-            className="rounded-full p-2 text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] md:hidden"
+            className="rounded-[var(--bx-radius-sm)] p-2 text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={d.nav.menu}
             aria-expanded={menuOpen}
@@ -106,68 +148,78 @@ export function Header() {
         </div>
       </div>
 
+      {/* Mobile sheet */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-[var(--bx-border)] md:hidden"
-          >
-            <div className="space-y-1 px-4 py-4">
-              {nav.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    cx(
-                      'block rounded-xl px-3 py-2.5 text-sm',
-                      isActive
-                        ? 'bg-[var(--bx-active)] text-[var(--bx-teal)]'
-                        : 'text-[var(--bx-text-soft)] hover:bg-[var(--bx-hover)]',
-                    )
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-              <div className="pt-2">
+          <>
+            <motion.button
+              type="button"
+              aria-label={d.common.close}
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, ease: BX_EASE }}
+              className="bx-nav-sheet md:hidden"
+            >
+              <nav className="space-y-1" aria-label="Mobile">
+                {nav.map((item) => {
+                  const active = item.match(location.pathname)
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={cx('bx-nav-sheet-link', active && 'is-active')}
+                    >
+                      {item.label}
+                    </NavLink>
+                  )
+                })}
+              </nav>
+
+              <div className="mt-4 border-t border-[var(--bx-border)] pt-4">
                 {authed ? (
                   <div className="space-y-1">
-                    <Link
-                      to="/account"
-                      className="block rounded-xl px-3 py-2.5 text-sm text-[var(--bx-text-soft)] hover:bg-[var(--bx-hover)]"
-                    >
+                    <Link to="/account" className="bx-nav-sheet-link">
+                      <User size={16} />
                       {email || d.nav.account}
                     </Link>
                     <a
                       href={`${consoleOrigin()}/boxai/sso/start`}
-                      className="block rounded-xl px-3 py-2.5 text-sm text-[var(--bx-text-soft)] hover:bg-[var(--bx-hover)]"
+                      className="bx-nav-sheet-link"
                     >
+                      <PanelsTopLeft size={16} />
                       {d.nav.console}
                     </a>
                     <button
                       type="button"
                       onClick={onLogout}
-                      className="block w-full rounded-xl px-3 py-2.5 text-left text-sm text-[var(--bx-text-soft)] hover:bg-[var(--bx-hover)]"
+                      className="bx-nav-sheet-link w-full text-left"
                     >
+                      <LogOut size={16} />
                       {d.nav.logout}
                     </button>
                   </div>
                 ) : (
-                  <div className="flex gap-2 px-1 pt-1">
-                    <Link to="/login" className="bx-btn bx-btn-ghost flex-1">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link to="/login" className="bx-btn bx-btn-ghost">
                       {d.nav.login}
                     </Link>
-                    <Link to="/signup" className="bx-btn bx-btn-primary flex-1">
+                    <Link to="/signup" className="bx-btn bx-btn-primary">
                       {d.nav.signup}
                     </Link>
                   </div>
                 )}
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { X } from 'lucide-react'
 import { cx } from '@/lib/cx'
+import { BX_EASE } from '@/components/motion/Reveal'
 
 export function Modal({
   open,
@@ -43,7 +44,7 @@ export function Modal({
           transition={{ duration: reduced ? 0 : 0.2 }}
         >
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-[var(--bx-overlay)] backdrop-blur-sm"
             onClick={onClose}
             aria-hidden
           />
@@ -57,14 +58,14 @@ export function Modal({
             initial={reduced ? false : { opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={reduced ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.28, ease: BX_EASE }}
           >
             <div className="flex items-center justify-between border-b border-[var(--bx-border)] px-5 py-3">
-              <h3 className="text-sm font-semibold">{title}</h3>
+              <h3 className="bx-display text-sm font-semibold tracking-tight">{title}</h3>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full p-1.5 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+                className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
                 aria-label="Close"
               >
                 <X size={16} />

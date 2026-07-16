@@ -1,8 +1,11 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { ALL_FAVORITES_COLLECTION_ID, getTaskFavoriteCollectionIds, useStore, reuseConfig, editOutputs, removeTask, taskMatchesFilterStatus, taskMatchesSearchQuery } from '../store'
 import TaskCard from './TaskCard'
+import { usePg } from '../lib/pgI18n'
 
 export default function TaskGrid() {
+  const { pg, t } = usePg()
+
   const tasks = useStore((s) => s.tasks)
   const searchQuery = useStore((s) => s.searchQuery)
   const filterStatus = useStore((s) => s.filterStatus)
@@ -45,8 +48,9 @@ export default function TaskGrid() {
 
   const handleDelete = (task: typeof tasks[0]) => {
     setConfirmDialog({
-      title: '删除任务',
-      message: '确定要删除这个任务吗？关联的图片资源也会被清理（如果没有其他任务引用）。',
+      tone: 'danger',
+      title: pg.deleteTask,
+      message: pg.deleteTaskConfirm,
       action: () => removeTask(task),
     })
   }
@@ -229,7 +233,7 @@ export default function TaskGrid() {
       if (now - lastToastTimeRef.current > 3000) {
         lastToastTimeRef.current = now
         const keyName = isMac ? '⌘' : 'Ctrl'
-        useStore.getState().showToast(`松开 ${keyName} 键使用滚轮，或拖至边缘自动滚动`, 'info')
+        useStore.getState().showToast(t('scrollEdgeHint', { key: keyName }), 'info')
       }
     }
 
@@ -256,7 +260,7 @@ export default function TaskGrid() {
     return (
       <div className="text-center py-20 text-gray-400 dark:text-gray-500">
         {searchQuery || filterFavorite ? (
-          <p className="text-sm">没有找到匹配的任务</p>
+          <p className="text-sm">{pg.noMatchingTasks}</p>
         ) : (
           <>
             <svg
@@ -272,7 +276,8 @@ export default function TaskGrid() {
                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <p className="text-sm">输入提示词开始生成图片</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{pg.noTasks}</p>
+            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">{pg.noTasksHint}</p>
           </>
         )}
       </div>
@@ -314,7 +319,7 @@ export default function TaskGrid() {
       </div>
       {selectionBox && (
         <div
-          className="fixed bg-blue-500/20 border border-blue-500/50 pointer-events-none z-[30]"
+          className="fixed bg-teal-500/20 border border-teal-500/50 pointer-events-none z-[30]"
           style={{
             left: Math.min(selectionBox.startPageX, selectionBox.currentPageX) - window.scrollX,
             top: Math.min(selectionBox.startPageY, selectionBox.currentPageY) - window.scrollY,

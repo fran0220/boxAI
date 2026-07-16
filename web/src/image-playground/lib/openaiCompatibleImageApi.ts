@@ -20,6 +20,7 @@ import {
   pickActualParams,
 } from './imageApiShared'
 import { resolveAuthHeaders } from './boxaiAuth'
+import { getPg } from './pgI18n'
 
 const PROMPT_REWRITE_GUARD_PREFIX = 'Use the following text as the complete prompt. Do not rewrite it:'
 
@@ -120,7 +121,7 @@ function getStreamEventErrorMessage(event: Record<string, unknown>): string | nu
 
   const type = getStringValue(event, 'type')
   if (type?.endsWith('.failed')) {
-    return getStringValue(event, 'message') ?? '流式请求失败'
+    return getStringValue(event, 'message') ?? getPg().streamRequestFailed
   }
   return null
 }
@@ -139,7 +140,7 @@ function parseServerSentEventBlock(block: string): string | null {
 }
 
 async function readJsonServerSentEvents(response: Response, onEvent: (event: Record<string, unknown>) => void | Promise<void>): Promise<void> {
-  if (!response.body) throw new Error('接口未返回可读取的流式响应')
+  if (!response.body) throw new Error(getPg().noReadableStream)
 
   const reader = response.body.getReader()
   const decoder = new TextDecoder()
@@ -182,7 +183,7 @@ async function readJsonServerSentEvents(response: Response, onEvent: (event: Rec
 
   buffer += decoder.decode()
   if (buffer.trim()) await processBlock(buffer)
-  if (!hasDataLine) throw new Error(appendStreamingFormatHint('未从流式响应中解析到有效的 data 事件'))
+  if (!hasDataLine) throw new Error(appendStreamingFormatHint(getPg().noStreamDataEvent))
 }
 
 function createResponsesImageTool(
@@ -245,7 +246,7 @@ function parseResponsesImageResults(payload: ResponsesApiResponse, fallbackMime:
 }> {
   const output = payload.output
   if (!Array.isArray(output) || !output.length) {
-    const err = new Error('接口未返回图片数据')
+    const err = new Error(getPg().noImageData)
     ;(err as any).rawResponsePayload = JSON.stringify(payload, null, 2)
     throw err
   }
@@ -266,7 +267,7 @@ function parseResponsesImageResults(payload: ResponsesApiResponse, fallbackMime:
   }
 
   if (!results.length) {
-    const err = new Error('接口没有返回可识别的图片数据，请查看原始响应内容确认服务商实际返回的数据结构。如果使用的是中转或兼容接口，建议创建并使用「自定义服务商」配置。')
+    const err = new Error(getPg().unrecognizedImageData)
     ;(err as any).rawResponsePayload = JSON.stringify(payload, null, 2)
     throw err
   }
@@ -295,7 +296,7 @@ function getResponsesImageResultBase64(result: ResponsesOutputItem['result']): s
 async function parseImagesApiResponse(payload: ImageApiResponse, mime: string, signal?: AbortSignal): Promise<CallApiResult> {
   const data = payload.data
   if (!Array.isArray(data) || !data.length) {
-    const err = new Error('接口没有返回图片数据，请查看原始响应内容确认服务商实际返回的数据结构。如果使用的是中转或兼容接口，建议创建并使用「自定义服务商」配置。')
+    const err = new Error(getPg().unrecognizedImageData)
     ;(err as any).rawResponsePayload = JSON.stringify(payload, null, 2)
     throw err
   }
@@ -325,7 +326,7 @@ async function parseImagesApiResponse(payload: ImageApiResponse, mime: string, s
   }
 
   if (!images.length) {
-    const err = new Error('接口没有返回可识别的图片数据，请查看原始响应内容确认服务商实际返回的数据结构。如果使用的是中转或兼容接口，建议创建并使用「自定义服务商」配置。')
+    const err = new Error(getPg().unrecognizedImageData)
     ;(err as any).rawResponsePayload = JSON.stringify(payload, null, 2)
     throw err
   }
@@ -391,14 +392,14 @@ async function parseImagesApiStreamResponse(
   }
 
   if (!completedItems.length) {
-    throw new Error('流式接口未返回最终图片数据')
+    throw new Error(getPg().noFinalStreamImage)
   }
 
   const images = completedItems
     .map((item) => item.b64_json)
     .filter((b64): b64 is string => Boolean(b64))
     .map((b64) => normalizeBase64Image(b64, mime))
-  if (!images.length) throw new Error('流式接口未返回可用图片数据')
+  if (!images.length) throw new Error(getPg().noUsableStreamImage)
 
   const actualParamsList = completedItems.map((item) => mergeActualParams(pickActualParams(item)))
   const actualParams = mergeActualParams(
@@ -458,7 +459,7 @@ async function parseResponsesApiStreamResponse(
   })
 
   const payload = completedPayload ?? (outputItems.length ? { output: outputItems } : null)
-  if (!payload) throw new Error('流式接口未返回最终图片数据')
+  if (!payload) throw new Error(getPg().noFinalStreamImage)
 
   let imageResults: ReturnType<typeof parseResponsesImageResults>
   try {
@@ -524,7 +525,7 @@ async function callImagesApiConcurrent(opts: CallApiOptions, profile: ApiProfile
   if (successfulResults.length === 0) {
     const firstError = results.find((r): r is PromiseRejectedResult => r.status === 'rejected')
     if (firstError) throw firstError.reason
-    throw new Error('所有并发请求均失败')
+    throw new Error(getPg().allConcurrentFailed)
   }
 
   const images = successfulResults.flatMap((r) => r.images)
@@ -606,8 +607,8 @@ async function callImagesApiSingle(opts: CallApiOptions, profile: ApiProfile): P
 
       const maskBlob = opts.maskDataUrl ? await maskDataUrlToPngBlob(opts.maskDataUrl) : null
       if (opts.maskDataUrl) {
-        assertMaskEditFileSize('遮罩主图文件', imageBlobs[0]?.size ?? 0)
-        assertMaskEditFileSize('遮罩文件', maskBlob?.size ?? 0)
+        assertMaskEditFileSize(getPg().maskBaseFile, imageBlobs[0]?.size ?? 0)
+        assertMaskEditFileSize(getPg().maskFile, maskBlob?.size ?? 0)
       }
       assertImageInputPayloadSize(
         imageBlobs.reduce((sum, blob) => sum + blob.size, 0) + (maskBlob?.size ?? 0),
@@ -709,7 +710,7 @@ function getTaskState(payload: unknown, poll: CustomProviderPollMapping): 'succe
 function isRecoverablePollingError(err: unknown): boolean {
   if (typeof DOMException !== 'undefined' && err instanceof DOMException && err.name === 'AbortError') return true
   const message = err instanceof Error ? err.message : String(err)
-  return /abort|network|failed to fetch|fetch failed|load failed|timeout|连接|断开|中断/i.test(message)
+  return /abort|network|failed to fetch|fetch failed|load failed|timeout|\u8fde\u63a5|\u65ad\u5f00|\u4e2d\u65ad/i.test(message)
 }
 
 function isRetryablePollingStatus(status: number): boolean {
@@ -788,8 +789,8 @@ async function createCustomMultipartBody(mapping: CustomProviderSubmitMapping, o
   }
   const maskBlob = needsMask && opts.maskDataUrl ? await maskDataUrlToPngBlob(opts.maskDataUrl) : null
   if (opts.maskDataUrl && (needsInputImages || needsMask)) {
-    assertMaskEditFileSize('遮罩主图文件', imageBlobs[0]?.size ?? 0)
-    assertMaskEditFileSize('遮罩文件', maskBlob?.size ?? 0)
+    assertMaskEditFileSize(getPg().maskBaseFile, imageBlobs[0]?.size ?? 0)
+    assertMaskEditFileSize(getPg().maskFile, maskBlob?.size ?? 0)
   }
   assertImageInputPayloadSize(imageBlobs.reduce((sum, blob) => sum + blob.size, 0) + (maskBlob?.size ?? 0))
 
@@ -831,7 +832,7 @@ async function extractCustomImages(payload: unknown, result: CustomProviderResul
   }
 
   if (!images.length) {
-    const err = new Error('接口没有返回可识别的图片数据，请查看原始响应内容确认接口实际返回的数据结构，并根据 API 文档调整「自定义服务商」配置中的结果提取路径。')
+    const err = new Error(getPg().unrecognizedImageDataPath)
     ;(err as any).rawResponsePayload = JSON.stringify(payload, null, 2)
     throw err
   }
@@ -925,7 +926,7 @@ async function pollCustomTaskResult(
     const state = getTaskState(taskPayload, poll)
     if (state === 'failure') {
       const message = getByPath(taskPayload, poll.errorPath) || getByPath(taskPayload, 'message') || getByPath(taskPayload, 'data.fail_reason') || getByPath(taskPayload, 'error.message')
-      throw new Error(typeof message === 'string' && message.trim() ? message : '异步任务失败')
+      throw new Error(typeof message === 'string' && message.trim() ? message : getPg().asyncTaskFailed)
     }
     if (state === 'success') {
       try {
@@ -944,7 +945,7 @@ export async function getCustomQueuedImageResult(
   taskId: string,
   params: TaskParams,
 ): Promise<CallApiResult> {
-  if (!customProvider.poll) throw new Error('自定义异步任务缺少 poll 配置')
+  if (!customProvider.poll) throw new Error(getPg().customAsyncMissingPoll)
   const mime = MIME_MAP[params.output_format] || 'image/png'
   return pollCustomTaskResult(profile, customProvider.poll, taskId, mime)
 }
@@ -961,21 +962,21 @@ async function callCustomHttpImageApi(opts: CallApiOptions, profile: ApiProfile,
     const useApiProxy = shouldUseApiProxy(profile.apiProxy, proxyConfig)
     const submitMapping = isEdit && customProvider.editSubmit ? customProvider.editSubmit : customProvider.submit
     if (useApiProxy && (submitMapping.method ?? 'POST') !== 'POST') {
-      throw new Error('API 代理暂不支持使用 GET 提交的自定义服务商。请关闭 API 代理，或改用 POST 提交的自定义服务商配置。')
+      throw new Error(getPg().proxyNoGetCustom)
     }
     if (useApiProxy && (submitMapping.taskIdPath || customProvider.poll)) {
-      throw new Error('API 代理暂不支持使用异步任务的自定义服务商。请关闭 API 代理，或改用同步返回图片的自定义服务商配置。')
+      throw new Error(getPg().proxyNoAsyncCustom)
     }
     const submitPayload = await submitCustomRequest(submitMapping, opts, profile, controller, proxyConfig, useApiProxy)
     const taskIdValue = submitMapping.taskIdPath ? getByPath(submitPayload, submitMapping.taskIdPath) : undefined
     const taskId = typeof taskIdValue === 'string' ? taskIdValue.trim() : String(taskIdValue ?? '').trim()
     if (submitMapping.taskIdPath && !taskId) {
-      const err = new Error('无法从响应中提取异步任务 ID，请查看原始响应内容确认接口实际返回的数据结构，并根据 API 文档调整「自定义服务商」配置中的 taskIdPath。')
+      const err = new Error(getPg().cannotExtractTaskId)
       ;(err as any).rawResponsePayload = JSON.stringify(submitPayload, null, 2)
       throw err
     }
     if (!taskId) return extractCustomImages(submitPayload, submitMapping.result ?? {}, mime, controller.signal)
-    if (!customProvider.poll) throw new Error('异步接口返回了 task_id，但服务商配置缺少 poll')
+    if (!customProvider.poll) throw new Error(getPg().asyncMissingPoll)
     opts.onCustomTaskEnqueued?.({ taskId })
     if (timeoutId) {
       clearTimeout(timeoutId)
@@ -1011,7 +1012,7 @@ async function callResponsesImageApi(opts: CallApiOptions, profile: ApiProfile):
   if (successfulResults.length === 0) {
     const firstError = results.find((r): r is PromiseRejectedResult => r.status === 'rejected')
     if (firstError) throw firstError.reason
-    throw new Error('所有并发请求均失败')
+    throw new Error(getPg().allConcurrentFailed)
   }
 
   const images = successfulResults.flatMap((r) => r.images)
@@ -1048,8 +1049,8 @@ async function callResponsesImageApiSingle(opts: CallApiOptions, profile: ApiPro
 
   try {
     if (opts.maskDataUrl) {
-      assertMaskEditFileSize('遮罩主图文件', getDataUrlDecodedByteSize(inputImageDataUrls[0] ?? ''))
-      assertMaskEditFileSize('遮罩文件', getDataUrlDecodedByteSize(opts.maskDataUrl))
+      assertMaskEditFileSize(getPg().maskBaseFile, getDataUrlDecodedByteSize(inputImageDataUrls[0] ?? ''))
+      assertMaskEditFileSize(getPg().maskFile, getDataUrlDecodedByteSize(opts.maskDataUrl))
     }
     assertImageInputPayloadSize(
       inputImageDataUrls.reduce((sum, dataUrl) => sum + getDataUrlEncodedByteSize(dataUrl), 0) +

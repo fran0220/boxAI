@@ -8,6 +8,7 @@ import { cx } from '@/lib/cx'
 import { Section } from '@/components/ui/Section'
 import { Accordion } from '@/components/ui/Accordion'
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
+import { GradientRing } from '@/components/brand/GradientRing'
 
 export function Pricing() {
   const { d } = useI18n()
@@ -17,24 +18,24 @@ export function Pricing() {
   const purchaseUrl = `${consoleOrigin()}/boxai/sso/start?return_to=${encodeURIComponent('/purchase')}`
 
   function planCta(index: number): { to?: string; href?: string } {
-    // Starter → signup; paid plans → console purchase page (SSO); enterprise → console too.
     if (index === 0) return authed ? { to: '/create' } : { to: '/signup' }
     return { href: purchaseUrl }
   }
 
   return (
     <div>
-      <section className="mx-auto max-w-6xl px-4 pt-16 text-center sm:pt-24">
+      <section className="mx-auto max-w-6xl px-4 pt-16 text-center sm:px-6 sm:pt-24">
         <Reveal>
           <p className="bx-eyebrow mb-4 justify-center">{d.pricing.badge}</p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{d.pricing.title}</h1>
+          <h1 className="bx-display text-4xl font-bold tracking-tight sm:text-5xl">
+            {d.pricing.title}
+          </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base text-[var(--bx-text-muted)] sm:text-lg">
             {d.pricing.subtitle}
           </p>
         </Reveal>
       </section>
 
-      {/* Plan cards */}
       <Section className="pt-12 sm:pt-14">
         <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {d.pricing.plans.map((plan, i) => {
@@ -54,20 +55,25 @@ export function Pricing() {
                 )}
               >
                 {plan.highlighted ? (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--bx-grad-cta)] px-3 py-1 text-xs font-semibold text-[var(--bx-teal-ink)]">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-[var(--bx-radius-sm)] bg-[var(--bx-grad-cta)] px-3 py-1 text-xs font-semibold text-[var(--bx-brand-ink)]">
                     {d.pricing.highlight}
                   </span>
                 ) : null}
-                <h2 className="text-base font-semibold">{plan.name}</h2>
+                <h2 className="bx-display text-base font-semibold tracking-tight">{plan.name}</h2>
                 <p className="mt-1 text-xs text-[var(--bx-text-dim)]">{plan.desc}</p>
                 <p className="mt-4">
-                  <span className="text-3xl font-bold tracking-tight">{plan.price}</span>
+                  <span className="bx-display bx-num text-3xl font-bold tracking-tight">
+                    {plan.price}
+                  </span>
                   <span className="text-sm text-[var(--bx-text-muted)]">{plan.period}</span>
                 </p>
                 <ul className="mt-5 flex-1 space-y-2.5">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm text-[var(--bx-text-soft)]">
-                      <Check size={15} className="mt-0.5 shrink-0 text-[var(--bx-teal)]" />
+                    <li
+                      key={feature}
+                      className="flex items-start gap-2 text-sm text-[var(--bx-text-soft)]"
+                    >
+                      <Check size={15} className="mt-0.5 shrink-0 text-[var(--bx-spark)]" />
                       {feature}
                     </li>
                   ))}
@@ -76,14 +82,20 @@ export function Pricing() {
                   {cta.to ? (
                     <Link
                       to={cta.to}
-                      className={cx('bx-btn w-full', plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost')}
+                      className={cx(
+                        'bx-btn w-full',
+                        plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost',
+                      )}
                     >
                       {inner}
                     </Link>
                   ) : (
                     <a
                       href={cta.href}
-                      className={cx('bx-btn w-full', plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost')}
+                      className={cx(
+                        'bx-btn w-full',
+                        plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost',
+                      )}
                     >
                       {inner}
                     </a>
@@ -98,7 +110,6 @@ export function Pricing() {
         </Reveal>
       </Section>
 
-      {/* Comparison table */}
       <Section title={d.pricing.compare.title}>
         <Reveal>
           <div className="bx-card overflow-x-auto">
@@ -110,8 +121,8 @@ export function Pricing() {
                     <th
                       key={name}
                       className={cx(
-                        'px-4 py-4 text-center font-semibold',
-                        i === 1 && 'text-[var(--bx-teal)]',
+                        'bx-display px-4 py-4 text-center font-semibold tracking-tight',
+                        i === 1 && 'text-[var(--bx-brand-bright)]',
                       )}
                     >
                       {name}
@@ -126,7 +137,7 @@ export function Pricing() {
                     {row.values.map((value, i) => (
                       <td key={i} className="px-4 py-3.5 text-center text-[var(--bx-text-muted)]">
                         {value === '✓' ? (
-                          <BadgeCheck size={17} className="inline text-[var(--bx-teal)]" />
+                          <BadgeCheck size={17} className="inline text-[var(--bx-spark)]" />
                         ) : (
                           value
                         )}
@@ -140,17 +151,20 @@ export function Pricing() {
         </Reveal>
       </Section>
 
-      {/* FAQ + console CTA */}
       <Section title={d.pricing.faq.title} className="max-w-3xl pb-24">
         <Reveal>
           <Accordion items={d.pricing.faq.items} />
         </Reveal>
         <Reveal delay={0.1}>
-          <div className="mt-10 text-center">
-            <a href={purchaseUrl} className="bx-btn bx-btn-primary bx-btn-lg">
-              {d.pricing.consoleCta}
-              <ArrowRight size={17} />
-            </a>
+          <div className="mt-10">
+            <GradientRing>
+              <div className="px-6 py-10 text-center">
+                <a href={purchaseUrl} className="bx-btn bx-btn-primary bx-btn-lg">
+                  {d.pricing.consoleCta}
+                  <ArrowRight size={17} />
+                </a>
+              </div>
+            </GradientRing>
           </div>
         </Reveal>
       </Section>

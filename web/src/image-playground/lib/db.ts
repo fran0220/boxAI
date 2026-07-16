@@ -1,4 +1,5 @@
 import type { AgentConversation, TaskRecord, StoredImage, StoredImageThumbnail } from '../types'
+import { getPg } from './pgI18n'
 
 const DB_NAME = 'gpt-image-playground'
 const DB_VERSION = 3
@@ -238,8 +239,8 @@ export interface StoreImageResult {
 }
 
 /**
- * 存储图片，若已存在（按 hash 去重）则跳过。
- * 返回 image id 及图片真实宽高。
+ * Store image; skip if hash already exists.
+ * … image id …。
  */
 export async function storeImage(dataUrl: string, source: NonNullable<StoredImage['source']> = 'upload'): Promise<string> {
   return (await storeImageWithSize(dataUrl, source)).id
@@ -295,7 +296,7 @@ function loadImage(dataUrl: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image()
     image.onload = () => resolve(image)
-    image.onerror = () => reject(new Error('图片加载失败'))
+    image.onerror = () => reject(new Error(getPg().imageLoadFailed))
     image.src = dataUrl
   })
 }
@@ -304,14 +305,14 @@ async function createImageThumbnail(dataUrl: string): Promise<Omit<StoredImageTh
   const image = await loadImage(dataUrl)
   const width = image.naturalWidth
   const height = image.naturalHeight
-  if (width <= 0 || height <= 0) throw new Error('图片尺寸无效')
+  if (width <= 0 || height <= 0) throw new Error(getPg().invalidImageSize)
 
   const scale = Math.min(1, THUMBNAIL_MAX_SIZE / Math.max(width, height))
   const canvas = document.createElement('canvas')
   canvas.width = Math.max(1, Math.round(width * scale))
   canvas.height = Math.max(1, Math.round(height * scale))
   const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('当前浏览器不支持 Canvas')
+  if (!ctx) throw new Error(getPg().canvasUnsupported)
   ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
 
   return {

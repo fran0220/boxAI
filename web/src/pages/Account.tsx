@@ -58,16 +58,16 @@ export function Account() {
   ]
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-14 sm:py-20">
+    <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6 sm:py-20">
       <Reveal>
-        <h1 className="text-3xl font-bold tracking-tight">{d.account.title}</h1>
+        <h1 className="bx-display text-3xl font-bold tracking-tight">{d.account.title}</h1>
         <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{d.account.subtitle}</p>
       </Reveal>
 
       <Reveal delay={0.08}>
         <div className="bx-card mt-8 overflow-hidden">
           <div className="flex items-center gap-4 border-b border-[var(--bx-border)] p-6">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--bx-grad-cta)] text-xl font-bold text-[var(--bx-teal-ink)]">
+            <div className="bx-display flex h-14 w-14 items-center justify-center rounded-[var(--bx-radius-md)] bg-[var(--bx-grad-cta)] text-xl font-bold text-[var(--bx-brand-ink)]">
               {initial}
             </div>
             <div className="min-w-0">
@@ -79,14 +79,14 @@ export function Account() {
           </div>
           <div className="space-y-2 p-6 text-sm">
             {keyInfo ? (
-              <p className="flex items-center gap-2 text-[var(--bx-teal)]">
-                <Sparkles size={15} />
+              <p className="flex items-center gap-2 text-[var(--bx-brand-bright)]">
+                <Sparkles size={15} className="text-[var(--bx-spark)]" />
                 {keyInfo}
               </p>
             ) : !error ? (
               <p className="text-[var(--bx-text-dim)]">{d.account.loading}</p>
             ) : null}
-            {error ? <p className="text-red-400">{error}</p> : null}
+            {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
           </div>
         </div>
       </Reveal>
@@ -99,7 +99,7 @@ export function Account() {
               href={link.href}
               className="bx-card bx-card-hover flex items-center gap-3 p-4 text-sm font-medium"
             >
-              <link.icon size={17} className="text-[var(--bx-teal)]" />
+              <link.icon size={17} className="text-[var(--bx-brand-bright)]" />
               {link.label}
             </a>
           ))}

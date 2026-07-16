@@ -1,4 +1,5 @@
 import type { Dict } from './zh'
+import { playgroundEn } from './playground-dict'
 
 /** BoxAI web copy — English. */
 export const en: Dict = {
@@ -14,6 +15,9 @@ export const en: Dict = {
     logout: 'Log out',
     menu: 'Menu',
     language: 'Language',
+    theme: 'Theme',
+    themeDark: 'Switch to light',
+    themeLight: 'Switch to dark',
   },
   common: {
     loading: 'Loading…',
@@ -384,7 +388,16 @@ export const en: Dict = {
   create: {
     metaTitle: 'Creator',
     title: 'Creator',
-    nav: { image: 'Image', video: 'Video', assets: 'Assets' },
+    workspaceHint: 'Switch image, video, and assets in the sidebar',
+    openPanels: 'Menu',
+    nav: {
+      image: 'Image',
+      imageDesc: 'Generate, remix, and gallery',
+      video: 'Video',
+      videoDesc: 'Text / image-to-video jobs',
+      assets: 'Assets',
+      assetsDesc: 'Local history and re-create',
+    },
     backHome: 'Back to site',
     keyPreparing: 'Preparing your Creator key…',
     keyFailed: 'Key setup failed; gateway calls may not work:',
@@ -393,6 +406,8 @@ export const en: Dict = {
       placeholder: 'Pick or type a model ID',
       loading: 'Loading models…',
       empty: 'No matching models; press Enter to use your input',
+      reload: 'Reload model list',
+      toggleList: 'Toggle model list',
     },
     job: {
       queued: 'Queued',
@@ -471,4 +486,5 @@ export const en: Dict = {
     body: 'The page you are looking for does not exist or has moved.',
     back: 'Back to home',
   },
+  playground: playgroundEn,
 }

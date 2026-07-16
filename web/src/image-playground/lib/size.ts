@@ -139,7 +139,7 @@ export function formatImageRatio(width: number, height: number) {
         return {
           label: `${friendlyWidth}:${friendlyHeight}`,
           delta,
-          // 在误差接近时偏向更短、更好读的比例，例如 7:6 优于 8:7。
+          // When close, prefer shorter readable ratios (e.g. 7:6 over 8:7).
           score: delta + (friendlyWidth + friendlyHeight) * 0.002,
         }
       }),
@@ -151,8 +151,8 @@ export function formatImageRatio(width: number, height: number) {
 }
 
 /**
- * 每个档位的像素预算上限。
- * 在该预算内、满足所有 OpenAI 约束的前提下，选取总像素最大的候选尺寸。
+ * Pixel budget cap per tier.
+ * Within budget and OpenAI constraints, pick the candidate with max pixels.
  */
 const TIER_PIXEL_BUDGET: Record<SizeTier, number> = {
   '1K': 1_572_864,   // 1024 × 1536
@@ -161,8 +161,8 @@ const TIER_PIXEL_BUDGET: Record<SizeTier, number> = {
 }
 
 /**
- * 常用比例优先使用官方示例或通用显示标准，避免按像素预算计算出不常见尺寸。
- * 其中 21:9 的常见显示器尺寸会按 16 倍数约束做轻微规整。
+ * Prefer official/common ratios over uncommon sizes from pure pixel budget.
+ * Common 21:9 display sizes are lightly snapped to multiples of 16.
  */
 const COMMON_SIZE_PRESETS: Record<SizeTier, Record<PresetRatio, string>> = {
   '1K': {
@@ -226,7 +226,7 @@ export function calculateImageSize(tier: SizeTier, ratio: string) {
 
   for (let w = SIZE_MULTIPLE; w <= MAX_EDGE; w += SIZE_MULTIPLE) {
     const idealH = w / targetRatio
-    // 尝试 floor 和 ceil 对齐到 16 的倍数，取像素更大且合法的那个
+    // Try floor/ceil to multiple of 16; pick larger legal pixel count
     const candidates = [
       Math.floor(idealH / SIZE_MULTIPLE) * SIZE_MULTIPLE,
       Math.ceil(idealH / SIZE_MULTIPLE) * SIZE_MULTIPLE,

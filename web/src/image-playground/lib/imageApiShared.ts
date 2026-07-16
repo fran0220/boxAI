@@ -1,5 +1,6 @@
 import type { AppSettings, TaskParams } from '../types'
 import { blobToDataUrl } from './dataUrl'
+import { getPg, tPg } from './pgI18n'
 
 export const MIME_MAP: Record<string, string> = {
   png: 'image/png',
@@ -14,7 +15,7 @@ export interface CallApiOptions {
   settings: AppSettings
   prompt: string
   params: TaskParams
-  /** 输入图片的 data URL 列表 */
+  /** … data URL … */
   inputImageDataUrls: string[]
   maskDataUrl?: string
   onFalRequestEnqueued?: (request: { requestId: string; endpoint: string }) => void
@@ -23,17 +24,17 @@ export interface CallApiOptions {
 }
 
 export interface CallApiResult {
-  /** base64 data URL 列表 */
+  /** base64 data URL … */
   images: string[]
-  /** API 返回的实际生效参数 */
+  /** API … */
   actualParams?: Partial<TaskParams>
-  /** 每张图片对应的实际生效参数 */
+  /** … */
   actualParamsList?: Array<Partial<TaskParams> | undefined>
-  /** 每张图片对应的 API 改写提示词 */
+  /** … API … */
   revisedPrompts?: Array<string | undefined>
-  /** API 返回的原始图片 HTTP URL（非 base64 时记录） */
+  /** API … HTTP URL（… base64 …） */
   rawImageUrls?: string[]
-  /** 并发多图请求中失败的单张请求 */
+  /** … */
   failedRequests?: Array<{ requestIndex: number; error: string }>
 }
 
@@ -72,31 +73,31 @@ export function getDataUrlDecodedByteSize(dataUrl: string): number {
 
 function assertMaxBytes(label: string, bytes: number, maxBytes: number) {
   if (bytes > maxBytes) {
-    throw new Error(`${label}过大：${formatMiB(bytes)}，上限为 ${formatMiB(maxBytes)}`)
+    throw new Error(`${label}${tPg('fileTooLarge', { size: formatMiB(bytes), max: formatMiB(maxBytes) })}`)
   }
 }
 
 export function assertImageInputPayloadSize(bytes: number) {
-  assertMaxBytes('图像输入有效负载总大小', bytes, MAX_IMAGE_INPUT_PAYLOAD_BYTES)
+  assertMaxBytes(getPg().imageInputPayloadTotal, bytes, MAX_IMAGE_INPUT_PAYLOAD_BYTES)
 }
 
 export function assertMaskEditFileSize(label: string, bytes: number) {
   assertMaxBytes(label, bytes, MAX_MASK_EDIT_FILE_BYTES)
 }
 
-export const IMAGE_FETCH_CORS_HINT = ' 可点链接按钮复制结果链接，或尝试开启「返回 Base64 图片数据」避免此问题。'
-export const STREAMING_UNSUPPORTED_HINT = '提示：当前使用的 API 可能不支持流式传输，请尝试关闭「流式传输」功能。'
-export const STREAMING_FORMAT_HINT = '提示：API 返回了无法解析的流式数据格式，请尝试关闭「流式传输」功能。'
+export const IMAGE_FETCH_CORS_HINT = () => getPg().copyBase64Hint
+export const STREAMING_UNSUPPORTED_HINT = () => getPg().streamUnsupportedHint
+export const STREAMING_FORMAT_HINT = () => getPg().streamFormatHint
 
 export function appendStreamingUnsupportedHint(message: string): string {
-  return message ? `${message}\n${STREAMING_UNSUPPORTED_HINT}` : STREAMING_UNSUPPORTED_HINT
+  return message ? `${message}\n${STREAMING_UNSUPPORTED_HINT()}` : STREAMING_UNSUPPORTED_HINT()
 }
 
 export function appendStreamingFormatHint(message: string): string {
-  return message ? `${message}\n${STREAMING_FORMAT_HINT}` : STREAMING_FORMAT_HINT
+  return message ? `${message}\n${STREAMING_FORMAT_HINT()}` : STREAMING_FORMAT_HINT()
 }
 
-/** 排除明确与流式无关的状态码后追加提示 */
+/** … */
 export function maybeAppendStreamingHint(message: string, status: number, streamImages?: boolean): string {
   if (!streamImages) return message
   if (status === 401 || status === 403 || status === 404 || status === 408 || status === 429 || status >= 500) {
@@ -136,18 +137,18 @@ export async function fetchImageUrlAsDataUrl(url: string, fallbackMime: string, 
     if (err instanceof TypeError) {
       const probe = await probeNoCorsReachability(url)
       if (probe === 'opaque') {
-        throw new Error(`图片已生成，但因服务商未允许跨域，图片链接下载失败。${IMAGE_FETCH_CORS_HINT}`)
+        throw new Error(`${getPg().imageGeneratedCorsFail}${IMAGE_FETCH_CORS_HINT()}`)
       }
       if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-        throw new Error(`图片链接下载失败（网络不可用）。${IMAGE_FETCH_CORS_HINT}`)
+        throw new Error(`${getPg().imageUrlNetworkFail}${IMAGE_FETCH_CORS_HINT()}`)
       }
-      throw new Error(`图片链接下载失败（可能因跨域限制、链接过期或网络异常）。${IMAGE_FETCH_CORS_HINT}`)
+      throw new Error(`${getPg().imageUrlDownloadFail}${IMAGE_FETCH_CORS_HINT()}`)
     }
     throw err
   }
 
   if (!response.ok) {
-    throw new Error(`图片 URL 下载失败：HTTP ${response.status}`)
+    throw new Error(tPg('imageUrlHttpFail', { status: response.status }))
   }
 
   const blob = await response.blob()

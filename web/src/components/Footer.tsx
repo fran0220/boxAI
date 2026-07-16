@@ -24,8 +24,14 @@ export function Footer() {
       title: d.footer.resources,
       links: [
         { label: d.footer.console, href: `${console_}/boxai/sso/start` },
-        { label: d.footer.apiKeys, href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/keys')}` },
-        { label: d.footer.usage, href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/usage')}` },
+        {
+          label: d.footer.apiKeys,
+          href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/keys')}`,
+        },
+        {
+          label: d.footer.usage,
+          href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/usage')}`,
+        },
         { label: d.footer.github, href: RELEASES_PAGE_URL },
       ],
     },
@@ -47,36 +53,40 @@ export function Footer() {
   ]
 
   return (
-    <footer className="border-t border-[var(--bx-border)]">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+    <footer className="relative z-10 border-t border-[var(--bx-border)]">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 font-semibold">
+            <div className="bx-display flex items-center gap-2.5 text-[15px] font-semibold tracking-tight">
               <img src={BRAND_LOGO_SVG} alt="" className="h-8 w-8" />
               <span>{BRAND_NAME}</span>
             </div>
-            <p className="mt-3 max-w-xs text-sm text-[var(--bx-text-muted)]">{d.footer.tagline}</p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[var(--bx-text-muted)]">
+              {d.footer.tagline}
+            </p>
             <div className="mt-4">
               <LangSwitcher align="left" />
             </div>
           </div>
           {columns.map((col) => (
             <div key={col.title}>
-              <h3 className="text-sm font-semibold text-[var(--bx-text-soft)]">{col.title}</h3>
+              <h3 className="bx-display text-sm font-semibold tracking-tight text-[var(--bx-text-soft)]">
+                {col.title}
+              </h3>
               <ul className="mt-3 space-y-2">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     {link.to ? (
                       <Link
                         to={link.to}
-                        className="text-sm text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-text)]"
+                        className="text-sm text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-brand-bright)]"
                       >
                         {link.label}
                       </Link>
                     ) : (
                       <a
                         href={link.href}
-                        className="text-sm text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-text)]"
+                        className="text-sm text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-brand-bright)]"
                         {...(link.href?.startsWith('https://github.com')
                           ? { target: '_blank', rel: 'noopener' }
                           : {})}

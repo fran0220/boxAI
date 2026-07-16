@@ -67,7 +67,7 @@ export function AuthRedirect({ mode }: { mode: 'login' | 'register' }) {
   if (error) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
-        <h1 className="text-xl font-semibold">{d.auth.failedTitle}</h1>
+        <h1 className="bx-display text-xl font-semibold tracking-tight">{d.auth.failedTitle}</h1>
         <p className="mt-3 text-sm text-[var(--bx-text-muted)]">{error}</p>
         <button type="button" className="bx-btn bx-btn-primary mt-8" onClick={() => window.location.reload()}>
           {d.common.retry}
@@ -80,7 +80,7 @@ export function AuthRedirect({ mode }: { mode: 'login' | 'register' }) {
     <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 py-20 text-center">
       <img src={BRAND_LOGO_SVG} alt="" className="h-14 w-14" />
       <Spinner className="mt-8" />
-      <p className="mt-5 text-sm font-medium">
+      <p className="bx-display mt-5 text-sm font-medium tracking-tight">
         {mode === 'register' ? d.auth.redirectingSignup : d.auth.redirectingLogin}
       </p>
       <p className="mt-2 text-xs text-[var(--bx-text-dim)]">{d.auth.redirectBody}</p>

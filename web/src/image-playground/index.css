@@ -15,8 +15,28 @@ html.dark {
   --primary-foreground: 168 40% 6%;
   --sidebar: 210 12% 8%;
   --sidebar-foreground: 210 20% 96%;
-  --font-ui-sans: var(--bx-font, 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
-  --font-mono: 'SF Mono', Menlo, Consolas, monospace;
+  --font-ui-sans: var(--bx-font, 'Noto Sans SC', 'Space Grotesk', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
+  --font-mono: var(--bx-font-mono, 'SF Mono', Menlo, Consolas, monospace);
+  --safe-area-top: 0px;
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+}
+
+/* Light mode playground HSL tokens (when site theme is light) */
+html:not(.dark) {
+  --background: 200 20% 97%;
+  --foreground: 222 47% 11%;
+  --muted: 210 20% 94%;
+  --muted-foreground: 215 16% 40%;
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --primary: 168 76% 36%;
+  --primary-foreground: 0 0% 100%;
+  --sidebar: 200 20% 98%;
+  --sidebar-foreground: 222 47% 11%;
+  --font-ui-sans: var(--bx-font, 'Noto Sans SC', 'Space Grotesk', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
+  --font-mono: var(--bx-font-mono, 'SF Mono', Menlo, Consolas, monospace);
   --safe-area-top: 0px;
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -24,7 +44,19 @@ html.dark {
 }
 
 .image-playground {
-  /* Force dark tokens aligned with BoxAI --bx-* (teal primary) */
+  /* Inherit HSL from html.dark / html:not(.dark); surface from --bx-* */
+  --background: inherit;
+  color-scheme: inherit;
+  font-family: var(--font-ui-sans);
+  -webkit-user-select: none;
+  user-select: none;
+  background: var(--bx-bg, #080a0d);
+  color: var(--bx-text, #f4f5f7);
+  min-height: 100%;
+  flex: 1;
+}
+
+html.dark .image-playground {
   --background: 210 14% 4%;
   --foreground: 210 20% 96%;
   --muted: 210 10% 12%;
@@ -36,9 +68,20 @@ html.dark {
   --sidebar: 210 12% 8%;
   --sidebar-foreground: 210 20% 96%;
   color-scheme: dark;
-  font-family: var(--font-ui-sans);
-  -webkit-user-select: none;
-  user-select: none;
+}
+
+html:not(.dark) .image-playground {
+  --background: 200 20% 97%;
+  --foreground: 222 47% 11%;
+  --muted: 210 20% 94%;
+  --muted-foreground: 215 16% 40%;
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --primary: 168 76% 36%;
+  --primary-foreground: 0 0% 100%;
+  --sidebar: 200 20% 98%;
+  --sidebar-foreground: 222 47% 11%;
+  color-scheme: light;
 }
 
 .image-playground input,
@@ -175,13 +218,13 @@ input[type="number"] {
 }
 
 .markdown-renderer :where(blockquote) {
-  border-left: 3px solid rgba(59, 130, 246, 0.45);
+  border-left: 3px solid rgba(45, 212, 191, 0.45);
   color: #52525b;
   padding-left: 0.85rem;
 }
 
 .markdown-renderer :where(a) {
-  color: #2563eb;
+  color: #0d9488;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -222,7 +265,7 @@ input[type="number"] {
   }
 
   .markdown-renderer :where(a) {
-    color: #60a5fa;
+    color: #5eead4;
   }
 
   .markdown-renderer :where(:not(pre) > code) {
@@ -376,7 +419,7 @@ input[type="number"] {
   }
 }
 
-/* contentEditable 中的 @图N 胶囊 tag */
+/* contentEditable 中的 @图N 胶囊 tag — brand teal */
 .mention-tag {
   display: inline-flex;
   align-items: center;
@@ -385,9 +428,9 @@ input[type="number"] {
   padding: 0 7px;
   margin: 0 2px;
   border-radius: 6px;
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #dbeafe;
+  background: rgba(45, 212, 191, 0.12);
+  color: #0d9488;
+  border: 1px solid rgba(45, 212, 191, 0.28);
   font-size: inherit;
   font-weight: 600;
   line-height: 1;
@@ -405,26 +448,26 @@ input[type="number"] {
 
 [contenteditable]::selection,
 [contenteditable] *::selection {
-  background: rgba(37, 99, 235, 0.2);
+  background: rgba(45, 212, 191, 0.22);
   color: inherit;
 }
 
 .mention-tag:hover {
-  background: #dbeafe;
+  background: rgba(45, 212, 191, 0.2);
 }
 
 .mention-tag.selected {
-  background: #2563eb;
-  color: #ffffff;
-  border-color: #1d4ed8;
-  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.25);
+  background: #14b8a6;
+  color: #04201d;
+  border-color: #0d9488;
+  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
   .mention-tag {
-    background: rgba(59, 130, 246, 0.12);
-    color: #93c5fd;
-    border-color: rgba(59, 130, 246, 0.2);
+    background: rgba(45, 212, 191, 0.12);
+    color: #5eead4;
+    border-color: rgba(45, 212, 191, 0.22);
   }
 
   .mention-tag::selection,
@@ -435,19 +478,19 @@ input[type="number"] {
 
   [contenteditable]::selection,
   [contenteditable] *::selection {
-    background: rgba(59, 130, 246, 0.3);
+    background: rgba(45, 212, 191, 0.28);
     color: inherit;
   }
 
   .mention-tag:hover {
-    background: rgba(59, 130, 246, 0.2);
+    background: rgba(45, 212, 191, 0.2);
   }
 
   .mention-tag.selected {
-    background: #3b82f6;
-    color: #ffffff;
-    border-color: #60a5fa;
-    box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.35);
+    background: #2dd4bf;
+    color: #04201d;
+    border-color: #5eead4;
+    box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.35);
   }
 }
 
@@ -467,5 +510,42 @@ body.drag-selecting * {
 
 /* Prefer teal focus rings inside playground */
 .image-playground :focus-visible {
-  outline-color: hsl(var(--primary));
+  outline: 2px solid var(--bx-teal, #2dd4bf);
+  outline-offset: 2px;
+}
+
+/* Brand CTA: primary teal buttons get gradient + rect radius when not tiny dots */
+.image-playground button.bg-teal-500,
+.image-playground a.bg-teal-500 {
+  background-image: var(--bx-grad-cta, linear-gradient(135deg, #2dd4bf, #22d3ee));
+  background-color: transparent;
+  color: var(--bx-teal-ink, #04201d);
+  border-radius: var(--bx-radius-btn, 10px);
+  font-weight: 600;
+  box-shadow: 0 8px 24px -8px rgba(45, 212, 191, 0.45);
+}
+
+.image-playground button.bg-teal-500:hover,
+.image-playground a.bg-teal-500:hover {
+  filter: brightness(1.06);
+}
+
+/* Status pills in first-party create shell */
+.bx-status-pill--failed {
+  background: var(--bx-danger-soft, rgba(248, 113, 113, 0.14));
+  color: var(--bx-danger, #f87171);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-playground .toast-enter,
+  .image-playground .animate-modal-in,
+  .image-playground .animate-overlay-in,
+  .image-playground .animate-fade-in,
+  .image-playground .animate-zoom-in,
+  .image-playground .animate-confirm-in,
+  .image-playground .animate-slide-down-in,
+  .image-playground .animate-dropdown-down,
+  .image-playground .animate-dropdown-up {
+    animation: none !important;
+  }
 }

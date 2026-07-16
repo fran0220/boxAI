@@ -1,5 +1,6 @@
 import type { ApiMode, AppSettings } from '../types'
 import { normalizeBaseUrl } from './devProxy'
+import { getPg } from './pgI18n'
 import {
   createDefaultOpenAIProfile,
   DEFAULT_IMAGES_MODEL,
@@ -77,8 +78,8 @@ export function activateFirstImportedProfile(settings: AppSettings, importedSett
 }
 
 /**
- * 仅展示默认配置模式：从 URL 参数中提取可覆盖的字段，patch 到当前活跃配置上。
- * 不新建配置、不导入自定义服务商、不切换 provider。
+ * Default-profile mode only: extract overridable fields from URL and patch active profile.
+ * Do not create profiles, import custom providers, or switch provider.
  */
 function buildDefaultConfigOnlySettingsFromUrlParams(currentSettings: Partial<AppSettings> | unknown, searchParams: URLSearchParams): Partial<AppSettings> {
   const settings = normalizeSettings(currentSettings)
@@ -88,7 +89,7 @@ function buildDefaultConfigOnlySettingsFromUrlParams(currentSettings: Partial<Ap
   const isOpenAI = activeProfile.provider === 'openai'
   const patch: Partial<typeof activeProfile> = {}
 
-  // 从 ?settings= JSON 中提取同 provider 的 profile 字段
+  // Extract same-provider profile fields from ?settings= JSON
   const importedSettings = getUrlSettingsPayload(searchParams)
   if (importedSettings && typeof importedSettings === 'object' && !Array.isArray(importedSettings)) {
     const profiles = (importedSettings as Record<string, unknown>).profiles
@@ -116,7 +117,7 @@ function buildDefaultConfigOnlySettingsFromUrlParams(currentSettings: Partial<Ap
     }
   }
 
-  // 查询参数覆盖（优先级高于 settings JSON）
+  // Query overrides (higher priority than settings JSON)
   const apiUrlParam = searchParams.get('apiUrl')
   const apiKeyParam = searchParams.get('apiKey')
   const modelParam = searchParams.get('model')
@@ -178,7 +179,7 @@ export function buildSettingsFromUrlParams(currentSettings: Partial<AppSettings>
     const profileApiMode = apiMode ?? 'images'
     const profile = createDefaultOpenAIProfile({
       id: createUrlProfileId(new Set(settings.profiles.map((item) => item.id))),
-      name: 'URL 参数配置',
+      name: getPg().urlParamConfig,
       apiMode: profileApiMode,
       model: profileApiMode === 'responses' ? DEFAULT_RESPONSES_MODEL : DEFAULT_IMAGES_MODEL,
     })

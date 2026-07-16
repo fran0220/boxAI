@@ -18,7 +18,7 @@
 7. `components/InputBar.tsx` — submit gate via `validateApiProfile` (session JWT)
 8. Settings UI removed entirely (no SettingsModal / API / habit tabs)
 9. `store.ts` — gallery/agent modes force platform models (`gpt-image-2` / `gpt-5.4`)
-10. `index.css` — scoped under `.image-playground`, BoxAI dark/teal tokens
+10. `index.css` — BoxAI brand skin: teal primary, --bx-* surfaces, rect buttons, focus rings (console-aligned)
 11. `BoxaiPlaygroundRoot.tsx` — mount shell
 
 ## Re-vendor checklist

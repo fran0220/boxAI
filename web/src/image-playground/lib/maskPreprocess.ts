@@ -1,6 +1,7 @@
 import type { InputImage } from '../types'
 import { canvasToBlob, loadImage } from './canvasImage'
 import { blobToDataUrl } from './dataUrl'
+import { getPg } from './pgI18n'
 
 export const DEFAULT_MASK_WORKING_MAX_EDGE = 1920
 export const MASK_WORKING_DIMENSION_MULTIPLE = 16
@@ -67,7 +68,7 @@ export async function prepareMaskTargetDataUrl(dataUrl: string): Promise<Prepare
   canvas.width = size.width
   canvas.height = size.height
   const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('当前浏览器不支持 Canvas')
+  if (!ctx) throw new Error(getPg().canvasUnsupported)
   ctx.drawImage(image, 0, 0, size.width, size.height)
 
   const blob = await canvasToBlob(canvas, 'image/png')

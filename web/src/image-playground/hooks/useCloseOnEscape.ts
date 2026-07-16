@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * 全局 ESC 栈：每个模态注册时入栈，只有栈顶的 handler 会被调用。
- * 这样保证 ESC 一次只关闭最顶层的一个弹窗。
+ * Global ESC stack: modals push on register; only top handler runs.
+ * So ESC closes only the topmost modal.
  */
 const escStack: Array<{ id: number; handler: () => void }> = []
 let nextId = 0
@@ -11,11 +11,11 @@ function globalKeyDown(e: KeyboardEvent) {
   if (e.key !== 'Escape') return
   if (escStack.length === 0) return
   e.preventDefault()
-  // 调用栈顶（最后注册的）handler
+  // Invoke top (last registered) handler
   escStack[escStack.length - 1].handler()
 }
 
-// 只注册一次全局监听
+// Register global listeners once
 let listenerAttached = false
 function ensureListener() {
   if (listenerAttached) return
@@ -30,7 +30,7 @@ export function useCloseOnEscape(enabled: boolean, onClose: () => void) {
 
   useEffect(() => {
     if (!enabled) {
-      // 清理
+      // Cleanup
       if (idRef.current !== null) {
         const idx = escStack.findIndex((e) => e.id === idRef.current)
         if (idx !== -1) escStack.splice(idx, 1)

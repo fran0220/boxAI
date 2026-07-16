@@ -4,6 +4,7 @@ import { useTooltip } from '../hooks/useTooltip'
 import Select from './Select'
 import { ChevronLeftIcon, CollectionManageIcon, FavoriteIcon, TrashIcon } from './icons'
 import ViewportTooltip from './ViewportTooltip'
+import { usePg } from '../lib/pgI18n'
 
 function SearchActionButton({
   tooltip,
@@ -43,6 +44,7 @@ function SearchActionButton({
 }
 
 export default function SearchBar() {
+  const { pg, t } = usePg()
   const rootRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const searchQuery = useStore((s) => s.searchQuery)
@@ -69,7 +71,11 @@ export default function SearchBar() {
   const setConfirmDialog = useStore((s) => s.setConfirmDialog)
   const inCollectionOverview = filterFavorite && !activeFavoriteCollectionId
   const isFailedFilter = filterStatus === 'error'
-  const favoriteTooltip = activeFavoriteCollectionId ? '返回收藏夹' : filterFavorite ? '退出收藏夹' : '收藏夹'
+  const favoriteTooltip = activeFavoriteCollectionId
+    ? pg.favoritesBack
+    : filterFavorite
+      ? pg.favoritesExit
+      : pg.favoritesOpen
 
   useEffect(() => {
     const handleDocumentMouseDown = (event: MouseEvent) => {
@@ -113,10 +119,10 @@ export default function SearchBar() {
     if (failedTaskCount === 0) return
 
     setConfirmDialog({
-      title: '清除失败记录',
-      message: `确定清除筛选范围内的失败记录吗？\n纯失败任务会被删除；部分失败任务只会清除失败标记，保留已成功图片。共 ${failedTaskCount} 条记录。`,
-      confirmText: '清除',
-      cancelText: '取消',
+      title: pg.clearFailedTitle,
+      message: t('clearFailedMessage', { count: failedTaskCount }),
+      confirmText: pg.clear,
+      cancelText: pg.cancel,
       tone: 'danger',
       action: () => clearFailedTasks(failedTaskIds),
     })
@@ -137,16 +143,16 @@ export default function SearchBar() {
           className={`p-2.5 rounded-xl border transition-all ${
             filterFavorite
               ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-500'
-              : 'border-gray-200 dark:border-white/[0.08] bg-white dark:bg-gray-900 text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.06]'
+              : 'border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[var(--bx-bg-elevated)] text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.06]'
           }`}
         >
           {activeFavoriteCollectionId ? <ChevronLeftIcon className="w-5 h-5" /> : <FavoriteIcon filled={filterFavorite} className="w-5 h-5" />}
         </SearchActionButton>
         {inCollectionOverview && (
           <SearchActionButton
-            tooltip="管理收藏夹"
+            tooltip={pg.manageCollections}
             onClick={openManageCollectionsModal}
-            className="p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-gray-900 text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.06] transition-all"
+            className="p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[var(--bx-bg-elevated)] text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.06] transition-all"
           >
             <CollectionManageIcon className="w-5 h-5" />
           </SearchActionButton>
@@ -158,12 +164,12 @@ export default function SearchBar() {
                 value={filterStatus}
                 onChange={handleStatusChange}
                 options={[
-                  { label: '全部', value: 'all' },
-                  { label: '已完成', value: 'done' },
-                  { label: '生成中', value: 'running' },
-                  { label: '失败', value: 'error' },
+                  { label: pg.filterAll, value: 'all' },
+                  { label: pg.statusDone, value: 'done' },
+                  { label: pg.statusRunning, value: 'running' },
+                  { label: pg.failed, value: 'error' },
                 ]}
-                className="px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-white/[0.06] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
+                className="px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[var(--bx-bg-elevated)] hover:bg-gray-50 dark:hover:bg-white/[0.06] text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-400 transition"
               />
             </div>
             {isFailedFilter && (
@@ -171,9 +177,9 @@ export default function SearchBar() {
                 type="button"
                 onClick={handleClearFailed}
                 disabled={failedCount === 0}
-                title={failedCount > 0 ? `清除 ${failedCount} 条失败记录` : '没有失败记录'}
-                aria-label={failedCount > 0 ? `清除 ${failedCount} 条失败记录` : '没有失败记录'}
-                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-400 transition-all hover:bg-gray-50 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-white disabled:hover:text-gray-400 dark:border-white/[0.08] dark:bg-gray-900 dark:text-gray-500 dark:hover:bg-white/[0.06] dark:hover:text-gray-300 dark:disabled:hover:bg-gray-900 dark:disabled:hover:text-gray-500"
+                title={failedCount > 0 ? t('clearFailed', { count: failedCount }) : pg.noFailed}
+                aria-label={failedCount > 0 ? t('clearFailed', { count: failedCount }) : pg.noFailed}
+                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-400 transition-all hover:bg-gray-50 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500/30 disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-white disabled:hover:text-gray-400 dark:border-white/[0.08] dark:bg-[var(--bx-bg-elevated)] dark:text-gray-500 dark:hover:bg-white/[0.06] dark:hover:text-gray-300 dark:disabled:hover:bg-gray-900 dark:disabled:hover:text-gray-500"
               >
                 <TrashIcon className="h-[18px] w-[18px]" />
               </button>
@@ -200,8 +206,8 @@ export default function SearchBar() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           type="text"
-          placeholder={inCollectionOverview ? '搜索收藏夹名称...' : '搜索提示词、参数...'}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
+          placeholder={inCollectionOverview ? pg.searchFavorites : pg.searchPlaceholder}
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-white dark:bg-[var(--bx-bg-elevated)] text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-400 transition"
         />
       </div>
     </div>

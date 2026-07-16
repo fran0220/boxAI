@@ -2,6 +2,7 @@ import { DEFAULT_AGENT_MAX_TOOL_ROUNDS, DEFAULT_STREAM_PARTIAL_IMAGES, type ApiP
 import { buildApiUrl, readClientDevProxyConfig, shouldUseApiProxy } from './devProxy'
 import { appendStreamingFormatHint, maybeAppendStreamingHint, getApiErrorMessage, MIME_MAP, normalizeBase64Image, pickActualParams } from './imageApiShared'
 import { resolveAuthHeaders } from './boxaiAuth'
+import { getPg } from './pgI18n'
 
 export interface AgentApiResultImage {
   toolCallId?: string
@@ -301,7 +302,7 @@ function getStreamEventErrorMessage(event: Record<string, unknown>): string | nu
   if (typeof error === 'string' && error.trim()) return error
 
   const type = getStringValue(event, 'type')
-  if (type?.endsWith('.failed')) return getStringValue(event, 'message') ?? 'Agent 流式请求失败'
+  if (type?.endsWith('.failed')) return getStringValue(event, 'message') ?? getPg().agentStreamFailed
   return null
 }
 
@@ -325,7 +326,7 @@ function getImageToolFailureFromOutputItem(event: Record<string, unknown>, item?
   const error = getErrorMessageFromValue(itemRecord?.error)
     ?? getErrorMessageFromValue(event.error)
     ?? getStringValue(event, 'message')
-    ?? '内置 image_generation 工具调用失败'
+    ?? getPg().builtinImageToolFailed
 
   return {
     toolCallId,
@@ -353,11 +354,11 @@ function getAbortedSignal(signals: Array<AbortSignal | undefined>) {
 function throwIfAborted(...signals: Array<AbortSignal | undefined>) {
   const signal = getAbortedSignal(signals)
   if (!signal) return
-  throw signal.reason instanceof Error ? signal.reason : new DOMException('请求已停止', 'AbortError')
+  throw signal.reason instanceof Error ? signal.reason : new DOMException(getPg().requestStopped, 'AbortError')
 }
 
 async function readJsonServerSentEvents(response: Response, onEvent: (event: Record<string, unknown>) => void | Promise<void>, signals: Array<AbortSignal | undefined> = []): Promise<void> {
-  if (!response.body) throw new Error('接口未返回可读取的流式响应')
+  if (!response.body) throw new Error(getPg().noReadableStream)
 
   const reader = response.body.getReader()
   const decoder = new TextDecoder()
@@ -412,7 +413,7 @@ async function readJsonServerSentEvents(response: Response, onEvent: (event: Rec
     buffer += decoder.decode()
     throwIfAborted(...signals)
     if (buffer.trim()) await processBlock(buffer)
-    if (!hasDataLine) throw new Error(appendStreamingFormatHint('未从流式响应中解析到有效的 data 事件'))
+    if (!hasDataLine) throw new Error(appendStreamingFormatHint(getPg().noStreamDataEvent))
   } finally {
     for (const signal of signals) signal?.removeEventListener('abort', cancelReader)
   }
@@ -677,7 +678,7 @@ async function parseAgentStreamResponse(
 
   throwIfAborted(signal, callerSignal)
   const payload: ResponsesApiResponse | null = completedPayload ?? (outputItems.length ? { output: outputItems } : null)
-  if (!payload) throw new Error('Agent 流式接口未返回最终响应数据')
+  if (!payload) throw new Error(getPg().agentStreamNoFinal)
 
   const text = extractText(payload) || streamedText.trim()
   return {
@@ -960,7 +961,7 @@ export async function callBatchImageSingle(opts: {
       return {
         batchItemId,
         image: completedImage,
-        error: completedImage ? null : '流式响应未返回图片',
+        error: completedImage ? null : getPg().streamNoImage,
         rawResponsePayload: rawPayload,
       }
     }
@@ -973,12 +974,12 @@ export async function callBatchImageSingle(opts: {
     return {
       batchItemId,
       image,
-      error: image ? null : '接口未返回图片数据',
+      error: image ? null : getPg().noImageData,
       rawResponsePayload: JSON.stringify(payload, null, 2),
     }
   } catch (err) {
     if (controller.signal.aborted || signal?.aborted) {
-      return { batchItemId, image: null, error: '请求已取消' }
+      return { batchItemId, image: null, error: getPg().requestCancelled }
     }
     return { batchItemId, image: null, error: err instanceof Error ? err.message : String(err) }
   } finally {

@@ -7,6 +7,7 @@ import { DEFAULT_IMAGES_MODEL, DEFAULT_FAL_MODEL } from '../lib/apiProfiles'
 import { isAgentTaskPromptPending } from '../lib/taskPromptDisplay'
 import { CodeIcon, TransparentBgIcon } from './icons'
 import ViewportTooltip from './ViewportTooltip'
+import { usePg } from '../lib/pgI18n'
 
 interface Props {
   task: TaskRecord
@@ -66,6 +67,7 @@ export default function TaskCard({
   isSelected,
   disableSwipe,
 }: Props) {
+  const { pg } = usePg()
   const [thumbSrc, setThumbSrc] = useState<string>('')
   const [coverRatio, setCoverRatio] = useState<string>('')
   const [coverSize, setCoverSize] = useState<string>('')
@@ -162,11 +164,11 @@ export default function TaskCard({
     const deltaX = e.touches[0].clientX - touchStartRef.current.x
     const deltaY = e.touches[0].clientY - touchStartRef.current.y
     
-    // 如果主要是水平滑动
+    // If primarily horizontal swipe
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
       horizontalSwipeRef.current = true
       e.preventDefault()
-      // 限制滑动距离，例如最大 60px
+      // Clamp swipe distance (e.g. max 60px)
       const boundedOffset = Math.max(-60, Math.min(60, deltaX))
       const nextDirection = boundedOffset > 0 ? 1 : boundedOffset < 0 ? -1 : 0
       const nextActionActive = Math.abs(deltaX) >= 40
@@ -202,7 +204,7 @@ export default function TaskCard({
       swipeResetTimerRef.current = null
     }, 220)
 
-    // 如果是水平滑动，且垂直偏移较小，认为是滑动选择
+    // Horizontal swipe with small vertical delta → swipe select
     if (isSwipeAction) {
       suppressClickUntilRef.current = Date.now() + 350
       e.preventDefault()
@@ -237,7 +239,7 @@ export default function TaskCard({
     setStreamPreviewLoaded(false)
   }, [streamPreviewSrc, task.id])
 
-  // 定时更新运行中任务的计时
+  // Tick elapsed time for running tasks
   useEffect(() => {
     if (task.status !== 'running' && !(task.status === 'error' && (task.falRecoverable || task.customRecoverable))) return
     const id = setInterval(() => setNow(Date.now()), 1000)
@@ -245,7 +247,7 @@ export default function TaskCard({
     return () => clearInterval(id)
   }, [task.customRecoverable, task.falRecoverable, task.status])
 
-  // 加载缩略图
+  // Load thumbnails
   useEffect(() => {
     setCoverRatio('')
     setCoverSize('')
@@ -300,7 +302,7 @@ export default function TaskCard({
   const swipeBgClass = showSwipeAction
     ? swipeStartedSelected
       ? 'bg-gray-500 dark:bg-gray-600'
-      : 'bg-blue-500'
+      : 'bg-teal-500'
     : 'bg-gray-200 dark:bg-gray-700'
 
   const qualityDisplay = getParamDisplay(task, 'quality')
@@ -324,11 +326,11 @@ export default function TaskCard({
 
   const defaultModelForProvider = task.apiProvider === 'fal' ? DEFAULT_FAL_MODEL : DEFAULT_IMAGES_MODEL
   const showModel = task.apiModel && task.apiModel !== defaultModelForProvider
-  const isInterrupted = task.status === 'error' && task.error === '已停止生成。'
+  const isInterrupted = task.status === 'error' && task.error === '\u5df2\u505c\u6b62\u751f\u6210\u3002'
 
   return (
     <div className="relative rounded-xl">
-      {/* 侧滑底图 */}
+      {/* Swipe underlay */}
       <div
         className={`absolute inset-0 rounded-xl flex items-center transition-opacity duration-200 pointer-events-none ${
           isSwiping || swipeDirection !== 0 || swipeActionActive ? 'opacity-100' : 'opacity-0'
@@ -347,15 +349,15 @@ export default function TaskCard({
 
       <div
         ref={cardRef}
-        className={`relative bg-white dark:bg-gray-900 rounded-xl border overflow-hidden cursor-pointer touch-pan-y will-change-transform duration-200 hover:shadow-lg dark:hover:bg-gray-800/80 ${
+        className={`relative bg-white dark:bg-[var(--bx-bg-elevated)] rounded-xl border overflow-hidden cursor-pointer touch-pan-y will-change-transform duration-200 hover:shadow-lg dark:hover:bg-gray-800/80 ${
           isSwiping ? '!bg-white dark:!bg-gray-900' : ''
         } ${
           !isSwiping ? 'transition-[box-shadow,border-color,background-color,transform]' : 'transition-[box-shadow,border-color,background-color]'
         } ${
           task.status === 'running'
-            ? 'border-blue-400 generating'
+            ? 'border-teal-400 generating'
             : isSelected
-            ? 'border-blue-500 shadow-md ring-2 ring-blue-500/50'
+            ? 'border-teal-500 shadow-md ring-2 ring-teal-500/50'
             : 'border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/[0.18]'
         }`}
         onClick={(e) => {
@@ -390,16 +392,16 @@ export default function TaskCard({
           }
         }}
       >
-        {/* 选中时的角标 */}
+        {/* Selected badge */}
       {isSelected && (
-        <div className="absolute top-2 right-2 z-10 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center shadow-sm">
+        <div className="absolute top-2 right-2 z-10 w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center shadow-sm">
           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
       )}
       <div className="flex h-40">
-        {/* 左侧图片区域 */}
+        {/* Left image area */}
         <div className="w-40 min-w-[10rem] h-full bg-gray-100 dark:bg-black/20 relative flex items-center justify-center overflow-hidden flex-shrink-0">
           {task.status === 'running' && streamPreviewSrc && (
             <>
@@ -411,8 +413,8 @@ export default function TaskCard({
                 onError={() => setStreamPreviewLoaded(false)}
               />
               {streamPreviewLoaded && (
-                <span className="absolute top-1.5 right-1.5 flex items-center gap-1 rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm sm:text-xs">
-                  预览
+                <span className="absolute top-1.5 right-1.5 flex items-center gap-1 rounded bg-teal-500 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm sm:text-xs">
+                  {pg.preview}
                 </span>
               )}
             </>
@@ -420,7 +422,7 @@ export default function TaskCard({
           {task.status === 'running' && (!streamPreviewSrc || !streamPreviewLoaded) && (
             <div className="flex flex-col items-center gap-2">
               <svg
-                className="w-8 h-8 text-blue-400 animate-spin"
+                className="w-8 h-8 text-teal-400 animate-spin"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -438,7 +440,7 @@ export default function TaskCard({
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                 />
               </svg>
-              <span className="text-xs text-gray-400 dark:text-gray-500">生成中...</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{pg.generatingShort}</span>
             </div>
           )}
           {task.status === 'error' && isFalReconnecting && (
@@ -457,7 +459,7 @@ export default function TaskCard({
                 />
               </svg>
               <span className="text-xs text-yellow-500 text-center leading-tight">
-                重连中
+                {pg.reconnecting}
               </span>
             </div>
           )}
@@ -477,7 +479,7 @@ export default function TaskCard({
                 />
               </svg>
               <span className={`text-xs text-center leading-tight ${isInterrupted ? 'text-yellow-500' : 'text-red-400'}`}>
-                {isInterrupted ? '已停止' : '失败'}
+                {isInterrupted ? pg.stopped : pg.failed}
               </span>
             </div>
           )}
@@ -513,7 +515,7 @@ export default function TaskCard({
               />
             </svg>
           )}
-          {/* 运行中显示耗时，完成后显示封面图比例与分辨率标签 */}
+          {/* Show elapsed while running; aspect/resolution tags when done */}
           <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
             {showRunningTimer || task.status !== 'done' || !coverRatio || !coverSize ? (
               <span className="flex items-center gap-1 bg-black/50 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded backdrop-blur-sm font-mono">
@@ -535,22 +537,22 @@ export default function TaskCard({
           </div>
         </div>
 
-        {/* 右侧信息区域 */}
+        {/* Right info area */}
         <div className="flex-1 p-3 flex flex-col min-w-0">
           <div className="flex-1 min-h-0 mb-2 overflow-hidden">
             {showPendingPrompt ? (
               <div className="leading-relaxed">
-                <p className="text-sm text-gray-700 dark:text-gray-300">正在生成……</p>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">输入内容将在响应完成时接收</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{pg.generating}</p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{pg.generatingWait}</p>
               </div>
             ) : (
               <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
-                {task.prompt || '(无提示词)'}
+                {task.prompt || pg.noPrompt}
               </p>
             )}
           </div>
           <div className="mt-auto flex flex-col gap-1.5">
-            {/* 参数与信息：横向滚动 */}
+            {/* Params and info: horizontal scroll */}
             <div 
               data-tag-scroll-area
               className="flex overflow-x-auto hide-scrollbar pt-0.5 gap-1.5 whitespace-nowrap mask-edge-r min-w-0 pr-2"
@@ -587,47 +589,47 @@ export default function TaskCard({
               )}
               {/* Mask */}
               {task.maskImageId && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs flex-shrink-0">
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 text-xs flex-shrink-0">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
-                  局部重绘
+                  {pg.inpaint}
                 </span>
               )}
               {/* Transparent background */}
               {showTransparentOutput && (
                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">
                   <TransparentBgIcon className="w-3 h-3 flex-shrink-0" />
-                  透明背景
+                  {pg.transparentBg}
                 </span>
               )}
               {/* Params: only show if not default or mismatch */}
               {showQuality && (
                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
-                  <span className="text-gray-400 dark:text-gray-500">质量</span>
+                  <span className="text-gray-400 dark:text-gray-500">{pg.quality}</span>
                   {qualityDisplay.isMismatch ? <ActualValueBadge value={qualityDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{qualityDisplay.displayValue}</span>}
                 </span>
               )}
               {showSize && (
                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
-                  <span className="text-gray-400 dark:text-gray-500">尺寸</span>
+                  <span className="text-gray-400 dark:text-gray-500">{pg.size}</span>
                   {sizeDisplay.isMismatch ? <ActualValueBadge value={sizeDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{sizeDisplay.displayValue}</span>}
                 </span>
               )}
               {showFormat && (
                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
-                  <span className="text-gray-400 dark:text-gray-500">格式</span>
+                  <span className="text-gray-400 dark:text-gray-500">{pg.format}</span>
                   {formatDisplay.isMismatch ? <ActualValueBadge value={formatDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{formatDisplay.displayValue}</span>}
                 </span>
               )}
               {showN && (
                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
-                  <span className="text-gray-400 dark:text-gray-500">数量</span>
+                  <span className="text-gray-400 dark:text-gray-500">{pg.count}</span>
                   {nDisplay.isMismatch ? <ActualValueBadge value={nDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{nDisplay.displayValue}</span>}
                 </span>
               )}
             </div>
-            {/* 操作按钮 */}
+            {/* Action buttons */}
             <div
               data-tag-scroll-area
               className="flex items-center gap-1 flex-shrink-0 mt-0.5 ml-auto max-w-full overflow-x-auto hide-scrollbar mask-edge-r pr-2"
@@ -639,9 +641,9 @@ export default function TaskCard({
             >
               {((task.status === 'error' && !isFalReconnecting) || settings.alwaysShowRetryButton) && (
                 <TaskActionButton
-                  tooltip="重试任务"
+                  tooltip={pg.retryTask}
                   onClick={() => retryTask(task)}
-                  className="p-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-950/30 text-gray-400 hover:text-blue-500 transition"
+                  className="p-1.5 rounded-md hover:bg-teal-50 dark:hover:bg-teal-950/30 text-gray-400 hover:text-teal-500 transition"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -649,7 +651,7 @@ export default function TaskCard({
                 </TaskActionButton>
               )}
               <TaskActionButton
-                tooltip={task.isFavorite ? '编辑收藏夹' : '收藏任务'}
+                tooltip={task.isFavorite ? pg.editFavorites : pg.favoriteTask}
                 onClick={() => openFavoritePicker([task.id])}
                 className={`p-1.5 rounded-md transition ${
                   task.isFavorite
@@ -672,9 +674,9 @@ export default function TaskCard({
                 </svg>
               </TaskActionButton>
               <TaskActionButton
-                tooltip="复用配置"
+                tooltip={pg.reuseConfig}
                 onClick={onReuse}
-                className="p-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-950/30 text-gray-400 hover:text-blue-500 transition"
+                className="p-1.5 rounded-md hover:bg-teal-50 dark:hover:bg-teal-950/30 text-gray-400 hover:text-teal-500 transition"
               >
                 <svg
                   className="w-4 h-4"
@@ -691,7 +693,7 @@ export default function TaskCard({
                 </svg>
               </TaskActionButton>
               <TaskActionButton
-                tooltip="编辑输出"
+                tooltip={pg.editOutput}
                 onClick={onEditOutputs}
                 className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-950/30 text-gray-400 hover:text-green-500 transition disabled:opacity-30"
                 disabled={!task.outputImages?.length}
@@ -711,7 +713,7 @@ export default function TaskCard({
                 </svg>
               </TaskActionButton>
               <TaskActionButton
-                tooltip="删除任务"
+                tooltip={pg.deleteTask}
                 onClick={onDelete}
                 className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-950/30 text-gray-400 hover:text-red-500 transition"
               >

@@ -1,17 +1,63 @@
 import type { InputImage } from '../types'
+import { formatPg } from '@/i18n'
+import { playgroundDicts } from '@/i18n/playground-dict'
+import { tPg } from './pgI18n'
 
 const MENTION_START = '\u2063'
 const MENTION_END = '\u2064'
-const SELECTED_IMAGE_MENTION_RE = /\u2063@图(\d+)\u2064/g
-const SELECTED_MENTION_RE = /\u2063(@图(\d+)|@(?:第)?\d+轮图\d+)\u2064/g
+// Match @imgN and legacy Chinese image mention via unicode escape
+const SELECTED_IMAGE_MENTION_RE = /\u2063@(?:img|\u56fe)(\d+)\u2064/g
+// Also match agent round mentions embedded as selected mentions
+const SELECTED_MENTION_RE = /\u2063(@(?:img|\u56fe)(\d+)|@(?:\u7b2c)?\d+\u8f6e\u56fe\d+|@r\d+img\d+)\u2064/g
 
 export interface AtImageQuery {
   start: number
   query: string
 }
 
+/**
+ * New inserts use Latin wire forms from the English dict so stored prompts stay
+ * parseable across locales. Parsers still dual-accept legacy CJK unicode marks.
+ */
 export function getImageMentionLabel(index: number) {
-  return `@图${index + 1}`
+  return formatPg(playgroundDicts.en.selectedImageMention, { index: index + 1 })
+}
+
+/** Bare label without leading @ (for match helpers / menus; follows site language). */
+export function getImageMentionBareLabel(index: number) {
+  return tPg('imageMentionLabel', { index: index + 1 })
+}
+
+export function getAgentRoundImageMentionLabel(round: number, index: number) {
+  return formatPg(playgroundDicts.en.agentRoundImageLabel, { round, index })
+}
+
+export function getAgentRoundImageDisplayLabel(round: number, index: number) {
+  return tPg('roundImage', { round, index })
+}
+
+export function getAgentRoundImageShortLabel(round: number, index: number) {
+  return tPg('roundImageShort', { round, index })
+}
+
+/** Match @-menu query against wire + localized agent round labels. */
+export function agentRoundImageMentionMatches(query: string, round: number, index: number) {
+  const normalized = query.trim().toLowerCase()
+  if (!normalized) return true
+  const candidates = [
+    getAgentRoundImageMentionLabel(round, index),
+    getAgentRoundImageDisplayLabel(round, index),
+    getAgentRoundImageShortLabel(round, index),
+  ]
+  return candidates.some((label) => label.toLowerCase().includes(normalized) || label.toLowerCase().replace(/^@/, '').includes(normalized))
+}
+
+export function getDeletedRoundImageMentionLabel(index: number | string) {
+  return formatPg(playgroundDicts.en.deletedRoundImage, { index })
+}
+
+export function getRemovedImageMentionLabel() {
+  return playgroundDicts.en.removedImageMention
 }
 
 export function getSelectedImageMentionLabel(index: number) {
@@ -63,8 +109,18 @@ export function imageMentionMatches(query: string, index: number) {
   if (!normalized) return true
 
   const oneBasedIndex = String(index + 1)
-  const label = `图${oneBasedIndex}`
-  return oneBasedIndex.includes(normalized) || label.toLowerCase().includes(normalized)
+  const labelZh = `\u56fe${oneBasedIndex}`
+  const labelEn = formatPg(playgroundDicts.en.imageMentionLabel, { index: index + 1 }).toLowerCase()
+  const labelLocale = getImageMentionBareLabel(index).toLowerCase()
+  const fullLabel = getImageMentionLabel(index).toLowerCase()
+  return (
+    oneBasedIndex.includes(normalized)
+    || labelZh.toLowerCase().includes(normalized)
+    || labelEn.includes(normalized)
+    || labelLocale.includes(normalized)
+    || fullLabel.includes(normalized)
+    || fullLabel.replace(/^@/, '').includes(normalized)
+  )
 }
 
 export function insertImageMention(prompt: string, start: number, cursor: number, imageIndex: number) {
@@ -103,7 +159,7 @@ export function remapImageMentionsForOrder(
 
     const nextImageId = equivalentImageIds[previousImage.id] ?? previousImage.id
     const nextIndex = nextImages.findIndex((img) => img.id === nextImageId)
-    return nextIndex >= 0 ? getSelectedImageMentionLabel(nextIndex) : '@已移除图片'
+    return nextIndex >= 0 ? getSelectedImageMentionLabel(nextIndex) : getRemovedImageMentionLabel()
   })
 }
 

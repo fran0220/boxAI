@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import type { TaskRecord, FavoriteCollection } from '../../types'
-import {
+import { getDisplayFavoriteCollectionName, 
   ALL_FAVORITES_COLLECTION_ID,
   deleteFavoriteCollection,
   renameFavoriteCollection,
@@ -10,8 +10,11 @@ import { useDragSelect } from '../../hooks/useDragSelect'
 import { FavoriteIcon } from '../icons'
 import { FavoriteCollectionOverviewCard } from './FavoriteCollectionOverviewCard'
 import { getCollectionTasks, getLatestCoverTask, type CollectionCard } from './favoriteUtils'
+import { usePg } from '../../lib/pgI18n'
 
 export function FavoriteCollectionsView() {
+  const { pg, t } = usePg()
+
   const tasks = useStore((s) => s.tasks)
   const collections = useStore((s) => s.favoriteCollections)
   const defaultFavoriteCollectionId = useStore((s) => s.defaultFavoriteCollectionId)
@@ -29,15 +32,15 @@ export function FavoriteCollectionsView() {
   const cards = useMemo<CollectionCard[]>(() => {
     const allTasks = getCollectionTasks(ALL_FAVORITES_COLLECTION_ID, tasks)
     return [
-      { id: ALL_FAVORITES_COLLECTION_ID, name: '全部', tasks: allTasks },
+      { id: ALL_FAVORITES_COLLECTION_ID, name: pg.allFavorites, tasks: allTasks },
       ...collections.map((collection) => ({
         id: collection.id,
-        name: collection.name,
+        name: getDisplayFavoriteCollectionName(collection),
         collection,
         tasks: getCollectionTasks(collection.id, tasks),
       })),
     ]
-  }, [collections, tasks])
+  }, [collections, tasks, pg.allFavorites])
 
   const filteredCards = useMemo(() => {
     if (!searchQuery.trim()) return cards
@@ -88,11 +91,12 @@ export function FavoriteCollectionsView() {
     if (collections.length <= 1) return
     const imageCount = new Set(collectionTasks.flatMap((task) => task.outputImages || [])).size
     setConfirmDialog({
-      title: '删除收藏夹',
-      message: `确定要删除收藏夹「${collection.name}」吗？`,
+      tone: 'danger',
+      title: pg.deleteFavorite,
+      message: t('deleteFavoriteConfirm', { name: getDisplayFavoriteCollectionName(collection) }),
       checkbox: imageCount > 0
         ? {
-            label: `同时删除收藏夹中的图片（${imageCount} 张）`,
+            label: t('deleteFavoriteWithImages', { count: imageCount }),
             tone: 'danger',
           }
         : undefined,
@@ -113,8 +117,8 @@ export function FavoriteCollectionsView() {
       return
     }
     setConfirmDialog({
-      title: '修改默认收藏夹',
-      message: `确定要将默认收藏夹从「${current.name}」改为「${collection.name}」吗？`,
+      title: pg.changeDefaultFavorite,
+      message: t('changeDefaultConfirm', { from: getDisplayFavoriteCollectionName(current), to: getDisplayFavoriteCollectionName(collection) }),
       action: () => setDefaultFavoriteCollectionId(collection.id),
     })
   }
@@ -124,7 +128,8 @@ export function FavoriteCollectionsView() {
       {filteredCards.length === 0 ? (
         <div className="py-32 text-center text-gray-400 dark:text-gray-500">
           <FavoriteIcon className="mx-auto mb-4 h-12 w-12 text-gray-300 dark:text-gray-600" />
-          <p className="text-sm">{cards.length === 0 ? '还没有收藏的图片' : '没有找到匹配的收藏夹'}</p>
+          <p className="mb-1 text-sm font-medium text-gray-500 dark:text-gray-400">{pg.favorites}</p>
+          <p className="text-sm">{cards.length === 0 ? pg.noFavoritesYet : pg.noMatchingCollections}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-10">
@@ -165,7 +170,7 @@ export function FavoriteCollectionsView() {
       )}
       {selectionBox && (
         <div
-          className="fixed bg-blue-500/20 border border-blue-500/50 pointer-events-none z-[30]"
+          className="fixed bg-teal-500/20 border border-teal-500/50 pointer-events-none z-[30]"
           style={{
             left: Math.min(selectionBox.startPageX, selectionBox.currentPageX) - window.scrollX,
             top: Math.min(selectionBox.startPageY, selectionBox.currentPageY) - window.scrollY,

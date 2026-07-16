@@ -2,6 +2,7 @@ import { zipSync } from 'fflate'
 import type { TaskRecord } from '../types'
 import { ensureImageCached } from '../store'
 import { getNumberedFileNameBase, sanitizeFileNamePart } from './exportFileName'
+import { tPg } from './pgI18n'
 
 const MIME_EXTENSIONS: Record<string, string> = {
   'image/png': 'png',
@@ -109,7 +110,7 @@ async function getImageBlob(imageIdOrUrl: string): Promise<Blob> {
   }
 
   const res = await fetch(src)
-  if (!res.ok && !src.startsWith('data:')) throw new Error(`读取图片失败：${imageIdOrUrl}`)
+  if (!res.ok && !src.startsWith('data:')) throw new Error(tPg('readImageFailed', { id: imageIdOrUrl }))
   return await res.blob()
 }
 

@@ -1,5 +1,7 @@
 /** BoxAI web copy — Simplified Chinese (source of truth for the Dict type). */
 
+import { playgroundZh } from './playground-dict'
+
 export const zh = {
   nav: {
     home: '首页',
@@ -13,6 +15,9 @@ export const zh = {
     logout: '退出登录',
     menu: '菜单',
     language: '语言',
+    theme: '主题',
+    themeDark: '切换到浅色',
+    themeLight: '切换到深色',
   },
   common: {
     loading: '加载中…',
@@ -379,7 +384,16 @@ export const zh = {
   create: {
     metaTitle: '创作台',
     title: '创作台',
-    nav: { image: '图像', video: '视频', assets: '资产' },
+    workspaceHint: '侧栏切换图像、视频与本地资产',
+    openPanels: '功能菜单',
+    nav: {
+      image: '图像',
+      imageDesc: '生成、Remix 与画廊',
+      video: '视频',
+      videoDesc: '文生 / 图生视频任务',
+      assets: '资产',
+      assetsDesc: '本地历史与回流创作',
+    },
     backHome: '返回官网',
     keyPreparing: '正在准备创作台密钥…',
     keyFailed: '密钥准备失败,网关调用可能不可用:',
@@ -388,6 +402,8 @@ export const zh = {
       placeholder: '选择或输入模型 ID',
       loading: '正在加载模型…',
       empty: '没有匹配的模型,回车使用输入值',
+      reload: '刷新模型列表',
+      toggleList: '展开或收起模型列表',
     },
     job: {
       queued: '排队中',
@@ -464,6 +480,7 @@ export const zh = {
     body: '你访问的页面不存在或已被移动。',
     back: '返回首页',
   },
+  playground: playgroundZh,
 }
 
 export type Dict = typeof zh

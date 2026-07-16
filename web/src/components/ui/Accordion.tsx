@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
+import { BX_EASE } from '@/components/motion/Reveal'
 
 export interface AccordionItem {
   q: string
@@ -23,10 +24,10 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
               aria-expanded={isOpen}
               onClick={() => setOpen(isOpen ? null : i)}
             >
-              <span>{item.q}</span>
+              <span className="bx-display tracking-tight">{item.q}</span>
               <motion.span
                 animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: reduced ? 0 : 0.25 }}
+                transition={{ duration: reduced ? 0 : 0.28, ease: BX_EASE }}
                 className="shrink-0 text-[var(--bx-text-dim)]"
               >
                 <ChevronDown size={18} />
@@ -38,7 +39,7 @@ export function Accordion({ items }: { items: AccordionItem[] }) {
                   initial={reduced ? false : { height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={reduced ? undefined : { height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.32, ease: BX_EASE }}
                   className="overflow-hidden"
                 >
                   <p className="px-5 pb-5 text-sm leading-relaxed text-[var(--bx-text-muted)] sm:px-6">

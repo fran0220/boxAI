@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Check, Globe } from 'lucide-react'
 import { LANGS, useI18n, type Lang } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { BX_EASE } from '@/components/motion/Reveal'
 
 export function LangSwitcher({ align = 'right' }: { align?: 'left' | 'right' }) {
   const { lang, setLang } = useI18n()
@@ -28,7 +29,7 @@ export function LangSwitcher({ align = 'right' }: { align?: 'left' | 'right' }) 
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+        className="flex items-center gap-1.5 rounded-[var(--bx-radius)] px-2.5 py-1.5 text-sm text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -42,7 +43,7 @@ export function LangSwitcher({ align = 'right' }: { align?: 'left' | 'right' }) 
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.16, ease: BX_EASE }}
             className={cx(
               'bx-card absolute z-50 mt-2 w-40 overflow-hidden bg-[var(--bx-bg-elevated)] p-1 shadow-[var(--bx-shadow-pop)]',
               align === 'right' ? 'right-0' : 'left-0',
@@ -56,8 +57,8 @@ export function LangSwitcher({ align = 'right' }: { align?: 'left' | 'right' }) 
                   aria-selected={l.code === lang}
                   onClick={() => pick(l.code)}
                   className={cx(
-                    'flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-[var(--bx-hover)]',
-                    l.code === lang ? 'text-[var(--bx-teal)]' : 'text-[var(--bx-text-soft)]',
+                    'flex w-full items-center justify-between rounded-[var(--bx-radius-sm)] px-3 py-2 text-sm transition-colors hover:bg-[var(--bx-hover)]',
+                    l.code === lang ? 'text-[var(--bx-brand-bright)]' : 'text-[var(--bx-text-soft)]',
                   )}
                 >
                   {l.label}

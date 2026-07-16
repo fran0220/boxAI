@@ -5,16 +5,20 @@ import App from './App'
 import './index.css'
 import { BRAND_DOCUMENT_TITLE } from './lib/brand'
 import { I18nProvider } from './i18n'
+import { ThemeProvider, initThemeClass } from './lib/theme'
 
 document.title = BRAND_DOCUMENT_TITLE
-document.documentElement.classList.add('dark')
+// Match Vue console: default dark; only light when localStorage.theme === 'light'
+initThemeClass()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <I18nProvider>
-        <App />
-      </I18nProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          <App />
+        </I18nProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,
 )

@@ -4,8 +4,11 @@ import { canCopyImageToClipboard, copyImageSourceToClipboard, getClipboardFailur
 import { downloadImageEntriesAsZip, downloadImageIds, formatExportFileTime, getImageZipEntries } from '../lib/downloadImages'
 import { suppressGlobalClicks } from '../lib/clickSuppression'
 import { CopyIcon, DownloadIcon, EditIcon } from './icons'
+import { usePg } from '../lib/pgI18n'
 
 export default function ImageContextMenu() {
+  const { pg, t } = usePg()
+
   const [menuInfo, setMenuInfo] = useState<{ src: string; imageId?: string; outputImageIds: string[]; canCopyImage: boolean; x: number; y: number } | null>(null)
   const showToast = useStore((s) => s.showToast)
   const inputImages = useStore((s) => s.inputImages)
@@ -21,16 +24,16 @@ export default function ImageContextMenu() {
       const target = e.target as HTMLElement
       if (target && target.tagName === 'IMG') {
         const imgTarget = target as HTMLImageElement
-        // 忽略没有 src 或空的 img
+        // Ignore img without src
         if (!imgTarget.src) return
 
-        // iOS 触控设备上，放行原生长按菜单（以支持原生保存图片）
+        // On iOS touch, allow native long-press menu (native save image)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
         const isTouch = window.matchMedia('(pointer: coarse)').matches
         if (isIOS && isTouch) return
 
         const canCopyImage = canCopyImageToClipboard()
-        // 非安全上下文没有图片剪贴板 API；原图区域放行原生菜单，缩略图仍保留下载/编辑能力。
+        // Insecure context lacks image clipboard API; allow native menu on originals, keep download/edit on thumbs.
         if (!canCopyImage && imgTarget.classList.contains('object-contain')) return
 
         e.preventDefault()
@@ -45,14 +48,14 @@ export default function ImageContextMenu() {
       }
     }
 
-    // 监听全局 contextmenu，兼容桌面端右键和大部分移动端长按
+    // Listen for global contextmenu (desktop right-click + most mobile long-press)
     window.addEventListener('contextmenu', onContextMenu)
     return () => {
       window.removeEventListener('contextmenu', onContextMenu)
     }
   }, [])
 
-  // 点击其他地方、滚动或缩放时关闭菜单
+  // Close menu on outside click, scroll, or zoom
   useEffect(() => {
     if (!menuInfo) return
     const close = (e: Event) => {
@@ -91,10 +94,10 @@ export default function ImageContextMenu() {
     setMenuInfo(null)
     try {
       await copyImageSourceToClipboard(getOriginalImageSrc())
-      showToast('图片已复制', 'success')
+      showToast(pg.imageCopied, 'success')
     } catch (err) {
       console.error(err)
-      showToast(getClipboardFailureMessage('复制失败', err), 'error')
+      showToast(getClipboardFailureMessage(pg.copyFailed, err), 'error')
     }
   }
 
@@ -121,13 +124,13 @@ export default function ImageContextMenu() {
 
       const result = await downloadImageIds([imageId || src], fileNameBase)
       if (result.successCount === 0) {
-        showToast('下载失败', 'error')
+        showToast(pg.downloadFailed, 'error')
       } else {
-        showToast('下载成功', 'success')
+        showToast(pg.downloadSuccess, 'success')
       }
     } catch (err) {
       console.error(err)
-      showToast('下载失败', 'error')
+      showToast(pg.downloadFailed, 'error')
     }
   }
 
@@ -156,15 +159,15 @@ export default function ImageContextMenu() {
         ? await downloadImageEntriesAsZip(getImageZipEntries(outputImageIds, fileNameBase), fileNameBase)
         : await downloadImageIds(outputImageIds, fileNameBase)
       if (result.successCount === 0) {
-        showToast('下载失败', 'error')
+        showToast(pg.downloadFailed, 'error')
       } else if (result.failCount > 0) {
-        showToast(`部分下载失败：成功 ${result.successCount}，失败 ${result.failCount}`, 'error')
+        showToast(t('downloadPartial', { success: result.successCount, fail: result.failCount }), 'error')
       } else {
-        showToast(result.successCount > 1 ? `下载成功：${result.successCount} 张图片` : '下载成功', 'success')
+        showToast(result.successCount > 1 ? t('downloadSuccessCount', { count: result.successCount }) : pg.downloadSuccess, 'success')
       }
     } catch (err) {
       console.error(err)
-      showToast('下载失败', 'error')
+      showToast(pg.downloadFailed, 'error')
     }
   }
 
@@ -172,7 +175,7 @@ export default function ImageContextMenu() {
     e.stopPropagation()
     setMenuInfo(null)
     if (inputImages.length >= 16) {
-      showToast('参考图数量已达上限（16 张），无法继续添加', 'error')
+      showToast(t('refLimit', { max: 16 }), 'error')
       return
     }
 
@@ -182,14 +185,14 @@ export default function ImageContextMenu() {
       setDetailTaskId(null)
       setLightboxImageId(null)
       setMaskEditorImageId(null)
-      showToast('已加入参考图', 'success')
+      showToast(pg.addedToRef, 'success')
     } catch (err) {
       console.error(err)
-      showToast(`加入参考图失败：${err instanceof Error ? err.message : String(err)}`, 'error')
+      showToast(t('addToRefFailed', { error: err instanceof Error ? err.message : String(err) }), 'error')
     }
   }
 
-  // 保证菜单在视口内
+  // Keep menu inside viewport
   let left = menuInfo.x
   let top = menuInfo.y
   const MENU_WIDTH = 120
@@ -207,7 +210,7 @@ export default function ImageContextMenu() {
   return (
     <div
       ref={menuRef}
-      className="fixed z-[9999] bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 py-1 w-[120px] overflow-hidden animate-fade-in"
+      className="fixed z-[9999] bg-white dark:bg-[var(--bx-bg-elevated)] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 py-1 w-[120px] overflow-hidden animate-fade-in"
       style={{ left, top }}
       onContextMenu={(e) => e.preventDefault()}
     >
@@ -217,7 +220,7 @@ export default function ImageContextMenu() {
           className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors"
         >
           <CopyIcon className="w-4 h-4 flex-shrink-0" />
-          复制
+          {pg.copy}
         </button>
       )}
       <button
@@ -225,7 +228,7 @@ export default function ImageContextMenu() {
         className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors"
       >
         <DownloadIcon className="w-4 h-4 flex-shrink-0" />
-        下载
+        {pg.download}
       </button>
       {showDownloadAll && (
         <button
@@ -233,7 +236,7 @@ export default function ImageContextMenu() {
           className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors"
         >
           <DownloadIcon className="w-4 h-4 flex-shrink-0" />
-          下载全部
+          {pg.downloadAll}
         </button>
       )}
       <button
@@ -241,7 +244,7 @@ export default function ImageContextMenu() {
         className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors"
       >
         <EditIcon className="w-4 h-4 flex-shrink-0" />
-        编辑
+        {pg.edit}
       </button>
     </div>
   )

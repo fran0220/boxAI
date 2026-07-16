@@ -34,9 +34,9 @@ Constants live in:
 
 | Asset | Path | Notes |
 |-------|------|--------|
-| Full color (SVG) | `frontend/public/logo.svg` | Source of truth; teal→cyan gradient open cube + routing nodes |
-| Raster favicon/app | `frontend/public/logo.png` | 512×512 RGBA export for PNG consumers |
-| Monochrome | `frontend/public/logo-mono.svg` | `currentColor` mark for inverse surfaces |
+| Full color (SVG) | `frontend/public/logo.svg`, `web/public/logo.svg` | Teal→cyan gradient open cube + routing nodes |
+| Raster favicon/app | `web/public/logo.png` | 512×512 RGBA export for PNG consumers |
+| Monochrome | `*/public/logo-mono.svg` | `currentColor` mark for inverse surfaces |
 
 **Concept:** isometric open cube (“box”) with an emergent spark and three fan-out nodes (gateway routing). Clear at 16–32px favicon sizes.
 
@@ -44,8 +44,8 @@ Constants live in:
 
 ## Color
 
-**Single source of truth:** `frontend/src/styles/tokens.css` (`--bx-*`).  
-Console + homepage share the same dark-first surface. Tailwind `primary` / `dark` scales map to this system.
+**Single source of truth:** `frontend/src/styles/tokens.css` and `web/src/index.css` share the same `--bx-*` palette (teal → cyan).  
+Console + marketing/Creator stay dark-first on one color system.
 
 | Token | Hex / value | Role |
 |-------|-------------|------|
@@ -54,37 +54,33 @@ Console + homepage share the same dark-first surface. Tailwind `primary` / `dark
 | `--bx-bg-card` | `rgba(255,255,255,0.035)` | Cards / tables |
 | `--bx-text` | `#f4f5f7` | Primary text |
 | `--bx-teal` / CTA | `#2dd4bf` → `#22d3ee` | Brand / CTA gradient |
+| `--bx-primary` | `#14b8a6` | Solid primary |
+| `--bx-accent` | `#06b6d4` | Cyan accent |
 | `primary-500` | `#14b8a6` | Tailwind primary (compat) |
-| `dark-950` | `#080a0d` | Tailwind dark base (= homepage) |
 
 Gradients: `--bx-grad-cta` / `--bx-grad-hero` (`#2dd4bf → #22d3ee` / hero multi-stop).
 
-**Default theme:** dark. Light is an explicit user toggle fallback (`html:not(.dark)` in `tokens.css`).
+**Do not use purple/violet as brand.** Keep marketing, Creator, and console on teal–cyan.
+
+**Default theme:** dark. Light is an explicit user toggle fallback on console (`html:not(.dark)` in `tokens.css`).
 
 ## Typography
 
-- UI / marketing: **Noto Sans SC** + system / PingFang SC / Microsoft YaHei (`--bx-font`, `tailwind.config.js` `fontFamily.sans`, loaded in `index.html`)
+- **Marketing / Creator (`web/`):** Space Grotesk (Latin / display) + Noto Sans SC (CJK)
+- **Console (`frontend/`):** Noto Sans SC + system / PingFang SC / Microsoft YaHei
 - Code / terminal demos: `ui-monospace` stack
 - Marketing H1: extrabold, tracking-tight, optional gradient text on the product name
 
-## Marketing surface
+## Marketing + Creator surface
 
 Public marketing and Creator UI: React app on **`you-box.com`** (`web/`).
 
-- Routes: `/`, `/studio`, `/download`, `/create/*`, `/login`
-- Tokens: `--bx-*` (`web/src/index.css`, shared language with console `tokens.css`)
+- Routes: `/`, `/studio`, `/pricing`, `/create/*` (image · video · assets), `/login`, `/account`
+- Tokens: `--bx-*` in `web/src/index.css` (aligned with console)
+- Creator shell: `CreateLayout` + workspace primitives (`.bx-create-*`)
+- Image workbench: vendored playground under `web/src/image-playground` (teal primary HSL)
 - Constants: `web/src/lib/brand.ts` (same names as `frontend/src/constants/brand.ts`)
 
 Console shell on **`console.you-box.com`**: `AppLayout` / `AuthLayout` use `bx-page` + `bx-ambient-mesh`. See `docs/design-unification-ledger.md`.
 
 Topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md).
-
-## Compliance note (do not change casually)
-
-Legal acknowledgment phrases in `frontend/src/stores/adminCompliance.ts` and matching backend hashes **must remain byte-stable** (currently reference “Sub2API” wording). Changing them invalidates stored admin compliance acknowledgments. Product UI copy elsewhere uses **BoxAI**.
-
-## Upstream attribution
-
-BoxAI product branding is applied on top of the open-source Sub2API gateway stack. Preserve LICENSE, CLA, and disclaimer sections when editing README headers.
-
-Engineering rules for keeping brand deltas merge-friendly: [AGENTS.md](../AGENTS.md), [FORK_DELTA.md](../FORK_DELTA.md), [docs/agents/change-design.md](./agents/change-design.md).

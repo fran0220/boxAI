@@ -1,8 +1,26 @@
 # 设计语言统一台账
 
-**目标：** `you-box.com`（React 产品面）与 `console.you-box.com`（Vue 控制台）共用 `--bx-*` 设计 token。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)。  
-**默认主题：** 深色（`#080a0d`）。浅色为用户显式切换。  
+**目标：** `you-box.com`（React 产品面）与 `console.you-box.com`（Vue 控制台）共用同一套 **teal→cyan** `--bx-*` token 与深色优先。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)、[BRAND.md](./BRAND.md)。  
+**默认主题：** 深色（`#080a0d`）。浅色为用户显式切换（控制台）。  
 **状态：** `pending` → `done` · 审查时更新本表。
+
+## F. React 营销 + 创作台（web/）
+
+| ID | 项 | 路径 | 状态 |
+|----|-----|------|------|
+| F1 | Token 与控制台对齐（teal/cyan，无紫）+ 圆角矩形/expo-out | `web/src/index.css` | done |
+| F2 | 字体 Space Grotesk + Noto Sans SC | `web/index.html`, tailwind | done |
+| F3 | Aurora / Cube / GradientRing | `web/src/components/brand/*` | done |
+| F4 | 壳层 Header/Footer/Layout | `web/src/components/*` | done |
+| F5 | Home 融合布局 | `web/src/pages/Home.tsx` | done |
+| F6 | Studio / Pricing / Account | `web/src/pages/*` | done |
+| F7 | Creator 壳 CreateLayout + tabs | `web/src/pages/create/CreateLayout.tsx` | done |
+| F8 | 视频页 / 资产页 / ModelPicker | `create/Video`, `Assets`, `ModelPicker` | done |
+| F9 | 图像 playground 对齐 teal primary | `image-playground/index.css` | done |
+| F10 | Logo 资产 | `web/public/logo.svg`, `logo.png` | done |
+| F11 | 语义色 danger/success/warning + icon-btn | `web/src/index.css` | done |
+| F12 | Creator 左抽屉 + 自研页 token 收干净 | `create/*` | done |
+| F13 | Playground 品牌皮肤（teal/rect/focus） | `image-playground` | done |
 
 ## A. 设计源与全局
 

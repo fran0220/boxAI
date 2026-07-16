@@ -33,7 +33,7 @@ export default function ViewportTooltip({ visible, children, className = '' }: V
 
   const effectiveVisible = visible && !suppressed
 
-  // 检查锚点中心是否仍在最上层可命中（未被弹窗等遮挡）
+  // Check anchor center is still topmost hit target (not covered by modals)
   const isAnchorExposed = (anchor: HTMLElement, rect: DOMRect) => {
     const x = rect.left + rect.width / 2
     const y = rect.top + rect.height / 2

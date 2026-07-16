@@ -64,12 +64,13 @@ export function Assets() {
   }
 
   function useAsReference(asset: AssetRecord) {
-    // Reuse the video handoff shape; Image reads `frame` as its reference.
     navigate('/create/image', { state: { reference: asset.payload } })
   }
 
   function makeVideo(asset: AssetRecord) {
-    navigate('/create/video', { state: { frame: asset.payload, prompt: asset.prompt || asset.title } })
+    navigate('/create/video', {
+      state: { frame: asset.payload, prompt: asset.prompt || asset.title },
+    })
   }
 
   const filters: Array<{ key: Filter; label: string }> = [
@@ -80,17 +81,19 @@ export function Assets() {
   ]
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="mx-auto max-w-6xl px-4 py-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="bx-create-scroll flex-1">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="flex items-center gap-2 text-base font-semibold">
-              <FolderOpen size={17} className="text-[var(--bx-teal)]" />
+            <h1 className="bx-create-panel-title">
+              <span className="bx-icon-box !h-9 !w-9">
+                <FolderOpen size={16} />
+              </span>
               {d.create.assets.title}
             </h1>
-            <p className="mt-1 text-xs text-[var(--bx-text-dim)]">{d.create.assets.subtitle}</p>
+            <p className="mt-1.5 text-xs text-[var(--bx-text-dim)]">{d.create.assets.subtitle}</p>
           </div>
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-72">
             <Search
               size={14}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--bx-text-dim)]"
@@ -104,18 +107,14 @@ export function Assets() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        <div className="mt-5 flex flex-wrap gap-1.5">
           {filters.map((f) => (
             <button
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key)}
-              className={cx(
-                'rounded-full px-3.5 py-1.5 text-sm transition-colors',
-                filter === f.key
-                  ? 'bg-[var(--bx-active)] text-[var(--bx-teal)]'
-                  : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)]',
-              )}
+              data-active={filter === f.key}
+              className="bx-filter-chip"
             >
               {f.label}
             </button>
@@ -123,20 +122,40 @@ export function Assets() {
         </div>
 
         {items.length === 0 ? (
-          <div className="bx-card mt-6 flex min-h-[220px] items-center justify-center p-8 text-sm text-[var(--bx-text-dim)]">
-            {d.create.assets.empty}
+          <div className="bx-empty-state mt-6">
+            <span className="bx-icon-box">
+              <FolderOpen size={20} />
+            </span>
+            <strong>{d.create.assets.empty}</strong>
           </div>
         ) : (
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((asset) => (
-              <div key={asset.id} className="bx-card bx-card-hover group relative overflow-hidden">
-                <button type="button" className="block w-full text-left" onClick={() => setFocus(asset)}>
+              <div
+                key={asset.id}
+                className="bx-create-panel bx-card-hover group relative overflow-hidden"
+              >
+                <button
+                  type="button"
+                  className="block w-full text-left"
+                  onClick={() => setFocus(asset)}
+                >
                   {asset.kind === 'image' ? (
-                    <img src={asset.payload} alt="" className="aspect-square w-full object-cover" loading="lazy" />
+                    <img
+                      src={asset.payload}
+                      alt=""
+                      className="aspect-square w-full object-cover"
+                      loading="lazy"
+                    />
                   ) : (
                     <div className="relative flex aspect-square w-full items-center justify-center bg-[var(--bx-bg-muted)]">
-                      <video src={asset.payload} preload="metadata" muted className="absolute inset-0 h-full w-full object-cover" />
-                      <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white">
+                      <video
+                        src={asset.payload}
+                        preload="metadata"
+                        muted
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                      <span className="bx-media-overlay relative h-11 w-11">
                         <Play size={16} fill="currentColor" />
                       </span>
                     </div>
@@ -155,19 +174,21 @@ export function Assets() {
                   <button
                     type="button"
                     className={cx(
-                      'rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-1.5 transition-opacity',
+                      'rounded-[var(--bx-radius-sm)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)]/90 p-1.5 backdrop-blur transition-opacity',
                       asset.favorite
-                        ? 'text-[var(--bx-teal)]'
-                        : 'text-[var(--bx-text-dim)] opacity-0 hover:text-[var(--bx-teal)] group-hover:opacity-100',
+                        ? 'text-[var(--bx-teal-bright)]'
+                        : 'text-[var(--bx-text-dim)] opacity-0 hover:text-[var(--bx-teal-bright)] group-hover:opacity-100',
                     )}
                     onClick={() => void toggleFavorite(asset)}
-                    aria-label={asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite}
+                    aria-label={
+                      asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite
+                    }
                   >
                     <Star size={13} className={asset.favorite ? 'fill-current' : undefined} />
                   </button>
                   <button
                     type="button"
-                    className="rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-1.5 text-[var(--bx-text-dim)] opacity-0 transition-opacity hover:text-red-400 group-hover:opacity-100"
+                    className="bx-icon-btn bx-icon-btn--danger border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)]/90 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
                     onClick={() => void onDelete(asset)}
                     aria-label={d.common.delete}
                   >
@@ -180,39 +201,72 @@ export function Assets() {
         )}
       </div>
 
-      {/* Focus */}
       <Modal open={!!focus} onClose={() => setFocus(null)} title={focus?.title} wide>
         {focus ? (
           <div className="space-y-4">
             {focus.kind === 'image' ? (
-              <img src={focus.payload} alt="" className="mx-auto max-h-[58vh] rounded-xl" />
+              <img
+                src={focus.payload}
+                alt=""
+                className="mx-auto max-h-[58vh] rounded-[var(--bx-radius-md)]"
+              />
             ) : (
-              <video src={focus.payload} controls autoPlay className="mx-auto max-h-[58vh] w-full rounded-xl" />
+              <video
+                src={focus.payload}
+                controls
+                autoPlay
+                className="mx-auto max-h-[58vh] w-full rounded-[var(--bx-radius-md)]"
+              />
             )}
             <div className="flex flex-wrap items-center justify-center gap-2">
               {focus.kind === 'image' ? (
                 <>
-                  <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => useAsReference(focus)}>
+                  <button
+                    type="button"
+                    className="bx-btn bx-btn-ghost bx-btn-sm"
+                    onClick={() => useAsReference(focus)}
+                  >
                     <ImagePlus size={13} />
                     {d.create.actions.useAsReference}
                   </button>
-                  <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => makeVideo(focus)}>
+                  <button
+                    type="button"
+                    className="bx-btn bx-btn-ghost bx-btn-sm"
+                    onClick={() => makeVideo(focus)}
+                  >
                     <Clapperboard size={13} />
                     {d.create.actions.makeVideo}
                   </button>
                 </>
               ) : null}
-              <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void toggleFavorite(focus)}>
-                <Star size={13} className={focus.favorite ? 'fill-[var(--bx-teal)] text-[var(--bx-teal)]' : undefined} />
+              <button
+                type="button"
+                className="bx-btn bx-btn-ghost bx-btn-sm"
+                onClick={() => void toggleFavorite(focus)}
+              >
+                <Star
+                  size={13}
+                  className={
+                    focus.favorite
+                      ? 'fill-[var(--bx-teal-bright)] text-[var(--bx-teal-bright)]'
+                      : undefined
+                  }
+                />
                 {focus.favorite ? d.create.actions.unfavorite : d.create.actions.favorite}
               </button>
-              <a href={focus.payload} download target="_blank" rel="noopener" className="bx-btn bx-btn-ghost bx-btn-sm">
+              <a
+                href={focus.payload}
+                download
+                target="_blank"
+                rel="noopener"
+                className="bx-btn bx-btn-ghost bx-btn-sm"
+              >
                 <Download size={13} />
                 {d.create.actions.download}
               </a>
               <button
                 type="button"
-                className="bx-btn bx-btn-ghost bx-btn-sm text-red-400"
+                className="bx-btn bx-btn-danger bx-btn-sm"
                 onClick={() => void onDelete(focus)}
               >
                 <Trash2 size={13} />

@@ -1,4 +1,4 @@
-// ===== 设置 =====
+// ===== Settings =====
 
 export type ApiMode = 'images' | 'responses'
 export type AppMode = 'gallery' | 'agent'
@@ -85,7 +85,7 @@ export interface ApiProfile {
 }
 
 export interface AppSettings {
-  /** 旧版单配置字段：保留用于导入/查询参数兼容，实际请求以 active profile 为准 */
+  /** …：…/…，… active profile … */
   baseUrl: string
   apiKey: string
   model: string
@@ -117,7 +117,7 @@ export interface AppSettings {
   activeProfileId: string
 }
 
-// ===== 任务参数 =====
+// ===== Task params =====
 
 export interface TaskParams {
   size: string
@@ -139,12 +139,12 @@ export const DEFAULT_PARAMS: TaskParams = {
   transparent_output: false,
 }
 
-// ===== 输入图片（UI 层面） =====
+// ===== Input images (UI) =====
 
 export interface InputImage {
-  /** IndexedDB image store 的 id（SHA-256 hash） */
+  /** IndexedDB image store … id（SHA-256 hash） */
   id: string
-  /** data URL，用于预览 */
+  /** data URL，… */
   dataUrl: string
 }
 
@@ -154,7 +154,7 @@ export interface MaskDraft {
   updatedAt: number
 }
 
-// ===== 任务记录 =====
+// ===== Task record =====
 
 export type TaskStatus = 'running' | 'done' | 'error'
 
@@ -162,75 +162,75 @@ export interface TaskRecord {
   id: string
   prompt: string
   params: TaskParams
-  /** 生成时使用的 Provider 类型 */
+  /** … Provider … */
   apiProvider?: ApiProvider
-  /** 生成时使用的 API 配置 ID */
+  /** … API … ID */
   apiProfileId?: string
-  /** 生成时使用的 Provider 名称 */
+  /** … Provider … */
   apiProfileName?: string
-  /** 生成时使用的 API 模式 */
+  /** … API … */
   apiMode?: ApiMode
-  /** 生成时使用的模型 ID */
+  /** … ID */
   apiModel?: string
-  /** fal.ai 队列请求 ID，用于连接断开后的结果恢复 */
+  /** fal.ai … ID，… */
   falRequestId?: string
-  /** fal.ai 队列 endpoint，用于连接断开后的状态和结果查询 */
+  /** fal.ai … endpoint，… */
   falEndpoint?: string
-  /** fal.ai 任务连接断开后是否等待自动恢复 */
+  /** fal.ai … */
   falRecoverable?: boolean
-  /** 自定义异步服务商任务 ID，用于重启后继续查询结果 */
+  /** … ID，… */
   customTaskId?: string
-  /** 自定义异步任务是否等待自动恢复 */
+  /** … */
   customRecoverable?: boolean
-  /** API 返回的实际生效参数，用于标记与请求值不一致的情况 */
+  /** API …，… */
   actualParams?: Partial<TaskParams>
-  /** 输出图片对应的实际生效参数，key 为 outputImages 中的图片 id */
+  /** …，key … outputImages … id */
   actualParamsByImage?: Record<string, Partial<TaskParams>>
-  /** 输出图片对应的 API 改写提示词，key 为 outputImages 中的图片 id */
+  /** … API …，key … outputImages … id */
   revisedPromptByImage?: Record<string, string>
-  /** 是否启用透明背景后处理 */
+  /** … */
   transparentOutput?: boolean
-  /** 实际发送给 API 的透明背景辅助提示词 */
+  /** … API … */
   transparentPrompt?: string
-  /** 透明背景后处理前的原始输出图片 id，顺序对应 outputImages */
+  /** … id，… outputImages */
   transparentOriginalImages?: string[]
-  /** 输入图片的 image store id 列表 */
+  /** … image store id … */
   inputImageIds: string[]
   maskTargetImageId?: string | null
   maskImageId?: string | null
-  /** 输出图片的 image store id 列表 */
+  /** … image store id … */
   outputImages: string[]
-  /** 并发多图中失败的输出槽位，requestIndex 为从 0 开始的请求序号 */
+  /** …，requestIndex … 0 … */
   outputErrors?: Array<{ requestIndex: number; error: string }>
-  /** 流式生成的中间步骤图片 id 列表，仅失败时保留供排查/下载 */
+  /** … id …，…/… */
   streamPartialImageIds?: string[]
-  /** API 返回的原始图片 HTTP URL（非 base64 时记录） */
+  /** API … HTTP URL（… base64 …） */
   rawImageUrls?: string[]
-  /** 发生解析错误时的原始响应 JSON */
+  /** … JSON */
   rawResponsePayload?: string
   status: TaskStatus
   error: string | null
   createdAt: number
   finishedAt: number | null
-  /** 总耗时毫秒 */
+  /** … */
   elapsed: number | null
-  /** 是否收藏 */
+  /** … */
   isFavorite?: boolean
-  /** 所属收藏夹 ID 列表 */
+  /** … ID … */
   favoriteCollectionIds?: string[]
-  /** 来源模式：画廊 / Agent */
+  /** …：… / Agent */
   sourceMode?: AppMode
-  /** Agent 对话 ID */
+  /** Agent … ID */
   agentConversationId?: string
-  /** Agent 轮次 ID */
+  /** Agent … ID */
   agentRoundId?: string
-  /** Agent 消息 ID */
+  /** Agent … ID */
   agentMessageId?: string
-  /** Agent 图像工具调用 ID */
+  /** Agent … ID */
   agentToolCallId?: string
-  /** Agent 批量图像工具调用 ID */
+  /** Agent … ID */
   agentBatchCallId?: string
-  /** Agent 图像工具实际动作 */
+  /** Agent … */
   agentToolAction?: 'generate' | 'edit' | 'auto' | string
 }
 
@@ -241,7 +241,7 @@ export interface FavoriteCollection {
   updatedAt: number
 }
 
-// ===== Agent 模式 =====
+// ===== Agent mode =====
 
 export type AgentMessageRole = 'user' | 'assistant'
 export type AgentRoundStatus = 'running' | 'done' | 'error'
@@ -287,34 +287,34 @@ export interface AgentConversation {
   messages: AgentMessage[]
 }
 
-// ===== IndexedDB 存储的图片 =====
+// ===== IndexedDB stored image =====
 
 export interface StoredImage {
   id: string
   dataUrl: string
-  /** 图片首次存储时间（ms） */
+  /** …（ms） */
   createdAt?: number
-  /** 图片来源：用户上传 / API 生成 / 遮罩 */
+  /** …：… / API … / … */
   source?: 'upload' | 'generated' | 'mask'
-  /** 原图宽度 */
+  /** … */
   width?: number
-  /** 原图高度 */
+  /** … */
   height?: number
 }
 
 export interface StoredImageThumbnail {
   id: string
-  /** 列表缩略图，用于避免卡片页解码完整 4K 原图 */
+  /** …，… 4K … */
   thumbnailDataUrl: string
-  /** 原图宽度 */
+  /** … */
   width?: number
-  /** 原图高度 */
+  /** … */
   height?: number
-  /** 缩略图生成参数版本 */
+  /** … */
   thumbnailVersion?: number
 }
 
-// ===== API 响应 =====
+// ===== API response =====
 
 export interface ImageResponseItem {
   b64_json?: string
@@ -414,9 +414,9 @@ export interface FalApiResponse {
   seed?: number
 }
 
-// ===== 导出数据 =====
+// ===== Export data =====
 
-/** ZIP manifest.json 格式 */
+/** ZIP manifest.json … */
 export interface ExportData {
   version: number
   exportedAt: string
@@ -430,7 +430,7 @@ export interface ExportData {
   favoriteCollections?: FavoriteCollection[]
   defaultFavoriteCollectionId?: string | null
   agentConversations?: AgentConversation[]
-  /** imageId → 图片信息 */
+  /** imageId → … */
   imageFiles?: Record<string, {
     path: string
     createdAt?: number
@@ -438,7 +438,7 @@ export interface ExportData {
     width?: number
     height?: number
   }>
-  /** imageId → 缩略图信息 */
+  /** imageId → … */
   thumbnailFiles?: Record<string, {
     path: string
     width?: number

@@ -226,26 +226,40 @@ export function VideoGen() {
 
   const empty = jobs.length === 0 && history.length === 0
 
+  function statusPillClass(status: JobStatus) {
+    if (status === 'succeeded') return 'bx-status-pill bx-status-pill--succeeded'
+    if (status === 'failed') return 'bx-status-pill bx-status-pill--failed'
+    if (status === 'processing') return 'bx-status-pill bx-status-pill--processing'
+    return 'bx-status-pill bx-status-pill--queued'
+  }
+
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[340px_1fr]">
+    <div className="bx-create-scroll flex-1">
+      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(280px,360px)_1fr]">
         {/* Composer */}
-        <form onSubmit={onSubmit} className="bx-card h-fit space-y-4 p-5 lg:sticky lg:top-4">
-          <h1 className="flex items-center gap-2 text-base font-semibold">
-            <Clapperboard size={17} className="text-[var(--bx-teal)]" />
+        <form
+          onSubmit={onSubmit}
+          className="bx-create-panel h-fit space-y-4 p-5 lg:sticky lg:top-4"
+        >
+          <h1 className="bx-create-panel-title">
+            <span className="bx-icon-box !h-9 !w-9">
+              <Clapperboard size={16} />
+            </span>
             {d.create.video.title}
           </h1>
+
           <div>
             <label className="bx-label">{d.create.model.label}</label>
             <ModelPicker value={model} onChange={setModel} kind="video" />
           </div>
+
           <div>
             <label className="bx-label" htmlFor="vid-prompt">
               {d.create.video.title}
             </label>
             <textarea
               id="vid-prompt"
-              className="bx-input min-h-[110px] text-sm"
+              className="bx-input min-h-[120px] text-sm"
               placeholder={d.create.video.promptPlaceholder}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -253,7 +267,6 @@ export function VideoGen() {
             />
           </div>
 
-          {/* First frame */}
           <div>
             <label className="bx-label">{d.create.video.firstFrame}</label>
             <input
@@ -264,9 +277,13 @@ export function VideoGen() {
               onChange={(e) => void onPickFrame(e.target.files?.[0])}
             />
             {frameUrl ? (
-              <div className="flex items-center gap-3 rounded-xl border border-[var(--bx-teal)] bg-[var(--bx-active)] p-2">
-                <img src={frameUrl} alt="" className="h-12 w-12 rounded-lg object-cover" />
-                <p className="min-w-0 flex-1 text-xs text-[var(--bx-teal)]">
+              <div className="bx-thumb-selected flex items-center gap-3 rounded-[var(--bx-radius-md)] p-2">
+                <img
+                  src={frameUrl}
+                  alt=""
+                  className="h-12 w-12 rounded-[var(--bx-radius-sm)] object-cover"
+                />
+                <p className="min-w-0 flex-1 text-xs text-[var(--bx-teal-bright)]">
                   {d.create.video.firstFrameActive}
                   {frameFromCreator ? (
                     <span className="mt-0.5 block text-[10px] text-[var(--bx-text-dim)]">
@@ -280,7 +297,7 @@ export function VideoGen() {
                     setFrameUrl('')
                     setFrameFromCreator(false)
                   }}
-                  className="rounded-lg p-1.5 text-[var(--bx-text-dim)] hover:text-[var(--bx-text)]"
+                  className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
                   aria-label={d.create.video.firstFrameRemove}
                 >
                   <X size={14} />
@@ -290,7 +307,7 @@ export function VideoGen() {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--bx-border-strong)] px-3 py-3 text-sm text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)]"
+                className="bx-dropzone"
               >
                 <ImagePlus size={15} />
                 {d.create.video.firstFrameAdd}
@@ -299,7 +316,7 @@ export function VideoGen() {
           </div>
 
           <button type="submit" disabled={busy || !model} className="bx-btn bx-btn-primary w-full">
-            <Sparkles size={15} />
+            {busy ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
             {d.create.video.generate}
           </button>
         </form>
@@ -307,39 +324,35 @@ export function VideoGen() {
         {/* Jobs + history */}
         <div className="space-y-6">
           {empty ? (
-            <div className="bx-card flex min-h-[320px] flex-col items-center justify-center gap-3 p-8 text-center">
-              <Clapperboard size={28} className="text-[var(--bx-text-dim)]" />
-              <h2 className="text-base font-semibold">{d.create.video.emptyTitle}</h2>
-              <p className="max-w-sm text-sm text-[var(--bx-text-dim)]">{d.create.video.emptyBody}</p>
+            <div className="bx-empty-state min-h-[320px]">
+              <span className="bx-icon-box">
+                <Clapperboard size={20} />
+              </span>
+              <strong>{d.create.video.emptyTitle}</strong>
+              <p className="max-w-sm text-sm leading-relaxed">{d.create.video.emptyBody}</p>
             </div>
           ) : (
             <>
               {jobs.length > 0 && (
-                <div>
-                  <p className="mb-3 text-xs font-medium uppercase tracking-wider text-[var(--bx-text-dim)]">
-                    {d.create.video.jobs}
-                  </p>
+                <section>
+                  <p className="bx-eyebrow mb-3">{d.create.video.jobs}</p>
                   <div className="space-y-3">
                     {jobs.map((job) => (
-                      <div key={job.localId} className="bx-card p-4">
+                      <article key={job.localId} className="bx-create-panel p-4">
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex min-w-0 flex-1 items-center gap-2.5">
                             {job.frameUrl ? (
-                              <img src={job.frameUrl} alt="" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
+                              <img
+                                src={job.frameUrl}
+                                alt=""
+                                className="h-10 w-10 shrink-0 rounded-[var(--bx-radius-sm)] object-cover"
+                              />
                             ) : null}
                             <p className="min-w-0 flex-1 truncate text-sm" title={job.prompt}>
                               {job.prompt}
                             </p>
                           </div>
-                          <span
-                            className={cx(
-                              'flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs',
-                              job.status === 'succeeded' && 'bg-[var(--bx-active)] text-[var(--bx-teal)]',
-                              job.status === 'failed' && 'bg-red-500/10 text-red-400',
-                              (job.status === 'queued' || job.status === 'processing') &&
-                                'bg-[var(--bx-bg-muted)] text-[var(--bx-text-muted)]',
-                            )}
-                          >
+                          <span className={statusPillClass(job.status)}>
                             {job.status === 'queued' || job.status === 'processing' ? (
                               <Loader2 size={12} className="animate-spin" />
                             ) : job.status === 'failed' ? (
@@ -350,12 +363,14 @@ export function VideoGen() {
                             {statusLabel[job.status]}
                           </span>
                         </div>
-                        <p className="mt-1 text-xs text-[var(--bx-text-dim)]">
-                          {job.model} · {new Date(job.createdAt).toLocaleTimeString()}
+                        <p className="mt-1.5 text-xs text-[var(--bx-text-dim)]">
+                          <span className="font-mono">{job.model}</span>
+                          {' · '}
+                          {new Date(job.createdAt).toLocaleTimeString()}
                         </p>
                         {job.error ? (
-                          <div className="mt-2 flex items-center gap-2">
-                            <p className="min-w-0 flex-1 text-xs text-red-400">{job.error}</p>
+                          <div className="mt-3 flex items-center gap-2">
+                            <p className="bx-text-danger min-w-0 flex-1 text-xs">{job.error}</p>
                             <button
                               type="button"
                               className="bx-btn bx-btn-ghost bx-btn-sm"
@@ -368,7 +383,11 @@ export function VideoGen() {
                         ) : null}
                         {job.url ? (
                           <div className="mt-3 space-y-2">
-                            <video src={job.url} controls className="w-full rounded-xl" />
+                            <video
+                              src={job.url}
+                              controls
+                              className="w-full rounded-[var(--bx-radius-md)]"
+                            />
                             <a
                               href={job.url}
                               download
@@ -381,34 +400,47 @@ export function VideoGen() {
                             </a>
                           </div>
                         ) : null}
-                      </div>
+                      </article>
                     ))}
                   </div>
-                </div>
+                </section>
               )}
 
               {history.length > 0 && (
-                <div>
-                  <p className="mb-3 text-xs font-medium uppercase tracking-wider text-[var(--bx-text-dim)]">
-                    {d.create.video.history}
-                  </p>
+                <section>
+                  <p className="bx-eyebrow mb-3">{d.create.video.history}</p>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {history.map((asset) => (
-                      <div key={asset.id} className="bx-card p-3">
-                        <video src={asset.payload} controls className="w-full rounded-lg" preload="metadata" />
-                        <div className="mt-2 flex items-center gap-1.5">
-                          <p className="min-w-0 flex-1 truncate text-xs text-[var(--bx-text-muted)]" title={asset.title}>
+                      <article key={asset.id} className="bx-create-panel overflow-hidden p-3">
+                        <video
+                          src={asset.payload}
+                          controls
+                          className="w-full rounded-[var(--bx-radius-sm)]"
+                          preload="metadata"
+                        />
+                        <div className="mt-2.5 flex items-center gap-1">
+                          <p
+                            className="min-w-0 flex-1 truncate text-xs text-[var(--bx-text-muted)]"
+                            title={asset.title}
+                          >
                             {asset.title}
                           </p>
                           <button
                             type="button"
-                            className="rounded-lg p-1.5 text-[var(--bx-text-dim)] transition-colors hover:text-[var(--bx-teal)]"
+                            className={cx(
+                              'rounded-[var(--bx-radius-sm)] p-1.5 transition-colors',
+                              asset.favorite
+                                ? 'text-[var(--bx-teal-bright)]'
+                                : 'text-[var(--bx-text-dim)] hover:text-[var(--bx-teal-bright)]',
+                            )}
                             onClick={() => void toggleFavorite(asset)}
-                            aria-label={asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite}
+                            aria-label={
+                              asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite
+                            }
                           >
                             <Star
                               size={13}
-                              className={asset.favorite ? 'fill-[var(--bx-teal)] text-[var(--bx-teal)]' : undefined}
+                              className={asset.favorite ? 'fill-current' : undefined}
                             />
                           </button>
                           <a
@@ -416,24 +448,24 @@ export function VideoGen() {
                             download
                             target="_blank"
                             rel="noopener"
-                            className="rounded-lg p-1.5 text-[var(--bx-text-dim)] transition-colors hover:text-[var(--bx-text)]"
+                            className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] transition-colors hover:text-[var(--bx-text)]"
                             aria-label={d.common.download}
                           >
                             <Download size={13} />
                           </a>
                           <button
                             type="button"
-                            className="rounded-lg p-1.5 text-[var(--bx-text-dim)] transition-colors hover:text-red-400"
+                            className="bx-icon-btn bx-icon-btn--danger"
                             onClick={() => void deleteAsset(asset)}
                             aria-label={d.common.delete}
                           >
                             <Trash2 size={13} />
                           </button>
                         </div>
-                      </div>
+                      </article>
                     ))}
                   </div>
-                </div>
+                </section>
               )}
             </>
           )}

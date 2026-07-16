@@ -1,4 +1,5 @@
 import type { Dict } from './zh'
+import { playgroundVi } from './playground-dict'
 
 /** BoxAI web copy — Vietnamese. */
 export const vi: Dict = {
@@ -14,6 +15,9 @@ export const vi: Dict = {
     logout: 'Đăng xuất',
     menu: 'Menu',
     language: 'Ngôn ngữ',
+    theme: 'Giao diện',
+    themeDark: 'Chuyển sang sáng',
+    themeLight: 'Chuyển sang tối',
   },
   common: {
     loading: 'Đang tải…',
@@ -384,7 +388,16 @@ export const vi: Dict = {
   create: {
     metaTitle: 'Xưởng sáng tạo',
     title: 'Xưởng sáng tạo',
-    nav: { image: 'Hình ảnh', video: 'Video', assets: 'Tài sản' },
+    workspaceHint: 'Chuyển ảnh, video và tài sản ở thanh bên',
+    openPanels: 'Menu',
+    nav: {
+      image: 'Hình ảnh',
+      imageDesc: 'Tạo, remix và thư viện',
+      video: 'Video',
+      videoDesc: 'Văn bản / ảnh sang video',
+      assets: 'Tài sản',
+      assetsDesc: 'Lịch sử cục bộ và tái tạo',
+    },
     backHome: 'Về trang chính',
     keyPreparing: 'Đang chuẩn bị khóa Xưởng sáng tạo…',
     keyFailed: 'Chuẩn bị khóa thất bại, gọi gateway có thể không dùng được:',
@@ -393,6 +406,8 @@ export const vi: Dict = {
       placeholder: 'Chọn hoặc nhập ID mô hình',
       loading: 'Đang tải mô hình…',
       empty: 'Không có mô hình khớp, nhấn Enter để dùng giá trị đã nhập',
+      reload: 'Tải lại danh sách mô hình',
+      toggleList: 'Mở/đóng danh sách mô hình',
     },
     job: {
       queued: 'Đang xếp hàng',
@@ -471,4 +486,5 @@ export const vi: Dict = {
     body: 'Trang bạn truy cập không tồn tại hoặc đã được di chuyển.',
     back: 'Về trang chủ',
   },
+  playground: playgroundVi,
 }

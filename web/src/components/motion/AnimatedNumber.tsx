@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { animate, useInView, useReducedMotion } from 'motion/react'
+import { BX_EASE } from './Reveal'
 
 export function AnimatedNumber({
   value,
@@ -23,8 +24,8 @@ export function AnimatedNumber({
       return
     }
     const controls = animate(0, value, {
-      duration: 1.4,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 1.55,
+      ease: BX_EASE,
       onUpdate: (v) => setDisplay(v.toFixed(places)),
     })
     return () => controls.stop()

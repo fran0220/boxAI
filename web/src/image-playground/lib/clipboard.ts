@@ -1,3 +1,5 @@
+import { getPg, tPg } from './pgI18n'
+
 export async function copyTextToClipboard(text: string) {
   let asyncClipboardError: unknown = null
 
@@ -33,11 +35,11 @@ export function canCopyImageToClipboard() {
 
 export function getClipboardFailureMessage(fallback: string, err: unknown) {
   if (isEmbeddedPage() && isClipboardPermissionError(err)) {
-    return '复制失败：内嵌页面未授予剪贴板权限'
+    return getPg().clipboardNoPermission
   }
 
-  if (err instanceof Error && err.message.startsWith('当前浏览器不支持')) {
-    return `复制失败：${err.message}`
+  if (err instanceof Error && err.message.startsWith(getPg().browserUnsupported)) {
+    return tPg('copyFailedWithError', { error: err.message })
   }
 
   return fallback
@@ -81,7 +83,7 @@ async function writeImageBlobToClipboard(blob: Blob) {
   }
 
   if (Object.keys(clipboardItems).length === 0) {
-    throw new Error('当前浏览器不支持图像剪贴板写入')
+    throw new Error(getPg().browserNoImageClipboard)
   }
 
   await navigator.clipboard.write([
@@ -101,7 +103,7 @@ async function imageBlobToPngBlob(blob: Blob): Promise<Blob> {
     canvas.width = image.width
     canvas.height = image.height
     const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('Canvas is not available')
+    if (!ctx) throw new Error(getPg().browserNoCanvas)
     ctx.drawImage(image, 0, 0)
 
     return await new Promise<Blob>((resolve, reject) => {

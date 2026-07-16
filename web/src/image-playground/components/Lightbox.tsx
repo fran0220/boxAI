@@ -33,7 +33,7 @@ export default function Lightbox() {
   useCloseOnEscape(Boolean(lightboxImageId), close)
   usePreventBackgroundScroll(Boolean(lightboxImageId))
 
-  // 图片加载
+  // Image load
   useEffect(() => {
     let cancelled = false
 
@@ -59,7 +59,7 @@ export default function Lightbox() {
     }
   }, [lightboxImageId])
 
-  // 遮罩图加载
+  // Mask image load
   useEffect(() => {
     let cancelled = false
 
@@ -95,7 +95,7 @@ export default function Lightbox() {
     }
   }, [lightboxImageId, maskDraft?.targetImageId, maskDraft?.maskDataUrl, tasks])
 
-  // 生成遮罩预览
+  // Build mask preview
   useEffect(() => {
     let cancelled = false
     if (!src || !maskImageSrc) {
@@ -116,7 +116,7 @@ export default function Lightbox() {
     }
   }, [src, maskImageSrc])
 
-  // 导航
+  // Navigation
   const currentIndex = lightboxImageId ? lightboxImageList.indexOf(lightboxImageId) : -1
   const total = lightboxImageList.length
   const showNav = total > 1
@@ -130,7 +130,7 @@ export default function Lightbox() {
   const goPrev = useCallback(() => { if (showNav) goTo(currentIndex - 1) }, [showNav, currentIndex, goTo])
   const goNext = useCallback(() => { if (showNav) goTo(currentIndex + 1) }, [showNav, currentIndex, goTo])
 
-  // 键盘左右切换
+  // Keyboard left/right navigation
   useEffect(() => {
     if (!lightboxImageId || !showNav) return
     const onKey = (e: KeyboardEvent) => {
@@ -170,24 +170,24 @@ interface LightboxInnerProps {
   onNext: () => void
 }
 
-/** 内部组件：保证挂载时 DOM 已经存在，所有 ref / effect 都可靠 */
+/** …：… DOM …，… ref / effect … */
 function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, currentIndex, total, onPrev, onNext }: LightboxInnerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const openedAtRef = useRef(Date.now())
 
-  // 用 ref 追踪最新变换，避免闭包过期
+  // Track latest transform via ref to avoid stale closures
   const scaleRef = useRef(1)
   const txRef = useRef(0)
   const tyRef = useRef(0)
 
-  // 仅用于触发渲染
+  // Only to trigger re-render
   const [, forceRender] = useState(0)
   const rerender = useCallback(() => forceRender((n) => n + 1), [])
 
-  // 缩放倍率显示：2s 无操作后自动隐藏
+  // Zoom label auto-hides after 2s idle
   const [showZoomBadge, setShowZoomBadge] = useState(false)
   const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // 拖拽状态
+  // Drag state
   const dragRef = useRef({
     active: false,
     startX: 0,
@@ -196,7 +196,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     baseTy: 0,
   })
 
-  // 双指缩放状态
+  // Pinch-zoom state
   const pinchRef = useRef({
     active: false,
     startDist: 0,
@@ -207,7 +207,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     midY: 0,
   })
 
-  // 双击检测（触控）
+  // Double-tap detection (touch)
   const tapRef = useRef({ time: 0, x: 0, y: 0 })
   const hadMultiTouchRef = useRef(false)
   const touchStartedOnImageRef = useRef(false)
@@ -219,12 +219,12 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
   const doubleTapHandledRef = useRef(false)
   const closeTapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // 判断本次 mousedown → mouseup 是否发生了拖拽，用于区分点击和拖拽
+  // Detect drag between mousedown/up to distinguish click vs drag
   const didDragRef = useRef(false)
   const suppressNextClickRef = useRef(false)
   const suppressClickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // 切换图片时重置缩放
+  // Reset zoom when changing image
   useEffect(() => {
     openedAtRef.current = Date.now()
     scaleRef.current = 1
@@ -278,7 +278,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     txRef.current = ns <= 1 ? 0 : tx
     tyRef.current = ns <= 1 ? 0 : ty
 
-    // 显示缩放倍率并重置自动隐藏计时器
+    // Show zoom level and reset auto-hide timer
     if (ns > 1) {
       setShowZoomBadge(true)
       if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
@@ -291,7 +291,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     rerender()
   }, [rerender])
 
-  // ====== 滚轮缩放 ======
+  // ====== Wheel zoom ======
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -315,7 +315,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     return () => el.removeEventListener('wheel', onWheel)
   }, [apply])
 
-  // ====== 鼠标拖拽 + 点击关闭 ======
+  // ====== Mouse drag + click to close ======
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -357,7 +357,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     }
   }, [apply])
 
-  // ====== 单击关闭（仅未缩放且非拖拽） ======
+  // ====== Click to close (only when not zoomed and not dragging) ======
   const onClick = useCallback((e: React.MouseEvent) => {
     if (suppressNextClickRef.current) {
       suppressNextClickRef.current = false
@@ -369,7 +369,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     onClose()
   }, [onClose])
 
-  // ====== 鼠标双击缩放 ======
+  // ====== Mouse double-click zoom ======
   const onDoubleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     if (Date.now() - openedAtRef.current < DOUBLE_TAP_DELAY) return
@@ -383,7 +383,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
     }
   }, [apply, getCenter])
 
-  // ====== 触控事件 ======
+  // ====== Touch events ======
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -420,7 +420,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
         touchMovedRef.current = false
         swipeHandledRef.current = false
 
-        // 双击检测
+        // Double-tap detection
         if (
           touchStartedOnImageRef.current &&
           now - prev.time < DOUBLE_TAP_DELAY &&
@@ -542,10 +542,10 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
           return
         }
 
-        // 触摸设备会在 touchend 后补发 click，这里接管点按，避免首个点按关闭导致双击缩放失效。
+        // Touch devices fire click after touchend; handle tap here so first tap does not break double-tap zoom.
         suppressNextClickBriefly()
 
-        // 单击关闭：未缩放时图片也可点按关闭；图片上的关闭延迟到双击窗口后，避免破坏双击缩放。
+        // Tap to close when not zoomed; delay close on image until after double-tap window.
         if (touchStartedOnControlRef.current) {
           resetTouchGesture()
           return
@@ -640,7 +640,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
         </div>
       </div>
 
-      {/* 左右切换按钮 */}
+      {/* Prev/next buttons */}
       {showNav && !isZoomed && (
         <>
           <button
@@ -662,7 +662,7 @@ function LightboxInner({ src, imageId, maskPreviewSrc, onClose, showNav, current
         </>
       )}
 
-      {/* 底部指示器 */}
+      {/* Bottom indicator */}
       {showZoomBadge && isZoomed && zoomPercent !== 100 && (
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none">
           <span className="px-3 py-1.5 bg-black/50 text-white/80 text-xs rounded-full backdrop-blur-sm transition-opacity duration-500">

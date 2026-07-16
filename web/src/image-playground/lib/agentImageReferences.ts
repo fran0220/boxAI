@@ -1,7 +1,8 @@
 import type { AgentRound, TaskRecord } from '../types'
 import { replaceImageMentionsForApi, stripImageMentionMarkers } from './promptImageMentions'
 
-const AGENT_ROUND_IMAGE_REFERENCE_RE = /@(?:第)?(\d+)轮图(\d+)/g
+// Legacy Chinese round mentions (unicode escapes) and Latin @rNimgM
+const AGENT_ROUND_IMAGE_REFERENCE_RE = /@(?:(?:\u7b2c)?(\d+)\u8f6e\u56fe(\d+)|r(\d+)img(\d+))/g
 const AGENT_REF_TAG_RE = /<ref\b[^>]*\bid=(["'])(round-(\d+)-(?:image|reference)-(\d+))\1[^>]*\/?>/g
 
 export function getAgentCurrentReferenceId(round: AgentRound, index: number) {
@@ -40,8 +41,8 @@ export function extractAgentReferenceIds(text: string) {
 export function resolveAgentPromptImageReferences(prompt: string, rounds: AgentRound[], tasks: TaskRecord[]) {
   const refs: string[] = []
   for (const match of prompt.matchAll(AGENT_ROUND_IMAGE_REFERENCE_RE)) {
-    const roundIndex = Number(match[1]) - 1
-    const imageIndex = Number(match[2]) - 1
+    const roundIndex = Number(match[1] ?? match[3]) - 1
+    const imageIndex = Number(match[2] ?? match[4]) - 1
     const round = rounds[roundIndex]
     if (!round || imageIndex < 0) continue
 
@@ -63,7 +64,16 @@ export function replaceAgentPromptImageReferencesForApi(
     (index) => getAgentReferenceTag(getAgentCurrentReferenceId(currentRound, index)),
   )
 
-  const replaceGeneratedReference = (text: string, roundNumber: string, imageNumber: string) => {
+  const replaceGeneratedReference = (
+    text: string,
+    zhRound?: string,
+    zhImage?: string,
+    enRound?: string,
+    enImage?: string,
+  ) => {
+    const roundNumber = zhRound || enRound
+    const imageNumber = zhImage || enImage
+    if (!roundNumber || !imageNumber) return text
     const roundIndex = Number(roundNumber) - 1
     const imageIndex = Number(imageNumber) - 1
     const sourceRound = rounds[roundIndex]

@@ -20,6 +20,7 @@ import { normalizeStreamPartialImages, parseDefaultApiUrl } from './defaultApiUr
 import { readRuntimeEnv } from './runtimeEnv'
 import { isImportableConfigUrl } from './customProviderConfigUrl'
 import { getBoxaiGatewayBaseUrl, hasBoxaiSession } from './boxaiAuth'
+import { getPg } from './pgI18n'
 
 // BOXAI embed: default to same-origin / configured gateway, never OpenAI public API
 const OPENAI_DEFAULT_BASE_URL = ''
@@ -292,7 +293,7 @@ export function normalizeCustomProviderDefinition(input: unknown, usedIds = new 
   const template = record.template == null ? 'http-image' : isCustomProviderTemplate(record.template) ? record.template : null
   if (!template || !isRecord(record.submit)) return null
 
-  const rawName = typeof record.name === 'string' && record.name.trim() ? record.name.trim() : '自定义服务商'
+  const rawName = typeof record.name === 'string' && record.name.trim() ? record.name.trim() : getPg().customProviderDefaultName
   const id = typeof record.id === 'string' && record.id.trim() && !BUILT_IN_PROVIDER_IDS.has(record.id.trim()) && !usedIds.has(record.id.trim())
     ? record.id.trim()
     : createCustomProviderId(rawName, usedIds)
@@ -335,7 +336,7 @@ export function createDefaultOpenAIProfile(overrides: Partial<ApiProfile> = {}):
 
   return {
     id: DEFAULT_OPENAI_PROFILE_ID,
-    name: DEFAULT_API_URL_PATCH?.name ?? '默认',
+    name: DEFAULT_API_URL_PATCH?.name ?? getPg().defaultName,
     provider: 'openai',
     baseUrl: DEFAULT_BASE_URL,
     apiKey: DEFAULT_API_URL_PATCH?.apiKey ?? '',
@@ -353,7 +354,7 @@ export function createDefaultOpenAIProfile(overrides: Partial<ApiProfile> = {}):
 export function createDefaultFalProfile(overrides: Partial<ApiProfile> = {}): ApiProfile {
   return {
     id: `fal-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-    name: '新配置',
+    name: getPg().newProfile,
     provider: 'fal',
     baseUrl: DEFAULT_FAL_BASE_URL,
     apiKey: '',
@@ -509,11 +510,11 @@ function validateImportedProfileRecord(input: unknown) {
 
   const baseUrl = typeof input.baseUrl === 'string' ? input.baseUrl.trim() : ''
   if (baseUrl && (baseUrl.startsWith('[') || baseUrl.includes(']('))) {
-    throw new Error('JSON 包含 Markdown 链接，请粘贴纯文本')
+    throw new Error(getPg().jsonHasMarkdownLinks)
   }
 
   if (typeof input.apiMode === 'string' && input.apiMode !== 'images' && input.apiMode !== 'responses') {
-    throw new Error('apiMode 格式无效，应为 images 或 responses')
+    throw new Error(getPg().invalidApiMode)
   }
 }
 
@@ -626,20 +627,20 @@ export function importCustomProviderSettingsFromJson(
   try {
     parsed = JSON.parse(stripMarkdownCodeFence(jsonText))
   } catch {
-    throw new Error('JSON 格式无效')
+    throw new Error(getPg().invalidJson)
   }
 
   if (!parsed || typeof parsed !== 'object') {
-    throw new Error('JSON 根节点必须是对象')
+    throw new Error(getPg().jsonRootMustBeObject)
   }
 
   const record = parsed as Record<string, unknown>
 
-  // 包裹结构：{customProviders: [...], profiles: [...]}
+  // Wrapper: {customProviders: [...], profiles: [...]}
   if (Array.isArray(record.customProviders)) {
     const customProviders = normalizeCustomProviderDefinitions(record.customProviders)
     if (customProviders.length === 0) {
-      throw new Error('customProviders 数组中没有有效的服务商配置')
+      throw new Error(getPg().noValidCustomProviders)
     }
     const customProviderIds = new Set(customProviders.map((provider) => provider.id))
     const profiles = Array.isArray(record.profiles)
@@ -654,12 +655,12 @@ export function importCustomProviderSettingsFromJson(
     return { customProviders, profiles }
   }
 
-  // 单个 Manifest 对象：{name, submit, ...}
+  // Single manifest object: {name, submit, ...}
   const usedIds = new Set(existingProviders.map((provider) => provider.id))
   const direct = normalizeCustomProviderDefinition(parsed, usedIds)
   if (direct) return { customProviders: [direct], profiles: [] }
 
-  throw new Error('无法识别该 JSON。请粘贴自定义服务商配置。')
+  throw new Error(getPg().unrecognizedJson)
 }
 
 export function importCustomProviderDefinitionFromJson(jsonText: string, existingProviders: CustomProviderDefinition[] = []): CustomProviderDefinition {
@@ -688,20 +689,20 @@ export function getActiveApiProfile(settings: Partial<AppSettings> | unknown): A
 }
 
 export function validateApiProfile(profile: ApiProfile): string | null {
-  if (!profile.name.trim()) return '缺少名称'
+  if (!profile.name.trim()) return getPg().missingName
   // BOXAI: empty baseUrl means same-origin /v1 (dev proxy + apex nginx)
   if (profile.provider !== 'fal' && !profile.baseUrl.trim() && !shouldUseApiProxy(profile.apiProxy)) {
     // same-origin OK for BoxAI embed
   }
   // BOXAI: live session JWT satisfies API key requirement
-  if (!profile.apiKey.trim() && !hasBoxaiSession()) return '请先登录 BoxAI'
-  if (!profile.model.trim()) return '缺少模型 ID'
+  if (!profile.apiKey.trim() && !hasBoxaiSession()) return getPg().loginRequired
+  if (!profile.model.trim()) return getPg().missingModelId
   return null
 }
 
 function isDefaultOpenAIProfile(profile: ApiProfile): boolean {
+  // Identify by stable id + factory settings; name is display-only (may be any locale or legacy Chinese)
   return profile.id === DEFAULT_OPENAI_PROFILE_ID &&
-    profile.name === '默认' &&
     profile.provider === 'openai' &&
     profile.baseUrl === DEFAULT_BASE_URL &&
     profile.apiKey === '' &&

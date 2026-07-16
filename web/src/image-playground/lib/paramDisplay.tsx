@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { TaskParams, TaskRecord } from '../types'
 import ViewportTooltip from '../components/ViewportTooltip'
+import { getPg } from './pgI18n'
 
 type ParamKey = keyof TaskParams
 
@@ -57,7 +58,7 @@ export function ActualValueBadge({ value, className = '', variant = 'highlight' 
     >
       {value}
       <ViewportTooltip visible={tooltipVisible} className="whitespace-nowrap">
-        API 实际响应值
+        {getPg().paramActualValue}
       </ViewportTooltip>
     </span>
   )

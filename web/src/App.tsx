@@ -22,7 +22,7 @@ const Assets = lazy(() => import('@/pages/create/Assets').then((m) => ({ default
 
 function CreateFallback() {
   return (
-    <div className="bx-page flex h-dvh items-center justify-center">
+    <div className="flex min-h-[50vh] flex-1 items-center justify-center">
       <Spinner />
     </div>
   )
@@ -43,7 +43,6 @@ export default function App() {
         <Route path="signup" element={<AuthRedirect mode="register" />} />
         <Route path="sso" element={<SsoStart />} />
         <Route path="sso/callback" element={<SsoCallback />} />
-        {/* Mint code for console (or peer) when this origin already has a session */}
         <Route path="sso/authorize" element={<SsoAuthorize />} />
         <Route
           path="account"
@@ -53,22 +52,23 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        {/* Creator: same site chrome as home; internal panels for image/video/assets */}
+        <Route
+          path="create"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<CreateFallback />}>
+                <CreateLayout />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="image" replace />} />
+          <Route path="image" element={<ImageGen />} />
+          <Route path="video" element={<VideoGen />} />
+          <Route path="assets" element={<Assets />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
-      </Route>
-      <Route
-        path="create"
-        element={
-          <ProtectedRoute>
-            <Suspense fallback={<CreateFallback />}>
-              <CreateLayout />
-            </Suspense>
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<Navigate to="image" replace />} />
-        <Route path="image" element={<ImageGen />} />
-        <Route path="video" element={<VideoGen />} />
-        <Route path="assets" element={<Assets />} />
       </Route>
     </Routes>
   )
