@@ -1,4 +1,0 @@
-# BOXAI: approve dependency build scripts prompted by pnpm 10.
-onlyBuiltDependencies:
-  - esbuild
-  - vue-demi
