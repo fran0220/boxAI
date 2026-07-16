@@ -24,14 +24,17 @@
 | [agents/deploy-release.md](./agents/deploy-release.md) | Image release + edge helpers |
 | [../deploy/nginx-you-box.com.conf](../deploy/nginx-you-box.com.conf) | Nginx multi-host config |
 
-## Soft-fork
+## Agents (soft-fork SOPs)
 
 | Doc | Content |
 |-----|---------|
+| [../AGENTS.md](../AGENTS.md) | Root agent entry |
+| [agents/README.md](./agents/README.md) | Agent SOP index |
 | [../FORK_DELTA.md](../FORK_DELTA.md) | Delta inventory |
 | [agents/ownership-zones.md](./agents/ownership-zones.md) | Path policies |
 | [agents/change-design.md](./agents/change-design.md) | How to change code |
 | [agents/upstream-sync.md](./agents/upstream-sync.md) | Upstream merge SOP |
+| [agents/deploy-release.md](./agents/deploy-release.md) | Image + edge publish |
 | [agents/pr-checklist.md](./agents/pr-checklist.md) | PR gates |
 
 ## Other

@@ -1,58 +1,56 @@
-# Upstream sync SOP
+# Upstream sync
 
-## Topology
+## Branches
 
 ```
-upstream        → remote Wei-Shaw/sub2api
-upstream-main   → pure mirror branch (fast-forward only; no product commits)
-main            → product branch = upstream baseline + BoxAI delta
+upstream        → Wei-Shaw/sub2api
+upstream-main   → pure mirror (no product commits)
+main            → upstream baseline + BoxAI delta
 ```
 
-## Cadence
+## Rules
 
 | Rule | Value |
 |------|--------|
-| Unit of sync | Upstream **release tag** `vX.Y.Z` (not arbitrary main tip) |
-| Frequency | Every upstream tag, or at least every two weeks |
-| Integration method | `git merge` (do **not** rebase published `main`) |
+| Sync unit | Upstream **release tag** `vX.Y.Z` |
+| Integration | `git merge` (no rebase of published `main`) |
 | PR scope | Sync only — no product features |
 
 ## Steps
 
-1. **Preflight**
-   - Working tree clean: `git status --porcelain` empty.
-   - `FORK_DELTA.md` matches reality (`// BOXAI:` count and listed paths).
-2. **Refresh mirror**
+1. **Preflight** — clean tree; `FORK_DELTA.md` matches markers.
+2. **Mirror**
    ```bash
    git fetch upstream --tags
    git checkout upstream-main
-   git merge --ff-only upstream/main   # or reset --hard to the target tag
+   git merge --ff-only upstream/main
    git checkout main
    ```
-3. **Branch**
+3. **Branch + merge**
    ```bash
    git checkout -b sync/vX.Y.Z main
-   git merge vX.Y.Z   # the upstream tag
+   git merge vX.Y.Z
    ```
-4. **Resolve conflicts by zone** (see [ownership-zones.md](./ownership-zones.md))
-   - Backend core: **theirs**, then replay BOXAI lines from `FORK_DELTA.md`.
-   - `VERSION`: always **theirs**.
-   - Frontend brand files: keep ours where product-first; for hybrid locale files take theirs and re-apply brand keys.
-   - If upstream **deleted** an extension point we depend on: stop the merge and design a new integration before continuing.
-5. **Delta integrity**
-   - `git diff vX.Y.Z...HEAD` should match the product delta inventory.
+4. **Conflicts by zone** ([ownership-zones.md](./ownership-zones.md))
+   - Backend core: **theirs**, then replay BOXAI from `FORK_DELTA.md`.
+   - `VERSION`: **theirs**.
+   - Hybrid frontend: theirs + re-apply brand keys.
+   - Product-first (`web/`, `desktop/`, `handler/boxai_*`, edge configs): **ours**.
+   - Upstream removed an extension point we need: stop and redesign wiring.
+5. **Integrity**
+   - `git diff vX.Y.Z...HEAD` matches product inventory.
    - `grep -R "BOXAI:" backend frontend deploy` consistent with `FORK_DELTA.md`.
-6. **Verification** (all required)
-   - Backend: unit + integration + golangci-lint as in CI.
-   - Frontend: `pnpm install --frozen-lockfile`, lint/typecheck/critical tests.
-   - Migrations: fresh DB full apply including any `9xx_boxai_*`; optional incremental on a prod-like dump.
-   - Docker smoke: build image → compose up → `/health` 200 → landing shows BoxAI → compliance hash OK.
-   - Brand grep: product UI not leaking `Sub2API` (whitelist compliance/LICENSE/attribution); `docs/legal` must not contain `BoxAI`.
-7. **Land**
-   - Open a sync-only PR into `main`.
-   - Commit message records the upstream tag (e.g. `chore(sync): merge upstream v0.1.155`).
+6. **Verify**
+   - Backend unit/integration/lint as CI.
+   - Console: `cd frontend && pnpm install --frozen-lockfile` + typecheck/lint.
+   - Product web: `cd web && pnpm install --frozen-lockfile` + typecheck + tests.
+   - Migrations: fresh apply including `9xx_boxai_*`.
+   - Docker smoke: image → compose → `/health` → console brand OK → compliance hash OK.
+   - Brand grep: product UI not `Sub2API` (except compliance/LICENSE); `docs/legal` has no `BoxAI`.
+7. **Land** — sync-only PR; message names the upstream tag.
 
-## After landing
+## After land
 
-- BoxAI release tag (when publishing): `vX.Y.Z-box.N` based on the merged upstream `X.Y.Z`.
-- Update `FORK_DELTA.md` “Baseline” section to the new upstream tag.
+- Publish tag when shipping: `vX.Y.Z-box.N`.
+- Set `FORK_DELTA.md` baseline to the merged upstream tag.
+- If only image changes: pin `BOXAI_IMAGE`. If `web/` also changed this cycle: run `deploy/scripts/deploy-web-static.sh`.

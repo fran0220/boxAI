@@ -1,64 +1,72 @@
-# Change design standard
+# Change design
 
-Design every change so the next upstream tag merge is mechanical.
+Design every change so the next upstream release-tag merge stays mechanical.
 
-## Backend (strict)
+## Backend
 
-### Prefer configuration over code
+### Prefer
 
-1. **Seed / admin settings first** — site name, logo, homepage, and many defaults are already runtime-configurable. Prefer a `9xx_boxai_*.sql` seed over hard-coding.
-2. **Central constants second** — compile-time product identity lives in `backend/internal/branding`. Upstream-owned files should only reference `branding.ProductName` (etc.) with a `// BOXAI:` marker.
-3. **New product features third** — new packages under product-first paths; register routes/handlers with minimal wiring; API surface under `/api/boxai/...` (or a dedicated group) when the contract is BoxAI-only.
+1. **Settings / seed** — `9xx_boxai_*.sql` or admin settings over hard-coded product strings.
+2. **`backend/internal/branding`** — compile-time product identity; sync-first files reference it with `// BOXAI:`.
+3. **Product-first packages** — `handler/boxai_*.go`, optional `internal/boxai/`; register with minimal route wiring.
 
-### Contracts you must not break
+### Stable contracts
 
-| Contract | Keep stable |
-|----------|-------------|
-| Go module path | `github.com/Wei-Shaw/sub2api` |
-| Binary name | `sub2api` |
-| Embed path | `backend/internal/web/dist` |
+| Contract | Value |
+|----------|--------|
+| Go module | `github.com/Wei-Shaw/sub2api` |
+| Binary | `sub2api` |
+| Embed path | `backend/internal/web/dist` (Vue console) |
 | Health | `/health` |
-| Env var names | full deploy set (see `deploy/.env.example`) |
-| DB role/db name | `sub2api` (invisible to end users) |
-| Upstream public API shapes | defaults must match upstream behavior |
+| Env names | `deploy/.env.example` set |
+| DB name/role | `sub2api` |
+| Public API shapes | Match upstream unless flagged + documented |
 
 ### Migrations
 
-- Upstream files: never edit after they ship.
-- BoxAI files: `9xx_boxai_<slug>.sql` only.
-- Settings keys introduced by BoxAI: prefer `boxai_` prefix.
-- `_notx` files: only for concurrent/idempotent index patterns already used upstream.
+- Versions `<900`: never edit after ship.
+- BoxAI: `9xx_boxai_<slug>.sql` only, forward-only, idempotent.
+- New settings keys: prefer `boxai_` prefix.
 
-## Frontend (dual surface)
+### Handler layering
 
-| Surface | Path | Notes |
+- Handlers must not import `redis` or `repository` (depguard).
+- Redis-backed SSO/desktop codes: `BoxAICodeStore` in handler + adapter in `routes/boxai_code_store.go`.
+
+## Frontends
+
+| Surface | Path | Policy |
 |---------|------|--------|
-| Console (Vue) | `frontend/` | Hybrid with upstream; brand via `frontend/src/constants/brand.ts` |
-| Marketing + Creator (React) | `web/` | **Product-first entire tree**; brand via `web/src/lib/brand.ts` |
+| Console | `frontend/` | Hybrid; brand via `frontend/src/constants/brand.ts` |
+| Marketing + Creator | `web/` | Product-first entire tree; brand via `web/src/lib/brand.ts` |
 | Desktop UI | `desktop/crates/agent-gui/` | Product-first vendored tree |
 
-### Console (Vue)
+### Console (`frontend/`)
 
-- Product strings and logo paths: only via `frontend/src/constants/brand.ts`.
-- Do not rewrite shared upstream components for brand-only needs; compose or wrap.
-- BoxAI-only screens: dedicated view files + router entries (`BoxAISso*`, public download).
-- i18n brand keys: list in `FORK_DELTA.md` if they touch upstream locale files.
-- Tests: assert against brand constants, not raw `"BoxAI"` where practical.
+- Brand strings/logos only through `brand.ts`.
+- BoxAI-only screens: dedicated views + routes (SSO, desktop-auth, download).
+- Do not grow Creator/marketing product surface here; that belongs in `web/`.
 
-### Product web (React)
+### Product web (`web/`)
 
-- New product UI for apex host belongs in `web/`, not by forking large Vue console trees.
-- Do **not** embed `web/dist` into the Go binary (keeps Dockerfile/upstream embed path stable).
-- Ship with `deploy/scripts/deploy-web-static.sh`; edge config under `deploy/nginx-you-box.com.conf`.
+- Apex host UI only in `web/`.
+- Never embed `web/dist` into Go.
+- Publish with `deploy/scripts/deploy-web-static.sh`.
+- Edge: `deploy/nginx-you-box.com.conf`.
 
-## Compliance exception
+### Desktop (`desktop/`)
 
-`adminCompliance` phrases and `docs/legal/*` intentionally retain **Sub2API** legal wording. Changing them invalidates stored acknowledgements. Product UI everywhere else uses **BoxAI**.
+- Product edits do not need `// BOXAI:` markers.
+- Auth/server integration contracts stay in monorepo backend handlers + `desktop/UPSTREAM.md`.
+
+## Compliance
+
+`adminCompliance` phrases and `docs/legal/*` keep **Sub2API** legal wording. Changing them invalidates stored acks and requires hash pin updates. Product UI uses **BoxAI**.
 
 ## Markers
 
 ```go
-// BOXAI: default product name
+// BOXAI: product default
 siteName := branding.ProductName
 ```
 
@@ -66,4 +74,4 @@ siteName := branding.ProductName
 <!-- BOXAI: brand wordmark -->
 ```
 
-When you add a marker, update `FORK_DELTA.md` in the same commit/PR.
+Add or change a marker → update `FORK_DELTA.md` in the same commit.
