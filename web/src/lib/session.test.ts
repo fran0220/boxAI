@@ -1,9 +1,36 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { __resetSessionForTests, bootstrapSession, getAccessToken, getSessionSnapshot, setSession } from './session'
+import {
+  __resetSessionForTests,
+  bootstrapSession,
+  getAccessToken,
+  getLogoutEpoch,
+  getSessionSnapshot,
+  logoutSession,
+  setSession,
+  subscribeSession,
+} from './session'
 import { apiGet, imageEdits } from './api'
 
 const user = { id: 7, email: 'test@you-box.com' }
-const envelope = (token: string) => new Response(JSON.stringify({ code: 0, message: '', data: { access_token: token, user } }), { status: 200 })
+const envelope = (token: string, expiresIn?: number) => new Response(JSON.stringify({
+  code: 0,
+  message: '',
+  data: { access_token: token, expires_in: expiresIn, user },
+}), { status: 200 })
+
+class FakeBroadcastChannel {
+  static instances: FakeBroadcastChannel[] = []
+  onmessage: ((event: MessageEvent) => void) | null = null
+  messages: unknown[] = []
+
+  constructor(readonly name: string) {
+    FakeBroadcastChannel.instances.push(this)
+  }
+
+  postMessage(message: unknown): void { this.messages.push(message) }
+  close(): void { /* no-op */ }
+  receive(message: unknown): void { this.onmessage?.({ data: message } as MessageEvent) }
+}
 
 describe('browser session', () => {
   beforeAll(() => {
@@ -24,8 +51,13 @@ describe('browser session', () => {
     __resetSessionForTests()
     window.localStorage.clear()
     vi.restoreAllMocks()
+    FakeBroadcastChannel.instances = []
+    vi.stubGlobal('BroadcastChannel', FakeBroadcastChannel)
   })
-  afterEach(() => vi.useRealTimers())
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
 
   it('adopts a legacy refresh token once and always clears all legacy credentials', async () => {
     window.localStorage.setItem('refresh_token', 'legacy-refresh')
@@ -101,5 +133,69 @@ describe('browser session', () => {
     expect(init?.credentials).toBe('include')
     expect(headers.get('X-BoxAI-CSRF')).toBe('1')
     expect(headers.has('Content-Type')).toBe(false)
+  })
+
+  it('broadcasts explicit logout separately and accepts the endpoint success envelope without a token', async () => {
+    setSession({ access_token: 'token', user })
+    const channel = FakeBroadcastChannel.instances[0]
+    channel.messages = []
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({
+      code: 0,
+      message: '',
+      data: { message: 'ok' },
+    }), { status: 200 }))
+
+    await logoutSession()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('/api/v1/auth/session/logout')
+    expect(channel.messages).toEqual([{ type: 'logout' }])
+    expect(getSessionSnapshot()).toMatchObject({ status: 'anonymous', accessToken: null, user: null })
+    expect(getLogoutEpoch()).toBe(1)
+  })
+
+  it('applies a remote logout without a network bootstrap or broadcast loop', () => {
+    setSession({ access_token: 'token', user })
+    const channel = FakeBroadcastChannel.instances[0]
+    channel.messages = []
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+
+    channel.receive({ type: 'logout' })
+
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(channel.messages).toEqual([])
+    expect(getSessionSnapshot()).toMatchObject({ status: 'anonymous', accessToken: null, user: null })
+    expect(getLogoutEpoch()).toBe(1)
+  })
+
+  it('does not let an in-flight bootstrap resurrect a logged-out session', async () => {
+    let resolveBootstrap!: (response: Response) => void
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementationOnce(
+      () => new Promise<Response>((resolve) => { resolveBootstrap = resolve }),
+    )
+    const unsubscribe = subscribeSession(() => {})
+    const channel = FakeBroadcastChannel.instances[0]
+    const pending = bootstrapSession()
+
+    channel.receive({ type: 'logout' })
+    resolveBootstrap(envelope('stale', 1))
+    await pending
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(getAccessToken()).toBeNull()
+    expect(getSessionSnapshot().status).toBe('anonymous')
+    unsubscribe()
+  })
+
+  it('still accepts legacy session-changed broadcasts during a rolling deploy', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(envelope('synced'))
+    const unsubscribe = subscribeSession(() => {})
+    const channel = FakeBroadcastChannel.instances[0]
+
+    channel.receive('session-changed')
+
+    await vi.waitFor(() => expect(getSessionSnapshot().status).toBe('authenticated'))
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    unsubscribe()
   })
 })

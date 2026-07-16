@@ -15,11 +15,16 @@ interface Envelope<T> { code: number; message: string; data?: T }
 
 const LEGACY_KEYS = ['auth_token', 'refresh_token', 'auth_user', 'token_expires_at'] as const
 const listeners = new Set<() => void>()
+const logoutListeners = new Set<() => void>()
 let snapshot: SessionSnapshot = { status: 'bootstrapping', accessToken: null, user: null }
 let bootstrapPromise: Promise<SessionSnapshot> | null = null
 let channel: BroadcastChannel | null = null
 let expiresAt: number | null = null
 let refreshTimer: ReturnType<typeof setTimeout> | null = null
+let sessionEpoch = 0
+let logoutEpoch = 0
+
+type SessionMessage = { type: 'changed' | 'logout' }
 
 function clearRefreshTimer(): void {
   if (refreshTimer !== null) clearTimeout(refreshTimer)
@@ -41,10 +46,17 @@ async function sessionPost(path: string, body: unknown): Promise<SessionData> {
   return envelope.data
 }
 
+async function logoutPost(): Promise<void> {
+  const response = await fetch(`${apiBase()}/api/v1/auth/session/logout`, {
+    method: 'POST', credentials: 'include', headers: browserHeaders(),
+  })
+  if (!response.ok) throw new Error(response.statusText || 'Logout failed')
+}
+
 function publish(next: SessionSnapshot, broadcast = false): SessionSnapshot {
   snapshot = next
   listeners.forEach((listener) => listener())
-  if (broadcast) getChannel()?.postMessage('session-changed')
+  if (broadcast) getChannel()?.postMessage({ type: 'changed' } satisfies SessionMessage)
   return snapshot
 }
 
@@ -66,15 +78,17 @@ function clearLegacy(): void {
   LEGACY_KEYS.forEach((key) => window.localStorage.removeItem(key))
 }
 
-async function migrateAndBootstrap(): Promise<SessionSnapshot> {
+async function migrateAndBootstrap(epoch: number): Promise<SessionSnapshot> {
   const refresh = typeof window === 'undefined' ? null : window.localStorage.getItem('refresh_token')
   if (refresh) {
     try {
       const adopted = await withAdoptionLock(() => sessionPost('/api/v1/auth/session/adopt', { refresh_token: refresh }))
       clearLegacy()
+      if (epoch !== sessionEpoch) return snapshot
       return accept(adopted, true)
     } catch {
       // Another tab may have consumed the one-time refresh token. The stable cookie is authoritative.
+      if (epoch !== sessionEpoch) return snapshot
     } finally {
       clearLegacy()
     }
@@ -82,8 +96,11 @@ async function migrateAndBootstrap(): Promise<SessionSnapshot> {
     clearLegacy()
   }
   try {
-    return accept(await sessionPost('/api/v1/auth/session', {}))
+    const session = await sessionPost('/api/v1/auth/session', {})
+    if (epoch !== sessionEpoch) return snapshot
+    return accept(session)
   } catch {
+    if (epoch !== sessionEpoch) return snapshot
     return publish({ status: 'anonymous', accessToken: null, user: null })
   }
 }
@@ -97,11 +114,40 @@ async function withAdoptionLock<T>(work: () => Promise<T>): Promise<T> {
 function getChannel(): BroadcastChannel | null {
   if (channel || typeof BroadcastChannel === 'undefined') return channel
   channel = new BroadcastChannel('boxai-session')
-  channel.onmessage = () => { void bootstrapSession(true) }
+  channel.onmessage = (event: MessageEvent<SessionMessage | string>) => {
+    const type = typeof event.data === 'string' ? event.data : event.data?.type
+    if (type === 'logout') {
+      applyLogout()
+      return
+    }
+    resyncSession()
+  }
   return channel
 }
 
+function applyLogout(): void {
+  sessionEpoch += 1
+  clearRefreshTimer()
+  expiresAt = null
+  logoutEpoch += 1
+  logoutListeners.forEach((listener) => listener())
+  publish({ status: 'anonymous', accessToken: null, user: null })
+  clearLegacy()
+}
+
+function resyncSession(): void {
+  sessionEpoch += 1
+  const epoch = sessionEpoch
+  const pending = bootstrapPromise
+  const run = () => {
+    if (epoch === sessionEpoch) void bootstrapSession(true)
+  }
+  if (pending) void pending.then(run, run)
+  else run()
+}
+
 export function getSessionSnapshot(): SessionSnapshot { return snapshot }
+export function getLogoutEpoch(): number { return logoutEpoch }
 export function getAccessToken(): string | null {
   return expiresAt !== null && Date.now() >= expiresAt ? null : snapshot.accessToken
 }
@@ -109,11 +155,17 @@ export function subscribeSession(listener: () => void): () => void {
   listeners.add(listener); getChannel()
   return () => listeners.delete(listener)
 }
+export function subscribeLogout(listener: () => void): () => void {
+  logoutListeners.add(listener)
+  return () => logoutListeners.delete(listener)
+}
 
 export function bootstrapSession(force = false): Promise<SessionSnapshot> {
   if (bootstrapPromise) return bootstrapPromise
-  if (force || snapshot.status !== 'bootstrapping') publish({ ...snapshot, status: 'bootstrapping' })
-  const pending = migrateAndBootstrap()
+  if (force || snapshot.status !== 'bootstrapping') {
+    publish({ status: 'bootstrapping', accessToken: snapshot.accessToken, user: snapshot.user })
+  }
+  const pending = migrateAndBootstrap(sessionEpoch)
   bootstrapPromise = pending
   void pending.finally(() => {
     if (bootstrapPromise === pending) bootstrapPromise = null
@@ -121,17 +173,21 @@ export function bootstrapSession(force = false): Promise<SessionSnapshot> {
   return pending
 }
 
-export function setSession(data: SessionData): void { accept(data, true) }
+export function setSession(data: SessionData): void {
+  sessionEpoch += 1
+  accept(data, true)
+}
 export function markSessionRejected(): void {
+  sessionEpoch += 1
   clearRefreshTimer(); expiresAt = null
   publish({ status: snapshot.accessToken ? 'expired' : 'anonymous', accessToken: null, user: null }, true)
 }
 
 export async function logoutSession(): Promise<void> {
-  try { await sessionPost('/api/v1/auth/session/logout', {}) } catch { /* local logout still wins */ }
-  clearRefreshTimer(); expiresAt = null
-  publish({ status: 'anonymous', accessToken: null, user: null }, true)
-  clearLegacy()
+  sessionEpoch += 1
+  try { await logoutPost() } catch { /* local logout still wins */ }
+  applyLogout()
+  getChannel()?.postMessage({ type: 'logout' } satisfies SessionMessage)
 }
 
 export const sessionRequestHeaders = browserHeaders
@@ -140,5 +196,6 @@ export const sessionRequestHeaders = browserHeaders
 export function __resetSessionForTests(): void {
   clearRefreshTimer(); expiresAt = null
   snapshot = { status: 'bootstrapping', accessToken: null, user: null }; bootstrapPromise = null
-  channel?.close(); channel = null; listeners.clear()
+  sessionEpoch = 0; logoutEpoch = 0
+  channel?.close(); channel = null; listeners.clear(); logoutListeners.clear()
 }

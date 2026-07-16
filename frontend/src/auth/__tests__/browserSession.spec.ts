@@ -74,4 +74,32 @@ describe('browserSession', () => {
     expect(localStorage.getItem('refresh_token')).toBeNull()
     expect(localStorage.getItem('auth_token')).toBeNull()
   })
+
+  it('does not let an in-flight bootstrap restore a cleared session', async () => {
+    let resolveBootstrap!: (value: { data: ReturnType<typeof response> }) => void
+    vi.mocked(axios.post).mockImplementationOnce(
+      () => new Promise((resolve) => { resolveBootstrap = resolve }),
+    )
+    const pending = bootstrap(true)
+
+    clearBrowserSession()
+    resolveBootstrap({ data: response('stale') })
+    await pending
+
+    expect(getAccessToken()).toBeNull()
+  })
+
+  it('keeps an authoritative login when an older bootstrap finishes later', async () => {
+    let resolveBootstrap!: (value: { data: ReturnType<typeof response> }) => void
+    vi.mocked(axios.post).mockImplementationOnce(
+      () => new Promise((resolve) => { resolveBootstrap = resolve }),
+    )
+    const pending = bootstrap(true)
+
+    setBrowserSession(response('current'))
+    resolveBootstrap({ data: response('stale') })
+    await pending
+
+    expect(getAccessToken()).toBe('current')
+  })
 })

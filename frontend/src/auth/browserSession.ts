@@ -14,6 +14,7 @@ let legacyAccessToken: string | null = null
 let expiresAt: number | null = null
 let refreshTimer: ReturnType<typeof setTimeout> | null = null
 let bootstrapFlight: Promise<BrowserSession | null> | null = null
+let sessionEpoch = 0
 const listeners = new Set<Listener>()
 const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('boxai-browser-session') : null
 
@@ -43,9 +44,24 @@ function publish(session: BrowserSession | null, broadcast = true): void {
 }
 
 channel?.addEventListener('message', (event) => {
-  if (event.data === 'logout') publish(null, false)
-  else if (event.data === 'changed') void bootstrap(true, false)
+  if (event.data === 'logout') {
+    sessionEpoch += 1
+    publish(null, false)
+  } else if (event.data === 'changed') {
+    resyncSession()
+  }
 })
+
+function resyncSession(): void {
+  sessionEpoch += 1
+  const epoch = sessionEpoch
+  const pending = bootstrapFlight
+  const run = () => {
+    if (epoch === sessionEpoch) void bootstrap(true, false)
+  }
+  if (pending) void pending.then(run, run)
+  else run()
+}
 
 export function getAccessToken(): string | null {
   if (expiresAt !== null && Date.now() >= expiresAt) return null
@@ -54,16 +70,19 @@ export function getAccessToken(): string | null {
 
 // BOXAI: final migration fallback for callbacks that lack a browser-session response.
 export function installLegacyAccessToken(token: string): void {
+  sessionEpoch += 1
   legacyAccessToken = token
   current = null
   expiresAt = null
 }
 
 export function setBrowserSession(session: BrowserSession): void {
+  sessionEpoch += 1
   publish(session)
 }
 
 export function clearBrowserSession(): void {
+  sessionEpoch += 1
   publish(null)
 }
 
@@ -84,31 +103,45 @@ async function request(path: string, body?: unknown): Promise<BrowserSession> {
 export function bootstrap(force = false, broadcastSuccess = true): Promise<BrowserSession | null> {
   if (bootstrapFlight) return bootstrapFlight
   if (!force && current) return Promise.resolve(current)
+  const epoch = sessionEpoch
   bootstrapFlight = request('/auth/session')
-    .then((session) => { publish(session, broadcastSuccess); return session })
+    .then((session) => {
+      if (epoch !== sessionEpoch) return current
+      publish(session, broadcastSuccess)
+      return session
+    })
     // BOXAI: cookie discovery failure is local state, not an explicit cross-tab logout.
-    .catch(() => { publish(null, false); return null })
+    .catch(() => {
+      if (epoch !== sessionEpoch) return current
+      publish(null, false)
+      return null
+    })
     .finally(() => { bootstrapFlight = null })
   return bootstrapFlight
 }
 
 export async function adoptLegacySession(refreshToken: string): Promise<BrowserSession | null> {
+  const epoch = sessionEpoch
   try {
     const session = await request('/auth/session/adopt', { refresh_token: refreshToken })
+    if (epoch !== sessionEpoch) return current
     publish(session)
     return session
   } catch {
+    if (epoch !== sessionEpoch) return current
     // Another tab may have consumed the one-time token and already created the cookie.
     return bootstrap(true)
   }
 }
 
 export async function bootstrapWithLegacyAdoption(): Promise<BrowserSession | null> {
+  const epoch = sessionEpoch
   const legacyRefresh = localStorage.getItem('refresh_token')
   LEGACY_KEYS.forEach((key) => localStorage.removeItem(key))
   const run = async () => {
     // Another tab may already have exchanged the one-time credential.
     const shared = await bootstrap(true)
+    if (epoch !== sessionEpoch) return current
     return shared || (legacyRefresh ? adoptLegacySession(legacyRefresh) : null)
   }
   const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined
@@ -116,6 +149,7 @@ export async function bootstrapWithLegacyAdoption(): Promise<BrowserSession | nu
 }
 
 export async function logoutBrowserSession(): Promise<void> {
+  sessionEpoch += 1
   try { await request('/auth/session/logout') } finally {
     LEGACY_KEYS.forEach((key) => localStorage.removeItem(key))
     publish(null)
@@ -130,5 +164,6 @@ export function resetBrowserSessionForTest(): void {
   legacyAccessToken = null
   expiresAt = null
   bootstrapFlight = null
+  sessionEpoch = 0
   listeners.clear()
 }
