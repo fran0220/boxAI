@@ -27,6 +27,8 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/internal/handler/boxai_desktop_auth.go` | Desktop OAuth (PKCE) browser-login endpoints (authorize + token exchange) |
 | `backend/internal/handler/boxai_desktop_auth_test.go` | Unit tests for the desktop OAuth PKCE helpers |
 | `backend/internal/handler/boxai_web_sso.go` | Web PKCE SSO authorize/token between you-box.com and console |
+| `backend/internal/handler/boxai_code_store.go` | BoxAICodeStore interface (depguard-safe code store) |
+| `backend/internal/server/routes/boxai_code_store.go` | Redis adapter for BoxAICodeStore |
 | `backend/internal/handler/boxai_web_sso_test.go` | Unit tests for web SSO allowlist / PKCE helpers |
 | `backend/internal/handler/boxai_creator_key.go` | Idempotent `boxai-creator` API key ensure endpoint |
 | `backend/internal/handler/boxai_creator_key_test.go` | Unit tests for Creator ensure-key |

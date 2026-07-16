@@ -35,7 +35,6 @@ import (
 	middleware2 "github.com/Wei-Shaw/sub2api/internal/server/middleware"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -141,7 +140,7 @@ func isAllowedWebSSORedirectURI(uri string) bool {
 }
 
 // BoxAIWebSSOAuthorize mints a one-time SSO code for the authenticated user.
-func (h *AuthHandler) BoxAIWebSSOAuthorize(rdb *redis.Client) gin.HandlerFunc {
+func (h *AuthHandler) BoxAIWebSSOAuthorize(store BoxAICodeStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if !WebSSOEnabled() {
 			response.Error(c, 403, "Web SSO is disabled")
@@ -168,7 +167,7 @@ func (h *AuthHandler) BoxAIWebSSOAuthorize(rdb *redis.Client) gin.HandlerFunc {
 			response.BadRequest(c, "Invalid redirect_uri")
 			return
 		}
-		if rdb == nil {
+		if store == nil {
 			response.InternalError(c, "SSO store unavailable")
 			return
 		}
@@ -187,7 +186,7 @@ func (h *AuthHandler) BoxAIWebSSOAuthorize(rdb *redis.Client) gin.HandlerFunc {
 			response.InternalError(c, "Failed to encode code")
 			return
 		}
-		if err := rdb.Set(c.Request.Context(), webSSOCodeKeyPrefix+code, payload, webSSOCodeTTL).Err(); err != nil {
+		if err := store.Put(c.Request.Context(), webSSOCodeKeyPrefix+code, string(payload), webSSOCodeTTL); err != nil {
 			response.InternalError(c, "Failed to persist code")
 			return
 		}
@@ -200,7 +199,7 @@ func (h *AuthHandler) BoxAIWebSSOAuthorize(rdb *redis.Client) gin.HandlerFunc {
 }
 
 // BoxAIWebSSOToken exchanges a one-time SSO code + PKCE verifier for tokens.
-func (h *AuthHandler) BoxAIWebSSOToken(rdb *redis.Client) gin.HandlerFunc {
+func (h *AuthHandler) BoxAIWebSSOToken(store BoxAICodeStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if !WebSSOEnabled() {
 			response.Error(c, 403, "Web SSO is disabled")
@@ -211,7 +210,7 @@ func (h *AuthHandler) BoxAIWebSSOToken(rdb *redis.Client) gin.HandlerFunc {
 			response.BadRequest(c, "Invalid request body")
 			return
 		}
-		if rdb == nil {
+		if store == nil {
 			response.InternalError(c, "SSO store unavailable")
 			return
 		}
@@ -221,9 +220,9 @@ func (h *AuthHandler) BoxAIWebSSOToken(rdb *redis.Client) gin.HandlerFunc {
 			return
 		}
 
-		payload, err := rdb.GetDel(c.Request.Context(), webSSOCodeKeyPrefix+code).Result()
+		payload, err := store.Take(c.Request.Context(), webSSOCodeKeyPrefix+code)
 		if err != nil {
-			if errors.Is(err, redis.Nil) {
+			if errors.Is(err, ErrBoxAICodeNotFound) {
 				response.Unauthorized(c, "Invalid or expired code")
 				return
 			}

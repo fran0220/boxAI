@@ -36,7 +36,6 @@ import (
 	middleware2 "github.com/Wei-Shaw/sub2api/internal/server/middleware"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -68,7 +67,7 @@ type desktopAuthCodeRecord struct {
 // BoxAIDesktopAuthorize mints a one-time desktop auth code for the currently
 // authenticated user. Called by the boxAI web app during the desktop browser
 // login handshake; requires jwtAuth upstream.
-func (h *AuthHandler) BoxAIDesktopAuthorize(rdb *redis.Client) gin.HandlerFunc {
+func (h *AuthHandler) BoxAIDesktopAuthorize(store BoxAICodeStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		subject, ok := middleware2.GetAuthSubjectFromContext(c)
 		if !ok {
@@ -90,7 +89,7 @@ func (h *AuthHandler) BoxAIDesktopAuthorize(rdb *redis.Client) gin.HandlerFunc {
 			response.BadRequest(c, "Invalid redirect_uri")
 			return
 		}
-		if rdb == nil {
+		if store == nil {
 			response.InternalError(c, "Desktop auth store unavailable")
 			return
 		}
@@ -108,7 +107,7 @@ func (h *AuthHandler) BoxAIDesktopAuthorize(rdb *redis.Client) gin.HandlerFunc {
 			response.InternalError(c, "Failed to encode code")
 			return
 		}
-		if err := rdb.Set(c.Request.Context(), desktopAuthCodeKeyPrefix+code, payload, desktopAuthCodeTTL).Err(); err != nil {
+		if err := store.Put(c.Request.Context(), desktopAuthCodeKeyPrefix+code, string(payload), desktopAuthCodeTTL); err != nil {
 			response.InternalError(c, "Failed to persist code")
 			return
 		}
@@ -122,14 +121,14 @@ func (h *AuthHandler) BoxAIDesktopAuthorize(rdb *redis.Client) gin.HandlerFunc {
 
 // BoxAIDesktopToken exchanges a one-time desktop auth code + PKCE verifier for a
 // fresh token pair. Public endpoint; the code is single-use and short-lived.
-func (h *AuthHandler) BoxAIDesktopToken(rdb *redis.Client) gin.HandlerFunc {
+func (h *AuthHandler) BoxAIDesktopToken(store BoxAICodeStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req boxaiDesktopTokenRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			response.BadRequest(c, "Invalid request body")
 			return
 		}
-		if rdb == nil {
+		if store == nil {
 			response.InternalError(c, "Desktop auth store unavailable")
 			return
 		}
@@ -139,8 +138,8 @@ func (h *AuthHandler) BoxAIDesktopToken(rdb *redis.Client) gin.HandlerFunc {
 			return
 		}
 
-		// GETDEL keeps the code single-use even under concurrent exchange.
-		payload, err := rdb.GetDel(c.Request.Context(), desktopAuthCodeKeyPrefix+code).Result()
+		// Take keeps the code single-use even under concurrent exchange.
+		payload, err := store.Take(c.Request.Context(), desktopAuthCodeKeyPrefix+code)
 		if err != nil || payload == "" {
 			response.Unauthorized(c, "Invalid or expired code")
 			return

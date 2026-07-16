@@ -62,7 +62,13 @@ func DesktopJWTGatewayEnabled() bool {
 // DesktopJWTGatewayAuth builds the JWT→API-key translation middleware. The auth
 // and user services come from the AuthHandler receiver, so only apiKeyService
 // needs to be supplied at the gateway wiring point (no extra DI).
+//
+// Safe when h is nil (route-registration tests that omit Auth): returns a no-op
+// middleware so RegisterGatewayRoutes does not panic.
 func (h *AuthHandler) DesktopJWTGatewayAuth(apiKeyService *service.APIKeyService) gin.HandlerFunc {
+	if h == nil {
+		return func(c *gin.Context) { c.Next() }
+	}
 	return desktopJWTGatewayAuth(DesktopJWTGatewayEnabled(), h.authService, h.userService, apiKeyService)
 }
 

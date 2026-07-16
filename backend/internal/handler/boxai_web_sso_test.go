@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -90,10 +91,33 @@ func (r *webSSOUserRepoStub) GetByID(context.Context, int64) (*service.User, err
 	return r.user, r.err
 }
 
+// redisBoxAICodeStoreForTest adapts *redis.Client to BoxAICodeStore inside tests.
+type redisBoxAICodeStoreForTest struct {
+	rdb *redis.Client
+}
+
+func (s *redisBoxAICodeStoreForTest) Put(ctx context.Context, key, value string, ttl time.Duration) error {
+	return s.rdb.Set(ctx, key, value, ttl).Err()
+}
+
+func (s *redisBoxAICodeStoreForTest) Take(ctx context.Context, key string) (string, error) {
+	val, err := s.rdb.GetDel(ctx, key).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return "", ErrBoxAICodeNotFound
+		}
+		return "", err
+	}
+	if val == "" {
+		return "", ErrBoxAICodeNotFound
+	}
+	return val, nil
+}
+
 // Minimal stubs to satisfy UserRepository via NewUserService — reuse userHandlerRepoStub if available.
 // userHandlerRepoStub lives in user_handler_test.go same package.
 
-func newWebSSOTestHandler(t *testing.T, user *service.User) (*AuthHandler, *redis.Client, *miniredis.Miniredis) {
+func newWebSSOTestHandler(t *testing.T, user *service.User) (*AuthHandler, BoxAICodeStore, *redis.Client, *miniredis.Miniredis) {
 	t.Helper()
 	mr := miniredis.RunT(t)
 	rdb := redis.NewClient(&redis.Options{Addr: mr.Addr()})
@@ -116,7 +140,7 @@ func newWebSSOTestHandler(t *testing.T, user *service.User) (*AuthHandler, *redi
 		authService: authSvc,
 		userService: userSvc,
 	}
-	return h, rdb, mr
+	return h, &redisBoxAICodeStoreForTest{rdb: rdb}, rdb, mr
 }
 
 func webSSOAuthSubject(userID int64) gin.HandlerFunc {
@@ -133,14 +157,14 @@ func TestWebSSOAuthorizeAndTokenHappyPath(t *testing.T) {
 		ID: 7, Email: "u@example.com", Username: "u", Role: service.RoleUser,
 		Status: service.StatusActive, TokenVersion: 1,
 	}
-	h, rdb, _ := newWebSSOTestHandler(t, user)
+	h, store, _, _ := newWebSSOTestHandler(t, user)
 	verifier := strings.Repeat("a", 43)
 	challenge := challengeFor(verifier)
 	redirect := "https://you-box.com/sso/callback"
 
 	// authorize
 	r := gin.New()
-	r.POST("/authorize", webSSOAuthSubject(7), h.BoxAIWebSSOAuthorize(rdb))
+	r.POST("/authorize", webSSOAuthSubject(7), h.BoxAIWebSSOAuthorize(store))
 	body, _ := json.Marshal(map[string]string{
 		"code_challenge": challenge,
 		"redirect_uri":   redirect,
@@ -164,7 +188,7 @@ func TestWebSSOAuthorizeAndTokenHappyPath(t *testing.T) {
 
 	// token exchange
 	r2 := gin.New()
-	r2.POST("/token", h.BoxAIWebSSOToken(rdb))
+	r2.POST("/token", h.BoxAIWebSSOToken(store))
 	tokenBody, _ := json.Marshal(map[string]string{
 		"code":          authResp.Data.Code,
 		"code_verifier": verifier,
@@ -197,13 +221,13 @@ func TestWebSSOAuthorizeAndTokenHappyPath(t *testing.T) {
 func TestWebSSOTokenPKCEFail(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	user := &service.User{ID: 7, Status: service.StatusActive, TokenVersion: 1}
-	h, rdb, _ := newWebSSOTestHandler(t, user)
+	h, store, _, _ := newWebSSOTestHandler(t, user)
 	verifier := strings.Repeat("a", 43)
 	challenge := challengeFor(verifier)
 	redirect := "https://you-box.com/sso/callback"
 
 	r := gin.New()
-	r.POST("/authorize", webSSOAuthSubject(7), h.BoxAIWebSSOAuthorize(rdb))
+	r.POST("/authorize", webSSOAuthSubject(7), h.BoxAIWebSSOAuthorize(store))
 	body, _ := json.Marshal(map[string]string{"code_challenge": challenge, "redirect_uri": redirect})
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodPost, "/authorize", bytes.NewReader(body))
@@ -217,7 +241,7 @@ func TestWebSSOTokenPKCEFail(t *testing.T) {
 	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &authResp))
 
 	r2 := gin.New()
-	r2.POST("/token", h.BoxAIWebSSOToken(rdb))
+	r2.POST("/token", h.BoxAIWebSSOToken(store))
 	tokenBody, _ := json.Marshal(map[string]string{
 		"code":          authResp.Data.Code,
 		"code_verifier": strings.Repeat("b", 43),
@@ -233,13 +257,13 @@ func TestWebSSOTokenPKCEFail(t *testing.T) {
 func TestWebSSOTokenRedirectMismatch(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	user := &service.User{ID: 7, Status: service.StatusActive, TokenVersion: 1}
-	h, rdb, _ := newWebSSOTestHandler(t, user)
+	h, store, _, _ := newWebSSOTestHandler(t, user)
 	verifier := strings.Repeat("a", 43)
 	challenge := challengeFor(verifier)
 	redirect := "https://you-box.com/sso/callback"
 
 	r := gin.New()
-	r.POST("/authorize", webSSOAuthSubject(7), h.BoxAIWebSSOAuthorize(rdb))
+	r.POST("/authorize", webSSOAuthSubject(7), h.BoxAIWebSSOAuthorize(store))
 	body, _ := json.Marshal(map[string]string{"code_challenge": challenge, "redirect_uri": redirect})
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodPost, "/authorize", bytes.NewReader(body))
@@ -253,7 +277,7 @@ func TestWebSSOTokenRedirectMismatch(t *testing.T) {
 	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &authResp))
 
 	r2 := gin.New()
-	r2.POST("/token", h.BoxAIWebSSOToken(rdb))
+	r2.POST("/token", h.BoxAIWebSSOToken(store))
 	// Use another allowlisted URI that was not bound to the code
 	tokenBody, _ := json.Marshal(map[string]string{
 		"code":          authResp.Data.Code,
@@ -270,9 +294,9 @@ func TestWebSSOTokenRedirectMismatch(t *testing.T) {
 func TestWebSSOTokenRequiresRedirectURI(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	user := &service.User{ID: 7, Status: service.StatusActive}
-	h, rdb, _ := newWebSSOTestHandler(t, user)
+	h, store, _, _ := newWebSSOTestHandler(t, user)
 	r := gin.New()
-	r.POST("/token", h.BoxAIWebSSOToken(rdb))
+	r.POST("/token", h.BoxAIWebSSOToken(store))
 	tokenBody, _ := json.Marshal(map[string]string{
 		"code":          "abc",
 		"code_verifier": strings.Repeat("a", 43),
@@ -287,17 +311,17 @@ func TestWebSSOTokenRequiresRedirectURI(t *testing.T) {
 func TestWebSSOTokenInactiveUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	user := &service.User{ID: 7, Status: "disabled", TokenVersion: 1}
-	h, rdb, _ := newWebSSOTestHandler(t, user)
+	h, store, _, _ := newWebSSOTestHandler(t, user)
 	verifier := strings.Repeat("a", 43)
 	challenge := challengeFor(verifier)
 	redirect := "https://you-box.com/sso/callback"
 
 	// Persist code directly (authorize would also work with subject 7)
 	payload, _ := json.Marshal(webSSOCodeRecord{UserID: 7, CodeChallenge: challenge, RedirectURI: redirect})
-	require.NoError(t, rdb.Set(context.Background(), webSSOCodeKeyPrefix+"testcode", payload, time.Minute).Err())
+	require.NoError(t, store.Put(context.Background(), webSSOCodeKeyPrefix+"testcode", string(payload), time.Minute))
 
 	r := gin.New()
-	r.POST("/token", h.BoxAIWebSSOToken(rdb))
+	r.POST("/token", h.BoxAIWebSSOToken(store))
 	tokenBody, _ := json.Marshal(map[string]string{
 		"code":          "testcode",
 		"code_verifier": verifier,
@@ -313,11 +337,11 @@ func TestWebSSOTokenInactiveUser(t *testing.T) {
 func TestWebSSOTokenRedisTransportError(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	user := &service.User{ID: 7, Status: service.StatusActive}
-	h, rdb, mr := newWebSSOTestHandler(t, user)
+	h, store, _, mr := newWebSSOTestHandler(t, user)
 	mr.Close() // force connection errors
 
 	r := gin.New()
-	r.POST("/token", h.BoxAIWebSSOToken(rdb))
+	r.POST("/token", h.BoxAIWebSSOToken(store))
 	tokenBody, _ := json.Marshal(map[string]string{
 		"code":          "missing",
 		"code_verifier": strings.Repeat("a", 43),
