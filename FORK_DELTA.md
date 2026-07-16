@@ -151,3 +151,9 @@ Hash pins: `tools/compliance-hash.pins`.
 1. Add/remove rows when markers or product-first paths change.
 2. On upstream sync land: bump **Baseline** tag.
 3. Prefer small, reviewable inventory edits over long prose.
+
+| `deploy/nginx-you-box.com.conf` | Production nginx multi-host topology (apex React / console Vue / api filter) |
+| `deploy/scripts/deploy-web-static.sh` | Build+rsync React web to production docroot |
+| `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
+| `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
+| `docs/LOCAL_DEV.md` | Local dual-frontend developer guide |

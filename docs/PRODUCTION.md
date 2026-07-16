@@ -5,45 +5,57 @@
 
 ---
 
-## 1. 当前生产拓扑（2026-07-15 起）
+## 1. 当前生产拓扑（2026-07-16 双前端切换后）
 
-> **Dual-frontend (target / progressive):** apex `you-box.com` serves the React SPA (`web/dist`);
-> `console.you-box.com` serves the Go-embedded Vue console; `api.you-box.com` is edge-filtered.
-> Auth between origins is **PKCE Web SSO** (not cookie Domain SSO). Full spec: [`docs/WEB_PLATFORM.md`](./WEB_PLATFORM.md),
-> Caddy example: [`deploy/Caddyfile.you-box.com`](../deploy/Caddyfile.you-box.com).
+> 完整产品面说明：[`docs/WEB_PLATFORM.md`](./WEB_PLATFORM.md) · 本地三进程：[`docs/LOCAL_DEV.md`](./LOCAL_DEV.md)  
+> Nginx 配置：[`deploy/nginx-you-box.com.conf`](../deploy/nginx-you-box.com.conf) · Caddy 备选：[`deploy/Caddyfile.you-box.com`](../deploy/Caddyfile.you-box.com)
 
 ```
 Internet
    │
-   ▼
-you-box.com (TLS, Let's Encrypt / Certbot)
-   │  Nginx (宿主机)  — or Caddy per deploy/Caddyfile.you-box.com
-   ▼
-127.0.0.1:8080
-   │
-   ▼
-Docker Compose project: boxAI   (/opt/boxAI)
-├── sub2api          ghcr.io/fran0220/boxai:<pin>     应用（内嵌 Vue console）
-├── sub2api-postgres postgres:18-alpine               数据库
-└── sub2api-redis    redis:8-alpine                   缓存 / 会话辅助
+   ├─ you-box.com      React 静态 (/var/www/you-box.com) + 反代 /api /v1 /health → :8080
+   ├─ www.you-box.com  301 → you-box.com
+   ├─ console.you-box.com  反代全部 → :8080（Go 内嵌 Vue 控制台）
+   └─ api.you-box.com  仅 /v1/*、SSO/desktop token、refresh、public settings、/health
+          │
+          ▼
+   127.0.0.1:8080  Docker sub2api (ghcr.io/fran0220/boxai:<pin>)
+          │
+   Postgres 18 + Redis 8  (compose 同项目)
 ```
-
-React marketing/Creator static files (when dual-host is live): publish `web/dist` to the apex
-docroot (e.g. `/var/www/you-box.com`) and reverse-proxy only `/api/*` + `/v1/*` to `:8080`.
 
 | 项 | 值 |
 |----|-----|
 | SSH | `ssh youbox` → `root@160.187.1.155` |
-| 域名 | `https://you-box.com` |
+| 产品面 | `https://you-box.com`（营销 / Creator） |
+| 控制台 | `https://console.you-box.com`（用户台 + 管理台） |
+| 开发者 API | `https://api.you-box.com/v1` |
 | 应用目录 | `/opt/boxAI` |
-| Compose 文件 | `/opt/boxAI/docker-compose.yml`（内容同仓库 `deploy/docker-compose.local.yml`） |
+| React 静态 | `/var/www/you-box.com`（`web/dist`） |
+| Compose | `/opt/boxAI/docker-compose.yml` |
 | 环境文件 | `/opt/boxAI/.env`（`chmod 600`，**勿提交 Git**） |
-| 公开镜像 | `ghcr.io/fran0220/boxai:<pin-tag>`（生产必须 pin，当前示例 `0.1.155-box.8`） |
-| 应用监听 | 仅本机 `127.0.0.1:8080`（不直接暴露公网） |
-| 健康检查 | `GET /health` → `{"status":"ok"}` |
-| Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;`（粘性会话 / `session_id`） |
-| 管理员 | 邮箱见 `.env` 的 `ADMIN_EMAIL`；初始密码见主机 `/root/.boxai-admin-password` |
-| 旧 you-box 栈 | **已彻底删除**（目录、镜像、`you-box_pg_data` 卷均已清除） |
+| 公开镜像 | `ghcr.io/fran0220/boxai:<pin-tag>`（当前示例 `0.1.155-box.10`） |
+| 应用监听 | 仅本机 `127.0.0.1:8080` |
+| 健康检查 | `GET /health` → `{"status":"ok"}`（apex / console / api 均应可达） |
+| Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;` |
+| 管理员 | `.env` 的 `ADMIN_EMAIL`；初始密码见 `/root/.boxai-admin-password` |
+
+### 1.0 双前端发布 / 验证命令
+
+```bash
+# 本机：构建并 rsync React
+./deploy/scripts/deploy-web-static.sh
+
+# 本机：安装 nginx 拓扑 + 扩展证书（console/api）
+./deploy/scripts/apply-nginx-topology.sh
+
+# 本机：真实验证
+./deploy/scripts/verify-topology.sh
+
+# 应用镜像升级（照旧）
+ssh youbox 'cd /opt/boxAI && sed -i "s|^BOXAI_IMAGE=.*|BOXAI_IMAGE=ghcr.io/fran0220/boxai:<tag>|" .env \
+  && docker compose pull sub2api && docker compose up -d --no-deps sub2api'
+```
 
 ### 1.1 基础服务是否已部署？
 

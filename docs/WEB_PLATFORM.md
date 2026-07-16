@@ -180,13 +180,33 @@ cd web && pnpm install && pnpm dev
 4. Callback lands on `http://localhost:3000/boxai/sso/callback#code=…`.
 5. Vue exchanges token and navigates to `return_to` (safe relative path only).
 
-## Deploy notes
+## Deploy notes (production cutover)
 
-See `deploy/Caddyfile.you-box.com` and `docs/PRODUCTION.md`.
+Artifacts:
 
-- Build React: `cd web && pnpm build` → publish `web/dist` to the host serving `you-box.com`.
-- Console remains the Go embed path on `console.you-box.com`.
-- Production builds of `web/` ship **without** sourcemaps.
+| File | Role |
+|------|------|
+| `deploy/nginx-you-box.com.conf` | **Live** nginx multi-host config |
+| `deploy/Caddyfile.you-box.com` | Caddy alternative |
+| `deploy/scripts/deploy-web-static.sh` | Build + rsync `web/dist` → `/var/www/you-box.com` |
+| `deploy/scripts/apply-nginx-topology.sh` | Install nginx + certbot expand |
+| `deploy/scripts/verify-topology.sh` | HTTP smoke against apex/console/api |
+| `docs/LOCAL_DEV.md` | Local three-process setup |
+| `docs/PRODUCTION.md` | Full ops doc |
+
+Cutover order:
+
+1. DNS: `A` records for `www`, `console`, `api` → origin IP (Cloudflare DNS-only recommended for certbot).
+2. `./deploy/scripts/deploy-web-static.sh`
+3. `./deploy/scripts/apply-nginx-topology.sh` (expands LE cert to all four names).
+4. `./deploy/scripts/verify-topology.sh`
+5. Pin backend image (`BOXAI_IMAGE`) as needed; SSO allowlist already includes production callback URLs.
+
+Production builds of `web/` ship **without** sourcemaps.
+
+## Local development
+
+See **[LOCAL_DEV.md](./LOCAL_DEV.md)** for ports and env.
 
 ## Out of scope
 
