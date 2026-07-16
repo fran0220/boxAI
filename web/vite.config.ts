@@ -1,6 +1,9 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+import { readFileSync } from 'fs'
+
+const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8')) as { version: string }
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -14,6 +17,11 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': resolve(__dirname, 'src'),
       },
+    },
+    define: {
+      // gpt_image_playground version badge / compatibility
+      __APP_VERSION__: JSON.stringify(pkg.version || '1.0.0'),
+      __DEV_PROXY_CONFIG__: 'null',
     },
     server: {
       port,

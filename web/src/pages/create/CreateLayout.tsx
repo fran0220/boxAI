@@ -8,6 +8,11 @@ import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
 import { LangSwitcher } from '@/components/LangSwitcher'
 
+export interface CreateOutletContext {
+  keyReady: boolean
+  keyError: string
+}
+
 export function CreateLayout() {
   const { d } = useI18n()
   usePageMeta(d.create.metaTitle)
@@ -99,7 +104,7 @@ export function CreateLayout() {
       ) : null}
 
       <main className="min-h-0 flex-1">
-        <Outlet />
+        <Outlet context={{ keyReady, keyError } satisfies CreateOutletContext} />
       </main>
     </div>
   )

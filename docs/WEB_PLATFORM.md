@@ -65,9 +65,18 @@ console via Web SSO.
 ## Creator
 
 Creator is an image/video generation workbench on the apex React app
-(`/create/image` — default, `/create/video`, `/create/assets`). Agent chat lives
-in Studio, not Creator. Generation history persists in the browser (IndexedDB)
-and is never uploaded.
+(`/create/image` — default, `/create/video`, `/create/assets`).
+
+**Image workbench** embeds a BoxAI-adapted build of
+[gpt_image_playground](https://github.com/CookSleep/gpt_image_playground) (MIT)
+under `web/src/image-playground/`:
+
+- Text-to-image, multi-reference + mask edit, streaming, gallery, favorites, Agent (Responses API)
+- Auth: live session JWT injected only for the BoxAI gateway origin (never persisted as API key; multi-provider locked)
+- History: playground IndexedDB (`gpt-image-playground`) plus mirror into Creator `assets-db` for `/create/assets`
+- Attribution / license: settings about panel + `LICENSE.upstream`
+
+Video generation stays on the simpler Creator page. Desktop Studio agent chat is separate.
 
 Calls:
 
@@ -75,6 +84,7 @@ Calls:
 Authorization: Bearer <access JWT>
 POST /v1/images/generations
 POST /v1/images/edits
+POST /v1/responses
 POST /v1/videos/generations
 GET  /v1/videos/:id
 POST /api/v1/boxai/creator/ensure-key
