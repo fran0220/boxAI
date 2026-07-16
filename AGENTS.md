@@ -46,7 +46,7 @@ Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL
 ## Hard rules
 
 1. **Enumerable delta** — every intentional change to an upstream-owned file has `// BOXAI:` / `<!-- BOXAI -->` and a row in `FORK_DELTA.md`.
-2. **Product features stay product-first** — new backend logic in `backend/internal/branding/` or `backend/internal/handler/boxai_*.go` (or future `backend/internal/boxai/`); wire with a few lines in router/setup only.
+2. **Product features stay product-first** — new backend logic in `backend/internal/branding/`, `backend/internal/handler/boxai_*.go`, or `backend/internal/boxai/`; wire with a few lines in router/setup only.
 3. **Migrations** — BoxAI SQL only as `backend/migrations/9xx_boxai_*.sql` (forward-only, idempotent). Never edit applied migrations with version `<900`.
 4. **Compliance freeze** — `frontend/src/stores/adminCompliance.ts` and `docs/legal/*` are byte-stable (CI hashes). Product UI says BoxAI; legal ack copy keeps Sub2API wording.
 5. **Upstream sync** — merge by upstream **release tag**; **merge not rebase** on published `main`; sync PRs contain no feature work.
