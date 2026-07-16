@@ -11,8 +11,11 @@ export function safeReturnPath(raw: string | null | undefined, fallback = '/crea
   const input = raw.trim()
   if (!input) return fallback
 
-  // Control chars anywhere are unsafe for navigation.
-  if (/[\u0000-\u001f\u007f]/.test(input)) return fallback
+  // Control chars anywhere are unsafe for navigation (avoid control-char regex).
+  for (let i = 0; i < input.length; i++) {
+    const code = input.charCodeAt(i)
+    if (code <= 0x1f || code === 0x7f) return fallback
+  }
 
   // Split path from query/hash on the raw string first so we never treat
   // absolute URLs inside the query as part of the path.

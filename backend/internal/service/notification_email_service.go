@@ -43,10 +43,10 @@ const (
 	notificationEmailDefaultLocale        = "en"
 	notificationEmailLocaleChinese        = "zh"
 	// BOXAI: Vietnamese product locale for notification emails (Vietnam market).
-	notificationEmailLocaleVietnamese     = "vi"
-	notificationEmailMaxSubjectLength     = 200
-	notificationEmailMaxHTMLLength        = 30000
-	notificationEmailUnsubscribeTTL       = 365 * 24 * time.Hour
+	notificationEmailLocaleVietnamese = "vi"
+	notificationEmailMaxSubjectLength = 200
+	notificationEmailMaxHTMLLength    = 30000
+	notificationEmailUnsubscribeTTL   = 365 * 24 * time.Hour
 )
 
 var (

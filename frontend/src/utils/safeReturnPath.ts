@@ -11,7 +11,11 @@ export function safeReturnPath(raw: string | null | undefined, fallback = '/'): 
   const input = raw.trim()
   if (!input) return fallback
 
-  if (/[\u0000-\u001f\u007f]/.test(input)) return fallback
+  // Reject ASCII control characters without a control-character regex (eslint no-control-regex).
+  for (let i = 0; i < input.length; i++) {
+    const code = input.charCodeAt(i)
+    if (code <= 0x1f || code === 0x7f) return fallback
+  }
 
   const q = input.indexOf('?')
   const h = input.indexOf('#')
