@@ -102,7 +102,7 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/index.html` | Default title; Noto Sans SC; FOUC dark class |
 | `frontend/src/style.css` | Primitives use `--bx-*` tokens |
 | `frontend/tailwind.config.js` | `dark` scale + mesh/shadows aligned to homepage |
-| `frontend/src/views/HomeView.vue` | Marketing surface |
+| `frontend/src/views/HomeView.vue` | Console-host home / admin `home_content` shell |
 | `frontend/src/components/layout/AppLayout.vue` | Console shell `bx-page` + ambient mesh |
 | `frontend/src/components/layout/AppSidebar.vue` | Sidebar tokens + default dark |
 | `frontend/src/components/layout/AppHeader.vue` | Header glass / token surfaces |
@@ -110,7 +110,7 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/components/layout/AuthLayout.vue` | Auth chrome brand + homepage ambient |
 | `frontend/src/i18n/locales/{en,zh,vi}/*` | Product copy (landing/dashboard/settings/misc/batchImage + admin) |
 | `frontend/src/i18n/localeMeta.ts` | Locale codes, BCP-47, compliance language map |
-| `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage (+ legacy key) |
+| `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage |
 | `frontend/src/components/auth/WechatOAuthSection.vue` | Explicit Vietnamese WeChat availability guidance |
 | `frontend/src/api/auth.ts` | BOXAI: `authorizeDesktopLogin` + Web SSO authorize/token helpers |
 | `frontend/src/router/index.ts` | BOXAI: `/desktop-auth`, `/download/desktop`, `/boxai/sso/start`, `/boxai/sso/callback` |

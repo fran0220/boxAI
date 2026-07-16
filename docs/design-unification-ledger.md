@@ -1,9 +1,7 @@
 # 设计语言统一台账
 
-**目标：** 控制台与首页共用首页北极星设计 token（`--bx-*`）。
-
-> **2026-07 架构更新：** 公网营销首页与 Creator 默认在 React 产品面 `web/`（`you-box.com`）；Vue 控制台在 `console.you-box.com`。双方仍应对齐 `--bx-*` token。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)。  
-**默认主题：** 深色（`#080a0d`）。浅色仅作用户显式切换的可读 fallback。  
+**目标：** `you-box.com`（React 产品面）与 `console.you-box.com`（Vue 控制台）共用 `--bx-*` 设计 token。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)。  
+**默认主题：** 深色（`#080a0d`）。浅色为用户显式切换。  
 **状态：** `pending` → `done` · 审查时更新本表。
 
 ## A. 设计源与全局

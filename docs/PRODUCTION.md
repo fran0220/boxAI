@@ -5,10 +5,10 @@
 
 ---
 
-## 1. 当前生产拓扑（2026-07-16 双前端切换后）
+## 1. 生产拓扑
 
-> 完整产品面说明：[`docs/WEB_PLATFORM.md`](./WEB_PLATFORM.md) · 本地三进程：[`docs/LOCAL_DEV.md`](./LOCAL_DEV.md)  
-> Nginx 配置：[`deploy/nginx-you-box.com.conf`](../deploy/nginx-you-box.com.conf) · Caddy 备选：[`deploy/Caddyfile.you-box.com`](../deploy/Caddyfile.you-box.com)
+> 架构：[`docs/WEB_PLATFORM.md`](./WEB_PLATFORM.md) · 本地：[`docs/LOCAL_DEV.md`](./LOCAL_DEV.md)  
+> Nginx：[`deploy/nginx-you-box.com.conf`](../deploy/nginx-you-box.com.conf) · Caddy：[`deploy/Caddyfile.you-box.com`](../deploy/Caddyfile.you-box.com)
 
 ```
 Internet
@@ -40,26 +40,26 @@ Internet
 | Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;` |
 | 管理员 | `.env` 的 `ADMIN_EMAIL`；初始密码见 `/root/.boxai-admin-password` |
 
-### 1.0 双前端发布 / 验证命令
+### 1.0 发布与验证
 
 ```bash
-# 本机：构建并 rsync React
+# React 产品面静态资源
 ./deploy/scripts/deploy-web-static.sh
 
-# 本机：安装 nginx 拓扑 + 扩展证书（console/api）
+# Nginx 多主机 + 证书
 ./deploy/scripts/apply-nginx-topology.sh
 
-# 本机：真实验证
+# HTTP 冒烟
 ./deploy/scripts/verify-topology.sh
 
-# 应用镜像升级（照旧）
+# 应用镜像
 ssh youbox 'cd /opt/boxAI && sed -i "s|^BOXAI_IMAGE=.*|BOXAI_IMAGE=ghcr.io/fran0220/boxai:<tag>|" .env \
   && docker compose pull sub2api && docker compose up -d --no-deps sub2api'
 ```
 
-### 1.1 基础服务是否已部署？
+### 1.1 Compose 服务
 
-**是。** 当前 compose 一次拉起三类服务，均在 Docker 内网互通，状态应为 `healthy`：
+三类服务同项目，状态应为 `healthy`：
 
 | 服务 | 容器名 | 镜像 | 数据目录（宿主机） | 宿主机端口 |
 |------|--------|------|-------------------|------------|
@@ -94,7 +94,7 @@ docker exec sub2api-redis redis-cli ping   # 期望 PONG
 └── redis_data/               # Redis AOF/RDB
 ```
 
-内部容器名 / 二进制名仍为 `sub2api`（与上游兼容）；**对外产品名是 BoxAI**，镜像名是 `boxai`。
+容器名 / 二进制 / 数据库名：`sub2api`（模块路径不变）。对外产品名：**BoxAI**；镜像：`ghcr.io/fran0220/boxai`。
 
 ---
 
@@ -103,7 +103,7 @@ docker exec sub2api-redis redis-cli ping   # 期望 PONG
 `/opt/boxAI/.env` 至少包含：
 
 ```bash
-BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.8
+BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.10
 BIND_HOST=127.0.0.1
 SERVER_PORT=8080
 SERVER_MODE=release
@@ -204,56 +204,29 @@ http {
 线上文件位置：`/etc/nginx/nginx.conf` 的 `http` 块内。  
 修改后：`nginx -t && systemctl reload nginx`。
 
-#### 4.5.2 站点反代示例
+#### 4.5.2 多主机站点配置
 
-```nginx
-server {
-  server_name you-box.com www.you-box.com;
-
-  location /.well-known/acme-challenge/ {
-    root /var/www/letsencrypt;
-  }
-
-  # 禁止 Docker 部署误用管理后台「在线升级」（会拉上游 Sub2API 覆盖二进制）
-  location = /api/v1/admin/system/update {
-    default_type application/json;
-    return 403 '{"code":403,"message":"Use docker compose upgrade for BoxAI."}';
-  }
-  location = /api/v1/admin/system/rollback {
-    default_type application/json;
-    return 403 '{"code":403,"message":"Use docker compose upgrade for BoxAI."}';
-  }
-
-  location / {
-    proxy_pass http://127.0.0.1:8080;
-    proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection $connection_upgrade;
-    # 勿在此再丢弃客户自定义头；session_id 依赖 http 块的 underscores_in_headers
-    proxy_read_timeout 3600s;
-    proxy_send_timeout 3600s;
-    client_max_body_size 200m;
-  }
-}
-```
+完整配置见仓库 **`deploy/nginx-you-box.com.conf`**（apex React + console Vue + api 过滤）。
 
 ```bash
-# map $connection_upgrade 需在 http 块中已定义（常见于 certbot/nginx 默认）
-nginx -t && systemctl reload nginx
-certbot --nginx -d you-box.com -d www.you-box.com
+# 本机执行
+./deploy/scripts/deploy-web-static.sh
+./deploy/scripts/apply-nginx-topology.sh   # 含 certbot expand: you-box.com www console api
+./deploy/scripts/verify-topology.sh
 ```
+
+证书路径：`/etc/letsencrypt/live/you-box.com/`。React 文档根：`/var/www/you-box.com`。
 
 ### 4.6 验收清单
 
 - [ ] `docker compose ps` 三个服务均为 healthy / running  
 - [ ] `curl http://127.0.0.1:8080/health` → ok  
-- [ ] `curl https://you-box.com/health` → ok  
-- [ ] 浏览器打开首页为 **BoxAI**  
-- [ ] 管理员可登录控制台  
+- [ ] `curl https://you-box.com/health` → ok（React 边缘代理）  
+- [ ] `curl https://console.you-box.com/health` → ok  
+- [ ] `curl https://api.you-box.com/health` → ok  
+- [ ] `you-box.com/` 为 React（含 `id="root"`）  
+- [ ] `console.you-box.com` 可登录管理/用户台  
+- [ ] `./deploy/scripts/verify-topology.sh` 通过  
 - [ ] 磁盘：`df -h` 有余量；数据目录在 `/opt/boxAI/{data,postgres_data,redis_data}`
 
 ---
@@ -269,23 +242,22 @@ docker compose logs -f --tail=200 sub2api
 docker compose logs --tail=100 postgres redis
 ```
 
-### 5.2 升级（滚动到新公开镜像）
+### 5.2 升级
 
-> **禁止**在管理后台点击「在线升级 / 更新」对 Docker 部署做就地二进制替换。  
-> 旧逻辑默认从 `Wei-Shaw/sub2api` 拉上游 release，会把容器内 `/app/sub2api` 覆盖成 **Sub2API 上游二进制**，表现为品牌/行为「恢复成 sub2api」。  
-> 正确升级路径：**只改 `BOXAI_IMAGE` + compose pull/up**。
+Docker 部署**禁止**使用管理后台「在线升级」替换二进制。只通过镜像 pin 升级：
 
 ```bash
 cd /opt/boxAI
 # 1) 备份（见 §6）
-# 2) 修改 .env：BOXAI_IMAGE=ghcr.io/fran0220/boxai:<新 tag>
+# 2) .env：BOXAI_IMAGE=ghcr.io/fran0220/boxai:<新 tag>
 docker compose pull
 docker compose up -d
 curl -fsS http://127.0.0.1:8080/health
 curl -fsS https://you-box.com/health
-# 确认仍是 BoxAI（不是 Sub2API）
 docker exec sub2api /app/sub2api -version | head -1
 ```
+
+若只更新营销/Creator UI：`./deploy/scripts/deploy-web-static.sh`（不必换镜像）。
 
 环境变量（compose 默认已设）：
 
@@ -397,15 +369,14 @@ gh workflow run release.yml -R fran0220/boxAI \
 
 ---
 
-## 8. 与 you-box / BWG 的边界
+## 8. 与其它主机的边界
 
 | 主机 | 产品 | 仓库 | 镜像 |
 |------|------|------|------|
-| **youbox** / you-box.com | **BoxAI** | `fran0220/boxAI` | `ghcr.io/fran0220/boxai` |
+| **youbox** | **BoxAI** | `fran0220/boxAI` | `ghcr.io/fran0220/boxai` |
 | **bwg** / api.origingame.dev | Origin Gateway | `fran0220/you-box` | `ghcr.io/fran0220/you-box` |
 
-- 不要再把 `you-box` 镜像部署到 youbox。  
-- 旧 you-box 在 youbox 上的目录、镜像、数据库卷已 **物理删除**；不可从本机恢复旧 new-api 数据。
+不要把其它产品镜像部署到 youbox。
 
 ---
 
@@ -413,11 +384,13 @@ gh workflow run release.yml -R fran0220/boxAI \
 
 | 现象 | 排查 |
 |------|------|
-| 公网 502 | `docker compose ps`；Nginx `proxy_pass` 是否 `127.0.0.1:8080`；`nginx -t && systemctl reload nginx` |
+| 公网 502 | `docker compose ps`；Nginx 是否指向 `127.0.0.1:8080`；`nginx -t && systemctl reload nginx` |
 | `/health` 失败 | `docker compose logs sub2api`；postgres/redis 是否 healthy |
+| apex 不是 React | `/var/www/you-box.com` 是否有 `index.html`；`deploy-web-static.sh` |
+| 控制台打不开 | DNS `console.you-box.com`；证书是否含 console |
 | 登录全失效 | 是否改过 `JWT_SECRET` |
-| 迁移失败 | 日志中 migration 错误；**不要**手改 `postgres_data` 后硬上新版本，先备份再处理 |
-| 磁盘满 | `du -sh /opt/boxAI/*`；清理旧镜像 `docker image prune`（勿删当前 pin） |
+| 迁移失败 | 日志中 migration 错误；先备份再处理 |
+| 磁盘满 | `du -sh /opt/boxAI/*`；`docker image prune`（勿删当前 pin） |
 
 ---
 

@@ -12,7 +12,7 @@ Ledger / glossary under this directory track **review status** and **terminology
 | `zh` | Yes | `navigator` starts with `zh` | Chinese |
 | `vi` | Yes | `navigator` starts with `vi` | **Falls back to English** (frozen Sub2API wording) |
 
-Storage: write `boxai_locale`; read also legacy `sub2api_locale`.
+Storage key: `boxai_locale`.
 
 ## Status machine (ledger)
 

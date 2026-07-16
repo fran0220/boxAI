@@ -1,75 +1,76 @@
-# BoxAI local development (dual frontend)
+# Local development
 
-> Production topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md) · ops: [PRODUCTION.md](./PRODUCTION.md) · Desktop: [OFFICE_MODULE.md](./OFFICE_MODULE.md)
+Run three processes for the full web product. Desktop is optional (fourth).
 
-Run **three processes** for full product surface: backend, Vue console, React web.
-
-## Ports
+## Processes
 
 | Process | Port | Directory | Command |
 |---------|------|-----------|---------|
 | Backend | `8080` | `backend/` | `go run ./cmd/server` |
-| Console (Vue) | `3000` | `frontend/` | `pnpm dev:local-api` |
-| Marketing + Creator (React) | `5173` | `web/` | `pnpm dev` |
-| Desktop | n/a | `desktop/` | Tauri build (see `docs/OFFICE_MODULE.md`) |
+| Console (Vue) | `3000` | `frontend/` | `pnpm install && pnpm dev:local-api` |
+| Product web (React) | `5173` | `web/` | `pnpm install && pnpm dev` |
+| Desktop | — | `desktop/` | See [OFFICE_MODULE.md](./OFFICE_MODULE.md) |
 
-## One-shot helper
+| Open | URL |
+|------|-----|
+| Marketing / Creator | http://localhost:5173 |
+| User / admin console | http://localhost:3000 |
+| Health | http://localhost:8080/health |
 
-```bash
-# From repo root (requires tmux optional — or open 3 terminals)
-# Terminal 1
-cd backend && go run ./cmd/server
+Production mapping: `5173` → `you-box.com`, `3000` → `console.you-box.com`.
 
-# Terminal 2
-cd frontend && pnpm install && pnpm dev:local-api
+## Prerequisites
 
-# Terminal 3
-cd web && pnpm install && cp -n .env.example .env.local 2>/dev/null; pnpm dev
-```
-
-Open:
-
-- Marketing / Creator: <http://localhost:5173>
-- Console / admin: <http://localhost:3000>
-- API health: <http://localhost:8080/health>
+- Go (see `backend/go.mod`)
+- pnpm 9+
+- PostgreSQL + Redis (local compose or native)
 
 ## Environment
 
 ### Backend
 
-Use existing `deploy/config.example.yaml` / env vars. SSO defaults include localhost callbacks:
+SSO allowlist includes localhost callbacks by default:
 
 - `http://localhost:5173/sso/callback`
 - `http://localhost:3000/boxai/sso/callback`
 
-Flags: `BOXAI_WEB_SSO` (default on), `BOXAI_DESKTOP_JWT_GATEWAY` (default on).
+| Env | Default | Meaning |
+|-----|---------|---------|
+| `BOXAI_WEB_SSO` | on | Web SSO endpoints |
+| `BOXAI_DESKTOP_JWT_GATEWAY` | on | JWT→API key on `/v1/*` |
 
-### React `web/`
+### React (`web/`)
 
-See `web/.env.example`. Important:
+Copy `web/.env.example` → `web/.env.local` if needed.
 
-| Variable | Local | Production build |
-|----------|-------|------------------|
-| `VITE_CONSOLE_ORIGIN` | `http://localhost:3000` | omit → `https://console.you-box.com` |
-| `VITE_API_BASE` | empty (proxy) | empty (same-origin nginx proxy) |
-| `VITE_DEV_PROXY_TARGET` | `http://localhost:8080` | n/a |
+| Variable | Local value |
+|----------|-------------|
+| `VITE_DEV_PROXY_TARGET` | `http://localhost:8080` |
+| `VITE_CONSOLE_ORIGIN` | `http://localhost:3000` |
+| `VITE_API_BASE` | empty (same-origin via Vite proxy) |
 
-### Vue `frontend/`
+### Vue (`frontend/`)
 
-`pnpm dev:local-api` proxies API to `VITE_DEV_PROXY_TARGET` or `http://localhost:8080`.
+`pnpm dev:local-api` proxies `/api` to the backend on `:8080`.
 
-## SSO smoke (local)
+## Checks
 
-1. Log in on <http://localhost:5173/login>
-2. Open <http://localhost:5173/sso?target=console> → should hand off to console with session
-3. Creator: <http://localhost:5173/create/chat> (requires login + backend groups/models)
+```bash
+# Backend
+cd backend && go test -tags=unit ./internal/handler/ -run 'WebSSO|Creator|ResolveUserGateway'
 
-## Desktop smoke
+# Console
+cd frontend && pnpm typecheck
 
-1. Build desktop app (`desktop/` README)
-2. Server URL: `http://localhost:8080`
-3. Browser login uses Vue `/desktop-auth` on the configured server host
+# Product web
+cd web && pnpm typecheck && pnpm test:run
+```
 
-## Production topology
+## Smoke
 
-See [WEB_PLATFORM.md](./WEB_PLATFORM.md) and [PRODUCTION.md](./PRODUCTION.md).
+1. Log in at http://localhost:5173/login  
+2. Open Creator http://localhost:5173/create/chat  
+3. Console handoff: http://localhost:5173/sso?target=console  
+4. Desktop: set server to `http://localhost:8080`, browser login via console `/desktop-auth`
+
+Architecture: [WEB_PLATFORM.md](./WEB_PLATFORM.md).

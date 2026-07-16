@@ -150,6 +150,7 @@ docs/*
 !docs/WEB_PLATFORM.md
 !docs/OFFICE_MODULE.md
 !docs/LOCAL_DEV.md
+!docs/README.md
 !docs/design-unification-ledger.md
 !docs/legal/
 !docs/legal/*.md

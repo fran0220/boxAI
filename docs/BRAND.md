@@ -69,17 +69,15 @@ Gradients: `--bx-grad-cta` / `--bx-grad-hero` (`#2dd4bf → #22d3ee` / hero mult
 
 ## Marketing surface
 
-**Production default landing** is the React product SPA at **`you-box.com`** (`web/`):
+Public marketing and Creator UI: React app on **`you-box.com`** (`web/`).
 
-- Routes: `/` marketing, `/studio`, `/download`, `/create/*` Creator, `/login`
-- Brand tokens: align with `--bx-*` (see `web/src/index.css` / console `tokens.css`)
-- Constants: `web/src/lib/brand.ts` (mirrors `frontend/src/constants/brand.ts`)
+- Routes: `/`, `/studio`, `/download`, `/create/*`, `/login`
+- Tokens: `--bx-*` (`web/src/index.css`, shared language with console `tokens.css`)
+- Constants: `web/src/lib/brand.ts` (same names as `frontend/src/constants/brand.ts`)
 
-The Vue `frontend/src/views/HomeView.vue` + `styles/home-platform.css` remain for **console-origin** fallbacks and historical admin `home_content` overrides when the console host serves embedded SPA. Prefer React apex for public marketing.
+Console shell on **`console.you-box.com`**: `AppLayout` / `AuthLayout` use `bx-page` + `bx-ambient-mesh`. See `docs/design-unification-ledger.md`.
 
-**Console shell** (`AppLayout` / `AuthLayout` on `console.you-box.com`) reuses `bx-page` + `bx-ambient-mesh` so auth and dashboard match the homepage language. Design unification ledger: `docs/design-unification-ledger.md`.
-
-Product topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md).
+Topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md).
 
 ## Compliance note (do not change casually)
 

@@ -10,10 +10,11 @@ Read this file before any non-trivial change. Detailed SOPs live under `docs/age
 | [Change design](docs/agents/change-design.md) | How to write BE/FE code that survives upstream merges |
 | [Upstream sync](docs/agents/upstream-sync.md) | Merge SOP, conflict policy, verification |
 | [Deploy & release](docs/agents/deploy-release.md) | Compose, Docker publish, versioning |
-| [**Production deploy (full)**](docs/PRODUCTION.md) | Dual-frontend topology, Postgres/Redis, backup/upgrade |
-| [Web platform](docs/WEB_PLATFORM.md) | you-box / console / api hosts, Web SSO, Creator |
-| [Local dual-frontend](docs/LOCAL_DEV.md) | Backend + Vue console + React web |
-| [Desktop / Office](docs/OFFICE_MODULE.md) | Tauri client + desktop OAuth |
+| [Docs index](docs/README.md) | Documentation map |
+| [Production](docs/PRODUCTION.md) | Topology, Postgres/Redis, backup/upgrade |
+| [Web platform](docs/WEB_PLATFORM.md) | Hosts, Web SSO, Creator |
+| [Local dev](docs/LOCAL_DEV.md) | Backend + Vue console + React web |
+| [Desktop](docs/OFFICE_MODULE.md) | Tauri client + desktop OAuth |
 | [PR checklist](docs/agents/pr-checklist.md) | Required checks before merge |
 | [FORK_DELTA.md](FORK_DELTA.md) | Enumerated product delta vs upstream |
 | [DEV_GUIDE.md](DEV_GUIDE.md) | Local env, CI versions, common pitfalls |
