@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"io"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
 
+	"github.com/liveagent/agent-gateway/internal/auth"
 	"github.com/liveagent/agent-gateway/internal/config"
 	gatewayv1 "github.com/liveagent/agent-gateway/internal/proto/v1"
 	"github.com/liveagent/agent-gateway/internal/session"
@@ -29,8 +29,9 @@ func NewGRPCServer(cfg *config.Config, sm *session.Manager) *GRPCServer {
 }
 
 func (s *GRPCServer) Authenticate(_ context.Context, req *gatewayv1.AuthRequest) (*gatewayv1.AuthResponse, error) {
-	expectedToken := strings.TrimSpace(s.cfg.Token)
-	if expectedToken == "" || strings.TrimSpace(req.GetToken()) != expectedToken {
+	// BOXAI: ValidateToken accepts the static shared token or, when
+	// configured, a boxAI account JWT (verified via /api/v1/auth/me).
+	if !auth.ValidateToken(req.GetToken(), s.cfg.Token) {
 		return &gatewayv1.AuthResponse{
 			Success: false,
 			Message: "invalid token",

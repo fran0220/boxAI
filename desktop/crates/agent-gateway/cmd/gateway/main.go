@@ -27,6 +27,11 @@ const grpcShutdownTimeout = 3 * time.Second
 
 func main() {
 	cfg := config.Load()
+	// BOXAI: enable boxAI account-JWT auth fallback when a server is configured.
+	auth.ConfigureBoxAI(cfg.BoxAIServerURL)
+	if cfg.BoxAIServerURL != "" {
+		log.Printf("boxAI account token validation enabled against %s", cfg.BoxAIServerURL)
+	}
 	sm := session.NewManager()
 
 	grpcServer, err := newGRPCServer(cfg, sm)

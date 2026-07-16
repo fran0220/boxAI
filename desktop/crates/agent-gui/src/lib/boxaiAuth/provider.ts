@@ -11,7 +11,7 @@ import {
   createProviderModelConfig,
   normalizeCustomProvider,
 } from "../settings";
-import { BOXAI_CLAUDE_MODELS, BOXAI_OPENAI_MODELS } from "./models";
+import { BOXAI_CLAUDE_MODELS, BOXAI_OPENAI_MODELS, type BoxAIModelCatalog } from "./models";
 import type { BoxAISession } from "./session";
 
 export const BOXAI_CLAUDE_PROVIDER_ID = "boxai-claude";
@@ -40,20 +40,26 @@ function buildProvider(
   };
 }
 
-export function buildBoxAIProviders(session: BoxAISession): CustomProvider[] {
+// Both transports serve the same account-entitled model set, so a fetched
+// catalog applies to both entries; curated lists are the offline fallback.
+export function buildBoxAIProviders(
+  session: BoxAISession,
+  catalog?: BoxAIModelCatalog | null,
+): CustomProvider[] {
+  const models = catalog && catalog.length > 0 ? catalog : null;
   return [
     buildProvider(
       BOXAI_CLAUDE_PROVIDER_ID,
       "BoxAI (Claude)",
       "claude_code",
-      BOXAI_CLAUDE_MODELS,
+      models ?? BOXAI_CLAUDE_MODELS,
       session,
     ),
     buildProvider(
       BOXAI_OPENAI_PROVIDER_ID,
       "BoxAI (OpenAI)",
       "codex",
-      BOXAI_OPENAI_MODELS,
+      models ?? BOXAI_OPENAI_MODELS,
       session,
     ),
   ];
@@ -72,8 +78,12 @@ function providerSignature(provider: CustomProvider | undefined): string {
 
 // True when the persisted providers already match what the session should seed,
 // so the reconcile effect can no-op (avoids a settings write/render loop).
-export function providersMatchSession(providers: CustomProvider[], session: BoxAISession): boolean {
-  const desired = buildBoxAIProviders(session).map(normalizeCustomProvider);
+export function providersMatchSession(
+  providers: CustomProvider[],
+  session: BoxAISession,
+  catalog?: BoxAIModelCatalog | null,
+): boolean {
+  const desired = buildBoxAIProviders(session, catalog).map(normalizeCustomProvider);
   if (providers.length !== desired.length) return false;
   return desired.every(
     (want, index) => providerSignature(providers[index]) === providerSignature(want),

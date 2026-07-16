@@ -9,7 +9,13 @@ import { WindowsTitleBar } from "./components/WindowsTitleBar";
 import { LocaleContext, t as translate } from "./i18n";
 import { type AppUpdateController, useAppUpdateController } from "./lib/appUpdates";
 import { initAutomation } from "./lib/automation";
-import { refreshSessionTokens } from "./lib/boxaiAuth/client";
+import { fetchGatewayModels, refreshSessionTokens } from "./lib/boxaiAuth/client";
+import {
+  type BoxAIModelCatalog,
+  clearCachedCatalog,
+  loadCachedCatalog,
+  saveCachedCatalog,
+} from "./lib/boxaiAuth/models";
 import { buildBoxAIProviders, providersMatchSession } from "./lib/boxaiAuth/provider";
 import {
   type BoxAISession,
@@ -145,6 +151,8 @@ export default function App() {
   const [overlay, setOverlay] = useState<"closed" | "entering" | "open" | "leaving">("closed");
   // BOXAI: BoxAI account session gates the app; null renders the login screen.
   const [session, setSession] = useState<BoxAISession | null>(() => loadSession());
+  // BOXAI: gateway-advertised model catalog (cached; curated lists as fallback).
+  const [modelCatalog, setModelCatalog] = useState<BoxAIModelCatalog | null>(null);
 
   const saveSequenceRef = useRef(0);
   const saveChainRef = useRef<Promise<unknown>>(Promise.resolve());
@@ -175,16 +183,26 @@ export default function App() {
     root.classList.toggle("dark", effectiveTheme === "dark");
   }, [effectiveTheme]);
 
-  // BOXAI: refresh an expired access token on boot; drop the session if refresh fails.
+  // BOXAI: keep the access token fresh for the whole app session (it doubles as
+  // the gateway credential). Schedules a refresh shortly before expiry; transient
+  // failures retry each minute, and an unusable token drops back to the login.
   useEffect(() => {
-    if (!session || !isAccessTokenExpired(session)) return;
+    if (!session) return;
     if (!session.refreshToken) {
-      clearSession();
-      setSession(null);
+      if (isAccessTokenExpired(session)) {
+        clearSession();
+        setSession(null);
+      }
       return;
     }
+    if (!session.expiresAt) return;
+
+    const REFRESH_SKEW_MS = 5 * 60_000;
+    const RETRY_MS = 60_000;
     let cancelled = false;
-    void (async () => {
+    let timer: number | undefined;
+
+    const refresh = async () => {
       try {
         const refreshed = await refreshSessionTokens(session.serverUrl, session.refreshToken);
         if (cancelled) return;
@@ -198,8 +216,43 @@ export default function App() {
         setSession(next);
       } catch {
         if (cancelled) return;
-        clearSession();
-        setSession(null);
+        if (isAccessTokenExpired(session)) {
+          clearSession();
+          setSession(null);
+        } else {
+          timer = window.setTimeout(() => void refresh(), RETRY_MS);
+        }
+      }
+    };
+
+    const delay = Math.max(session.expiresAt - REFRESH_SKEW_MS - Date.now(), 0);
+    timer = window.setTimeout(() => void refresh(), delay);
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [session]);
+
+  // BOXAI: hydrate the model catalog from cache, then refresh it from the
+  // gateway (/v1/models via the JWT bridge); failures keep cache/fallback.
+  useEffect(() => {
+    if (!session) {
+      setModelCatalog(null);
+      return;
+    }
+    const cached = loadCachedCatalog(session.serverUrl);
+    setModelCatalog((prev) => (JSON.stringify(prev) === JSON.stringify(cached) ? prev : cached));
+    let cancelled = false;
+    void (async () => {
+      try {
+        const models = await fetchGatewayModels(session.serverUrl, session.accessToken);
+        if (cancelled || models.length === 0) return;
+        saveCachedCatalog(session.serverUrl, models);
+        setModelCatalog((prev) =>
+          JSON.stringify(prev) === JSON.stringify(models) ? prev : models,
+        );
+      } catch {
+        // Offline or unauthorized: keep the cached/curated catalog.
       }
     })();
     return () => {
@@ -359,6 +412,7 @@ export default function App() {
   // BOXAI: sign out of the BoxAI account and return to the login screen.
   const handleLogout = useCallback(() => {
     clearSession();
+    clearCachedCatalog();
     setSession(null);
     setSettingsOpen(false);
     setOverlay("closed");
@@ -408,8 +462,8 @@ export default function App() {
   useEffect(() => {
     if (!settingsReady || !session) return;
     setSettings((prev) => {
-      const desired = buildBoxAIProviders(session);
-      const providersOk = providersMatchSession(prev.customProviders, session);
+      const desired = buildBoxAIProviders(session, modelCatalog);
+      const providersOk = providersMatchSession(prev.customProviders, session, modelCatalog);
       const selection = prev.selectedModel;
       const selectionValid =
         !!selection &&
@@ -424,7 +478,7 @@ export default function App() {
         : { customProviderId: desired[0].id, model: desired[0].activeModels[0] };
       return { ...prev, customProviders: desired, selectedModel };
     });
-  }, [session, settingsReady, setSettings]);
+  }, [session, settingsReady, setSettings, modelCatalog]);
 
   useEffect(() => {
     if (!settingsReady) {

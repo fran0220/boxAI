@@ -225,6 +225,46 @@ func TestResolveUserGatewayKeyPrefersGroupedActiveKey(t *testing.T) {
 	require.Equal(t, "sk-grouped", got)
 }
 
+func TestResolveUserGatewayKeyPrefersGroupedCreatorKey(t *testing.T) {
+	creator := groupedKey("sk-creator", 9)
+	creator.Name = CreatorAPIKeyName
+	lister := &fakeDesktopKeyLister{keys: []service.APIKey{
+		groupedKey("sk-grouped", 4),
+		creator,
+		{Key: "sk-nogroup", Status: service.StatusActive},
+	}}
+
+	got, err := resolveUserGatewayKey(context.Background(), lister, 1)
+	require.NoError(t, err)
+	require.Equal(t, "sk-creator", got)
+}
+
+func TestResolveUserGatewayKeyDoesNotPreferUngroupedCreatorOverGrouped(t *testing.T) {
+	// After Creator ensure without available groups, an ungrouped boxai-creator
+	// must not steal Desktop JWT bridge away from a working grouped key.
+	lister := &fakeDesktopKeyLister{keys: []service.APIKey{
+		groupedKey("sk-grouped", 4),
+		{Key: "sk-creator", Name: CreatorAPIKeyName, Status: service.StatusActive},
+	}}
+
+	got, err := resolveUserGatewayKey(context.Background(), lister, 1)
+	require.NoError(t, err)
+	require.Equal(t, "sk-grouped", got)
+}
+
+func TestResolveUserGatewayKeyPrefersCreatorKeyCaseInsensitive(t *testing.T) {
+	creator := groupedKey("sk-creator-ci", 3)
+	creator.Name = "BoxAI-Creator"
+	lister := &fakeDesktopKeyLister{keys: []service.APIKey{
+		groupedKey("sk-grouped", 4),
+		creator,
+	}}
+
+	got, err := resolveUserGatewayKey(context.Background(), lister, 1)
+	require.NoError(t, err)
+	require.Equal(t, "sk-creator-ci", got)
+}
+
 func TestResolveUserGatewayKeyFallsBackToUngroupedActiveKey(t *testing.T) {
 	lister := &fakeDesktopKeyLister{keys: []service.APIKey{
 		{Key: "sk-dead", Status: "disabled", GroupID: ptrInt64(4)},

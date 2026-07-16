@@ -43,6 +43,8 @@ Read this file before any non-trivial change. Detailed SOPs live under `docs/age
 |------|--------|
 | `backend/internal/{service,handler,repository}`, `backend/ent/`, `backend/cmd/` | **sync-first** — BOXAI markers only for product defaults/wiring |
 | `backend/internal/branding/`, future `backend/internal/boxai/` | **product-first** |
+| `backend/internal/handler/boxai_*.go` | **product-first** (new BOXAI files; wire in routes with markers) |
+| `web/`, `docs/WEB_PLATFORM.md` | **product-first** (React marketing + Creator; not embedded in Go) |
 | `backend/migrations/` `<900` | **sync-first (read-only for fork)** |
 | `backend/migrations/9xx_boxai_*.sql` | **product-first** |
 | `frontend/src/constants/brand.ts`, logos, BoxAI-only views | **product-first** |

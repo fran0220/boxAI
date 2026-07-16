@@ -48,14 +48,52 @@ Enumerated product changes on top of the vendored tree (beyond branding):
 - `crates/agent-gui/src/pages/SettingsPage.tsx` + `pages/settings/types.ts` — optional
   `account` control rendering the signed-in user/server + a **Sign out** button.
 
-### Pending (requires a Rust/Tauri build to verify)
+### Deep-link auto-return
 
-- Deep-link auto-return: add `tauri-plugin-deep-link` (+ `tauri-plugin-single-instance`
-  on Windows/Linux), register the `boxai-desktop` scheme in `tauri.conf.json` bundle
-  config + `capabilities`, and in `lib.rs` `setup` call `app.deep_link().on_open_url(..)`
-  to `emit("boxai://auth-callback", urls)` to the frontend. Until then, users complete
-  sign-in via the paste fallback in `BoxAILogin`.
-- Vendored gateway validates the JWT via boxAI `/api/v1/auth/me`.
+- `crates/agent-gui/src-tauri/Cargo.toml` — adds `tauri-plugin-deep-link` +
+  `tauri-plugin-single-instance` (with the `deep-link` feature).
+- `crates/agent-gui/src-tauri/tauri.conf.json` — registers the `boxai-desktop` scheme.
+- `crates/agent-gui/src-tauri/capabilities/default.json` — grants `deep-link:default`.
+- `crates/agent-gui/src-tauri/src/lib.rs` — single-instance first, deep-link plugin,
+  `on_open_url` forwards callback URLs to the frontend via `emit("boxai://auth-callback")`
+  and focuses the main window. The paste fallback in `BoxAILogin` remains.
+
+### Dynamic models + scheduled token refresh
+
+- `crates/agent-gui/src/lib/boxaiAuth/models.ts` — live model catalog cache
+  (`boxai_desktop_model_catalog_v1`); curated lists are now the fallback.
+- `crates/agent-gui/src/lib/boxaiAuth/client.ts` — `fetchGatewayModels` pulls
+  `<server>/v1/models` with the JWT.
+- `crates/agent-gui/src/App.tsx` — hydrates the catalog from cache then live fetch;
+  schedules a pre-expiry access-token refresh (retries transient failures, signs out
+  on an unusable expired token); sign-out clears the cached catalog.
+
+### Gateway boxAI-JWT auth fallback
+
+- `crates/agent-gateway/internal/auth/boxai.go` — optional validator: when
+  `BOXAI_SERVER_URL` / `-boxai-server-url` is set, JWT-shaped tokens are verified
+  against `<server>/api/v1/auth/me` (cached ~1 min positive / 10 s negative).
+- `crates/agent-gateway/internal/auth/http_middleware.go` — `ValidateToken` checks the
+  static shared token first, then falls back to the boxAI validator; this covers HTTP,
+  browser WebSocket payloads, and gRPC metadata.
+- `crates/agent-gateway/internal/server/grpc.go` — the agent `Authenticate` RPC uses
+  `auth.ValidateToken`.
+- `crates/agent-gateway/internal/config/config.go` + `cmd/gateway/main.go` — config
+  field, flag, and startup wiring.
+- `crates/agent-gateway/test/auth/boxai_test.go` — fallback/caching tests.
+
+### Monorepo release scheme (desktop-v* tags)
+
+- `scripts/release/release-version.mjs` — accepts `desktop-vX.Y.Z` tags (the full tag
+  stays the release tag; the app version strips the prefix).
+- `crates/agent-gui/src-tauri/src/commands/app/update.rs` — the in-app updater parses
+  `desktop-v*` tags and ignores main-site `v*-box.N` releases; the root workflow lives
+  at `.github/workflows/desktop-release.yml` (repo root, paths prefixed with `desktop/`).
+
+### Pending
+
+- Rust compile verification of the deep-link changes (`cargo check` needs `protoc`,
+  which is not installed locally; CI installs it via brew/choco/apt).
 - Runtime/provider trim (drop unused Gemini/codex-native/custom surfaces where safe).
 
 ## Re-syncing upstream

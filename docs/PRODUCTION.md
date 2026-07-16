@@ -7,21 +7,29 @@
 
 ## 1. 当前生产拓扑（2026-07-15 起）
 
+> **Dual-frontend (target / progressive):** apex `you-box.com` serves the React SPA (`web/dist`);
+> `console.you-box.com` serves the Go-embedded Vue console; `api.you-box.com` is edge-filtered.
+> Auth between origins is **PKCE Web SSO** (not cookie Domain SSO). Full spec: [`docs/WEB_PLATFORM.md`](./WEB_PLATFORM.md),
+> Caddy example: [`deploy/Caddyfile.you-box.com`](../deploy/Caddyfile.you-box.com).
+
 ```
 Internet
    │
    ▼
 you-box.com (TLS, Let's Encrypt / Certbot)
-   │  Nginx (宿主机)
+   │  Nginx (宿主机)  — or Caddy per deploy/Caddyfile.you-box.com
    ▼
 127.0.0.1:8080
    │
    ▼
 Docker Compose project: boxAI   (/opt/boxAI)
-├── sub2api          ghcr.io/fran0220/boxai:<pin>     应用（内嵌前端）
+├── sub2api          ghcr.io/fran0220/boxai:<pin>     应用（内嵌 Vue console）
 ├── sub2api-postgres postgres:18-alpine               数据库
 └── sub2api-redis    redis:8-alpine                   缓存 / 会话辅助
 ```
+
+React marketing/Creator static files (when dual-host is live): publish `web/dist` to the apex
+docroot (e.g. `/var/www/you-box.com`) and reverse-proxy only `/api/*` + `/v1/*` to `:8080`.
 
 | 项 | 值 |
 |----|-----|

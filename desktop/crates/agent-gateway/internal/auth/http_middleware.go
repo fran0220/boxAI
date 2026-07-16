@@ -36,12 +36,18 @@ func ValidateBearerHeader(headerValue, expectedToken string) bool {
 func ValidateToken(value, expectedToken string) bool {
 	value = strings.TrimSpace(value)
 	expectedToken = strings.TrimSpace(expectedToken)
-	if value == "" || expectedToken == "" {
+	if value == "" {
 		return false
 	}
-	valueHash := sha256.Sum256([]byte(value))
-	expectedHash := sha256.Sum256([]byte(expectedToken))
-	return subtle.ConstantTimeCompare(valueHash[:], expectedHash[:]) == 1
+	if expectedToken != "" {
+		valueHash := sha256.Sum256([]byte(value))
+		expectedHash := sha256.Sum256([]byte(expectedToken))
+		if subtle.ConstantTimeCompare(valueHash[:], expectedHash[:]) == 1 {
+			return true
+		}
+	}
+	// BOXAI: fall back to boxAI account JWT validation when configured.
+	return validateBoxAIToken(value)
 }
 
 func writeJSONError(w http.ResponseWriter, status int, message string) {

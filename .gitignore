@@ -145,6 +145,8 @@ docs/*
 !docs/BATCH_IMAGE_MVP.md
 !docs/BRAND.md
 !docs/PRODUCTION.md
+!docs/WEB_PLATFORM.md
+!docs/OFFICE_MODULE.md
 !docs/design-unification-ledger.md
 !docs/legal/
 !docs/legal/*.md

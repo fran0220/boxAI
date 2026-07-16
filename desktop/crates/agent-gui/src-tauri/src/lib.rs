@@ -18,6 +18,8 @@ const TRAY_QUIT_ID: &str = "tray-quit";
 const TRAY_DOUBLE_CLICK_INTERVAL_MS: u64 = 500;
 const TRAY_SHOW_MENU_ON_LEFT_CLICK: bool = !cfg!(target_os = "windows");
 const TERMINAL_EXIT_REQUESTED_EVENT: &str = "terminal:exit-requested";
+// BOXAI: must match DEEP_LINK_EVENT in src/lib/boxaiAuth/login.ts.
+const BOXAI_AUTH_CALLBACK_EVENT: &str = "boxai://auth-callback";
 
 #[derive(Clone, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -405,7 +407,16 @@ pub fn run() {
     let allow_exit = Arc::new(AtomicBool::new(false));
 
     let app = tauri::Builder::default()
+        // BOXAI: single-instance must be the first registered plugin. Its
+        // "deep-link" feature forwards boxai-desktop:// URLs arriving via a
+        // second-instance argv (Windows/Linux) to the deep-link handler below.
+        .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
+            if let Err(error) = show_main_window(app) {
+                eprintln!("failed to focus BoxAI window from second instance: {error}");
+            }
+        }))
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_mcp_bridge::init())
         .manage(Arc::new(commands::mcp::McpRuntimeManager::default()))
@@ -426,6 +437,26 @@ pub fn run() {
             let managed_process_registry = Arc::clone(&managed_process_registry);
             move |app| {
                 commands::history_db::initialize_history_db()?;
+                // BOXAI: forward boxai-desktop:// auth callbacks to the webview.
+                {
+                    use tauri_plugin_deep_link::DeepLinkExt;
+                    #[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
+                    app.deep_link().register_all()?;
+                    let deep_link_handle = app.handle().clone();
+                    app.deep_link().on_open_url(move |event| {
+                        let urls: Vec<String> =
+                            event.urls().iter().map(|url| url.to_string()).collect();
+                        if urls.is_empty() {
+                            return;
+                        }
+                        if let Err(error) = show_main_window(&deep_link_handle) {
+                            eprintln!("failed to show BoxAI window for auth callback: {error}");
+                        }
+                        if let Err(error) = deep_link_handle.emit(BOXAI_AUTH_CALLBACK_EVENT, urls) {
+                            eprintln!("failed to forward BoxAI auth callback: {error}");
+                        }
+                    });
+                }
                 configure_system_tray(
                     app,
                     Arc::clone(&allow_exit),

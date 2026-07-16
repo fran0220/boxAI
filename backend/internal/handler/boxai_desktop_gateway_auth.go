@@ -144,35 +144,70 @@ func bearerToken(header string) string {
 	return strings.TrimSpace(parts[1])
 }
 
-// resolveUserGatewayKey picks the plaintext gateway key the desktop should use:
-// the caller's first active API key bound to a group (required for gateway
-// routing), falling back to any active key.
+// resolveUserGatewayKey picks the plaintext gateway key the JWT bridge should use.
+// Preference order (BOXAI):
+//  1. Active key named "boxai-creator" that is bound to a group (Creator ensure-key)
+//  2. First other active key bound to a group (gateway routing)
+//  3. Any other active key
+//
+// Ungrouped creator keys are intentionally NOT preferred over other grouped
+// keys — preferring them would reroute Desktop JWT-bridge traffic off a
+// working grouped key after a Creator visit created an ungrouped boxai-creator.
 func resolveUserGatewayKey(ctx context.Context, keyLister desktopKeyLister, userID int64) (string, error) {
-	keys, _, err := keyLister.List(
-		ctx,
-		userID,
-		pagination.PaginationParams{Page: 1, PageSize: 100},
-		service.APIKeyListFilters{},
-	)
+	keys, err := listAllActiveGatewayKeys(ctx, keyLister, userID)
 	if err != nil {
-		return "", errors.New("failed to load account API keys")
+		return "", err
 	}
 
-	var fallback string
+	var creatorGrouped, grouped, fallback string
 	for i := range keys {
 		key := keys[i]
 		if !key.IsActive() || key.Key == "" {
 			continue
 		}
-		if key.GroupID != nil {
-			return key.Key, nil
+		isCreator := strings.EqualFold(strings.TrimSpace(key.Name), CreatorAPIKeyName)
+		if isCreator && key.GroupID != nil && creatorGrouped == "" {
+			creatorGrouped = key.Key
+			continue
+		}
+		if key.GroupID != nil && grouped == "" {
+			grouped = key.Key
+			continue
 		}
 		if fallback == "" {
 			fallback = key.Key
 		}
 	}
+	if creatorGrouped != "" {
+		return creatorGrouped, nil
+	}
+	if grouped != "" {
+		return grouped, nil
+	}
 	if fallback != "" {
 		return fallback, nil
 	}
 	return "", errors.New("no active API key found for account; create one in BoxAI first")
+}
+
+// listAllActiveGatewayKeys pages key list so preference is not limited to page 1.
+func listAllActiveGatewayKeys(ctx context.Context, keyLister desktopKeyLister, userID int64) ([]service.APIKey, error) {
+	const pageSize = 100
+	var all []service.APIKey
+	for page := 1; page <= 20; page++ {
+		keys, result, err := keyLister.List(
+			ctx,
+			userID,
+			pagination.PaginationParams{Page: page, PageSize: pageSize},
+			service.APIKeyListFilters{},
+		)
+		if err != nil {
+			return nil, errors.New("failed to load account API keys")
+		}
+		all = append(all, keys...)
+		if result == nil || int64(page*pageSize) >= result.Total || len(keys) == 0 {
+			break
+		}
+	}
+	return all, nil
 }

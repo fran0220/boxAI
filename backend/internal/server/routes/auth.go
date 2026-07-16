@@ -50,6 +50,10 @@ func RegisterAuthRoutes(
 		auth.POST("/boxai/desktop/token", rateLimiter.LimitWithOptions("boxai-desktop-token", 30, time.Minute, middleware.RateLimitOptions{
 			FailureMode: middleware.RateLimitFailClose,
 		}), h.Auth.BoxAIDesktopToken(redisClient))
+		// BOXAI: web SSO (PKCE) token exchange — public, single-use short-lived code.
+		auth.POST("/boxai/sso/token", rateLimiter.LimitWithOptions("boxai-web-sso-token", 30, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIWebSSOToken(redisClient))
 		// 优惠码验证接口添加速率限制：每分钟最多 10 次（Redis 故障时 fail-close）
 		auth.POST("/validate-promo-code", rateLimiter.LimitWithOptions("validate-promo", 10, time.Minute, middleware.RateLimitOptions{
 			FailureMode: middleware.RateLimitFailClose,
@@ -230,6 +234,10 @@ func RegisterAuthRoutes(
 		// BOXAI: desktop OAuth (PKCE) authorize — web app mints a one-time code
 		// for the just-authenticated user during the desktop browser handshake.
 		authenticated.POST("/auth/boxai/desktop/authorize", h.Auth.BoxAIDesktopAuthorize(redisClient))
+		// BOXAI: web SSO (PKCE) authorize — mint one-time code for cross-origin handoff.
+		authenticated.POST("/auth/boxai/sso/authorize", rateLimiter.LimitWithOptions("boxai-web-sso-authorize", 30, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIWebSSOAuthorize(redisClient))
 		// 撤销所有会话（需要认证）
 		authenticated.POST("/auth/revoke-all-sessions", h.Auth.RevokeAllSessions)
 		authenticated.POST("/auth/oauth/bind-token", h.Auth.PrepareOAuthBindAccessTokenCookie)

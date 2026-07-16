@@ -14,11 +14,18 @@ func RegisterUserRoutes(
 	h *handler.Handlers,
 	jwtAuth middleware.JWTAuthMiddleware,
 	settingService *service.SettingService,
+	// BOXAI: optional API key service for Creator ensure-key (nil-safe no-op handlers avoided by caller).
+	apiKeyService *service.APIKeyService,
 ) {
 	authenticated := v1.Group("")
 	authenticated.Use(gin.HandlerFunc(jwtAuth))
 	authenticated.Use(middleware.BackendModeUserGuard(settingService))
 	{
+		// BOXAI: idempotent Creator gateway API key (boxai-creator).
+		if apiKeyService != nil {
+			authenticated.POST("/boxai/creator/ensure-key", h.Auth.BoxAIEnsureCreatorKey(apiKeyService))
+		}
+
 		// 用户接口
 		user := authenticated.Group("/user")
 		{

@@ -90,8 +90,17 @@ fn release_channel(release: &SelectedRelease) -> AppUpdateChannel {
     }
 }
 
+// BOXAI: desktop releases in the monorepo are tagged `desktop-vX.Y.Z`; strip
+// the prefix so version parsing keeps working alongside main-site `v*` tags.
+fn base_version_tag(tag_name: &str) -> &str {
+    let trimmed = tag_name.trim();
+    trimmed.strip_prefix("desktop-").unwrap_or(trimmed)
+}
+
 fn version_from_tag(tag_name: &str) -> String {
-    tag_name.trim().trim_start_matches('v').to_string()
+    base_version_tag(tag_name)
+        .trim_start_matches('v')
+        .to_string()
 }
 
 fn is_newer_version(remote: &str, current: &str) -> bool {
@@ -159,8 +168,7 @@ fn tag_name_from_release_url(value: &str) -> Option<String> {
 }
 
 fn is_semver_prerelease_tag(tag_name: &str) -> bool {
-    let version = tag_name
-        .trim()
+    let version = base_version_tag(tag_name)
         .trim_start_matches('v')
         .trim_start_matches('V');
     version.contains('-')
@@ -659,6 +667,31 @@ mod tests {
         // Unparseable versions fall back to inequality.
         assert!(is_newer_version("nightly-2", "nightly-1"));
         assert!(!is_newer_version("", "0.1.1"));
+    }
+
+    #[test]
+    fn desktop_prefixed_tags_parse_as_versions() {
+        assert_eq!(version_from_tag("desktop-v0.1.2"), "0.1.2");
+        assert!(!is_semver_prerelease_tag("desktop-v0.1.2"));
+        assert!(is_semver_prerelease_tag("desktop-v0.1.2-beta.1"));
+    }
+
+    #[test]
+    fn stable_channel_keeps_desktop_tags_and_drops_boxed_main_tags() {
+        let selected = selected_release_candidates_from_entries(
+            DEFAULT_UPDATE_REPOSITORY,
+            vec![feed_entry("v0.1.155-box.8"), feed_entry("desktop-v0.1.2")],
+            false,
+        )
+        .expect("candidates should be built");
+
+        assert_eq!(selected.len(), 1);
+        assert_eq!(selected[0].tag_name, "desktop-v0.1.2");
+        assert!(!selected[0].prerelease);
+        assert_eq!(
+            selected[0].manifest_url,
+            "https://github.com/fran0220/boxAI/releases/download/desktop-v0.1.2/latest.json"
+        );
     }
 
     #[test]

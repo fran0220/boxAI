@@ -99,6 +99,26 @@ export async function exchangeDesktopCode(
   return toTokenBundle(unwrapEnvelope<RawAuthPayload>(body));
 }
 
+// List the model IDs the gateway serves for this account. The JWT is accepted
+// directly by /v1/* thanks to the backend's desktop JWT-as-credential bridge.
+export async function fetchGatewayModels(
+  serverUrl: string,
+  accessToken: string,
+): Promise<string[]> {
+  const response = await fetch(`${serverUrl}/v1/models`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to list models (status ${response.status})`);
+  }
+  const body = (await response.json()) as { data?: unknown };
+  const data = Array.isArray(body?.data) ? body.data : [];
+  const ids = data
+    .map((item) => (item && typeof item === "object" ? (item as { id?: unknown }).id : undefined))
+    .filter((id): id is string => typeof id === "string" && id.trim().length > 0);
+  return [...new Set(ids)];
+}
+
 // Refresh an access token using the stored refresh token.
 export async function refreshSessionTokens(
   serverUrl: string,

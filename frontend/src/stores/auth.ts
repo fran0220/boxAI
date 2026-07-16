@@ -493,6 +493,8 @@ export const useAuthStore = defineStore('auth', () => {
     checkAuth,
     refreshUser,
     setPendingAuthSession,
-    clearPendingAuthSession
+    clearPendingAuthSession,
+    // BOXAI: used by Web SSO callback to apply token pair without re-login.
+    setAuthFromResponse
   }
 })

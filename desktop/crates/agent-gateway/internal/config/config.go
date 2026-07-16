@@ -12,6 +12,7 @@ const DefaultGRPCMaxMessageBytes = 64 * 1024 * 1024
 
 type Config struct {
 	Token                    string
+	BoxAIServerURL           string
 	GRPCAddr                 string
 	HTTPAddr                 string
 	TLSCert                  string
@@ -35,6 +36,8 @@ func Load() *Config {
 	cfg := &Config{}
 
 	flag.StringVar(&cfg.Token, "token", getenv("LIVEAGENT_GATEWAY_TOKEN", ""), "shared authentication token")
+	// BOXAI: optional boxAI server for account-JWT authentication fallback.
+	flag.StringVar(&cfg.BoxAIServerURL, "boxai-server-url", getenv("BOXAI_SERVER_URL", ""), "boxAI server URL for account token validation (optional)")
 	flag.StringVar(&cfg.GRPCAddr, "grpc-addr", getenv("LIVEAGENT_GATEWAY_GRPC_ADDR", ":50051"), "gRPC listen address")
 	flag.StringVar(&cfg.HTTPAddr, "http-addr", getenv("LIVEAGENT_GATEWAY_HTTP_ADDR", defaultHTTPAddr()), "HTTP listen address")
 	flag.StringVar(&cfg.TLSCert, "tls-cert", getenv("LIVEAGENT_GATEWAY_TLS_CERT", ""), "TLS certificate path")
@@ -55,6 +58,7 @@ func Load() *Config {
 	flag.Parse()
 
 	cfg.Token = strings.TrimSpace(cfg.Token)
+	cfg.BoxAIServerURL = strings.TrimSpace(cfg.BoxAIServerURL)
 	cfg.TLSCert = strings.TrimSpace(cfg.TLSCert)
 	cfg.TLSKey = strings.TrimSpace(cfg.TLSKey)
 

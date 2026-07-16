@@ -168,6 +168,35 @@ const routes: RouteRecordRaw[] = [
       title: 'Desktop Sign-in'
     }
   },
+  // BOXAI: Web SSO start / callback (PKCE between you-box.com and console).
+  {
+    path: '/boxai/sso/start',
+    name: 'BoxAISsoStart',
+    component: () => import('@/views/auth/BoxAISsoStartView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'SSO Start'
+    }
+  },
+  {
+    path: '/boxai/sso/callback',
+    name: 'BoxAISsoCallback',
+    component: () => import('@/views/auth/BoxAISsoCallbackView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'SSO Callback'
+    }
+  },
+  // BOXAI: public download page for the BoxAI Desktop app.
+  {
+    path: '/download/desktop',
+    name: 'DesktopDownload',
+    component: () => import('@/views/public/DesktopDownloadView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Download BoxAI Desktop'
+    }
+  },
   {
     path: '/key-usage',
     name: 'KeyUsage',
