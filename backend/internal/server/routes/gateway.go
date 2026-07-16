@@ -106,6 +106,10 @@ func RegisterGatewayRoutes(
 	gateway.Use(clientRequestID)
 	gateway.Use(opsErrorLogger)
 	gateway.Use(endpointNorm)
+	// BOXAI: desktop JWT-as-credential gateway auth (additive, flag-gated via
+	// BOXAI_DESKTOP_JWT_GATEWAY). Translates a valid boxAI access token into the
+	// caller's own API key, then defers to apiKeyAuth; no-op for API-key callers.
+	gateway.Use(h.Auth.DesktopJWTGatewayAuth(apiKeyService))
 	gateway.Use(gin.HandlerFunc(apiKeyAuth))
 	gateway.Use(requireGroupAnthropic)
 	{

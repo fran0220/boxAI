@@ -17,6 +17,12 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 
 | Path | Purpose |
 |------|---------|
+| `desktop/` | Vendored BoxAI Desktop (Tauri app + gateway + WebUI); provenance in `desktop/UPSTREAM.md` |
+| `frontend/src/views/auth/DesktopAuthView.vue` | BoxAI Desktop browser-login handshake page (mints PKCE code, redirects to desktop scheme) |
+| `backend/internal/handler/boxai_desktop_gateway_auth.go` | Desktop JWT-as-credential gateway auth bridge (new BOXAI file in sync-first pkg; needs AuthHandler services) |
+| `backend/internal/handler/boxai_desktop_gateway_auth_test.go` | Unit tests for the JWT→API-key gateway bridge |
+| `backend/internal/handler/boxai_desktop_auth.go` | Desktop OAuth (PKCE) browser-login endpoints (authorize + token exchange) |
+| `backend/internal/handler/boxai_desktop_auth_test.go` | Unit tests for the desktop OAuth PKCE helpers |
 | `backend/internal/branding/` | Backend product name/tagline helpers |
 | `frontend/src/constants/brand.ts` | Frontend brand constants |
 | `frontend/src/styles/tokens.css` | Global design tokens (`--bx-*`, dark-first) |
@@ -57,6 +63,8 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/service/totp_service.go` | TOTP issuer |
 | `backend/internal/service/payment_order.go` | Payment subject product prefix |
 | `backend/internal/service/payment_order_result_test.go` | Subject assertion uses branding |
+| `backend/internal/server/routes/gateway.go` | BOXAI: desktop JWT-as-credential middleware wired before `apiKeyAuth` on `/v1` (flag `BOXAI_DESKTOP_JWT_GATEWAY`, default-on) |
+| `backend/internal/server/routes/auth.go` | BOXAI: desktop OAuth (PKCE) routes — public `/auth/boxai/desktop/token`, authed `/auth/boxai/desktop/authorize` |
 
 ### Frontend (brand wiring; may lack `BOXAI` comments in pure TS imports)
 
@@ -79,6 +87,8 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/i18n/localeMeta.ts` | Locale codes, BCP-47, compliance language map |
 | `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage (+ legacy key) |
 | `frontend/src/components/auth/WechatOAuthSection.vue` | Explicit Vietnamese WeChat availability guidance |
+| `frontend/src/api/auth.ts` | BOXAI: `authorizeDesktopLogin` (desktop PKCE code mint) |
+| `frontend/src/router/index.ts` | BOXAI: `/desktop-auth` route for the desktop browser-login handshake |
 | `frontend/src/views/admin/SettingsView.vue` | Product settings copy and documentation links support zh/en/vi |
 | `frontend/src/views/admin/settings/EmailTemplateEditor.vue` | Vietnamese email-event metadata and locale-aware administration copy |
 | `frontend/src/views/user/BatchImageGuideView.vue` | Vietnamese page guidance and downloadable Agent Skill instructions |

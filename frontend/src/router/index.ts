@@ -157,6 +157,17 @@ const routes: RouteRecordRaw[] = [
       title: 'Reset Password'
     }
   },
+  // BOXAI: desktop browser-login handshake (requires auth so the router sends
+  // the user through /login first, then returns here to mint the PKCE code).
+  {
+    path: '/desktop-auth',
+    name: 'DesktopAuth',
+    component: () => import('@/views/auth/DesktopAuthView.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'Desktop Sign-in'
+    }
+  },
   {
     path: '/key-usage',
     name: 'KeyUsage',

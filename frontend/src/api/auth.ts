@@ -84,6 +84,25 @@ export function clearAuthToken(): void {
 }
 
 /**
+ * BOXAI: Mint a one-time desktop OAuth (PKCE) code for the authenticated user.
+ * Used by the BoxAI Desktop browser-login handshake; the returned code is
+ * handed back to the desktop app via its custom redirect_uri scheme.
+ */
+export async function authorizeDesktopLogin(params: {
+  codeChallenge: string
+  redirectUri: string
+}): Promise<{ code: string; expires_in: number }> {
+  const { data } = await apiClient.post<{ code: string; expires_in: number }>(
+    '/auth/boxai/desktop/authorize',
+    {
+      code_challenge: params.codeChallenge,
+      redirect_uri: params.redirectUri
+    }
+  )
+  return data
+}
+
+/**
  * User login
  * @param credentials - Email and password
  * @returns Authentication response with token and user data, or 2FA required response

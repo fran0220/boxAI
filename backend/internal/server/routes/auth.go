@@ -46,6 +46,10 @@ func RegisterAuthRoutes(
 		}), h.Auth.RefreshToken)
 		// 登出接口（公开，允许未认证用户调用以撤销Refresh Token）
 		auth.POST("/logout", h.Auth.Logout)
+		// BOXAI: desktop OAuth (PKCE) token exchange — public, single-use short-lived code.
+		auth.POST("/boxai/desktop/token", rateLimiter.LimitWithOptions("boxai-desktop-token", 30, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIDesktopToken(redisClient))
 		// 优惠码验证接口添加速率限制：每分钟最多 10 次（Redis 故障时 fail-close）
 		auth.POST("/validate-promo-code", rateLimiter.LimitWithOptions("validate-promo", 10, time.Minute, middleware.RateLimitOptions{
 			FailureMode: middleware.RateLimitFailClose,
@@ -223,6 +227,9 @@ func RegisterAuthRoutes(
 	authenticated.Use(servermiddleware.BackendModeUserGuard(settingService))
 	{
 		authenticated.GET("/auth/me", h.Auth.GetCurrentUser)
+		// BOXAI: desktop OAuth (PKCE) authorize — web app mints a one-time code
+		// for the just-authenticated user during the desktop browser handshake.
+		authenticated.POST("/auth/boxai/desktop/authorize", h.Auth.BoxAIDesktopAuthorize(redisClient))
 		// 撤销所有会话（需要认证）
 		authenticated.POST("/auth/revoke-all-sessions", h.Auth.RevokeAllSessions)
 		authenticated.POST("/auth/oauth/bind-token", h.Auth.PrepareOAuthBindAccessTokenCookie)
