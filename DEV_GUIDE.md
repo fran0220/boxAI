@@ -9,11 +9,12 @@
 | **产品名** | BoxAI |
 | **上游仓库** | [Wei-Shaw/sub2api](https://github.com/Wei-Shaw/sub2api) |
 | **本仓库** | [fran0220/boxAI](https://github.com/fran0220/boxAI) |
-| **技术栈** | Go 后端 (Ent ORM + Gin) + Vue3 前端 (pnpm) |
+| **技术栈** | Go 后端 (Ent + Gin) + **双前端**：Vue3 控制台 (`frontend/`) + React 营销/Creator (`web/`) + Tauri Desktop (`desktop/`) |
+| **生产域名** | 产品面 `you-box.com` · 控制台 `console.you-box.com` · API `api.you-box.com` |
 | **数据库** | PostgreSQL 16+ + Redis |
-| **包管理** | 后端: Go modules；前端: **pnpm**（不是 npm） |
+| **包管理** | 后端: Go modules；控制台与 web: **pnpm**（各自 lockfile） |
 | **Go 版本** | 以 `backend/go.mod` 为准（当前 **1.26.5**；release CI 会校验） |
-| **公开镜像** | `ghcr.io/fran0220/boxai`（生产必须 pin tag，禁用裸 `:latest`） |
+| **公开镜像** | `ghcr.io/fran0220/boxai`（生产必须 pin tag，禁用裸 `:latest`）；**仅内嵌 Vue**，React 静态另发 |
 | **版本 tag** | `vX.Y.Z-box.N`（`X.Y.Z` = 已合入上游基线） |
 
 ### 必读文档
@@ -22,6 +23,10 @@
 |------|------|
 | [AGENTS.md](./AGENTS.md) | Agent 硬规则入口 |
 | [docs/agents/](./docs/agents/) | 分区 / 改码 / 同步 / 发布 / PR 清单 |
+| [docs/WEB_PLATFORM.md](./docs/WEB_PLATFORM.md) | 双前端拓扑、Web SSO、Creator |
+| [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md) | 本地三进程（backend + Vue + React） |
+| [docs/PRODUCTION.md](./docs/PRODUCTION.md) | 生产拓扑与切换脚本 |
+| [docs/OFFICE_MODULE.md](./docs/OFFICE_MODULE.md) | Desktop 客户端 |
 | [FORK_DELTA.md](./FORK_DELTA.md) | 相对上游的产品 delta 清单 |
 | [docs/BRAND.md](./docs/BRAND.md) | 品牌与合规冻结 |
 | [docs/agents/upstream-sync.md](./docs/agents/upstream-sync.md) | 上游同步 SOP |
@@ -76,10 +81,26 @@ cd backend && go test -tags=unit ./...
 cd backend && go test -tags=integration ./...
 cd backend && golangci-lint run ./...
 
-# 前端
+# 控制台 Vue
 cd frontend && pnpm install --frozen-lockfile
 cd frontend && pnpm run lint:check && pnpm run typecheck
+
+# 产品面 React（营销 / Creator）
+cd web && pnpm install --frozen-lockfile
+cd web && pnpm typecheck && pnpm test:run
 ```
+
+### 本地双前端（摘要）
+
+完整说明见 [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md)。
+
+| 进程 | 端口 | 目录 | 命令 |
+|------|------|------|------|
+| 后端 | 8080 | `backend/` | `go run ./cmd/server` |
+| 控制台 | 3000 | `frontend/` | `pnpm dev:local-api` |
+| 营销+Creator | 5173 | `web/` | `pnpm dev` |
+
+生产 URL 对照：`5173` → `you-box.com`，`3000` → `console.you-box.com`，API 过滤面 → `api.you-box.com`。
 
 ## 四、上游同步（摘要）
 

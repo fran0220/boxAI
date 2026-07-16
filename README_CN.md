@@ -20,6 +20,18 @@ BoxAI 基于开源 [Sub2API](https://github.com/Wei-Shaw/sub2api) 网关能力�
 
 </div>
 
+## 产品表面（you-box.com）
+
+BoxAI 是**同一网关后端上的多表面产品**：
+
+| 表面 | 技术 | 生产 URL | 代码 |
+|------|------|----------|------|
+| 营销 + **Creator**（聊天/图/视频） | React (Vite) | https://you-box.com | `web/` |
+| 用户/管理 **控制台** | Vue 3（Go 内嵌） | https://console.you-box.com | `frontend/` |
+| 开发者 **API** | Go 网关 | https://api.you-box.com/v1 | `backend/` |
+| **Desktop** 办公客户端 | Tauri | 下载页获取安装包 | `desktop/` |
+
+跨域登录使用 **PKCE Web SSO**（不用 Cookie 父域共享）。架构见 [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · 本地三进程 [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 生产 [docs/PRODUCTION.md](docs/PRODUCTION.md)。
 
 ## ⚠️ 重要提醒
 

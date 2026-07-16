@@ -8,6 +8,10 @@ Public multi-arch image for the BoxAI AI API Gateway (product surface on top of 
 | Image | `ghcr.io/fran0220/boxai` |
 | Visibility | **Public** (no login required to pull) |
 | Tag scheme | `X.Y.Z-box.N` (aligned with git tag `vX.Y.Z-box.N`) |
+| Embeds | **Vue console only** (`frontend/` → Go `embed`) |
+| Does **not** include | React marketing/Creator (`web/` is static on the edge) |
+
+Production dual-frontend topology: [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md) · [docs/PRODUCTION.md](../docs/PRODUCTION.md) · nginx: [nginx-you-box.com.conf](./nginx-you-box.com.conf).
 
 ## Quick Start
 

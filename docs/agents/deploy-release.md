@@ -1,21 +1,37 @@
 # Deploy and public Docker release
 
-## Live production host (cutover 2026-07-15)
+## Live production (dual-frontend, 2026-07-16+)
 
 | Item | Value |
 |------|--------|
 | SSH host | `youbox` (`160.187.1.155`) |
-| Domain | `https://you-box.com` |
+| Product apex | `https://you-box.com` — React static `/var/www/you-box.com` + proxy `/api` `/v1` `/health` |
+| Console | `https://console.you-box.com` — full reverse proxy to Go embed (Vue) |
+| API | `https://api.you-box.com` — edge-filtered gateway + public token paths |
 | App dir | `/opt/boxAI` |
 | Compose | `docker-compose.yml` (from `deploy/docker-compose.local.yml`) |
-| Image | `ghcr.io/fran0220/boxai:0.1.155-box.2` (pin releases) |
+| Image | `ghcr.io/fran0220/boxai:<pin>` (e.g. `0.1.155-box.10`) |
 | Listen | `127.0.0.1:8080` |
-| Reverse proxy | Nginx `you-box.com` → `127.0.0.1:8080` |
+| Edge config | `deploy/nginx-you-box.com.conf` (live) · `deploy/Caddyfile.you-box.com` (alt) |
 | Admin email | `admin@you-box.com` (password on host: `/root/.boxai-admin-password`) |
-| Data services | **PostgreSQL 18** + **Redis 8** via same compose (healthy) |
-| Legacy you-box | **Purged** (archive dir, images, `you-box_pg_data` deleted 2026-07-15) |
+| Data services | **PostgreSQL 18** + **Redis 8** via same compose |
 
-**完整生产文档（推荐阅读）：** [docs/PRODUCTION.md](../PRODUCTION.md)
+**Full ops doc:** [docs/PRODUCTION.md](../PRODUCTION.md) · **Architecture:** [docs/WEB_PLATFORM.md](../WEB_PLATFORM.md)
+
+### Dual-frontend publish helpers
+
+```bash
+# React static → production docroot
+./deploy/scripts/deploy-web-static.sh
+
+# Install/reload nginx multi-host + expand LE cert
+./deploy/scripts/apply-nginx-topology.sh
+
+# HTTP smoke (apex / console / api)
+./deploy/scripts/verify-topology.sh
+```
+
+### App image upgrade
 
 ```bash
 ssh youbox
@@ -24,7 +40,9 @@ cd /opt/boxAI
 docker compose pull
 docker compose up -d
 curl -fsS http://127.0.0.1:8080/health
-curl -fsSI https://you-box.com/health | head
+curl -fsS https://you-box.com/health
+curl -fsS https://console.you-box.com/health
+curl -fsS https://api.you-box.com/health
 ```
 
 ## Canonical production deploy
@@ -35,6 +53,7 @@ curl -fsSI https://you-box.com/health | head
 | Alternate | Named-volume `docker-compose.yml` |
 | Non-Docker | Binary + systemd (`install.sh`) only when Docker is unavailable |
 | Apple Silicon local | `apple-container.sh` (still pin app image tags) |
+| Product web | **Not** in Docker image; static `web/dist` via nginx/Caddy |
 
 ### Compatibility (do not change)
 
@@ -52,6 +71,8 @@ curl -fsSI https://you-box.com/health | head
 - Image reference: `${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:<pinned-tag>}`
 - `docker-deploy.sh` raw GitHub URL → this fork
 - Brand-related admin defaults (via settings/seed preferred)
+- Dual-frontend edge hosts + React static docroot
+- Desktop release workflow (`desktop-v*` tags)
 
 ### Production rules
 
@@ -60,6 +81,7 @@ curl -fsSI https://you-box.com/health | head
 - Before upgrade: `pg_dump` backup; keep N-1 image available.
 - Migrations are forward-only — plan rollback as restore dump + previous image.
 - Advance versions tag-by-tag when migration chains require it.
+- After React UI changes: run `deploy-web-static.sh` (image bump alone does not update apex HTML).
 
 ## Public image release
 
@@ -70,18 +92,13 @@ curl -fsSI https://you-box.com/health | head
 | Version tag | `vX.Y.Z-box.N` (`X.Y.Z` = merged upstream baseline) |
 | Formal release | full multi-arch GoReleaser (amd64 + arm64) |
 | Internal/RC | `simple_release` (x86 GHCR only) via workflow_dispatch |
-| Frontend install | `pnpm install --frozen-lockfile` |
-| Go version | pinned by `backend/go.mod` + release workflow check |
+| Frontend install (image) | `pnpm install --frozen-lockfile` under **`frontend/` only** (Vue embed) |
+| React web | built separately; not in multi-stage Dockerfile |
+| Go version | pinned by `backend/go.mod` + release CI check |
 
 ### Publish gates (order)
 
-1. `main` green (CI).
+1. `main` green (CI + Fork Gates).
 2. compliance-hash + migration-lint green.
-3. Docker build smoke locally or in CI.
-4. Annotated git tag on the release commit.
-5. `release.yml` publishes artifacts.
-6. Pull published image; compose smoke (`/health` + version string).
-
-### VERSION file policy
-
-`backend/cmd/server/VERSION` tracks upstream on merge. BoxAI public identity is the **git/image tag** (`-box.N`), not a divergent VERSION file history.
+3. Docker build smoke / `simple_release` or full release.
+4. (If web UI changed) `deploy-web-static.sh` + `verify-topology.sh`.

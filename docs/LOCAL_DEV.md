@@ -1,5 +1,7 @@
 # BoxAI local development (dual frontend)
 
+> Production topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md) · ops: [PRODUCTION.md](./PRODUCTION.md) · Desktop: [OFFICE_MODULE.md](./OFFICE_MODULE.md)
+
 Run **three processes** for full product surface: backend, Vue console, React web.
 
 ## Ports

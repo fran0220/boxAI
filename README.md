@@ -20,6 +20,19 @@ English | [中文](README_CN.md) | [日本語](README_JA.md)
 
 </div>
 
+## Product surfaces (you-box.com)
+
+BoxAI is a **multi-surface** product on one gateway backend:
+
+| Surface | Stack | Production URL | Code |
+|---------|-------|----------------|------|
+| Marketing + **Creator** (chat / image / video) | React (Vite) | https://you-box.com | `web/` |
+| User + admin **console** | Vue 3 (embedded in Go) | https://console.you-box.com | `frontend/` |
+| Developer **API** | Go gateway | https://api.you-box.com/v1 | `backend/` |
+| **Desktop** office client | Tauri | installers via download page | `desktop/` |
+
+Cross-origin login uses **PKCE Web SSO** (not cookie Domain SSO). Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · local three-process: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · production: [docs/PRODUCTION.md](docs/PRODUCTION.md).
+
 ## ⚠️ Important Notice
 
 Please read the following carefully before using this project:

@@ -1,12 +1,23 @@
-# Sub2API Deployment Files
+# BoxAI / Sub2API deployment files
 
-This directory contains files for deploying Sub2API on Linux servers and Apple-silicon Macs.
+Docker and edge configs for **BoxAI** (product) built on the Sub2API gateway stack.
+
+**Production dual-frontend (you-box.com):** see [docs/PRODUCTION.md](../docs/PRODUCTION.md) and [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md).
+
+| Host | Serves |
+|------|--------|
+| `you-box.com` | React static (`web/dist`) + proxy `/api` `/v1` |
+| `console.you-box.com` | Go image (Vue console embed) |
+| `api.you-box.com` | Edge-filtered gateway |
+
+Helpers: `scripts/deploy-web-static.sh`, `scripts/apply-nginx-topology.sh`, `scripts/verify-topology.sh`.
 
 ## Deployment Methods
 
 | Method | Best For | Setup Wizard |
 |--------|----------|--------------|
-| **Docker Compose** | Quick setup, all-in-one | Not needed (auto-setup) |
+| **Docker Compose** | App + Postgres + Redis (console + API process) | Not needed (auto-setup) |
+| **Nginx / Caddy dual-frontend** | Product apex + console + api hosts | See `nginx-you-box.com.conf` |
 | **Apple container** | Native local stack on macOS 26 | Not needed (auto-setup) |
 | **Binary Install** | Production servers, systemd | Web-based wizard |
 
@@ -17,10 +28,13 @@ This directory contains files for deploying Sub2API on Linux servers and Apple-s
 | `docker-compose.yml` | Docker Compose configuration (named volumes) |
 | `docker-compose.local.yml` | Docker Compose configuration (local directories, easy migration) |
 | `docker-deploy.sh` | **One-click Docker deployment script (recommended)** |
+| `nginx-you-box.com.conf` | **Production multi-host nginx** (React apex + Vue console + API filter) |
+| `Caddyfile.you-box.com` | Caddy alternative for the same topology |
+| `scripts/*` | Web static deploy, nginx apply, topology verify |
 | `apple-container.sh` | Native Apple `container` lifecycle script |
 | `APPLE_CONTAINER.md` | Apple `container` deployment and operations guide |
 | `.env.example` | Container environment variables template |
-| `DOCKER.md` | Docker Hub documentation |
+| `DOCKER.md` | Container image documentation |
 | `install.sh` | One-click binary installation script |
 | `install-datamanagementd.sh` | datamanagementd 一键安装脚本 |
 | `sub2api.service` | Systemd service unit file |

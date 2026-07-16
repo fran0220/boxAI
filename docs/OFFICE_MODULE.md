@@ -2,12 +2,22 @@
 
 **Product name:** BoxAI Desktop  
 **形态:** Tauri 桌面客户端（React WebView + Rust shell）+ 可选自托管 Go 网关  
-**Web:** 主站提供登录握手页 `/desktop-auth` 与下载页 `/download/desktop`
+
+**与 Web 双前端的关系（生产）：**
+
+| URL | 作用 |
+|-----|------|
+| https://you-box.com/download · `/studio` | React 产品面：下载与介绍（`web/`） |
+| https://console.you-box.com/desktop-auth | Vue 控制台：浏览器 OAuth 握手页（仍挂在 Go 内嵌 SPA） |
+| https://console.you-box.com/download/desktop | Vue 侧下载页（兼容旧书签；新流量优先 React） |
+| https://api.you-box.com/v1 | 推荐 Desktop / CLI 的 API Base（边缘过滤） |
+| JWT 网关 | `BOXAI_DESKTOP_JWT_GATEWAY`：Desktop 与 Creator 共用 JWT→API Key 桥 |
 
 **Code:** `desktop/`（vendored [BoxLiveAgent](https://github.com/fran0220/BoxLiveAgent)，上游为 `Stack-Cairn/LiveAgent`；溯源见 `desktop/UPSTREAM.md`）  
 **Desktop app:** `desktop/crates/agent-gui/`（Tauri + React）  
 **Remote gateway:** `desktop/crates/agent-gateway/`（Go，可选自托管远程访问）  
-**Backend 集成:** `backend/internal/handler/boxai_desktop_*.go` + `backend/internal/server/routes/{auth,gateway}.go`（BOXAI 标记）
+**Backend 集成:** `backend/internal/handler/boxai_desktop_*.go` + `backend/internal/server/routes/{auth,gateway}.go`（BOXAI 标记）  
+**整体拓扑:** [WEB_PLATFORM.md](./WEB_PLATFORM.md) · 本地三进程 [LOCAL_DEV.md](./LOCAL_DEV.md)
 
 > 历史备注：曾计划以 Electron soft-fork craft-agents-oss 实现「BoxAI Office」，
 > 该方案已废弃，`office/` 目录与 bootstrap API 不存在。本文档描述当前实现。

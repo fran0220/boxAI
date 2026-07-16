@@ -20,6 +20,19 @@ BoxAI はオープンソースの [Sub2API](https://github.com/Wei-Shaw/sub2api)
 
 </div>
 
+## プロダクト面（you-box.com）
+
+BoxAI は**同一ゲートウェイ上の多面プロダクト**です。
+
+| 面 | 技術 | 本番 URL | コード |
+|----|------|----------|--------|
+| マーケティング + **Creator** | React (Vite) | https://you-box.com | `web/` |
+| ユーザー/管理 **コンソール** | Vue 3（Go 埋め込み） | https://console.you-box.com | `frontend/` |
+| 開発者 **API** | Go ゲートウェイ | https://api.you-box.com/v1 | `backend/` |
+| **Desktop** | Tauri | ダウンロードページ | `desktop/` |
+
+オリジン間ログインは **PKCE Web SSO**。設計: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · ローカル: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 本番: [docs/PRODUCTION.md](docs/PRODUCTION.md)。
+
 ## ⚠️ 重要なお知らせ
 
 本プロジェクトをご利用になる前に、以下の内容を必ずよくお読みください：

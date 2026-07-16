@@ -20,7 +20,7 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `desktop/` | Vendored BoxAI Desktop (Tauri app + gateway + WebUI); provenance in `desktop/UPSTREAM.md` |
 | `frontend/src/views/auth/DesktopAuthView.vue` | BoxAI Desktop browser-login handshake page (mints PKCE code, redirects to desktop scheme) |
 | `frontend/src/views/public/DesktopDownloadView.vue` | Public desktop download page (lists newest `desktop-v*` GitHub release assets) |
-| `frontend/pnpm-workspace.yaml` | pnpm 10 build-script approvals (esbuild, vue-demi) |
+| `frontend/src/utils/safeReturnPath.ts` | Safe relative post-SSO return paths (console) |
 | `.github/workflows/desktop-release.yml` | Desktop release workflow (monorepo adaptation of `desktop/.github/workflows/desktop-release.yml`; `desktop-v*` tags, never marks releases "latest") |
 | `backend/internal/handler/boxai_desktop_gateway_auth.go` | Desktop JWT-as-credential gateway auth bridge (new BOXAI file in sync-first pkg; needs AuthHandler services) |
 | `backend/internal/handler/boxai_desktop_gateway_auth_test.go` | Unit tests for the JWT→API-key gateway bridge |
@@ -32,9 +32,15 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/internal/handler/boxai_web_sso_test.go` | Unit tests for web SSO allowlist / PKCE helpers |
 | `backend/internal/handler/boxai_creator_key.go` | Idempotent `boxai-creator` API key ensure endpoint |
 | `backend/internal/handler/boxai_creator_key_test.go` | Unit tests for Creator ensure-key |
-| `web/` | React marketing + Creator SPA (Vite + TS + Tailwind); static dist via Caddy |
-| `docs/WEB_PLATFORM.md` | Dual-frontend topology, SSO, env flags, local runbook |
+| `web/` | React marketing + Creator SPA (Vite + TS + Tailwind); static dist on apex (not Go-embed) |
+| `docs/WEB_PLATFORM.md` | Dual-frontend topology, SSO, env flags, deploy notes |
+| `docs/LOCAL_DEV.md` | Local three-process developer guide |
+| `docs/OFFICE_MODULE.md` | Desktop module + web URL map |
 | `deploy/Caddyfile.you-box.com` | 3-host Caddy (apex / console / api) |
+| `deploy/nginx-you-box.com.conf` | Live production nginx multi-host topology |
+| `deploy/scripts/deploy-web-static.sh` | Build+rsync React to production docroot |
+| `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
+| `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
 | `frontend/src/views/auth/BoxAISsoStartView.vue` | Console SSO start (PKCE + authorize redirect) |
 | `frontend/src/views/auth/BoxAISsoCallbackView.vue` | Console SSO callback (fragment code → token) |
 | `backend/internal/branding/` | Backend product name/tagline helpers |
@@ -46,6 +52,8 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `frontend/public/logo-mono.svg` | Monochrome mark |
 | `frontend/public/logo.png` | Raster mark |
 | `docs/BRAND.md` | Brand system |
+| `docs/PRODUCTION.md` | Production dual-frontend ops (product overlay) |
+| `DEV_GUIDE.md` | Local + dual-frontend developer guide |
 | `AGENTS.md` | Agent hard rules |
 | `docs/agents/*` | Agent SOPs |
 | `FORK_DELTA.md` | This inventory |
@@ -152,8 +160,3 @@ Hash pins: `tools/compliance-hash.pins`.
 2. On upstream sync land: bump **Baseline** tag.
 3. Prefer small, reviewable inventory edits over long prose.
 
-| `deploy/nginx-you-box.com.conf` | Production nginx multi-host topology (apex React / console Vue / api filter) |
-| `deploy/scripts/deploy-web-static.sh` | Build+rsync React web to production docroot |
-| `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
-| `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
-| `docs/LOCAL_DEV.md` | Local dual-frontend developer guide |

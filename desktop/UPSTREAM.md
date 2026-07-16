@@ -19,6 +19,17 @@ This tree is a **vendored, productized copy** of BoxLiveAgent (a fork of
 - Runtime: single `@earendil-works/pi-ai` engine talking only to boxAI
   (Anthropic-compatible `/v1/messages` and OpenAI-compatible `/v1/chat/completions`).
 
+### Production server URLs (dual-frontend web)
+
+| Use | URL |
+|-----|-----|
+| Recommended API base for Desktop | `https://api.you-box.com` (or `https://console.you-box.com`) |
+| Browser login page | served from console embed: `https://console.you-box.com/desktop-auth` |
+| Download / marketing | `https://you-box.com/download` (React) |
+| JWT→key bridge | same as Creator: `BOXAI_DESKTOP_JWT_GATEWAY` on `/v1/*` |
+
+See monorepo [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md) and [docs/OFFICE_MODULE.md](../docs/OFFICE_MODULE.md).
+
 ## BoxAI product deltas
 
 Enumerated product changes on top of the vendored tree (beyond branding):

@@ -29,13 +29,27 @@ Design every change so the next upstream tag merge is mechanical.
 - Settings keys introduced by BoxAI: prefer `boxai_` prefix.
 - `_notx` files: only for concurrent/idempotent index patterns already used upstream.
 
-## Frontend (flexible structure, same shape)
+## Frontend (dual surface)
+
+| Surface | Path | Notes |
+|---------|------|--------|
+| Console (Vue) | `frontend/` | Hybrid with upstream; brand via `frontend/src/constants/brand.ts` |
+| Marketing + Creator (React) | `web/` | **Product-first entire tree**; brand via `web/src/lib/brand.ts` |
+| Desktop UI | `desktop/crates/agent-gui/` | Product-first vendored tree |
+
+### Console (Vue)
 
 - Product strings and logo paths: only via `frontend/src/constants/brand.ts`.
 - Do not rewrite shared upstream components for brand-only needs; compose or wrap.
-- BoxAI-only screens: dedicated view files + router entries.
+- BoxAI-only screens: dedicated view files + router entries (`BoxAISso*`, public download).
 - i18n brand keys: list in `FORK_DELTA.md` if they touch upstream locale files.
 - Tests: assert against brand constants, not raw `"BoxAI"` where practical.
+
+### Product web (React)
+
+- New product UI for apex host belongs in `web/`, not by forking large Vue console trees.
+- Do **not** embed `web/dist` into the Go binary (keeps Dockerfile/upstream embed path stable).
+- Ship with `deploy/scripts/deploy-web-static.sh`; edge config under `deploy/nginx-you-box.com.conf`.
 
 ## Compliance exception
 

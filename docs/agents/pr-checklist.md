@@ -13,7 +13,10 @@ Copy into the PR description when relevant.
 - [ ] Did **not** touch `adminCompliance` legal phrases / `docs/legal/*` unless intentional + hash pin update
 - [ ] Did **not** edit `backend/cmd/server/VERSION` except via release automation / upstream merge
 - [ ] Backend tests / lint for touched packages
-- [ ] Frontend: lockfile updated with **pnpm** if `package.json` changed
+- [ ] Console (`frontend/`): lockfile updated with **pnpm** if `package.json` changed
+- [ ] Product web (`web/`): if touched — `pnpm typecheck` + `pnpm test:run` (separate lockfile)
+- [ ] Dual-frontend docs still accurate if URLs/topology/auth change (`WEB_PLATFORM.md` / `LOCAL_DEV.md` / `PRODUCTION.md`)
+- [ ] If production edge or React UI ships: note `deploy-web-static.sh` / `verify-topology.sh` in PR
 
 ## Sync PR only
 
@@ -28,5 +31,7 @@ Copy into the PR description when relevant.
 ## Release PR / tag
 
 - [ ] Merged upstream baseline recorded in tag `vX.Y.Z-box.N`
-- [ ] Image pin documented for operators
-- [ ] `simple_release` only for non-prod channels
+- [ ] Image pin documented for operators (`BOXAI_IMAGE`)
+- [ ] `simple_release` only for non-prod / amd64-only hotfixes
+- [ ] If `web/` changed: static deploy planned (image alone does **not** update apex HTML)
+- [ ] Topology smoke: `./deploy/scripts/verify-topology.sh` after edge/web cutover
