@@ -11,6 +11,7 @@ import { NotFound } from '@/pages/NotFound'
 import { AuthRedirect } from '@/pages/auth/AuthRedirect'
 import { SsoStart } from '@/pages/SsoStart'
 import { SsoCallback } from '@/pages/SsoCallback'
+import { SsoAuthorize } from '@/pages/SsoAuthorize'
 
 const CreateLayout = lazy(() =>
   import('@/pages/create/CreateLayout').then((m) => ({ default: m.CreateLayout })),
@@ -42,6 +43,8 @@ export default function App() {
         <Route path="signup" element={<AuthRedirect mode="register" />} />
         <Route path="sso" element={<SsoStart />} />
         <Route path="sso/callback" element={<SsoCallback />} />
+        {/* Mint code for console (or peer) when this origin already has a session */}
+        <Route path="sso/authorize" element={<SsoAuthorize />} />
         <Route
           path="account"
           element={

@@ -41,7 +41,7 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `deploy/scripts/deploy-web-static.sh` | Build+rsync React to production docroot |
 | `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
 | `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
-| `frontend/src/views/auth/BoxAISsoStartView.vue` | Console SSO start (PKCE; cold session via local `/login`) |
+| `frontend/src/views/auth/BoxAISsoStartView.vue` | Console SSO start (PKCE; cold → marketing `/sso/authorize` mint) |
 | `frontend/src/views/auth/BoxAISsoCallbackView.vue` | Console SSO callback (fragment code → token) |
 | `frontend/src/views/auth/BoxAISsoAuthorizeView.vue` | Console SSO authorize (identity host mints code for marketing origin) |
 | `backend/internal/branding/` | Backend product name/tagline helpers |

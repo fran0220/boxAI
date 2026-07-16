@@ -33,10 +33,15 @@ lands on the register form and returns to the authorize handoff afterwards.
 
 Pages:
 
-- Apex → console: apex `/login` · `/signup` → console `/boxai/sso/authorize` →
-  apex `/sso/callback` (fragment `#code=&state=`) → token exchange.
-- Console → apex: console `/boxai/sso/start` → local `/login` when cold →
-  console `/boxai/sso/callback`.
+- Apex cold → console: apex `/login` · `/signup` → console `/boxai/sso/authorize`
+  (console credentials) → apex `/sso/callback` → token exchange on apex.
+- Apex warm → console cold: Header/links open console `/boxai/sso/start` →
+  (console cold) apex `/sso/authorize` mints with apex JWT → console
+  `/boxai/sso/callback` → token exchange on console.
+- Console warm: console `/boxai/sso/start` mints locally → console callback.
+
+Either origin can **mint** a code when it already has a JWT. Only the console
+hosts **credential forms**. Origins never share `localStorage`.
 
 Rules:
 
