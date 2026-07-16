@@ -6,6 +6,7 @@ import { getAPIBaseURL } from '@/api/url'
 
 export type BrowserSession = AuthResponse
 type Listener = (session: BrowserSession | null) => void
+type LogoutListener = () => void
 
 const LEGACY_KEYS = ['auth_token', 'refresh_token', 'auth_user', 'token_expires_at'] as const
 const headers = { 'X-BoxAI-Browser-Session': '1', 'X-BoxAI-CSRF': '1' }
@@ -16,6 +17,7 @@ let refreshTimer: ReturnType<typeof setTimeout> | null = null
 let bootstrapFlight: Promise<BrowserSession | null> | null = null
 let sessionEpoch = 0
 const listeners = new Set<Listener>()
+const logoutListeners = new Set<LogoutListener>()
 const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('boxai-browser-session') : null
 
 function unwrap(value: unknown): BrowserSession {
@@ -47,6 +49,7 @@ channel?.addEventListener('message', (event) => {
   if (event.data === 'logout') {
     sessionEpoch += 1
     publish(null, false)
+    logoutListeners.forEach((listener) => listener())
   } else if (event.data === 'changed') {
     resyncSession()
   }
@@ -89,6 +92,11 @@ export function clearBrowserSession(): void {
 export function subscribeBrowserSession(listener: Listener): () => void {
   listeners.add(listener)
   return () => listeners.delete(listener)
+}
+
+export function subscribeBrowserLogout(listener: LogoutListener): () => void {
+  logoutListeners.add(listener)
+  return () => logoutListeners.delete(listener)
 }
 
 async function request(path: string, body?: unknown): Promise<BrowserSession> {
@@ -153,6 +161,7 @@ export async function logoutBrowserSession(): Promise<void> {
   try { await request('/auth/session/logout') } finally {
     LEGACY_KEYS.forEach((key) => localStorage.removeItem(key))
     publish(null)
+    logoutListeners.forEach((listener) => listener())
   }
 }
 
@@ -166,4 +175,5 @@ export function resetBrowserSessionForTest(): void {
   bootstrapFlight = null
   sessionEpoch = 0
   listeners.clear()
+  logoutListeners.clear()
 }

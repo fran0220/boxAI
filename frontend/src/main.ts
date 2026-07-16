@@ -6,6 +6,7 @@ import i18n, { initI18n } from './i18n'
 import { useAppStore } from '@/stores/app'
 import './style.css'
 import { BRAND_NAME, BRAND_TAGLINE } from '@/constants/brand'
+import { subscribeBrowserLogout } from '@/auth/browserSession'
 
 // BOXAI: product default is dark (homepage design language); only light when user chose it
 function initThemeClass() {
@@ -39,6 +40,13 @@ async function bootstrap() {
 
   // 等待路由器完成初始导航后再挂载，避免竞态条件导致的空白渲染
   await router.isReady()
+  // BOXAI: an explicit logout in another tab must immediately unmount protected
+  // console content; route guards alone only run on the next navigation.
+  subscribeBrowserLogout(() => {
+    if (router.currentRoute.value.meta.requiresAuth !== false) {
+      void router.replace('/login')
+    }
+  })
   app.mount('#app')
 
   // BOXAI: dev-only Agentation toolbar for visual feedback → AI agents

@@ -5,8 +5,10 @@ import {
   bootstrapWithLegacyAdoption,
   clearBrowserSession,
   getAccessToken,
+  logoutBrowserSession,
   resetBrowserSessionForTest,
-  setBrowserSession
+  setBrowserSession,
+  subscribeBrowserLogout
 } from '../browserSession'
 
 vi.mock('axios', () => ({ default: { post: vi.fn() } }))
@@ -101,5 +103,18 @@ describe('browserSession', () => {
     await pending
 
     expect(getAccessToken()).toBe('current')
+  })
+
+  it('notifies explicit logout listeners after clearing the local session', async () => {
+    const listener = vi.fn()
+    const unsubscribe = subscribeBrowserLogout(listener)
+    setBrowserSession(response())
+    vi.mocked(axios.post).mockResolvedValue({ data: { code: 0, data: { message: 'ok' } } })
+
+    await logoutBrowserSession()
+
+    expect(getAccessToken()).toBeNull()
+    expect(listener).toHaveBeenCalledTimes(1)
+    unsubscribe()
   })
 })
