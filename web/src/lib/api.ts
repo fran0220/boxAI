@@ -59,55 +59,17 @@ export async function apiGet<T>(path: string, token?: string | null): Promise<T>
   return parseEnvelope<T>(res)
 }
 
+/**
+ * Interactive login/registration is NOT implemented on this origin.
+ * The console (Vue app) is the identity host; sessions arrive here via the
+ * PKCE Web SSO handoff (`exchangeSsoToken`).
+ */
 export interface AuthResponse {
   access_token: string
   refresh_token?: string
   expires_in?: number
   token_type?: string
   user: AuthUser
-  requires_2fa?: boolean
-  temp_token?: string
-}
-
-export async function login(email: string, password: string): Promise<AuthResponse> {
-  const data = await apiPost<AuthResponse>('/api/v1/auth/login', { email, password })
-  if (data.requires_2fa) return data
-  setSession({
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    expiresIn: data.expires_in,
-    user: data.user,
-  })
-  return data
-}
-
-export async function login2fa(tempToken: string, code: string): Promise<AuthResponse> {
-  const data = await apiPost<AuthResponse>('/api/v1/auth/login/2fa', {
-    temp_token: tempToken,
-    totp_code: code,
-  })
-  setSession({
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    expiresIn: data.expires_in,
-    user: data.user,
-  })
-  return data
-}
-
-export async function register(params: {
-  email: string
-  password: string
-  username?: string
-}): Promise<AuthResponse> {
-  const data = await apiPost<AuthResponse>('/api/v1/auth/register', params)
-  setSession({
-    accessToken: data.access_token,
-    refreshToken: data.refresh_token,
-    expiresIn: data.expires_in,
-    user: data.user,
-  })
-  return data
 }
 
 export async function fetchMe(): Promise<AuthUser> {
@@ -175,17 +137,6 @@ export async function gatewayFetch(path: string, init: RequestInit = {}): Promis
   return fetch(`${apiBase()}${path}`, { ...init, headers })
 }
 
-export async function chatCompletions(
-  body: unknown,
-  init?: { signal?: AbortSignal },
-): Promise<Response> {
-  return gatewayFetch('/v1/chat/completions', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    signal: init?.signal,
-  })
-}
-
 export async function imageGenerations(body: unknown): Promise<unknown> {
   const res = await gatewayFetch('/v1/images/generations', {
     method: 'POST',
@@ -194,6 +145,31 @@ export async function imageGenerations(body: unknown): Promise<unknown> {
   if (!res.ok) {
     const text = await res.text()
     throw new ApiError(text || 'Image generation failed', res.status)
+  }
+  return res.json()
+}
+
+/** Remix/edit: multipart to the OpenAI-compatible images/edits endpoint. */
+export async function imageEdits(params: {
+  model: string
+  prompt: string
+  image: Blob
+  n?: number
+  size?: string
+}): Promise<unknown> {
+  const form = new FormData()
+  form.set('model', params.model)
+  form.set('prompt', params.prompt)
+  form.set('image', params.image, 'reference.png')
+  if (params.n) form.set('n', String(params.n))
+  if (params.size) form.set('size', params.size)
+  const res = await gatewayFetch('/v1/images/edits', {
+    method: 'POST',
+    body: form,
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new ApiError(text || 'Image edit failed', res.status)
   }
   return res.json()
 }
@@ -217,4 +193,19 @@ export async function videoStatus(id: string): Promise<unknown> {
     throw new ApiError(text || 'Video status failed', res.status)
   }
   return res.json()
+}
+
+export interface GatewayModel {
+  id: string
+  owned_by?: string
+}
+
+export async function fetchModels(): Promise<GatewayModel[]> {
+  const res = await gatewayFetch('/v1/models', { method: 'GET' })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new ApiError(text || 'Model list failed', res.status)
+  }
+  const body = (await res.json()) as { data?: GatewayModel[] }
+  return (body.data || []).filter((m) => typeof m.id === 'string' && m.id.length > 0)
 }

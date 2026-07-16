@@ -93,6 +93,25 @@ Enumerated product changes on top of the vendored tree (beyond branding):
   field, flag, and startup wiring.
 - `crates/agent-gateway/test/auth/boxai_test.go` — fallback/caching tests.
 
+### Gateway multi-tenant mode (hosted Studio WebUI)
+
+- `crates/agent-gateway/internal/auth/identity.go` — token → `Identity` resolution:
+  static shared token → reserved `local` tenant; boxAI JWT → `user:<account-id>`
+  (id parsed from `/api/v1/auth/me` `data.id`). Context + gRPC-metadata helpers.
+- `crates/agent-gateway/internal/auth/boxai.go` — validator now resolves the account
+  id (`Resolve`), caching identity alongside validity.
+- `crates/agent-gateway/internal/session/tenants.go` — `Tenants` registry:
+  `SingleTenant(manager)` (default desktop deployment) or `NewTenants()` mapping
+  tenant id → lazily created `session.Manager`.
+- `crates/agent-gateway/internal/server/{http,websocket,websocket_terminal_stream,grpc}.go`
+  — every authenticated surface binds to the caller's tenant manager; public
+  token-keyed routes (`/t/<slug>`, history shares) locate their tenant by scanning
+  the registry. Legacy constructors keep their single-manager signatures.
+- `crates/agent-gateway/internal/config/config.go` + `cmd/gateway/main.go` —
+  `-multi-tenant` / `BOXAI_GATEWAY_MULTI_TENANT` (requires `-boxai-server-url`).
+- Tests: `test/auth/identity_test.go`, `test/session/tenants_test.go`,
+  `test/http/multi_tenant_test.go`, `test/websocket/multi_tenant_test.go`.
+
 ### Monorepo release scheme (desktop-v* tags)
 
 - `scripts/release/release-version.mjs` — accepts `desktop-vX.Y.Z` tags (the full tag

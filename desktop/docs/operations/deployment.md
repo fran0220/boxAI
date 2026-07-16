@@ -27,6 +27,8 @@
 | `LIVEAGENT_GATEWAY_TOKEN` | 是 | WebUI、HTTP API、桌面 gRPC 的共享访问 token。 |
 | `PORT` | Railway 自动提供 | HTTP/WebUI 监听端口，未提供时 Dockerfile 默认 `8080`。 |
 | `LIVEAGENT_GATEWAY_GRPC_ADDR` | 否 | gRPC 监听地址，默认 `:50051`。 |
+| `BOXAI_SERVER_URL` | 否 | boxAI 服务端地址；设置后接受 boxAI 账号 JWT（经 `/api/v1/auth/me` 校验）。 |
+| `BOXAI_GATEWAY_MULTI_TENANT` | 否 | `true` 时按 boxAI 账号隔离会话（托管 Studio WebUI 模式，需同时设置 `BOXAI_SERVER_URL`）；静态 token 落入保留的 `local` 租户。默认关闭（单租户桌面模式）。 |
 | `LIVEAGENT_GATEWAY_CHAT_PREPARE_TIMEOUT` | 否 | `chat.prepare` 与 command accepted 前关联原生 Ping/Pong 的最大等待时间，默认 `2s`。 |
 | `LIVEAGENT_GATEWAY_CHAT_DELIVERY_TIMEOUT` | 否 | accepted 后把 `ChatCommandRequest` 投递到当前桌面 Agent stream 的最大等待时间，默认 `5s`。 |
 | `LIVEAGENT_GATEWAY_CHAT_START_TIMEOUT` | 否 | Chat command 进入桌面运行态的第一段 watchdog，默认 `5s`。 |

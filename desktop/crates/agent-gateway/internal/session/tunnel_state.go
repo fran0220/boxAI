@@ -388,6 +388,18 @@ func (m *Manager) broadcastTunnelState() {
 	}
 }
 
+// BOXAI: HasTunnelSlug reports whether this manager currently owns the public
+// tunnel slug (used by the multi-tenant registry to route public traffic).
+func (m *Manager) HasTunnelSlug(slug string) bool {
+	slug = strings.TrimSpace(slug)
+	if slug == "" {
+		return false
+	}
+	m.tunnels.mu.Lock()
+	defer m.tunnels.mu.Unlock()
+	return m.tunnels.records[m.tunnels.slugToID[slug]] != nil
+}
+
 // AcquireTunnel claims a visitor stream slot on the tunnel behind slug.
 func (m *Manager) AcquireTunnel(slug string, streamID string) (*TunnelStreamLease, error) {
 	slug = strings.TrimSpace(slug)

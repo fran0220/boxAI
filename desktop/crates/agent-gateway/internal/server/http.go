@@ -21,9 +21,16 @@ import (
 )
 
 func NewHTTPServer(cfg *config.Config, sm *session.Manager) http.Handler {
+	return NewTenantHTTPServer(cfg, session.SingleTenant(sm))
+}
+
+// BOXAI: NewTenantHTTPServer routes every authenticated surface to the
+// caller's tenant manager; public token-keyed routes locate their tenant by
+// scanning the registry.
+func NewTenantHTTPServer(cfg *config.Config, tenants *session.Tenants) http.Handler {
 	rootMux := http.NewServeMux()
-	webSocketServer := NewWebSocketServer(cfg, sm)
-	terminalWebSocketServer := NewTerminalWebSocketServer(cfg, sm)
+	webSocketServer := newTenantWebSocketServer(cfg, tenants)
+	terminalWebSocketServer := newTenantTerminalWebSocketServer(cfg, tenants)
 	rootMux.HandleFunc("GET /healthz", handler.Health())
 	rootMux.Handle("/ws", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if isTerminalWebSocketFallback(r) {
@@ -33,13 +40,31 @@ func NewHTTPServer(cfg *config.Config, sm *session.Manager) http.Handler {
 		webSocketServer.ServeHTTP(w, r)
 	}))
 	rootMux.Handle("/ws/terminal", terminalWebSocketServer)
-	rootMux.HandleFunc("/t/", publicTunnelProxy(sm))
+	rootMux.HandleFunc("/t/", publicTunnelProxy(tenants.ResolveTunnelManager))
 	rootMux.HandleFunc("GET /image-proxy", handler.ImageProxy(cfg.RequestTimeout))
-	rootMux.HandleFunc("GET /api/public/history-shares/{token}", publicHistoryShare(cfg, sm))
+	rootMux.HandleFunc("GET /api/public/history-shares/{token}", publicHistoryShare(cfg, tenants))
 
+	managerFor := func(r *http.Request) *session.Manager {
+		identity, _ := auth.IdentityFromContext(r.Context())
+		return tenants.ManagerFor(identity.TenantID())
+	}
 	apiMux := http.NewServeMux()
-	apiMux.HandleFunc("GET /api/status", handler.Status(sm))
-	apiMux.HandleFunc("POST /api/files/import", handler.ImportReadableFiles(sm, cfg.RequestTimeout))
+	apiMux.HandleFunc("GET /api/status", func(w http.ResponseWriter, r *http.Request) {
+		sm := managerFor(r)
+		if sm == nil {
+			writeJSON(w, http.StatusForbidden, map[string]any{"error": "tenant unavailable"})
+			return
+		}
+		handler.Status(sm)(w, r)
+	})
+	apiMux.HandleFunc("POST /api/files/import", func(w http.ResponseWriter, r *http.Request) {
+		sm := managerFor(r)
+		if sm == nil {
+			writeJSON(w, http.StatusForbidden, map[string]any{"error": "tenant unavailable"})
+			return
+		}
+		handler.ImportReadableFiles(sm, cfg.RequestTimeout)(w, r)
+	})
 	rootMux.Handle("/api/", auth.HTTPMiddleware(cfg.Token, apiMux))
 
 	webFS, err := fs.Sub(gateway.WebUIAssets, "web/dist")
@@ -101,7 +126,7 @@ func isWebUIStaticAssetPath(cleanPath string) bool {
 	return strings.HasPrefix(cleanPath, "assets/") || path.Ext(cleanPath) != ""
 }
 
-func publicHistoryShare(cfg *config.Config, sm *session.Manager) http.HandlerFunc {
+func publicHistoryShare(cfg *config.Config, tenants *session.Tenants) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := strings.TrimSpace(r.PathValue("token"))
 		if token == "" {
@@ -116,45 +141,75 @@ func publicHistoryShare(cfg *config.Config, sm *session.Manager) http.HandlerFun
 		ctx, cancel := context.WithTimeout(r.Context(), timeout)
 		defer cancel()
 
-		requestID := "public-history-share-" + uuid.NewString()
-		response, err := awaitAgentUnaryResponse(ctx, sm, requestID, &gatewayv1.GatewayEnvelope{
-			RequestId: requestID,
-			Timestamp: time.Now().Unix(),
-			Payload: &gatewayv1.GatewayEnvelope_HistoryShareResolve{
-				HistoryShareResolve: &gatewayv1.HistoryShareResolveRequest{
-					Token: token,
-				},
-			},
-		})
-		if err != nil {
-			switch {
-			case errors.Is(err, session.ErrAgentOffline):
-				writePublicHistoryShareError(w, http.StatusServiceUnavailable, "agent offline")
-			case errors.Is(err, context.DeadlineExceeded):
-				writePublicHistoryShareError(w, http.StatusGatewayTimeout, "request timed out")
-			default:
-				writePublicHistoryShareError(w, http.StatusInternalServerError, "share request failed")
+		// The share token is opaque and agent-owned, so in multi-tenant mode
+		// the owning tenant is found by asking each online agent; a 404 from
+		// one agent just moves the scan along.
+		var lastStatus int
+		var lastMessage string
+		attempted := false
+		for _, sm := range tenants.Snapshot() {
+			if !sm.IsOnline() {
+				continue
 			}
-			return
-		}
-		if errResp := response.GetError(); errResp != nil {
-			writePublicHistoryShareError(w, handler.GatewayErrorStatus(errResp), errResp.GetMessage())
+			attempted = true
+
+			requestID := "public-history-share-" + uuid.NewString()
+			response, err := awaitAgentUnaryResponse(ctx, sm, requestID, &gatewayv1.GatewayEnvelope{
+				RequestId: requestID,
+				Timestamp: time.Now().Unix(),
+				Payload: &gatewayv1.GatewayEnvelope_HistoryShareResolve{
+					HistoryShareResolve: &gatewayv1.HistoryShareResolveRequest{
+						Token: token,
+					},
+				},
+			})
+			if err != nil {
+				switch {
+				case errors.Is(err, session.ErrAgentOffline):
+					lastStatus, lastMessage = http.StatusServiceUnavailable, "agent offline"
+					continue
+				case errors.Is(err, context.DeadlineExceeded):
+					writePublicHistoryShareError(w, http.StatusGatewayTimeout, "request timed out")
+					return
+				default:
+					lastStatus, lastMessage = http.StatusInternalServerError, "share request failed"
+					continue
+				}
+			}
+			if errResp := response.GetError(); errResp != nil {
+				status := handler.GatewayErrorStatus(errResp)
+				if status == http.StatusNotFound && tenants.MultiTenant() {
+					lastStatus, lastMessage = status, errResp.GetMessage()
+					continue
+				}
+				writePublicHistoryShareError(w, status, errResp.GetMessage())
+				return
+			}
+
+			share := response.GetHistoryShareResolveResp()
+			if share == nil {
+				writePublicHistoryShareError(w, http.StatusBadGateway, "unexpected agent response")
+				return
+			}
+
+			writeJSON(w, http.StatusOK, map[string]any{
+				"conversation_id":     share.GetConversationId(),
+				"messages_json":       share.GetMessagesJson(),
+				"total_message_count": share.GetTotalMessageCount(),
+				"conversation":        websocketConversationSummaryPayload(share.GetConversation()),
+				"redact_tool_content": share.GetRedactToolContent(),
+			})
 			return
 		}
 
-		share := response.GetHistoryShareResolveResp()
-		if share == nil {
-			writePublicHistoryShareError(w, http.StatusBadGateway, "unexpected agent response")
+		if !attempted {
+			writePublicHistoryShareError(w, http.StatusServiceUnavailable, "agent offline")
 			return
 		}
-
-		writeJSON(w, http.StatusOK, map[string]any{
-			"conversation_id":     share.GetConversationId(),
-			"messages_json":       share.GetMessagesJson(),
-			"total_message_count": share.GetTotalMessageCount(),
-			"conversation":        websocketConversationSummaryPayload(share.GetConversation()),
-			"redact_tool_content": share.GetRedactToolContent(),
-		})
+		if lastStatus == 0 {
+			lastStatus, lastMessage = http.StatusNotFound, "share not found"
+		}
+		writePublicHistoryShareError(w, lastStatus, lastMessage)
 	}
 }
 

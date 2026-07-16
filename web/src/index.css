@@ -4,7 +4,7 @@
 
 /**
  * BoxAI design tokens — aligned with frontend/src/styles/tokens.css (--bx-*).
- * Dark-first product surface.
+ * Dark-first product surface + motion tokens for the marketing/Creator SPA.
  */
 :root {
   --bx-bg: #080a0d;
@@ -23,16 +23,29 @@
   --bx-sky: #38bdf8;
   --bx-teal-bright: #5eead4;
   --bx-teal-deep: #0d9488;
+  --bx-teal-ink: #04201d;
   --bx-primary: #14b8a6;
   --bx-accent: #06b6d4;
   --bx-grad-hero: linear-gradient(100deg, #2dd4bf 0%, #22d3ee 34%, #5eead4 60%, #38bdf8 100%);
   --bx-grad-cta: linear-gradient(135deg, #2dd4bf, #22d3ee);
+  --bx-grad-border: linear-gradient(115deg, #2dd4bf, #22d3ee, #38bdf8, #2dd4bf);
   --bx-font: 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --bx-radius: 12px;
+  --bx-radius-sm: 10px;
   --bx-radius-lg: 16px;
+  --bx-radius-xl: 22px;
   --bx-shadow-cta: 0 14px 44px -10px rgba(45, 212, 191, 0.55);
   --bx-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --bx-shadow-pop: 0 24px 64px -16px rgba(0, 0, 0, 0.6);
   --bx-ring: rgba(45, 212, 191, 0.35);
+  --bx-hover: rgba(255, 255, 255, 0.06);
+  --bx-active: rgba(45, 212, 191, 0.12);
+  --bx-scrollbar: rgba(148, 163, 184, 0.35);
+  /* Motion tokens */
+  --bx-dur-fast: 0.15s;
+  --bx-dur: 0.25s;
+  --bx-dur-slow: 0.5s;
+  --bx-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html,
@@ -46,6 +59,36 @@ body {
   font-family: var(--bx-font);
   background: var(--bx-bg);
   color: var(--bx-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.3);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bx-scrollbar) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--bx-scrollbar);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--bx-teal);
+  outline-offset: 2px;
 }
 
 /* Ambient mesh backdrop */
@@ -67,12 +110,46 @@ body {
     radial-gradient(ellipse 50% 30% at 50% 100%, rgba(56, 189, 248, 0.06), transparent 50%);
 }
 
+/* —— Surfaces —— */
+
 .bx-card {
   background: var(--bx-bg-card);
   border: 1px solid var(--bx-border);
   border-radius: var(--bx-radius-lg);
   box-shadow: var(--bx-shadow-card);
 }
+
+.bx-card-hover {
+  transition:
+    border-color var(--bx-dur) var(--bx-ease),
+    background var(--bx-dur) var(--bx-ease),
+    transform var(--bx-dur) var(--bx-ease);
+}
+
+.bx-card-hover:hover {
+  border-color: var(--bx-border-strong);
+  background: var(--bx-bg-card-hover);
+  transform: translateY(-2px);
+}
+
+/* Gradient-border card (1px animated conic ring behind a solid inner panel) */
+.bx-card-grad {
+  position: relative;
+  border-radius: var(--bx-radius-lg);
+  background:
+    linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box,
+    var(--bx-grad-border) border-box;
+  border: 1px solid transparent;
+  box-shadow: var(--bx-shadow-card);
+}
+
+.bx-glass {
+  background: color-mix(in srgb, var(--bx-bg) 78%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* —— Buttons —— */
 
 .bx-btn {
   display: inline-flex;
@@ -83,7 +160,13 @@ body {
   padding: 0.625rem 1.25rem;
   font-weight: 600;
   font-size: 0.875rem;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    opacity var(--bx-dur-fast) ease,
+    transform var(--bx-dur-fast) ease,
+    box-shadow var(--bx-dur) var(--bx-ease),
+    background var(--bx-dur-fast) ease;
 }
 
 .bx-btn:hover {
@@ -91,13 +174,23 @@ body {
 }
 
 .bx-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+}
+
+.bx-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .bx-btn-primary {
   background: var(--bx-grad-cta);
-  color: #04201d;
+  color: var(--bx-teal-ink);
   box-shadow: var(--bx-shadow-cta);
+}
+
+.bx-btn-primary:hover {
+  box-shadow: 0 18px 54px -10px rgba(45, 212, 191, 0.7);
+  opacity: 1;
 }
 
 .bx-btn-ghost {
@@ -105,6 +198,28 @@ body {
   border: 1px solid var(--bx-border-strong);
   color: var(--bx-text);
 }
+
+.bx-btn-ghost:hover {
+  background: var(--bx-hover);
+  opacity: 1;
+}
+
+.bx-btn-soft {
+  background: var(--bx-active);
+  color: var(--bx-teal);
+}
+
+.bx-btn-lg {
+  padding: 0.8rem 1.75rem;
+  font-size: 1rem;
+}
+
+.bx-btn-sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8125rem;
+}
+
+/* —— Forms —— */
 
 .bx-input {
   width: 100%;
@@ -114,12 +229,20 @@ body {
   color: var(--bx-text);
   padding: 0.65rem 0.9rem;
   font-size: 0.9375rem;
+  font-family: var(--bx-font);
   outline: none;
+  transition:
+    border-color var(--bx-dur-fast) ease,
+    box-shadow var(--bx-dur-fast) ease;
 }
 
 .bx-input:focus {
   border-color: var(--bx-teal);
   box-shadow: 0 0 0 3px var(--bx-ring);
+}
+
+.bx-input::placeholder {
+  color: var(--bx-text-dim);
 }
 
 .bx-label {
@@ -129,9 +252,134 @@ body {
   margin-bottom: 0.35rem;
 }
 
+input[type='range'].bx-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bx-bg-muted);
+  outline: none;
+}
+
+input[type='range'].bx-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bx-teal);
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.18);
+}
+
+input[type='range'].bx-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--bx-teal);
+  cursor: pointer;
+}
+
+/* —— Typography helpers —— */
+
 .bx-gradient-text {
   background: var(--bx-grad-hero);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.bx-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bx-teal);
+}
+
+/* —— Marquee —— */
+
+@keyframes bx-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.bx-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.bx-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: bx-marquee 36s linear infinite;
+}
+
+.bx-marquee:hover .bx-marquee-track {
+  animation-play-state: paused;
+}
+
+/* —— Misc —— */
+
+@keyframes bx-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.bx-caret {
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  vertical-align: text-bottom;
+  border-radius: 2px;
+  background: var(--bx-teal);
+  animation: bx-blink 1s ease infinite;
+}
+
+@keyframes bx-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.bx-skeleton {
+  border-radius: var(--bx-radius);
+  background: linear-gradient(
+    90deg,
+    var(--bx-bg-muted) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    var(--bx-bg-muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: bx-shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -4,7 +4,9 @@ import { isAuthenticated } from '@/lib/storage'
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   if (!isAuthenticated()) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />
+    return (
+      <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+    )
   }
   return <>{children}</>
 }

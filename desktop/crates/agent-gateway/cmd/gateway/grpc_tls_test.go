@@ -32,7 +32,7 @@ func TestNewGRPCServerUsesTLSWhenCertificateConfigured(t *testing.T) {
 		GRPCMaxMessageBytes: config.DefaultGRPCMaxMessageBytes,
 	}
 
-	grpcServer, err := newGRPCServer(cfg, session.NewManager())
+	grpcServer, err := newGRPCServer(cfg, session.SingleTenant(session.NewManager()))
 	if err != nil {
 		t.Fatalf("newGRPCServer returned error: %v", err)
 	}

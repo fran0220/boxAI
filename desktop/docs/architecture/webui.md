@@ -24,6 +24,7 @@ WebUI 是 Gateway 承载的浏览器端操作台。它复用/复制了大量 GUI
 |---|---|
 | token 读取 | WebUI 从浏览器存储读取 token，或通过 LoginPage 输入。 |
 | socket 创建 | `getGatewayWebSocketClient(token)` 建立 `/ws` 连接；连接建立总超时为 10 秒，认证另有 15 秒超时，旧连接迟到的 close 不会误伤新连接。 |
+| 租户绑定 | Gateway 校验 token 后解析身份：静态共享 token → 保留 `local` 租户；boxAI 账号 JWT → `user:<id>` 租户。多租户模式（`BOXAI_GATEWAY_MULTI_TENANT`）下每个租户有独立的 session manager，浏览器只能看到并控制同账号连接的桌面 Agent。 |
 | 状态订阅 | 订阅 Gateway status，展示 Desktop Agent online/offline。 |
 | 请求响应 | 所有 request 带 id，Gateway 用同 id 返回 payload 或 error。 |
 | Chat 唤醒 | 用户消息先即时 optimistic echo，再串行发送 `chat.prepare`；Gateway 通过关联原生 Ping/Pong 真正唤醒桌面 Chat Runtime，并让紧随其后的 command 复用同一 Agent session 上 2 秒内的新鲜探测，避免正常路径重复一个原生 RTT。准备请求最多等待 2.5 秒，旧 Gateway 不支持该方法时回退到 `status.get`，最终仍由 `chat.command` 作为兜底唤醒信号。 |

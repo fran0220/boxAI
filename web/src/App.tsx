@@ -1,21 +1,31 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { Spinner } from '@/components/ui/Spinner'
 import { Home } from '@/pages/Home'
 import { Studio } from '@/pages/Studio'
-import { Download } from '@/pages/Download'
 import { Pricing } from '@/pages/Pricing'
-import { Login } from '@/pages/Login'
-import { Signup } from '@/pages/Signup'
+import { Account } from '@/pages/Account'
+import { NotFound } from '@/pages/NotFound'
+import { AuthRedirect } from '@/pages/auth/AuthRedirect'
 import { SsoStart } from '@/pages/SsoStart'
 import { SsoCallback } from '@/pages/SsoCallback'
-import { SsoAuthorize } from '@/pages/SsoAuthorize'
-import { Account } from '@/pages/Account'
-import { CreateLayout } from '@/pages/create/CreateLayout'
-import { Chat } from '@/pages/create/Chat'
-import { ImageGen } from '@/pages/create/Image'
-import { VideoGen } from '@/pages/create/Video'
-import { Assets } from '@/pages/create/Assets'
+
+const CreateLayout = lazy(() =>
+  import('@/pages/create/CreateLayout').then((m) => ({ default: m.CreateLayout })),
+)
+const ImageGen = lazy(() => import('@/pages/create/Image').then((m) => ({ default: m.ImageGen })))
+const VideoGen = lazy(() => import('@/pages/create/Video').then((m) => ({ default: m.VideoGen })))
+const Assets = lazy(() => import('@/pages/create/Assets').then((m) => ({ default: m.Assets })))
+
+function CreateFallback() {
+  return (
+    <div className="bx-page flex h-dvh items-center justify-center">
+      <Spinner />
+    </div>
+  )
+}
 
 export default function App() {
   return (
@@ -23,13 +33,15 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="studio" element={<Studio />} />
-        <Route path="download" element={<Download />} />
+        {/* Legacy URLs: Desktop + Download merged into /studio */}
+        <Route path="desktop" element={<Navigate to="/studio" replace />} />
+        <Route path="download" element={<Navigate to="/studio" replace />} />
         <Route path="pricing" element={<Pricing />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
+        {/* No credential forms here — console (Vue) is the identity host */}
+        <Route path="login" element={<AuthRedirect mode="login" />} />
+        <Route path="signup" element={<AuthRedirect mode="register" />} />
         <Route path="sso" element={<SsoStart />} />
         <Route path="sso/callback" element={<SsoCallback />} />
-        <Route path="sso/authorize" element={<SsoAuthorize />} />
         <Route
           path="account"
           element={
@@ -38,21 +50,22 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="create"
-          element={
-            <ProtectedRoute>
+        <Route path="*" element={<NotFound />} />
+      </Route>
+      <Route
+        path="create"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<CreateFallback />}>
               <CreateLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Navigate to="chat" replace />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="image" element={<ImageGen />} />
-          <Route path="video" element={<VideoGen />} />
-          <Route path="assets" element={<Assets />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="image" replace />} />
+        <Route path="image" element={<ImageGen />} />
+        <Route path="video" element={<VideoGen />} />
+        <Route path="assets" element={<Assets />} />
       </Route>
     </Routes>
   )

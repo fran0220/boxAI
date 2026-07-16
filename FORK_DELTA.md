@@ -41,8 +41,9 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `deploy/scripts/deploy-web-static.sh` | Build+rsync React to production docroot |
 | `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
 | `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
-| `frontend/src/views/auth/BoxAISsoStartView.vue` | Console SSO start (PKCE + authorize redirect) |
+| `frontend/src/views/auth/BoxAISsoStartView.vue` | Console SSO start (PKCE; cold session via local `/login`) |
 | `frontend/src/views/auth/BoxAISsoCallbackView.vue` | Console SSO callback (fragment code → token) |
+| `frontend/src/views/auth/BoxAISsoAuthorizeView.vue` | Console SSO authorize (identity host mints code for marketing origin) |
 | `backend/internal/branding/` | Backend product name/tagline helpers |
 | `frontend/src/constants/brand.ts` | Frontend brand constants |
 | `frontend/src/styles/tokens.css` | Global design tokens (`--bx-*`, dark-first) |
@@ -113,8 +114,10 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/i18n/index.ts` | Loaders for en/zh/vi; `boxai_locale` storage |
 | `frontend/src/components/auth/WechatOAuthSection.vue` | Explicit Vietnamese WeChat availability guidance |
 | `frontend/src/api/auth.ts` | BOXAI: `authorizeDesktopLogin` + Web SSO authorize/token helpers |
-| `frontend/src/router/index.ts` | BOXAI: `/desktop-auth`, `/download/desktop`, `/boxai/sso/start`, `/boxai/sso/callback` |
+| `frontend/src/router/index.ts` | BOXAI: `/desktop-auth`, `/download/desktop`, `/boxai/sso/start`, `/boxai/sso/callback`, `/boxai/sso/authorize` |
 | `frontend/src/stores/auth.ts` | BOXAI: export `setAuthFromResponse` for Web SSO callback |
+| `frontend/src/views/auth/LoginView.vue` | BOXAI: register link carries `?redirect=` for SSO handoff |
+| `frontend/src/views/auth/RegisterView.vue` | BOXAI: direct-register success honors safe `?redirect=` |
 | `frontend/src/views/admin/SettingsView.vue` | Product settings copy and documentation links support zh/en/vi |
 | `frontend/src/views/admin/settings/EmailTemplateEditor.vue` | Vietnamese email-event metadata and locale-aware administration copy |
 | `frontend/src/views/user/BatchImageGuideView.vue` | Vietnamese page guidance and downloadable Agent Skill instructions |

@@ -32,9 +32,14 @@ func main() {
 	if cfg.BoxAIServerURL != "" {
 		log.Printf("boxAI account token validation enabled against %s", cfg.BoxAIServerURL)
 	}
-	sm := session.NewManager()
+	// BOXAI: hosted deployments isolate sessions per boxAI account.
+	tenants := session.SingleTenant(session.NewManager())
+	if cfg.MultiTenant {
+		tenants = session.NewTenants()
+		log.Printf("multi-tenant mode enabled: sessions are isolated per boxAI account")
+	}
 
-	grpcServer, err := newGRPCServer(cfg, sm)
+	grpcServer, err := newGRPCServer(cfg, tenants)
 	if err != nil {
 		log.Fatalf("create gRPC server: %v", err)
 	}
@@ -46,7 +51,7 @@ func main() {
 
 	httpServer := &http.Server{
 		Addr:              cfg.HTTPAddr,
-		Handler:           server.NewHTTPServer(cfg, sm),
+		Handler:           server.NewTenantHTTPServer(cfg, tenants),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 
@@ -99,7 +104,7 @@ func main() {
 	}
 }
 
-func newGRPCServer(cfg *config.Config, sm *session.Manager) (*grpc.Server, error) {
+func newGRPCServer(cfg *config.Config, tenants *session.Tenants) (*grpc.Server, error) {
 	options := []grpc.ServerOption{
 		grpc.MaxRecvMsgSize(cfg.GRPCMaxMessageBytes),
 		grpc.MaxSendMsgSize(cfg.GRPCMaxMessageBytes),
@@ -127,7 +132,7 @@ func newGRPCServer(cfg *config.Config, sm *session.Manager) (*grpc.Server, error
 	}
 
 	grpcServer := grpc.NewServer(options...)
-	gatewayv1.RegisterAgentGatewayServer(grpcServer, server.NewGRPCServer(cfg, sm))
+	gatewayv1.RegisterAgentGatewayServer(grpcServer, server.NewTenantGRPCServer(cfg, tenants))
 	reflection.Register(grpcServer)
 	return grpcServer, nil
 }

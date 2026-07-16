@@ -176,8 +176,9 @@
     <template v-if="!backendModeEnabled" #footer>
       <p class="text-[color:var(--bx-text-dim)]">
         {{ t('auth.dontHaveAccount') }}
+        <!-- BOXAI: keep ?redirect= so marketing-origin SSO sign-ups return to the handoff -->
         <router-link
-          to="/register"
+          :to="registerLink"
           class="font-medium text-primary-600 transition-colors hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
         >
           {{ t('auth.signUp') }}
@@ -225,6 +226,15 @@ const LOGIN_AGREEMENT_STORAGE_KEY = 'sub2api_login_agreement_consent'
 const router = useRouter()
 const authStore = useAuthStore()
 const appStore = useAppStore()
+
+// BOXAI: carry ?redirect= across the register link so sign-ups started from
+// the marketing origin still return to the Web SSO authorize handoff.
+const registerLink = computed(() => {
+  const redirect = router.currentRoute.value.query.redirect
+  return typeof redirect === 'string' && redirect
+    ? { path: '/register', query: { redirect } }
+    : { path: '/register' }
+})
 
 // ==================== State ====================
 

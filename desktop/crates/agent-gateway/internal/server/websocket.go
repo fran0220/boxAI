@@ -106,7 +106,10 @@ const (
 
 type websocketConnection struct {
 	cfg *config.Config
-	sm  *session.Manager
+	// tenants routes handleAuth to the caller's tenant manager; sm stays nil
+	// until authentication succeeds (single-tenant callers pre-resolve it).
+	tenants *session.Tenants
+	sm      *session.Manager
 
 	conn         *websocket.Conn
 	req          *http.Request
@@ -162,6 +165,10 @@ const defaultHistoryListPage = 1
 const defaultHistoryListPageSize = 80
 
 func NewWebSocketServer(cfg *config.Config, sm *session.Manager) http.Handler {
+	return newTenantWebSocketServer(cfg, session.SingleTenant(sm))
+}
+
+func newTenantWebSocketServer(cfg *config.Config, tenants *session.Tenants) http.Handler {
 	upgrader := websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			return originAllowed(r)
@@ -180,7 +187,7 @@ func NewWebSocketServer(cfg *config.Config, sm *session.Manager) http.Handler {
 		}
 		state := &websocketConnection{
 			cfg:              cfg,
-			sm:               sm,
+			tenants:          tenants,
 			conn:             conn,
 			req:              r,
 			writeTimeout:     cfg.WebSocketWriteTimeout,
@@ -327,7 +334,17 @@ func (c *websocketConnection) handleAuth(req websocketRequest) {
 		return
 	}
 
-	if !auth.ValidateToken(payload.Token, c.cfg.Token) {
+	identity, ok := auth.ResolveToken(payload.Token, c.cfg.Token)
+	if !ok {
+		_ = c.writeError(req.ID, "unauthorized")
+		c.close()
+		return
+	}
+	// BOXAI: bind the connection to the caller's tenant manager.
+	if c.tenants != nil {
+		c.sm = c.tenants.ManagerFor(identity.TenantID())
+	}
+	if c.sm == nil {
 		_ = c.writeError(req.ID, "unauthorized")
 		c.close()
 		return

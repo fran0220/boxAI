@@ -1,75 +1,237 @@
-import { useEffect, useState } from 'react'
-import { listAssets, removeAsset, type AssetRecord } from '@/lib/assets-db'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  Clapperboard,
+  Download,
+  FolderOpen,
+  ImagePlus,
+  Play,
+  Search,
+  Star,
+  Trash2,
+} from 'lucide-react'
+import {
+  listAssets,
+  removeAsset,
+  updateAsset,
+  type AssetKind,
+  type AssetRecord,
+} from '@/lib/assets-db'
+import { useI18n } from '@/i18n'
+import { cx } from '@/lib/cx'
+import { Modal } from '@/components/ui/Modal'
+
+type Filter = 'all' | AssetKind | 'favorites'
 
 export function Assets() {
-  const [items, setItems] = useState<AssetRecord[]>([])
-  const [filter, setFilter] = useState<'all' | AssetRecord['kind']>('all')
+  const { d } = useI18n()
+  const navigate = useNavigate()
 
-  async function reload() {
-    const all = await listAssets(filter === 'all' ? undefined : filter)
-    setItems(all)
-  }
+  const [assets, setAssets] = useState<AssetRecord[]>([])
+  const [filter, setFilter] = useState<Filter>('all')
+  const [query, setQuery] = useState('')
+  const [focus, setFocus] = useState<AssetRecord | null>(null)
 
   useEffect(() => {
-    void reload()
-  }, [filter])
+    void listAssets().then(setAssets)
+  }, [])
 
-  async function onDelete(id: string) {
-    await removeAsset(id)
-    await reload()
+  const items = useMemo(() => {
+    let list = assets
+    if (filter === 'favorites') list = list.filter((a) => a.favorite)
+    else if (filter !== 'all') list = list.filter((a) => a.kind === filter)
+    const q = query.trim().toLowerCase()
+    if (q) {
+      list = list.filter(
+        (a) => a.title.toLowerCase().includes(q) || (a.prompt || '').toLowerCase().includes(q),
+      )
+    }
+    return list
+  }, [assets, filter, query])
+
+  async function toggleFavorite(asset: AssetRecord) {
+    const updated = await updateAsset(asset.id, { favorite: !asset.favorite })
+    if (!updated) return
+    setAssets((prev) => prev.map((a) => (a.id === asset.id ? updated : a)))
+    setFocus((prev) => (prev?.id === asset.id ? updated : prev))
   }
 
+  async function onDelete(asset: AssetRecord) {
+    if (!window.confirm(d.create.assets.deleteConfirm)) return
+    await removeAsset(asset.id)
+    setAssets((prev) => prev.filter((a) => a.id !== asset.id))
+    if (focus?.id === asset.id) setFocus(null)
+  }
+
+  function useAsReference(asset: AssetRecord) {
+    // Reuse the video handoff shape; Image reads `frame` as its reference.
+    navigate('/create/image', { state: { reference: asset.payload } })
+  }
+
+  function makeVideo(asset: AssetRecord) {
+    navigate('/create/video', { state: { frame: asset.payload, prompt: asset.prompt || asset.title } })
+  }
+
+  const filters: Array<{ key: Filter; label: string }> = [
+    { key: 'all', label: d.create.assets.filterAll },
+    { key: 'image', label: d.create.assets.filterImage },
+    { key: 'video', label: d.create.assets.filterVideo },
+    { key: 'favorites', label: d.create.assets.filterFavorites },
+  ]
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        {(['all', 'chat', 'image', 'video'] as const).map((k) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => setFilter(k)}
-            className={`rounded-full px-3 py-1 text-sm ${
-              filter === k
-                ? 'bg-[rgba(45,212,191,0.15)] text-[var(--bx-teal)]'
-                : 'text-[var(--bx-text-muted)]'
-            }`}
-          >
-            {k}
-          </button>
-        ))}
-      </div>
-      {items.length === 0 ? (
-        <div className="bx-card p-8 text-center text-sm text-[var(--bx-text-dim)]">
-          No local history yet. Generations are stored in this browser (IndexedDB / localStorage).
+    <div className="h-full overflow-y-auto">
+      <div className="mx-auto max-w-6xl px-4 py-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="flex items-center gap-2 text-base font-semibold">
+              <FolderOpen size={17} className="text-[var(--bx-teal)]" />
+              {d.create.assets.title}
+            </h1>
+            <p className="mt-1 text-xs text-[var(--bx-text-dim)]">{d.create.assets.subtitle}</p>
+          </div>
+          <div className="relative w-full sm:w-64">
+            <Search
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--bx-text-dim)]"
+            />
+            <input
+              className="bx-input !py-2 !pl-9 text-sm"
+              placeholder={d.create.assets.searchPlaceholder}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
         </div>
-      ) : (
-        <ul className="space-y-3">
-          {items.map((item) => (
-            <li key={item.id} className="bx-card flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0">
-                <p className="truncate font-medium">
-                  <span className="text-[var(--bx-teal)]">{item.kind}</span> · {item.title}
-                </p>
-                <p className="text-xs text-[var(--bx-text-dim)]">
-                  {new Date(item.createdAt).toLocaleString()}
-                  {item.model ? ` · ${item.model}` : ''}
-                </p>
-                {item.kind === 'image' &&
-                (item.payload.startsWith('http') || item.payload.startsWith('data:')) ? (
-                  <img src={item.payload} alt="" className="mt-2 max-h-32 rounded-lg object-cover" />
-                ) : null}
-                {item.kind === 'video' && item.payload ? (
-                  <a href={item.payload} className="mt-1 block text-xs text-[var(--bx-cyan)] underline" target="_blank" rel="noopener">
-                    Open video
-                  </a>
-                ) : null}
-              </div>
-              <button type="button" className="bx-btn bx-btn-ghost !py-1 text-xs" onClick={() => onDelete(item.id)}>
-                Delete
-              </button>
-            </li>
+
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {filters.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => setFilter(f.key)}
+              className={cx(
+                'rounded-full px-3.5 py-1.5 text-sm transition-colors',
+                filter === f.key
+                  ? 'bg-[var(--bx-active)] text-[var(--bx-teal)]'
+                  : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)]',
+              )}
+            >
+              {f.label}
+            </button>
           ))}
-        </ul>
-      )}
+        </div>
+
+        {items.length === 0 ? (
+          <div className="bx-card mt-6 flex min-h-[220px] items-center justify-center p-8 text-sm text-[var(--bx-text-dim)]">
+            {d.create.assets.empty}
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {items.map((asset) => (
+              <div key={asset.id} className="bx-card bx-card-hover group relative overflow-hidden">
+                <button type="button" className="block w-full text-left" onClick={() => setFocus(asset)}>
+                  {asset.kind === 'image' ? (
+                    <img src={asset.payload} alt="" className="aspect-square w-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="relative flex aspect-square w-full items-center justify-center bg-[var(--bx-bg-muted)]">
+                      <video src={asset.payload} preload="metadata" muted className="absolute inset-0 h-full w-full object-cover" />
+                      <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white">
+                        <Play size={16} fill="currentColor" />
+                      </span>
+                    </div>
+                  )}
+                  <div className="p-3">
+                    <p className="truncate text-sm font-medium" title={asset.title}>
+                      {asset.title}
+                    </p>
+                    <p className="mt-0.5 truncate text-[11px] text-[var(--bx-text-dim)]">
+                      {new Date(asset.createdAt).toLocaleString()}
+                      {asset.model ? ` · ${asset.model}` : ''}
+                    </p>
+                  </div>
+                </button>
+                <div className="absolute right-2 top-2 flex gap-1">
+                  <button
+                    type="button"
+                    className={cx(
+                      'rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-1.5 transition-opacity',
+                      asset.favorite
+                        ? 'text-[var(--bx-teal)]'
+                        : 'text-[var(--bx-text-dim)] opacity-0 hover:text-[var(--bx-teal)] group-hover:opacity-100',
+                    )}
+                    onClick={() => void toggleFavorite(asset)}
+                    aria-label={asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite}
+                  >
+                    <Star size={13} className={asset.favorite ? 'fill-current' : undefined} />
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-1.5 text-[var(--bx-text-dim)] opacity-0 transition-opacity hover:text-red-400 group-hover:opacity-100"
+                    onClick={() => void onDelete(asset)}
+                    aria-label={d.common.delete}
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Focus */}
+      <Modal open={!!focus} onClose={() => setFocus(null)} title={focus?.title} wide>
+        {focus ? (
+          <div className="space-y-4">
+            {focus.kind === 'image' ? (
+              <img src={focus.payload} alt="" className="mx-auto max-h-[58vh] rounded-xl" />
+            ) : (
+              <video src={focus.payload} controls autoPlay className="mx-auto max-h-[58vh] w-full rounded-xl" />
+            )}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {focus.kind === 'image' ? (
+                <>
+                  <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => useAsReference(focus)}>
+                    <ImagePlus size={13} />
+                    {d.create.actions.useAsReference}
+                  </button>
+                  <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => makeVideo(focus)}>
+                    <Clapperboard size={13} />
+                    {d.create.actions.makeVideo}
+                  </button>
+                </>
+              ) : null}
+              <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void toggleFavorite(focus)}>
+                <Star size={13} className={focus.favorite ? 'fill-[var(--bx-teal)] text-[var(--bx-teal)]' : undefined} />
+                {focus.favorite ? d.create.actions.unfavorite : d.create.actions.favorite}
+              </button>
+              <a href={focus.payload} download target="_blank" rel="noopener" className="bx-btn bx-btn-ghost bx-btn-sm">
+                <Download size={13} />
+                {d.create.actions.download}
+              </a>
+              <button
+                type="button"
+                className="bx-btn bx-btn-ghost bx-btn-sm text-red-400"
+                onClick={() => void onDelete(focus)}
+              >
+                <Trash2 size={13} />
+                {d.create.actions.delete}
+              </button>
+            </div>
+            <p className="text-center text-xs text-[var(--bx-text-dim)]">
+              {focus.model || ''}
+              {focus.meta?.size ? ` · ${String(focus.meta.size)}` : ''} ·{' '}
+              {new Date(focus.createdAt).toLocaleString()}
+            </p>
+            {focus.prompt ? (
+              <p className="mx-auto max-w-xl text-center text-xs leading-relaxed text-[var(--bx-text-muted)]">
+                {focus.prompt}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+      </Modal>
     </div>
   )
 }

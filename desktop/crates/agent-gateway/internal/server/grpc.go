@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/liveagent/agent-gateway/internal/auth"
 	"github.com/liveagent/agent-gateway/internal/config"
@@ -17,21 +19,43 @@ import (
 type GRPCServer struct {
 	gatewayv1.UnimplementedAgentGatewayServer
 
-	cfg *config.Config
-	sm  *session.Manager
+	cfg     *config.Config
+	tenants *session.Tenants
 }
 
 func NewGRPCServer(cfg *config.Config, sm *session.Manager) *GRPCServer {
+	return NewTenantGRPCServer(cfg, session.SingleTenant(sm))
+}
+
+// BOXAI: NewTenantGRPCServer scopes each agent link to the tenant its token
+// resolves to, so one hosted gateway can serve many boxAI accounts.
+func NewTenantGRPCServer(cfg *config.Config, tenants *session.Tenants) *GRPCServer {
 	return &GRPCServer{
-		cfg: cfg,
-		sm:  sm,
+		cfg:     cfg,
+		tenants: tenants,
 	}
 }
 
+// managerFromContext resolves the caller's tenant manager from gRPC metadata.
+// The stream interceptor already rejected invalid tokens, so in single-tenant
+// mode an unresolvable identity still lands on the shared manager.
+func (s *GRPCServer) managerFromContext(ctx context.Context) *session.Manager {
+	identity, _ := auth.ResolveGRPCContext(ctx, s.cfg.Token)
+	return s.tenants.ManagerFor(identity.TenantID())
+}
+
 func (s *GRPCServer) Authenticate(_ context.Context, req *gatewayv1.AuthRequest) (*gatewayv1.AuthResponse, error) {
-	// BOXAI: ValidateToken accepts the static shared token or, when
+	// BOXAI: ResolveToken accepts the static shared token or, when
 	// configured, a boxAI account JWT (verified via /api/v1/auth/me).
-	if !auth.ValidateToken(req.GetToken(), s.cfg.Token) {
+	identity, ok := auth.ResolveToken(req.GetToken(), s.cfg.Token)
+	if !ok {
+		return &gatewayv1.AuthResponse{
+			Success: false,
+			Message: "invalid token",
+		}, nil
+	}
+	sm := s.tenants.ManagerFor(identity.TenantID())
+	if sm == nil {
 		return &gatewayv1.AuthResponse{
 			Success: false,
 			Message: "invalid token",
@@ -39,7 +63,7 @@ func (s *GRPCServer) Authenticate(_ context.Context, req *gatewayv1.AuthRequest)
 	}
 
 	sessionID := uuid.NewString()
-	s.sm.RecordAuthentication(req.GetAgentId(), req.GetAgentVersion(), sessionID)
+	sm.RecordAuthentication(req.GetAgentId(), req.GetAgentVersion(), sessionID)
 
 	return &gatewayv1.AuthResponse{
 		Success:   true,
@@ -49,16 +73,20 @@ func (s *GRPCServer) Authenticate(_ context.Context, req *gatewayv1.AuthRequest)
 }
 
 func (s *GRPCServer) AgentConnect(stream gatewayv1.AgentGateway_AgentConnectServer) error {
-	authSnapshot := s.sm.LatestAuthSnapshot()
+	sm := s.managerFromContext(stream.Context())
+	if sm == nil {
+		return status.Error(codes.Unauthenticated, "invalid token")
+	}
+	authSnapshot := sm.LatestAuthSnapshot()
 	sess := session.NewAgentSession(authSnapshot)
 	toAgent := sess.Outbound()
-	s.sm.SetSession(sess)
-	defer s.sm.ClearSession(sess)
+	sm.SetSession(sess)
+	defer sm.ClearSession(sess)
 
 	ctx, cancel := context.WithCancel(stream.Context())
 	defer cancel()
 
-	go s.heartbeatLoop(ctx, sess)
+	go s.heartbeatLoop(ctx, sm, sess)
 	go func() {
 		select {
 		case <-ctx.Done():
@@ -140,18 +168,22 @@ func (s *GRPCServer) AgentConnect(stream gatewayv1.AgentGateway_AgentConnectServ
 
 		// Any inbound envelope proves the agent is alive; a streaming agent
 		// must never be declared heartbeat-stale.
-		s.sm.TouchHeartbeat(sess)
+		sm.TouchHeartbeat(sess)
 		// Pongs flow through the same dispatch as every other envelope:
 		// correlated probes registered a request stream before sending their
 		// Ping and match by request_id, while periodic heartbeat Pongs have
 		// no registered stream and are harmlessly ignored there.
-		s.sm.DispatchFromAgentForSession(sess, env)
+		sm.DispatchFromAgentForSession(sess, env)
 	}
 }
 
 func (s *GRPCServer) AgentTerminalConnect(stream gatewayv1.AgentGateway_AgentTerminalConnectServer) error {
+	sm := s.managerFromContext(stream.Context())
+	if sm == nil {
+		return status.Error(codes.Unauthenticated, "invalid token")
+	}
 	toAgent := make(chan *gatewayv1.TerminalStreamFrame, 4096)
-	cleanup := s.sm.RegisterTerminalStreamToAgent(toAgent)
+	cleanup := sm.RegisterTerminalStreamToAgent(toAgent)
 	defer cleanup()
 
 	ctx, cancel := context.WithCancel(stream.Context())
@@ -184,7 +216,7 @@ func (s *GRPCServer) AgentTerminalConnect(stream gatewayv1.AgentGateway_AgentTer
 	go func() {
 		frame, err := stream.Recv()
 		for err == nil {
-			s.sm.BroadcastTerminalStreamFrame(frame)
+			sm.BroadcastTerminalStreamFrame(frame)
 			frame, err = stream.Recv()
 		}
 		if err == io.EOF {
@@ -225,7 +257,7 @@ func gatewayTerminalStreamReadyFrame() *gatewayv1.TerminalStreamFrame {
 	}
 }
 
-func (s *GRPCServer) heartbeatLoop(ctx context.Context, sess *session.AgentSession) {
+func (s *GRPCServer) heartbeatLoop(ctx context.Context, sm *session.Manager, sess *session.AgentSession) {
 	period := s.heartbeatPeriod()
 	ticker := time.NewTicker(period)
 	defer ticker.Stop()
@@ -242,7 +274,7 @@ func (s *GRPCServer) heartbeatLoop(ctx context.Context, sess *session.AgentSessi
 		case <-sess.Done():
 			return
 		case <-ticker.C:
-			if s.sm.ClearSessionIfHeartbeatStale(sess, timeout) {
+			if sm.ClearSessionIfHeartbeatStale(sess, timeout) {
 				return
 			}
 			if !s.sendHeartbeat(sess) {

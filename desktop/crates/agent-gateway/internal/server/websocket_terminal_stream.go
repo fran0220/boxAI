@@ -55,7 +55,10 @@ type terminalStreamFrameHeader struct {
 
 type terminalStreamWSConnection struct {
 	cfg *config.Config
-	sm  *session.Manager
+	// tenants routes authenticate() to the caller's tenant manager; sm stays
+	// nil until authentication succeeds.
+	tenants *session.Tenants
+	sm      *session.Manager
 
 	conn *websocket.Conn
 	out  chan []byte
@@ -68,6 +71,10 @@ type terminalStreamWSConnection struct {
 }
 
 func NewTerminalWebSocketServer(cfg *config.Config, sm *session.Manager) http.Handler {
+	return newTenantTerminalWebSocketServer(cfg, session.SingleTenant(sm))
+}
+
+func newTenantTerminalWebSocketServer(cfg *config.Config, tenants *session.Tenants) http.Handler {
 	upgrader := websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			return originAllowed(r)
@@ -82,7 +89,7 @@ func NewTerminalWebSocketServer(cfg *config.Config, sm *session.Manager) http.Ha
 
 		state := &terminalStreamWSConnection{
 			cfg:      cfg,
-			sm:       sm,
+			tenants:  tenants,
 			conn:     conn,
 			out:      make(chan []byte, terminalStreamWriteQueue),
 			done:     make(chan struct{}),
@@ -131,7 +138,16 @@ func (c *terminalStreamWSConnection) authenticate() bool {
 	if strings.TrimSpace(authPayload.Type) != "auth" {
 		return false
 	}
-	if !auth.ValidateToken(authPayload.Token, c.cfg.Token) {
+	identity, ok := auth.ResolveToken(authPayload.Token, c.cfg.Token)
+	if !ok {
+		_ = c.conn.WriteJSON(map[string]any{"type": "error", "error": "unauthorized"})
+		return false
+	}
+	// BOXAI: bind the connection to the caller's tenant manager.
+	if c.tenants != nil {
+		c.sm = c.tenants.ManagerFor(identity.TenantID())
+	}
+	if c.sm == nil {
 		_ = c.conn.WriteJSON(map[string]any{"type": "error", "error": "unauthorized"})
 		return false
 	}

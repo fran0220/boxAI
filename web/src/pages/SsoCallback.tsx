@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { exchangeSsoToken, ApiError } from '@/lib/api'
 import { takeSsoPending } from '@/lib/storage'
 import { safeReturnPath } from '@/lib/safe-return'
+import { useI18n } from '@/i18n'
+import { Spinner } from '@/components/ui/Spinner'
 
 function parseFragment(): { code: string; state: string } {
   const hash = window.location.hash.replace(/^#/, '')
@@ -15,6 +17,7 @@ function parseFragment(): { code: string; state: string } {
 
 export function SsoCallback() {
   const navigate = useNavigate()
+  const { d } = useI18n()
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -24,16 +27,16 @@ export function SsoCallback() {
         const { code, state } = parseFragment()
         const pending = takeSsoPending()
         if (!code) {
-          setError('Missing authorization code.')
+          setError(d.auth.errMissingCode)
           return
         }
         if (!pending?.verifier) {
-          setError('Missing PKCE verifier. Restart sign-in from the source site.')
+          setError(d.auth.errMissingVerifier)
           return
         }
         // Fail closed on state: require stored expected state and exact match.
         if (!pending.state || !state || pending.state !== state) {
-          setError('SSO state mismatch. Please try again.')
+          setError(d.auth.errStateMismatch)
           return
         }
         const redirectUri = `${window.location.origin}/sso/callback`
@@ -48,31 +51,32 @@ export function SsoCallback() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof ApiError ? err.message : 'Token exchange failed')
+          setError(err instanceof ApiError ? err.message : d.auth.errExchange)
         }
       }
     })()
     return () => {
       cancelled = true
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate])
 
   if (error) {
     return (
-      <div className="mx-auto max-w-md px-4 py-20 text-center">
-        <h1 className="text-xl font-semibold">SSO callback failed</h1>
-        <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{error}</p>
-        <button type="button" className="bx-btn bx-btn-primary mt-6" onClick={() => navigate('/login')}>
-          Back to login
+      <div className="mx-auto max-w-md px-4 py-24 text-center">
+        <h1 className="text-xl font-semibold">{d.auth.callbackFailedTitle}</h1>
+        <p className="mt-3 text-sm text-[var(--bx-text-muted)]">{error}</p>
+        <button type="button" className="bx-btn bx-btn-primary mt-8" onClick={() => navigate('/login')}>
+          {d.auth.backToLogin}
         </button>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-20 text-center">
-      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
-      <p className="mt-4 text-sm text-[var(--bx-text-muted)]">Completing sign-in…</p>
+    <div className="mx-auto flex min-h-[50vh] max-w-md flex-col items-center justify-center px-4 py-20 text-center">
+      <Spinner />
+      <p className="mt-4 text-sm text-[var(--bx-text-muted)]">{d.auth.completing}</p>
     </div>
   )
 }

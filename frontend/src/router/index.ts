@@ -187,6 +187,17 @@ const routes: RouteRecordRaw[] = [
       title: 'SSO Callback'
     }
   },
+  // BOXAI: console is the identity host — mints a Web SSO code for the
+  // marketing origin. requiresAuth routes cold sessions through /login first.
+  {
+    path: '/boxai/sso/authorize',
+    name: 'BoxAISsoAuthorize',
+    component: () => import('@/views/auth/BoxAISsoAuthorizeView.vue'),
+    meta: {
+      requiresAuth: true,
+      title: 'SSO Authorize'
+    }
+  },
   // BOXAI: public download page for the BoxAI Desktop app.
   {
     path: '/download/desktop',

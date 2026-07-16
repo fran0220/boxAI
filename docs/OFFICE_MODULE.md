@@ -54,6 +54,6 @@ Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/create
 
 ## Release
 
-Desktop installers ship on GitHub `desktop-v*` tags (workflow: `.github/workflows/desktop-release.yml`). Apex download UI: `web/` `/download`.
+Desktop installers ship on GitHub `desktop-v*` tags (workflow: `.github/workflows/desktop-release.yml`). Apex download UI: `web/` `/studio` (legacy `/download` redirects).
 
 Web platform: [WEB_PLATFORM.md](./WEB_PLATFORM.md). Local: [LOCAL_DEV.md](./LOCAL_DEV.md).

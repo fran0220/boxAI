@@ -1,8 +1,8 @@
 <!-- BOXAI: Console-side Web SSO start (PKCE).
-     Generates verifier/challenge, stores verifier in sessionStorage, then:
-     - If authenticated here: call authorize, redirect to callback fragment.
-     - If not: open marketing /sso/authorize with challenge so you-box.com mints
-       the code after login, then returns to this origin's callback. -->
+     Generates verifier/challenge, stores verifier in sessionStorage, calls
+     authorize, then redirects to this origin's callback with the code in the
+     fragment. The console is the identity host: a cold session goes through
+     the local /login first and returns here (no marketing bounce). -->
 <template>
   <div class="bx-page min-h-screen px-4 py-10">
     <div class="mx-auto max-w-lg">
@@ -67,22 +67,14 @@ async function createPkce(): Promise<{ verifier: string; challenge: string; stat
   return { verifier, challenge, state: base64Url(stateRaw) }
 }
 
-function marketingAuthorizeUrl(challenge: string, state: string, redirectUri: string): string {
-  const origin =
-    (import.meta.env.VITE_MARKETING_ORIGIN as string | undefined)?.trim() ||
-    (typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5173'
-      : 'https://you-box.com')
-  const url = new URL('/sso/authorize', origin)
-  url.searchParams.set('code_challenge', challenge)
-  url.searchParams.set('redirect_uri', redirectUri)
-  url.searchParams.set('state', state)
-  return url.toString()
-}
-
 onMounted(async () => {
   try {
+    if (!authStore.isAuthenticated) {
+      // Console owns identity: go through the local login and return here.
+      await router.replace({ path: '/login', query: { redirect: route.fullPath } })
+      return
+    }
+
     const returnTo = safeReturnPath(firstQueryValue(route.query.return_to) || '/', '/')
     const { verifier, challenge, state } = await createPkce()
     const redirectUri = `${window.location.origin}/boxai/sso/callback`
@@ -90,12 +82,6 @@ onMounted(async () => {
     sessionStorage.setItem(SSO_VERIFIER_KEY, verifier)
     sessionStorage.setItem(SSO_STATE_KEY, state)
     sessionStorage.setItem(SSO_RETURN_KEY, returnTo)
-
-    if (!authStore.isAuthenticated) {
-      // Prefer marketing as identity host when console is cold.
-      window.location.href = marketingAuthorizeUrl(challenge, state, redirectUri)
-      return
-    }
 
     const { code } = await authorizeWebSso({ codeChallenge: challenge, redirectUri })
     const hash = new URLSearchParams({ code, state }).toString()

@@ -319,6 +319,8 @@ import {
   validateInvitationCode
 } from '@/api/auth'
 import { buildAuthErrorMessage } from '@/utils/authError'
+// BOXAI: safe post-registration redirect for marketing-origin SSO handoff
+import { safeReturnPath } from '@/utils/safeReturnPath'
 import {
   formatRegistrationEmailSuffixWhitelistForMessage,
   isRegistrationEmailSuffixAllowed,
@@ -897,8 +899,15 @@ async function handleRegister(): Promise<void> {
     // Show success toast
     appStore.showSuccess(t('auth.accountCreatedSuccess', { siteName: siteName.value }))
 
-    // Redirect to dashboard
-    await router.push('/dashboard')
+    // BOXAI: honor ?redirect= (same-origin path) so sign-ups started from the
+    // marketing origin return to the Web SSO authorize handoff; defaults to
+    // the dashboard for plain console registrations.
+    const rawRedirect = route.query.redirect
+    const redirectTo = safeReturnPath(
+      typeof rawRedirect === 'string' ? rawRedirect : undefined,
+      '/dashboard'
+    )
+    await router.push(redirectTo)
   } catch (error: unknown) {
     // Reset Turnstile on error
     if (turnstileRef.value) {

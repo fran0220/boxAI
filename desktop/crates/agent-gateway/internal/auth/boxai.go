@@ -10,6 +10,8 @@ package auth
 
 import (
 	"crypto/sha256"
+	"encoding/json"
+	"io"
 	"net/http"
 	"strings"
 	"sync"
@@ -17,14 +19,16 @@ import (
 )
 
 const (
-	boxaiPositiveTTL    = time.Minute
-	boxaiNegativeTTL    = 10 * time.Second
-	boxaiRequestTimeout = 10 * time.Second
-	boxaiCacheMaxSize   = 1024
+	boxaiPositiveTTL     = time.Minute
+	boxaiNegativeTTL     = 10 * time.Second
+	boxaiRequestTimeout  = 10 * time.Second
+	boxaiCacheMaxSize    = 1024
+	boxaiProfileMaxBytes = 1 << 20
 )
 
 type boxaiCacheEntry struct {
 	ok      bool
+	userID  string
 	expires time.Time
 }
 
@@ -65,12 +69,19 @@ func looksLikeJWT(token string) bool {
 }
 
 func (v *BoxAIValidator) Validate(token string) bool {
+	_, ok := v.Resolve(token)
+	return ok
+}
+
+// Resolve validates the token and returns the boxAI account id it belongs to.
+// The user id is empty when the profile response carried no parseable id.
+func (v *BoxAIValidator) Resolve(token string) (string, bool) {
 	if v == nil {
-		return false
+		return "", false
 	}
 	token = strings.TrimSpace(token)
 	if token == "" || !looksLikeJWT(token) {
-		return false
+		return "", false
 	}
 
 	key := sha256.Sum256([]byte(token))
@@ -79,11 +90,11 @@ func (v *BoxAIValidator) Validate(token string) bool {
 	v.mu.Lock()
 	if entry, found := v.cache[key]; found && now.Before(entry.expires) {
 		v.mu.Unlock()
-		return entry.ok
+		return entry.userID, entry.ok
 	}
 	v.mu.Unlock()
 
-	ok := v.check(token)
+	userID, ok := v.check(token)
 
 	ttl := boxaiNegativeTTL
 	if ok {
@@ -98,24 +109,48 @@ func (v *BoxAIValidator) Validate(token string) bool {
 			}
 		}
 	}
-	v.cache[key] = boxaiCacheEntry{ok: ok, expires: now.Add(ttl)}
+	v.cache[key] = boxaiCacheEntry{ok: ok, userID: userID, expires: now.Add(ttl)}
 	v.mu.Unlock()
 
-	return ok
+	return userID, ok
 }
 
-func (v *BoxAIValidator) check(token string) bool {
+func (v *BoxAIValidator) check(token string) (string, bool) {
 	req, err := http.NewRequest(http.MethodGet, v.serverURL+"/api/v1/auth/me", nil)
 	if err != nil {
-		return false
+		return "", false
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 	resp, err := v.client.Do(req)
 	if err != nil {
-		return false
+		return "", false
 	}
 	defer func() { _ = resp.Body.Close() }()
-	return resp.StatusCode == http.StatusOK
+	if resp.StatusCode != http.StatusOK {
+		return "", false
+	}
+	return parseBoxAIProfileUserID(resp.Body), true
+}
+
+// parseBoxAIProfileUserID extracts data.id from the /api/v1/auth/me envelope
+// ({"code":0,"data":{"id":...}}). A missing or unparseable id degrades to an
+// empty user id: the token stays valid for single-tenant auth, but cannot be
+// scoped to a tenant.
+func parseBoxAIProfileUserID(body io.Reader) string {
+	var envelope struct {
+		Data struct {
+			ID json.Number `json:"id"`
+		} `json:"data"`
+	}
+	decoder := json.NewDecoder(io.LimitReader(body, boxaiProfileMaxBytes))
+	if err := decoder.Decode(&envelope); err != nil {
+		return ""
+	}
+	id := strings.TrimSpace(envelope.Data.ID.String())
+	if id == "" || id == "0" {
+		return ""
+	}
+	return id
 }
 
 var (
@@ -137,4 +172,11 @@ func validateBoxAIToken(token string) bool {
 	validator := boxaiGlobal
 	boxaiMu.RUnlock()
 	return validator.Validate(token)
+}
+
+func resolveBoxAIToken(token string) (string, bool) {
+	boxaiMu.RLock()
+	validator := boxaiGlobal
+	boxaiMu.RUnlock()
+	return validator.Resolve(token)
 }

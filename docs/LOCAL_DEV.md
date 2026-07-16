@@ -69,7 +69,7 @@ cd web && pnpm typecheck && pnpm test:run
 ## Smoke
 
 1. Log in at http://localhost:5173/login  
-2. Open Creator http://localhost:5173/create/chat  
+2. Open Creator http://localhost:5173/create/image  
 3. Console handoff: http://localhost:5173/sso?target=console  
 4. Desktop: set server to `http://localhost:8080`, browser login via console `/desktop-auth`
 

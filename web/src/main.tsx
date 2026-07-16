@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'
 import { BRAND_DOCUMENT_TITLE } from './lib/brand'
+import { I18nProvider } from './i18n'
 
 document.title = BRAND_DOCUMENT_TITLE
 document.documentElement.classList.add('dark')
@@ -11,7 +12,9 @@ document.documentElement.classList.add('dark')
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <I18nProvider>
+        <App />
+      </I18nProvider>
     </BrowserRouter>
   </StrictMode>,
 )

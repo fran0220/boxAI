@@ -13,6 +13,7 @@ const DefaultGRPCMaxMessageBytes = 64 * 1024 * 1024
 type Config struct {
 	Token                    string
 	BoxAIServerURL           string
+	MultiTenant              bool
 	GRPCAddr                 string
 	HTTPAddr                 string
 	TLSCert                  string
@@ -38,6 +39,8 @@ func Load() *Config {
 	flag.StringVar(&cfg.Token, "token", getenv("LIVEAGENT_GATEWAY_TOKEN", ""), "shared authentication token")
 	// BOXAI: optional boxAI server for account-JWT authentication fallback.
 	flag.StringVar(&cfg.BoxAIServerURL, "boxai-server-url", getenv("BOXAI_SERVER_URL", ""), "boxAI server URL for account token validation (optional)")
+	// BOXAI: hosted mode isolating sessions per boxAI account.
+	flag.BoolVar(&cfg.MultiTenant, "multi-tenant", getenvBool("BOXAI_GATEWAY_MULTI_TENANT", false), "isolate agent sessions per boxAI account (requires -boxai-server-url)")
 	flag.StringVar(&cfg.GRPCAddr, "grpc-addr", getenv("LIVEAGENT_GATEWAY_GRPC_ADDR", ":50051"), "gRPC listen address")
 	flag.StringVar(&cfg.HTTPAddr, "http-addr", getenv("LIVEAGENT_GATEWAY_HTTP_ADDR", defaultHTTPAddr()), "HTTP listen address")
 	flag.StringVar(&cfg.TLSCert, "tls-cert", getenv("LIVEAGENT_GATEWAY_TLS_CERT", ""), "TLS certificate path")
@@ -65,6 +68,11 @@ func Load() *Config {
 	if cfg.Token == "" {
 		flag.Usage()
 		panic("gateway token is required")
+	}
+	// BOXAI: tenancy is keyed on boxAI account ids, so the validator is mandatory.
+	if cfg.MultiTenant && cfg.BoxAIServerURL == "" {
+		flag.Usage()
+		panic("multi-tenant mode requires -boxai-server-url")
 	}
 	if cfg.GRPCMaxMessageBytes <= 0 {
 		cfg.GRPCMaxMessageBytes = DefaultGRPCMaxMessageBytes
@@ -140,6 +148,18 @@ func getenvInt(key string, fallback int) int {
 	}
 	parsed, err := strconv.Atoi(value)
 	if err != nil || parsed <= 0 {
+		return fallback
+	}
+	return parsed
+}
+
+func getenvBool(key string, fallback bool) bool {
+	value := strings.TrimSpace(os.Getenv(key))
+	if value == "" {
+		return fallback
+	}
+	parsed, err := strconv.ParseBool(value)
+	if err != nil {
 		return fallback
 	}
 	return parsed

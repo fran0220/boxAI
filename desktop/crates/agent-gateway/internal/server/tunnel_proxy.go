@@ -25,7 +25,9 @@ const (
 
 var errTunnelRequestBodyTooLarge = errors.New("tunnel request body too large")
 
-func publicTunnelProxy(sm *session.Manager) http.HandlerFunc {
+// BOXAI: resolveTunnelManager locates the tenant manager owning a public
+// tunnel slug (always the single manager in single-tenant mode).
+func publicTunnelProxy(resolveTunnelManager func(slug string) *session.Manager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if slug, ok := parseTunnelPublicPathWithoutTrailingSlash(r.URL.Path); ok {
 			target := "/t/" + slug + "/"
@@ -43,6 +45,12 @@ func publicTunnelProxy(sm *session.Manager) http.HandlerFunc {
 		}
 		if r.URL.RawQuery != "" {
 			restPath += "?" + r.URL.RawQuery
+		}
+
+		sm := resolveTunnelManager(slug)
+		if sm == nil {
+			writeTunnelError(w, http.StatusNotFound, "tunnel not found")
+			return
 		}
 
 		if isWebSocketUpgrade(r) {

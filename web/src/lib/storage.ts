@@ -41,6 +41,15 @@ export function isAuthenticated(): boolean {
   return !!getAccessToken() && !!getUser()
 }
 
+/** Fired on this tab whenever the local session changes (login/logout). */
+export const AUTH_CHANGED_EVENT = 'boxai:auth-changed'
+
+function notifyAuthChanged(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(AUTH_CHANGED_EVENT))
+  }
+}
+
 export function setSession(params: {
   accessToken: string
   refreshToken?: string
@@ -53,6 +62,7 @@ export function setSession(params: {
     localStorage.setItem(TOKEN_EXPIRES_AT, String(Date.now() + params.expiresIn * 1000))
   }
   if (params.user) localStorage.setItem(AUTH_USER, JSON.stringify(params.user))
+  notifyAuthChanged()
 }
 
 export function clearSession(): void {
@@ -60,6 +70,7 @@ export function clearSession(): void {
   localStorage.removeItem(REFRESH_TOKEN)
   localStorage.removeItem(TOKEN_EXPIRES_AT)
   localStorage.removeItem(AUTH_USER)
+  notifyAuthChanged()
 }
 
 export function saveSsoPending(params: { verifier: string; state: string; returnTo?: string }): void {

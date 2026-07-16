@@ -8,46 +8,38 @@ import (
 	"strings"
 )
 
+// HTTPMiddleware rejects requests without a valid bearer token and annotates
+// accepted requests with the resolved caller identity.
 func HTTPMiddleware(expectedToken string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !ValidateBearerHeader(r.Header.Get("Authorization"), expectedToken) {
+		identity, ok := ResolveBearerHeader(r.Header.Get("Authorization"), expectedToken)
+		if !ok {
 			writeJSONError(w, http.StatusUnauthorized, "unauthorized")
 			return
 		}
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(WithIdentity(r.Context(), identity)))
 	})
 }
 
 func ValidateBearerHeader(headerValue, expectedToken string) bool {
-	headerValue = strings.TrimSpace(headerValue)
-	if headerValue == "" {
-		return false
-	}
-	parts := strings.SplitN(headerValue, " ", 2)
-	if len(parts) != 2 {
-		return false
-	}
-	if !strings.EqualFold(parts[0], "Bearer") {
-		return false
-	}
-	return ValidateToken(parts[1], expectedToken)
+	_, ok := ResolveBearerHeader(headerValue, expectedToken)
+	return ok
 }
 
 func ValidateToken(value, expectedToken string) bool {
+	_, ok := ResolveToken(value, expectedToken)
+	return ok
+}
+
+func matchesStaticToken(value, expectedToken string) bool {
 	value = strings.TrimSpace(value)
 	expectedToken = strings.TrimSpace(expectedToken)
-	if value == "" {
+	if value == "" || expectedToken == "" {
 		return false
 	}
-	if expectedToken != "" {
-		valueHash := sha256.Sum256([]byte(value))
-		expectedHash := sha256.Sum256([]byte(expectedToken))
-		if subtle.ConstantTimeCompare(valueHash[:], expectedHash[:]) == 1 {
-			return true
-		}
-	}
-	// BOXAI: fall back to boxAI account JWT validation when configured.
-	return validateBoxAIToken(value)
+	valueHash := sha256.Sum256([]byte(value))
+	expectedHash := sha256.Sum256([]byte(expectedToken))
+	return subtle.ConstantTimeCompare(valueHash[:], expectedHash[:]) == 1
 }
 
 func writeJSONError(w http.ResponseWriter, status int, message string) {
