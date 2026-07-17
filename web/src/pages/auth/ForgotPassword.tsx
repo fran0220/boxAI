@@ -56,7 +56,7 @@ export function ForgotPassword() {
         </button>
       </form>
       <p className="mt-6 text-center text-sm">
-        <Link to="/login" className="text-[var(--bx-text-muted)] hover:text-[var(--bx-text)]">
+        <Link to="/login" className="text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-brand-bright)]">
           {t.toLogin}
         </Link>
       </p>

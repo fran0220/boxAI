@@ -17,6 +17,7 @@ import {
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
 import { Spinner } from '@/components/ui/Spinner'
+import { cx } from '@/lib/cx'
 
 const API_KEY_STORAGE = 'boxai_batch_image_api_key'
 const IMAGE_SIZES = ['1K', '2K', '4K'] as const
@@ -52,17 +53,6 @@ function writeStoredKey(key: string) {
   }
 }
 
-function formatTs(ts: number | null | undefined): string {
-  if (ts == null || ts <= 0) return '—'
-  // Gateway may return unix seconds or ms
-  const ms = ts < 1e12 ? ts * 1000 : ts
-  try {
-    return new Date(ms).toLocaleString()
-  } catch {
-    return '—'
-  }
-}
-
 function formatCost(job: BatchImageJob): string {
   const value = job.actual_cost != null ? job.actual_cost : job.estimated_cost
   if (value == null || Number.isNaN(Number(value))) return '—'
@@ -78,17 +68,21 @@ function canDownload(job: BatchImageJob): boolean {
   return job.status === 'completed' && (job.success_count || 0) > 0
 }
 
-function canDelete(_job: BatchImageJob): boolean {
-  return true
+function progressPct(job: BatchImageJob): number {
+  const total = job.item_count || 0
+  if (total <= 0) return ACTIVE_STATUSES.has(String(job.status)) ? 8 : 0
+  if (job.status === 'completed') return 100
+  const done = (job.success_count || 0) + (job.fail_count || 0)
+  return Math.min(100, Math.round((done / total) * 100))
 }
 
-function statusBadgeClass(status: string): string {
+function statusClass(status: string): string {
   const s = status.toLowerCase()
-  if (s === 'completed') return 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
-  if (s === 'failed' || s === 'output_deleted') return 'bg-red-500/15 text-red-700 dark:text-red-300'
-  if (s === 'cancelled') return 'bg-[var(--bx-bg-muted)] text-[var(--bx-text-muted)]'
-  if (ACTIVE_STATUSES.has(s)) return 'bg-amber-500/15 text-amber-800 dark:text-amber-300'
-  return 'bg-[var(--bx-bg-muted)] text-[var(--bx-text-soft)]'
+  if (s === 'completed') return 'bx-account-status bx-account-status--ok'
+  if (s === 'failed' || s === 'output_deleted') return 'bx-account-status bx-account-status--danger'
+  if (s === 'cancelled') return 'bx-account-status bx-account-status--muted'
+  if (ACTIVE_STATUSES.has(s)) return 'bx-account-status bx-account-status--brand'
+  return 'bx-account-status bx-account-status--muted'
 }
 
 export function AccountBatchImage() {
@@ -105,18 +99,19 @@ export function AccountBatchImage() {
   const [success, setSuccess] = useState('')
   const [busyId, setBusyId] = useState<string | null>(null)
 
-  // Submit form
   const [model, setModel] = useState('')
   const [taskName, setTaskName] = useState('')
   const [imageSize, setImageSize] = useState<(typeof IMAGE_SIZES)[number]>('1K')
   const [aspectRatio, setAspectRatio] = useState<(typeof ASPECT_RATIOS)[number]>('')
   const [prompts, setPrompts] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [showForm, setShowForm] = useState(true)
+  const [showKeyPanel, setShowKeyPanel] = useState(() => !readStoredKey())
 
-  // Items modal
   const [itemsJob, setItemsJob] = useState<BatchImageJob | null>(null)
   const [items, setItems] = useState<BatchImageItem[]>([])
   const [loadingItems, setLoadingItems] = useState(false)
+  const [galleryLabels, setGalleryLabels] = useState<string[]>([])
 
   const keyReady = apiKey.trim().length > 0
 
@@ -129,9 +124,18 @@ export function AccountBatchImage() {
     [prompts],
   )
 
+  const estimatedHint = useMemo(() => {
+    if (promptCount <= 0) return null
+    // Lightweight client estimate when model unit price is unknown (~$0.04/image @ 1K)
+    const unit = imageSize === '4K' ? 0.08 : imageSize === '2K' ? 0.05 : 0.04
+    const est = promptCount * unit
+    return t.estCost.replace('{amount}', est.toFixed(2))
+  }, [promptCount, imageSize, t.estCost])
+
   const onApiKeyChange = (value: string) => {
     setApiKey(value)
     writeStoredKey(value.trim())
+    if (value.trim()) setShowKeyPanel(false)
   }
 
   const loadModels = useCallback(async (key: string) => {
@@ -167,7 +171,20 @@ export function AccountBatchImage() {
     setSuccess('')
     try {
       const res = await listBatchImageJobs(key, { limit: 50 })
-      setJobs(res.data || [])
+      const list = res.data || []
+      setJobs(list)
+      // Best-effort gallery labels from recent completed jobs
+      const completed = list.filter((j) => j.status === 'completed' && (j.success_count || 0) > 0)
+      const labels: string[] = []
+      for (const j of completed.slice(0, 3)) {
+        const base = (j.task_name || j.model || j.id).slice(0, 18)
+        const n = Math.min(j.success_count || 0, 3)
+        for (let i = 1; i <= n && labels.length < 6; i += 1) {
+          labels.push(`${base}_${String(i).padStart(2, '0')}`)
+        }
+        if (labels.length >= 6) break
+      }
+      setGalleryLabels(labels)
     } catch (err) {
       setJobs([])
       setError(errMessage(err, t.loadFailed))
@@ -183,6 +200,11 @@ export function AccountBatchImage() {
     }
     void loadModels(apiKey)
   }, [apiKey, loadModels])
+
+  useEffect(() => {
+    if (apiKey.trim()) void loadJobs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- boot only when key first present
+  }, [])
 
   async function onCancel(job: BatchImageJob) {
     if (!canCancel(job.status)) return
@@ -301,290 +323,315 @@ export function AccountBatchImage() {
     }
   }
 
+  async function downloadLatestZip() {
+    const job = jobs.find((j) => canDownload(j))
+    if (!job) {
+      setError(t.noDownloadable)
+      return
+    }
+    await onDownload(job)
+  }
+
   return (
-    <div className="max-w-5xl">
-      <h1 className="bx-account-page-title">{t.title}</h1>
-      <p className="bx-account-page-sub">{t.subtitle}</p>
-
-      {/* API guide */}
-      <section className="bx-card mt-6 p-5">
-        <h3 className="text-sm font-semibold text-[var(--bx-text)]">{t.guide}</h3>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-[var(--bx-text-soft)]">
-          <li>{t.step1}</li>
-          <li>{t.step2}</li>
-          <li>{t.step3}</li>
-        </ol>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Link to="/account/keys" className="bx-btn bx-btn-primary bx-btn-sm">
-            {t.openKeys}
-          </Link>
-          <Link to="/create/image" className="bx-btn bx-btn-ghost bx-btn-sm">
-            {t.openCreator}
-          </Link>
-        </div>
-      </section>
-
-      {/* API key */}
-      <section className="bx-card mt-4 space-y-3 p-5">
+    <div>
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <label className="text-sm font-medium text-[var(--bx-text)]" htmlFor="batch-api-key">
-            {t.selectKey}
-          </label>
-          <p className="mt-0.5 text-xs text-[var(--bx-text-dim)]">{t.selectKeyHint}</p>
-          <input
-            id="batch-api-key"
-            type="password"
-            autoComplete="off"
-            className="bx-input mt-2 w-full font-mono text-sm"
-            placeholder={t.pasteKey}
-            value={apiKey}
-            onChange={(e) => onApiKeyChange(e.target.value)}
-          />
-          <p className="mt-1 text-xs text-[var(--bx-text-dim)]">{t.useListed}</p>
+          <h1 className="bx-account-page-title">{t.title}</h1>
+          <p className="bx-account-page-sub">{t.subtitle}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className="bx-btn bx-btn-primary bx-btn-sm"
-            disabled={!keyReady || loadingJobs}
-            onClick={() => void loadJobs()}
-          >
-            {loadingJobs ? t.refresh : t.loadJobs}
-          </button>
-          <button
-            type="button"
-            className="bx-btn bx-btn-ghost bx-btn-sm"
-            disabled={!keyReady || loadingJobs}
-            onClick={() => void loadJobs()}
-          >
-            {t.refresh}
-          </button>
-        </div>
-      </section>
+        <button
+          type="button"
+          className="bx-btn bx-btn-primary bx-btn-sm"
+          onClick={() => setShowForm(true)}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          {t.newBatch}
+        </button>
+      </div>
 
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
-      {success ? <p className="mt-3 text-sm text-emerald-600 dark:text-emerald-400">{success}</p> : null}
+      {success ? <p className="mt-3 text-sm text-[var(--bx-success)]">{success}</p> : null}
 
-      {/* Submit form */}
-      <section className="bx-card mt-4 p-5">
-        <h3 className="text-sm font-semibold text-[var(--bx-text)]">{t.submitTitle}</h3>
-        <form className="mt-4 grid gap-4 sm:grid-cols-2" onSubmit={(e) => void onSubmit(e)}>
-          <div>
-            <label className="text-xs font-medium text-[var(--bx-text-dim)]" htmlFor="batch-model">
-              {t.model}
+      {/* Design grid first: submit | jobs — API key is secondary/collapsible */}
+      <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_1.4fr] lg:items-start">
+        {showForm ? (
+          <form
+            onSubmit={(e) => void onSubmit(e)}
+            className="bx-account-panel bx-account-panel-pad"
+          >
+            <p className="m-0 mb-3 text-[13.5px] font-bold">{t.quickSubmit}</p>
+            <label className="block">
+              <span className="bx-account-field-label">{t.prompts}</span>
+              <textarea
+                rows={4}
+                className="bx-account-input-muted font-mono text-[12.5px]"
+                value={prompts}
+                onChange={(e) => setPrompts(e.target.value)}
+                placeholder={
+                  'a serene mountain lake at dawn\ncyberpunk street market, neon rain\nminimalist product shot, studio light'
+                }
+              />
             </label>
-            <select
-              id="batch-model"
-              className="bx-input mt-1 w-full"
-              value={model}
-              disabled={!keyReady || loadingModels || models.length === 0}
-              onChange={(e) => setModel(e.target.value)}
-            >
-              {loadingModels ? (
-                <option value="">{t.refresh}…</option>
-              ) : models.length === 0 ? (
-                <option value="">{t.noModels}</option>
-              ) : (
-                models.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.id}
-                    {m.provider ? ` · ${m.provider}` : ''}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-
-          <div>
-            <label className="text-xs font-medium text-[var(--bx-text-dim)]" htmlFor="batch-task-name">
-              {t.taskName}
-            </label>
-            <input
-              id="batch-task-name"
-              className="bx-input mt-1 w-full"
-              value={taskName}
-              maxLength={255}
-              onChange={(e) => setTaskName(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-medium text-[var(--bx-text-dim)]" htmlFor="batch-image-size">
-              {t.imageSize}
-            </label>
-            <select
-              id="batch-image-size"
-              className="bx-input mt-1 w-full"
-              value={imageSize}
-              onChange={(e) => setImageSize(e.target.value as (typeof IMAGE_SIZES)[number])}
-            >
-              {IMAGE_SIZES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="text-xs font-medium text-[var(--bx-text-dim)]" htmlFor="batch-aspect">
-              {t.aspectRatio}
-            </label>
-            <select
-              id="batch-aspect"
-              className="bx-input mt-1 w-full"
-              value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value as (typeof ASPECT_RATIOS)[number])}
-            >
-              {ASPECT_RATIOS.map((r) => (
-                <option key={r || 'auto'} value={r}>
-                  {r || '—'}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="text-xs font-medium text-[var(--bx-text-dim)]" htmlFor="batch-prompts">
-              {t.prompts}
-            </label>
-            <p className="mt-0.5 text-xs text-[var(--bx-text-dim)]">{t.promptsHint}</p>
-            <textarea
-              id="batch-prompts"
-              className="bx-input mt-1 min-h-[120px] w-full font-mono text-sm"
-              value={prompts}
-              onChange={(e) => setPrompts(e.target.value)}
-              placeholder="A cat on a windowsill&#10;Sunset over the ocean"
-            />
-            {promptCount > 0 ? (
-              <p className="mt-1 text-xs text-[var(--bx-text-dim)]">{promptCount} items</p>
-            ) : null}
-          </div>
-
-          <div className="sm:col-span-2">
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <label className="block">
+                <span className="bx-account-field-label">{t.model}</span>
+                <select
+                  className="bx-account-input-muted"
+                  value={model}
+                  disabled={!keyReady || loadingModels || models.length === 0}
+                  onChange={(e) => setModel(e.target.value)}
+                >
+                  {loadingModels ? (
+                    <option value="">{t.refresh}…</option>
+                  ) : models.length === 0 ? (
+                    <option value="">{t.noModels}</option>
+                  ) : (
+                    models.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.id}
+                        {m.provider ? ` · ${m.provider}` : ''}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </label>
+              <label className="block">
+                <span className="bx-account-field-label">{t.imageSize}</span>
+                <select
+                  className="bx-account-input-muted"
+                  value={imageSize}
+                  onChange={(e) => setImageSize(e.target.value as (typeof IMAGE_SIZES)[number])}
+                >
+                  {IMAGE_SIZES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <details className="mt-2.5">
+              <summary className="bx-account-collapse-btn cursor-pointer list-none">
+                {t.advancedOptions}
+              </summary>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <label className="block">
+                  <span className="bx-account-field-label">{t.aspectRatio}</span>
+                  <select
+                    className="bx-account-input-muted"
+                    value={aspectRatio}
+                    onChange={(e) => setAspectRatio(e.target.value as (typeof ASPECT_RATIOS)[number])}
+                  >
+                    {ASPECT_RATIOS.map((r) => (
+                      <option key={r || 'auto'} value={r}>
+                        {r || '—'}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="bx-account-field-label">{t.taskName}</span>
+                  <input
+                    className="bx-account-input-muted"
+                    value={taskName}
+                    maxLength={255}
+                    onChange={(e) => setTaskName(e.target.value)}
+                  />
+                </label>
+              </div>
+            </details>
             <button
               type="submit"
-              className="bx-btn bx-btn-primary bx-btn-sm"
+              className="bx-btn bx-btn-primary mt-3.5 w-full"
               disabled={!keyReady || submitting || !model || promptCount === 0}
+              title={!keyReady ? t.selectKey : undefined}
             >
-              {submitting ? t.submitting : t.submit}
+              {submitting
+                ? t.submitting
+                : estimatedHint
+                  ? `${t.submit} · ${estimatedHint}`
+                  : t.submit}
             </button>
-          </div>
-        </form>
-      </section>
-
-      {/* Jobs table */}
-      <section className="mt-6">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-[var(--bx-text)]">{t.jobs}</h3>
-        </div>
-
-        {loadingJobs ? (
-          <div className="flex justify-center py-16">
-            <Spinner />
-          </div>
-        ) : jobs.length === 0 ? (
-          <p className="mt-8 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+            {!keyReady ? (
+              <p className="bx-account-stat-hint mt-2">
+                {t.needKeyHint}{' '}
+                <button
+                  type="button"
+                  className="border-none bg-transparent p-0 font-mono text-[11px] font-semibold text-[var(--bx-brand-bright)]"
+                  onClick={() => setShowKeyPanel(true)}
+                >
+                  {t.configureKey}
+                </button>
+              </p>
+            ) : null}
+          </form>
         ) : (
-          <div className="mt-3 overflow-x-auto">
-            <table className="w-full min-w-[880px] text-left text-sm">
-              <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
-                <tr>
-                  <th className="pb-2 pr-3 font-medium">{t.colId}</th>
-                  <th className="pb-2 pr-3 font-medium">{t.colName}</th>
-                  <th className="pb-2 pr-3 font-medium">{t.colModel}</th>
-                  <th className="pb-2 pr-3 font-medium">{t.colStatus}</th>
-                  <th className="pb-2 pr-3 font-medium">{t.colProgress}</th>
-                  <th className="pb-2 pr-3 font-medium">{t.colCost}</th>
-                  <th className="pb-2 pr-3 font-medium">{t.colTime}</th>
-                  <th className="pb-2 font-medium">{t.colActions}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {jobs.map((job) => {
-                  const busy = busyId === job.id
-                  return (
-                    <tr key={job.id} className="border-b border-[var(--bx-border)]/60 align-top">
-                      <td className="py-2.5 pr-3 font-mono text-xs text-[var(--bx-text-soft)]" title={job.id}>
-                        <span className="line-clamp-1 max-w-[120px]">{job.id}</span>
-                      </td>
-                      <td className="py-2.5 pr-3 text-[var(--bx-text)]">
-                        <span className="line-clamp-2 max-w-[160px]">{job.task_name || '—'}</span>
-                      </td>
-                      <td className="py-2.5 pr-3 text-[var(--bx-text-soft)]">
-                        <span className="line-clamp-1 max-w-[140px]" title={job.model}>
-                          {job.model}
-                        </span>
-                      </td>
-                      <td className="py-2.5 pr-3">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClass(job.status)}`}
-                        >
-                          {job.status}
-                        </span>
-                      </td>
-                      <td className="py-2.5 pr-3 tabular-nums text-sm">
-                        <span className="text-emerald-600 dark:text-emerald-300">{job.success_count}</span>
-                        <span className="text-[var(--bx-text-dim)]"> / </span>
-                        <span className={job.fail_count > 0 ? 'text-red-600 dark:text-red-300' : 'text-[var(--bx-text-dim)]'}>
-                          {job.fail_count}
-                        </span>
-                        <span className="ml-1 text-xs text-[var(--bx-text-dim)]">({job.item_count})</span>
-                      </td>
-                      <td className="py-2.5 pr-3 tabular-nums text-[var(--bx-text-soft)]">{formatCost(job)}</td>
-                      <td className="py-2.5 pr-3 whitespace-nowrap text-xs text-[var(--bx-text-muted)]">
-                        {formatTs(job.created_at)}
-                      </td>
-                      <td className="py-2.5">
-                        <div className="flex flex-wrap gap-1">
-                          <button
-                            type="button"
-                            className="bx-btn bx-btn-ghost bx-btn-sm"
-                            disabled={busy || !keyReady}
-                            onClick={() => void openItems(job)}
-                          >
-                            {t.items}
-                          </button>
-                          {canCancel(job.status) ? (
-                            <button
-                              type="button"
-                              className="bx-btn bx-btn-ghost bx-btn-sm"
-                              disabled={busy}
-                              onClick={() => void onCancel(job)}
-                            >
-                              {t.cancel}
-                            </button>
-                          ) : null}
-                          {canDownload(job) ? (
-                            <button
-                              type="button"
-                              className="bx-btn bx-btn-ghost bx-btn-sm"
-                              disabled={busy}
-                              onClick={() => void onDownload(job)}
-                            >
-                              {t.download}
-                            </button>
-                          ) : null}
-                          {canDelete(job) ? (
-                            <button
-                              type="button"
-                              className="bx-btn bx-btn-ghost bx-btn-sm text-red-600 hover:text-red-500"
-                              disabled={busy}
-                              onClick={() => void onDelete(job)}
-                            >
-                              {t.delete}
-                            </button>
-                          ) : null}
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div className="bx-account-panel">
+            <p className="bx-account-empty">{t.quickSubmit}</p>
           </div>
         )}
-      </section>
+
+        <div className="bx-account-panel overflow-hidden">
+          <p className="m-0 px-5 pb-2.5 pt-3.5 text-[13.5px] font-bold">{t.recentBatches}</p>
+          {loadingJobs ? (
+            <div className="flex justify-center py-12">
+              <Spinner />
+            </div>
+          ) : jobs.length === 0 ? (
+            <p className="bx-account-empty">{t.empty}</p>
+          ) : (
+            <ul className="m-0 list-none p-0">
+              {jobs.slice(0, 8).map((job) => {
+                const pct = progressPct(job)
+                const busy = busyId === job.id
+                const label =
+                  job.task_name ||
+                  `${job.model}${job.item_count ? ` · ${job.item_count}` : ''}`
+                return (
+                  <li key={job.id} className="border-t border-[var(--bx-line)] px-5 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="min-w-0 truncate font-mono text-xs text-[var(--bx-text-soft)]">
+                        {label}
+                      </span>
+                      <span className={cx('shrink-0', statusClass(job.status))}>{job.status}</span>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2.5">
+                      <span className="bx-account-progress flex-1">
+                        <i
+                          style={{ width: `${pct}%` }}
+                          className={cx(
+                            job.status === 'failed' && 'is-danger',
+                            ACTIVE_STATUSES.has(String(job.status)) && 'is-warn',
+                          )}
+                        />
+                      </span>
+                      <span className="shrink-0 font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+                        {job.success_count}/{job.item_count} · {job.model} · {formatCost(job)}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      <button
+                        type="button"
+                        className="bx-account-outline-btn"
+                        disabled={busy || !keyReady}
+                        onClick={() => void openItems(job)}
+                      >
+                        {t.items}
+                      </button>
+                      {canCancel(job.status) ? (
+                        <button
+                          type="button"
+                          className="bx-account-outline-btn"
+                          disabled={busy}
+                          onClick={() => void onCancel(job)}
+                        >
+                          {t.cancel}
+                        </button>
+                      ) : null}
+                      {canDownload(job) ? (
+                        <button
+                          type="button"
+                          className="bx-account-outline-btn"
+                          disabled={busy}
+                          onClick={() => void onDownload(job)}
+                        >
+                          {t.download}
+                        </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        className="bx-account-outline-btn bx-account-outline-btn--danger"
+                        disabled={busy}
+                        onClick={() => void onDelete(job)}
+                      >
+                        {t.delete}
+                      </button>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      {/* Secondary: API key (collapsible so it doesn't block the design grid) */}
+      <div className="bx-account-panel mt-3 overflow-hidden">
+        <button
+          type="button"
+          className="flex w-full items-center justify-between gap-3 px-5 py-3 text-left"
+          onClick={() => setShowKeyPanel((v) => !v)}
+          aria-expanded={showKeyPanel}
+        >
+          <span className="text-[13px] font-bold">{t.apiKeyPanel}</span>
+          <span className="bx-account-collapse-btn">
+            {keyReady ? t.keyReady : t.keyMissing}
+            <span aria-hidden>{showKeyPanel ? '▴' : '▾'}</span>
+          </span>
+        </button>
+        {showKeyPanel ? (
+          <div className="border-t border-[var(--bx-line)] px-5 py-4">
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="min-w-[220px] flex-1">
+                <span className="bx-account-field-label">{t.selectKey}</span>
+                <input
+                  type="password"
+                  autoComplete="off"
+                  className="bx-account-input-muted font-mono text-sm"
+                  placeholder={t.pasteKey}
+                  value={apiKey}
+                  onChange={(e) => onApiKeyChange(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className="bx-btn bx-btn-ghost bx-btn-sm"
+                disabled={!keyReady || loadingJobs}
+                onClick={() => void loadJobs()}
+              >
+                {loadingJobs ? t.refresh : t.loadJobs}
+              </button>
+              <Link to="/account/keys" className="bx-btn bx-btn-ghost bx-btn-sm">
+                {t.openKeys}
+              </Link>
+            </div>
+            <p className="bx-account-stat-hint mt-2">{t.selectKeyHint}</p>
+          </div>
+        ) : null}
+      </div>
+
+      {/* 6-up gallery chrome */}
+      <div className="bx-account-panel bx-account-panel-pad mt-3">
+        <div className="flex items-center justify-between">
+          <p className="m-0 text-[13.5px] font-bold">{t.latestOutputs}</p>
+          <button
+            type="button"
+            className="border-none bg-transparent font-mono text-[11px] font-semibold text-[var(--bx-brand-bright)] hover:opacity-80"
+            disabled={!jobs.some(canDownload)}
+            onClick={() => void downloadLatestZip()}
+          >
+            {t.packZip}
+          </button>
+        </div>
+        <div className="bx-account-gallery mt-3.5">
+          {(galleryLabels.length
+            ? galleryLabels
+            : Array.from({ length: 6 }, (_, i) => `slot_${String(i + 1).padStart(2, '0')}`)
+          )
+            .slice(0, 6)
+            .map((label) => (
+              <div key={label} className="bx-account-gallery-tile">
+                <span>{label}</span>
+              </div>
+            ))}
+        </div>
+        {galleryLabels.length === 0 ? (
+          <p className="bx-account-stat-hint mt-2">{t.galleryHint}</p>
+        ) : null}
+      </div>
 
       {/* Items modal */}
       {itemsJob ? (
@@ -598,7 +645,7 @@ export function AccountBatchImage() {
           }}
         >
           <div
-            className="bx-card max-h-[85vh] w-full max-w-3xl overflow-hidden p-0 shadow-xl"
+            className="bx-account-panel max-h-[85vh] w-full max-w-3xl overflow-hidden shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3 border-b border-[var(--bx-border)] px-5 py-4">
@@ -607,11 +654,13 @@ export function AccountBatchImage() {
                   {t.items}
                   {itemsJob.task_name ? ` · ${itemsJob.task_name}` : ''}
                 </h3>
-                <p className="mt-0.5 truncate font-mono text-xs text-[var(--bx-text-dim)]">{itemsJob.id}</p>
+                <p className="mt-0.5 truncate font-mono text-xs text-[var(--bx-text-dim)]">
+                  {itemsJob.id}
+                </p>
               </div>
               <button
                 type="button"
-                className="bx-btn bx-btn-ghost bx-btn-sm"
+                className="bx-account-outline-btn"
                 onClick={() => {
                   setItemsJob(null)
                   setItems([])
@@ -626,41 +675,41 @@ export function AccountBatchImage() {
                   <Spinner />
                 </div>
               ) : items.length === 0 ? (
-                <p className="py-8 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+                <p className="bx-account-empty">{t.empty}</p>
               ) : (
-                <table className="w-full min-w-[520px] text-left text-sm">
-                  <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
-                    <tr>
-                      <th className="pb-2 pr-3 font-medium">custom_id</th>
-                      <th className="pb-2 pr-3 font-medium">prompt</th>
-                      <th className="pb-2 pr-3 font-medium">{t.colStatus}</th>
-                      <th className="pb-2 font-medium">images</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((item) => (
-                      <tr key={item.custom_id} className="border-b border-[var(--bx-border)]/60 align-top">
-                        <td className="py-2 pr-3 font-mono text-xs">{item.custom_id}</td>
-                        <td className="py-2 pr-3 text-[var(--bx-text-soft)]">
-                          <span className="line-clamp-2" title={item.prompt_preview || undefined}>
-                            {item.prompt_preview || '—'}
-                          </span>
-                          {item.error?.message ? (
-                            <p className="mt-1 text-xs text-red-600 dark:text-red-400">{item.error.message}</p>
-                          ) : null}
-                        </td>
-                        <td className="py-2 pr-3">
-                          <span
-                            className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClass(item.status)}`}
-                          >
-                            {item.status}
-                          </span>
-                        </td>
-                        <td className="py-2 tabular-nums text-[var(--bx-text-soft)]">{item.image_count}</td>
+                <div className="overflow-x-auto">
+                  <table className="bx-account-table min-w-[520px]">
+                    <thead>
+                      <tr>
+                        <th>custom_id</th>
+                        <th>prompt</th>
+                        <th>{t.colStatus}</th>
+                        <th>images</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {items.map((item) => (
+                        <tr key={item.custom_id}>
+                          <td className="font-mono text-xs">{item.custom_id}</td>
+                          <td className="text-[var(--bx-text-soft)]">
+                            <span className="line-clamp-2" title={item.prompt_preview || undefined}>
+                              {item.prompt_preview || '—'}
+                            </span>
+                            {item.error?.message ? (
+                              <p className="mt-1 text-xs text-[var(--bx-danger)]">
+                                {item.error.message}
+                              </p>
+                            ) : null}
+                          </td>
+                          <td>
+                            <span className={statusClass(item.status)}>{item.status}</span>
+                          </td>
+                          <td className="num">{item.image_count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>

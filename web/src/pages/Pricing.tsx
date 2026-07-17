@@ -62,7 +62,7 @@ export function Pricing() {
               <StaggerItem key={plan.name} className="h-full">
                 <div
                   className={cx(
-                    'relative flex h-full flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-0.5',
+                    'relative flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] p-[22px] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--bx-shadow-pop)]',
                     plan.highlighted
                       ? 'border border-transparent'
                       : 'border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] hover:border-[var(--bx-brand-ring)]',
@@ -105,7 +105,7 @@ export function Pricing() {
                         key={feature}
                         className="flex items-start gap-2 text-[13px] text-[var(--bx-text-soft)]"
                       >
-                        <Check size={14} className="mt-0.5 shrink-0 text-[var(--bx-spark)]" />
+                        <Check size={14} className="mt-0.5 shrink-0 text-[var(--bx-success)]" />
                         {feature}
                       </li>
                     ))}
@@ -148,8 +148,12 @@ export function Pricing() {
       </section>
 
       {/* Compare */}
-      <section className="mx-auto max-w-[1200px] px-6 py-[72px]">
-        <SectionHead title={d.pricing.compare.title} className="mb-8" />
+      <section className="mx-auto max-w-[1200px] px-6 py-[88px]">
+        <SectionHead
+          eyebrow={d.pricing.compare.eyebrow}
+          title={d.pricing.compare.title}
+          className="mb-8"
+        />
         <Reveal>
           <div className="overflow-x-auto rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)]">
             <table className="w-full min-w-[560px] text-sm">
@@ -181,7 +185,10 @@ export function Pricing() {
                         className="px-4 py-3.5 text-center text-[13px] text-[var(--bx-text-muted)]"
                       >
                         {value === '✓' ? (
-                          <BadgeCheck size={17} className="inline text-[var(--bx-spark)]" />
+                          <BadgeCheck
+                            size={17}
+                            className="inline text-[var(--bx-brand-bright)]"
+                          />
                         ) : (
                           value
                         )}
@@ -196,9 +203,9 @@ export function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
+      <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
-          <SectionHead title={d.pricing.faq.title} />
+          <SectionHead eyebrow={d.pricing.faq.eyebrow} title={d.pricing.faq.title} />
           <Reveal>
             <FaqList items={d.pricing.faq.items} idPrefix="pricing-faq" />
           </Reveal>

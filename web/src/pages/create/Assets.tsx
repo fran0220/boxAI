@@ -176,8 +176,8 @@ export function Assets() {
                     className={cx(
                       'rounded-[var(--bx-radius-sm)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)]/90 p-1.5 backdrop-blur transition-opacity',
                       asset.favorite
-                        ? 'text-[var(--bx-teal-bright)]'
-                        : 'text-[var(--bx-text-dim)] opacity-0 hover:text-[var(--bx-teal-bright)] group-hover:opacity-100',
+                        ? 'text-[var(--bx-brand-bright)]'
+                        : 'text-[var(--bx-text-dim)] opacity-0 hover:text-[var(--bx-brand-bright)] group-hover:opacity-100',
                     )}
                     onClick={() => void toggleFavorite(asset)}
                     aria-label={
@@ -248,7 +248,7 @@ export function Assets() {
                   size={13}
                   className={
                     focus.favorite
-                      ? 'fill-[var(--bx-teal-bright)] text-[var(--bx-teal-bright)]'
+                      ? 'fill-[var(--bx-brand-bright)] text-[var(--bx-brand-bright)]'
                       : undefined
                   }
                 />

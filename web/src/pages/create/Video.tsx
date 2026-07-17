@@ -283,7 +283,7 @@ export function VideoGen() {
                   alt=""
                   className="h-12 w-12 rounded-[var(--bx-radius-sm)] object-cover"
                 />
-                <p className="min-w-0 flex-1 text-xs text-[var(--bx-teal-bright)]">
+                <p className="min-w-0 flex-1 text-xs text-[var(--bx-brand-bright)]">
                   {d.create.video.firstFrameActive}
                   {frameFromCreator ? (
                     <span className="mt-0.5 block text-[10px] text-[var(--bx-text-dim)]">
@@ -430,8 +430,8 @@ export function VideoGen() {
                             className={cx(
                               'rounded-[var(--bx-radius-sm)] p-1.5 transition-colors',
                               asset.favorite
-                                ? 'text-[var(--bx-teal-bright)]'
-                                : 'text-[var(--bx-text-dim)] hover:text-[var(--bx-teal-bright)]',
+                                ? 'text-[var(--bx-brand-bright)]'
+                                : 'text-[var(--bx-text-dim)] hover:text-[var(--bx-brand-bright)]',
                             )}
                             onClick={() => void toggleFavorite(asset)}
                             aria-label={

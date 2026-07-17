@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { RefreshCw } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, RefreshCw } from 'lucide-react'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import {
@@ -205,6 +206,23 @@ export function Status() {
             ))}
           </div>
         ) : null}
+
+        {/* Thin bottom CTA — Home language, non-blocking */}
+        <div className="mt-14 flex flex-col items-start justify-between gap-4 rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] px-5 py-4 shadow-[var(--bx-shadow-card)] sm:flex-row sm:items-center sm:px-6">
+          <div>
+            <p className="m-0 text-sm font-semibold tracking-tight text-[var(--bx-text)]">
+              {s.ctaTitle}
+            </p>
+            <p className="mt-1 text-[13px] text-[var(--bx-text-muted)]">{s.ctaBody}</p>
+          </div>
+          <Link
+            to="/pricing"
+            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[var(--bx-brand-bright)] transition-colors hover:text-[var(--bx-brand)]"
+          >
+            {s.ctaPrimary}
+            <ArrowRight size={14} />
+          </Link>
+        </div>
       </div>
     </div>
   )

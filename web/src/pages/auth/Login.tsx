@@ -196,10 +196,16 @@ export function Login() {
       ) : null}
 
       <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-[var(--bx-text-muted)]">
-        <Link to={`/signup?return_to=${encodeURIComponent(returnTo)}`} className="hover:text-[var(--bx-text)]">
+        <Link
+          to={`/signup?return_to=${encodeURIComponent(returnTo)}`}
+          className="transition-colors hover:text-[var(--bx-brand-bright)]"
+        >
           {t.toSignup}
         </Link>
-        <Link to="/forgot-password" className="hover:text-[var(--bx-text)]">
+        <Link
+          to="/forgot-password"
+          className="transition-colors hover:text-[var(--bx-brand-bright)]"
+        >
           {t.forgot}
         </Link>
       </div>

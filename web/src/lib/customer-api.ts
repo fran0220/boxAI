@@ -212,6 +212,18 @@ export interface RedeemHistoryItem {
   group?: { id: number; name: string }
 }
 
+export interface AffiliateInvitee {
+  user_id?: number
+  id?: number
+  email?: string
+  username?: string
+  created_at?: string
+  total_rebate?: number
+  total_spend?: number
+  spend?: number
+  commission?: number
+}
+
 export interface AffiliateDetail {
   user_id: number
   aff_code: string
@@ -220,7 +232,7 @@ export interface AffiliateDetail {
   aff_frozen_quota: number
   aff_history_quota: number
   effective_rebate_rate_percent: number
-  invitees?: Array<{ id?: number; email?: string; created_at?: string }>
+  invitees?: AffiliateInvitee[]
 }
 
 export interface PaymentOrder {
@@ -999,17 +1011,62 @@ export async function authorizeDesktopLogin(params: {
 
 // —— Channels / monitor / announcements / TOTP ——
 
+export interface UserSupportedModelPricing {
+  billing_mode?: string
+  input_price?: number | null
+  output_price?: number | null
+  cache_write_price?: number | null
+  cache_read_price?: number | null
+  image_output_price?: number | null
+  per_request_price?: number | null
+  intervals?: Array<{
+    min_tokens?: number
+    max_tokens?: number | null
+    input_price?: number | null
+    output_price?: number | null
+  }>
+}
+
+export interface UserSupportedModel {
+  name: string
+  platform?: string
+  pricing?: UserSupportedModelPricing | null
+}
+
+export interface UserChannelPlatformSection {
+  platform?: string
+  groups?: Array<{
+    id?: number
+    name?: string
+    platform?: string
+    subscription_type?: string
+    rate_multiplier?: number
+    is_exclusive?: boolean
+  }>
+  supported_models?: UserSupportedModel[]
+}
+
+/** Nested shape from `/channels/available` (Vue parity). Flat legacy fields kept optional. */
 export interface AvailableChannel {
   id?: number
   name?: string
+  description?: string
   platform?: string
   models?: string[]
   group_name?: string
+  platforms?: UserChannelPlatformSection[]
   [key: string]: unknown
 }
 
 export async function listAvailableChannels(): Promise<AvailableChannel[]> {
   return apiGet('/api/v1/channels/available')
+}
+
+export interface MonitorTimelinePoint {
+  status?: string
+  latency_ms?: number | null
+  ping_latency_ms?: number | null
+  checked_at?: string
 }
 
 export interface UserMonitorView {
@@ -1020,11 +1077,36 @@ export interface UserMonitorView {
   primary_model?: string
   primary_status?: string
   primary_latency_ms?: number | null
+  primary_ping_latency_ms?: number | null
   availability_7d?: number
+  extra_models?: Array<{
+    model?: string
+    status?: string
+    latency_ms?: number | null
+  }>
+  timeline?: MonitorTimelinePoint[]
 }
 
 export async function listChannelMonitors(): Promise<{ items: UserMonitorView[] }> {
   return apiGet('/api/v1/channel-monitors')
+}
+
+export async function getChannelMonitorStatus(id: number): Promise<{
+  id: number
+  name: string
+  provider?: string
+  group_name?: string
+  models?: Array<{
+    model?: string
+    latest_status?: string
+    latest_latency_ms?: number | null
+    availability_7d?: number
+    availability_15d?: number
+    availability_30d?: number
+    avg_latency_7d_ms?: number | null
+  }>
+}> {
+  return apiGet(`/api/v1/channel-monitors/${id}/status`)
 }
 
 export interface UserAnnouncement {

@@ -127,7 +127,7 @@ export function Signup() {
       )}
 
       <p className="mt-6 text-center text-sm text-[var(--bx-text-muted)]">
-        <Link to={`/login?return_to=${encodeURIComponent(returnTo)}`} className="hover:text-[var(--bx-text)]">
+        <Link to={`/login?return_to=${encodeURIComponent(returnTo)}`} className="transition-colors hover:text-[var(--bx-brand-bright)]">
           {t.toLogin}
         </Link>
       </p>

@@ -84,7 +84,7 @@ export function ModelPicker({
         <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-0.5">
           <button
             type="button"
-            className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-teal-bright)]"
+            className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-brand-bright)]"
             onClick={reload}
             aria-label={d.create.model.reload}
           >
@@ -130,7 +130,7 @@ export function ModelPicker({
                       className={cx(
                         'flex w-full items-center justify-between gap-2 truncate rounded-[var(--bx-radius-sm)] px-3 py-2 text-left text-sm transition-colors hover:bg-[var(--bx-hover)]',
                         selected
-                          ? 'bg-[var(--bx-active)] text-[var(--bx-teal-bright)]'
+                          ? 'bg-[var(--bx-active)] text-[var(--bx-brand-bright)]'
                           : 'text-[var(--bx-text-soft)]',
                       )}
                     >

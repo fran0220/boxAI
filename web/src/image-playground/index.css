@@ -240,13 +240,13 @@ html:not(.dark) .image-playground {
 }
 
 .markdown-renderer :where(blockquote) {
-  border-left: 3px solid rgba(45, 212, 191, 0.45);
+  border-left: 3px solid var(--bx-brand-ring, rgba(31, 213, 185, 0.38));
   color: #52525b;
   padding-left: 0.85rem;
 }
 
 .markdown-renderer :where(a) {
-  color: #0d9488;
+  color: var(--bx-brand-deep, #0c9f8c);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -441,7 +441,7 @@ html:not(.dark) .image-playground {
   }
 }
 
-/* contentEditable 中的 @图N 胶囊 tag — brand teal */
+/* contentEditable @image capsule tags — brand tokens */
 .mention-tag {
   display: inline-flex;
   align-items: center;
@@ -450,9 +450,9 @@ html:not(.dark) .image-playground {
   padding: 0 7px;
   margin: 0 2px;
   border-radius: 6px;
-  background: rgba(45, 212, 191, 0.12);
-  color: #0d9488;
-  border: 1px solid rgba(45, 212, 191, 0.28);
+  background: var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
+  color: var(--bx-brand-deep, #0c9f8c);
+  border: 1px solid var(--bx-brand-ring, rgba(31, 213, 185, 0.38));
   font-size: inherit;
   font-weight: 600;
   line-height: 1;
@@ -470,26 +470,26 @@ html:not(.dark) .image-playground {
 
 [contenteditable]::selection,
 [contenteditable] *::selection {
-  background: rgba(45, 212, 191, 0.22);
+  background: var(--bx-active, rgba(31, 213, 185, 0.12));
   color: inherit;
 }
 
 .mention-tag:hover {
-  background: rgba(45, 212, 191, 0.2);
+  background: var(--bx-active, rgba(31, 213, 185, 0.12));
 }
 
 .mention-tag.selected {
-  background: #14b8a6;
-  color: #04201d;
-  border-color: #0d9488;
-  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.25);
+  background: var(--bx-brand, #1fd5b9);
+  color: var(--bx-ink, #03261f);
+  border-color: var(--bx-brand-deep, #0c9f8c);
+  box-shadow: inset 0 0 0 1px var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
 }
 
 @media (prefers-color-scheme: dark) {
   .mention-tag {
-    background: rgba(45, 212, 191, 0.12);
-    color: #5eead4;
-    border-color: rgba(45, 212, 191, 0.22);
+    background: var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
+    color: var(--bx-brand-bright, #6cf5dd);
+    border-color: var(--bx-brand-ring, rgba(31, 213, 185, 0.38));
   }
 
   .mention-tag::selection,
@@ -500,19 +500,19 @@ html:not(.dark) .image-playground {
 
   [contenteditable]::selection,
   [contenteditable] *::selection {
-    background: rgba(45, 212, 191, 0.28);
+    background: var(--bx-active, rgba(31, 213, 185, 0.12));
     color: inherit;
   }
 
   .mention-tag:hover {
-    background: rgba(45, 212, 191, 0.2);
+    background: var(--bx-active, rgba(31, 213, 185, 0.12));
   }
 
   .mention-tag.selected {
-    background: #2dd4bf;
-    color: #04201d;
-    border-color: #5eead4;
-    box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.35);
+    background: var(--bx-brand, #1fd5b9);
+    color: var(--bx-ink, #03261f);
+    border-color: var(--bx-brand-bright, #6cf5dd);
+    box-shadow: inset 0 0 0 1px var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
   }
 }
 
@@ -530,21 +530,21 @@ body.drag-selecting * {
   user-select: none !important;
 }
 
-/* Prefer teal focus rings inside playground */
+/* Prefer brand focus rings inside playground */
 .image-playground :focus-visible {
-  outline: 2px solid var(--bx-teal, #2dd4bf);
+  outline: 2px solid var(--bx-brand, #1fd5b9);
   outline-offset: 2px;
 }
 
-/* Brand CTA: primary teal buttons get gradient + rect radius when not tiny dots */
+/* Brand CTA: primary buttons get gradient + rect radius when not tiny dots */
 .image-playground button.bg-teal-500,
 .image-playground a.bg-teal-500 {
-  background-image: var(--bx-grad-cta, linear-gradient(135deg, #2dd4bf, #22d3ee));
+  background-image: var(--bx-grad-cta, linear-gradient(120deg, #1fd5b9, #22c9e0));
   background-color: transparent;
-  color: var(--bx-teal-ink, #04201d);
+  color: var(--bx-ink, #03261f);
   border-radius: var(--bx-radius-btn, 10px);
   font-weight: 600;
-  box-shadow: 0 8px 24px -8px rgba(45, 212, 191, 0.45);
+  box-shadow: var(--bx-shadow-cta, 0 8px 24px -8px rgba(31, 213, 185, 0.55));
 }
 
 .image-playground button.bg-teal-500:hover,

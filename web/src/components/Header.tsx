@@ -17,10 +17,18 @@ import { useAuth } from '@/lib/use-auth'
 import { useTheme } from '@/lib/theme'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { RELEASES_PAGE_URL } from '@/lib/releases'
 import { BX_EASE } from '@/components/motion/Reveal'
 import { LangSwitcher } from './LangSwitcher'
 
 type MenuKey = 'products' | 'solutions' | 'resources' | ''
+
+type MegaLink = {
+  t: string
+  d: string
+  to?: string
+  href?: string
+}
 
 export function Header() {
   const { d } = useI18n()
@@ -29,6 +37,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mega, setMega] = useState<MenuKey>('')
   const location = useLocation()
+  const megaCopy = d.nav.mega
 
   useEffect(() => {
     setMenuOpen(false)
@@ -50,50 +59,58 @@ export function Header() {
   const activePricing = path.startsWith('/pricing')
   const activeStatus = path.startsWith('/status')
 
-  const menus = {
+  const menus: Record<
+    Exclude<MenuKey, ''>,
+    { links: MegaLink[]; feat: { k: string; t: string; d: string; to: string } }
+  > = {
     products: {
       links: [
-        { t: d.footer.creator, d: d.home.features.items[0].body, to: '/create' },
-        { t: d.footer.studio, d: d.home.features.items[1].body, to: '/studio' },
-        { t: d.home.features.items[3].title, d: d.home.features.items[3].body, to: '/account/keys' },
-        { t: d.footer.myAccount, d: d.home.features.items[2].body, to: '/account' },
+        { t: megaCopy.products.creator.t, d: megaCopy.products.creator.d, to: '/create' },
+        { t: megaCopy.products.studio.t, d: megaCopy.products.studio.d, to: '/studio' },
+        { t: megaCopy.products.api.t, d: megaCopy.products.api.d, to: '/account/keys' },
+        { t: megaCopy.products.account.t, d: megaCopy.products.account.d, to: '/account' },
       ],
       feat: {
-        k: 'New',
-        t: d.home.features.items[3].title,
-        d: d.home.features.items[3].body,
+        k: megaCopy.products.feat.k,
+        t: megaCopy.products.feat.t,
+        d: megaCopy.products.feat.d,
         to: '/account/keys',
       },
     },
     solutions: {
       links: [
-        { t: d.home.showcase.image.title, d: d.home.showcase.image.body, to: '/create/image' },
-        { t: d.home.showcase.video.title, d: d.home.showcase.video.body, to: '/create/video' },
-        { t: d.footer.studio, d: d.studio.features.items[0].body, to: '/studio' },
-        { t: d.home.features.items[3].title, d: d.home.features.items[3].body, to: '/account/keys' },
+        { t: megaCopy.solutions.image.t, d: megaCopy.solutions.image.d, to: '/create/image' },
+        { t: megaCopy.solutions.video.t, d: megaCopy.solutions.video.d, to: '/create/video' },
+        { t: megaCopy.solutions.agent.t, d: megaCopy.solutions.agent.d, to: '/studio' },
+        { t: megaCopy.solutions.dev.t, d: megaCopy.solutions.dev.d, to: '/account/keys' },
       ],
       feat: {
-        k: 'Why BoxAI',
-        t: d.home.features.title,
-        d: d.home.features.subtitle,
+        k: megaCopy.solutions.feat.k,
+        t: megaCopy.solutions.feat.t,
+        d: megaCopy.solutions.feat.d,
         to: '/account',
       },
     },
     resources: {
       links: [
-        { t: d.footer.status, d: d.status.homeSubtitle, to: '/status' },
-        { t: d.footer.apiKeys, d: d.account.subtitle, to: '/account/keys' },
-        { t: d.footer.usage, d: d.account.subtitle, to: '/account/usage' },
-        { t: d.home.faq.title, d: d.home.faq.items[0].a, to: '/#faq' },
+        { t: megaCopy.resources.status.t, d: megaCopy.resources.status.d, to: '/status' },
+        // No public docs route — closest real surface for first API call.
+        { t: megaCopy.resources.docs.t, d: megaCopy.resources.docs.d, to: '/account/keys' },
+        {
+          t: megaCopy.resources.changelog.t,
+          d: megaCopy.resources.changelog.d,
+          href: RELEASES_PAGE_URL,
+        },
+        { t: megaCopy.resources.faq.t, d: megaCopy.resources.faq.d, to: '/#faq' },
       ],
       feat: {
-        k: 'Status',
-        t: d.status.homeTitle,
-        d: d.status.homeSubtitle,
+        k: megaCopy.resources.feat.k,
+        t: megaCopy.resources.feat.t,
+        d: megaCopy.resources.feat.d,
         to: '/status',
       },
     },
-  } as const
+  }
 
   const openMenu = mega ? menus[mega] : null
 
@@ -111,6 +128,40 @@ export function Header() {
         ? 'text-[var(--bx-text)]'
         : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
     )
+
+  function MegaLinkItem({ l }: { l: MegaLink }) {
+    const body = (
+      <>
+        <span className="inline-flex items-center gap-1.5 text-sm font-bold tracking-tight">
+          {l.t}
+          <ArrowRight size={12} className="text-[var(--bx-brand)]" strokeWidth={2.5} />
+        </span>
+        <span className="line-clamp-2 text-[12.5px] leading-snug text-[var(--bx-text-muted)]">
+          {l.d}
+        </span>
+      </>
+    )
+    const className =
+      'flex flex-col gap-0.5 rounded-[10px] px-3.5 py-3 text-[var(--bx-text)] transition-colors hover:bg-[var(--bx-hover)]'
+    if (l.href) {
+      return (
+        <a
+          key={l.href + l.t}
+          href={l.href}
+          className={className}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {body}
+        </a>
+      )
+    }
+    return (
+      <Link key={(l.to ?? '') + l.t} to={l.to ?? '/'} className={className}>
+        {body}
+      </Link>
+    )
+  }
 
   return (
     <header
@@ -134,14 +185,16 @@ export function Header() {
               size={11}
               className={cx('opacity-55 transition-transform duration-200', mega === 'products' && 'rotate-180')}
             />
-            {(activeCreator || activeStudio) && <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />}
+            {(activeCreator || activeStudio) && (
+              <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />
+            )}
           </button>
           <button
             type="button"
             className={navBtn(false, mega === 'solutions')}
             onMouseEnter={() => setMega('solutions')}
           >
-            {d.home.features.eyebrow}
+            {d.nav.solutions}
             <ChevronDown
               size={11}
               className={cx('opacity-55 transition-transform duration-200', mega === 'solutions' && 'rotate-180')}
@@ -153,7 +206,9 @@ export function Header() {
             onMouseEnter={() => setMega('')}
           >
             {d.nav.pricing}
-            {activePricing && <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />}
+            {activePricing && (
+              <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />
+            )}
           </NavLink>
           <button
             type="button"
@@ -165,7 +220,9 @@ export function Header() {
               size={11}
               className={cx('opacity-55 transition-transform duration-200', mega === 'resources' && 'rotate-180')}
             />
-            {activeStatus && <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />}
+            {activeStatus && (
+              <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />
+            )}
           </button>
         </nav>
 
@@ -187,7 +244,7 @@ export function Header() {
             <div className="hidden items-center gap-1.5 md:flex">
               <Link
                 to="/account"
-                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-tight text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px"
+                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-tight text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_color-mix(in_srgb,var(--bx-brand)_70%,transparent)]"
               >
                 {d.nav.console}
                 <ArrowRight size={13} strokeWidth={2.5} />
@@ -212,7 +269,7 @@ export function Header() {
               </Link>
               <Link
                 to="/signup"
-                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-tight text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px"
+                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-tight text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_color-mix(in_srgb,var(--bx-brand)_70%,transparent)]"
               >
                 {d.nav.console}
                 <ArrowRight size={13} strokeWidth={2.5} />
@@ -246,19 +303,7 @@ export function Header() {
           <div className="mx-auto grid max-w-[1200px] grid-cols-[2.1fr_1fr] gap-7 px-6 py-[22px] pb-[26px]">
             <div className="grid grid-cols-2 content-start gap-1">
               {openMenu.links.map((l) => (
-                <Link
-                  key={l.to + l.t}
-                  to={l.to}
-                  className="flex flex-col gap-0.5 rounded-[10px] px-3.5 py-3 text-[var(--bx-text)] transition-colors hover:bg-[var(--bx-hover)]"
-                >
-                  <span className="inline-flex items-center gap-1.5 text-sm font-bold tracking-tight">
-                    {l.t}
-                    <ArrowRight size={12} className="text-[var(--bx-brand)]" strokeWidth={2.5} />
-                  </span>
-                  <span className="line-clamp-2 text-[12.5px] leading-snug text-[var(--bx-text-muted)]">
-                    {l.d}
-                  </span>
-                </Link>
+                <MegaLinkItem key={(l.to ?? l.href ?? '') + l.t} l={l} />
               ))}
             </div>
             <Link

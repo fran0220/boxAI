@@ -98,17 +98,20 @@ function HeroBackdrop() {
           animation: 'bx-streak 11s linear infinite 5.4s',
         }}
       />
+      {/* Design: inset -560px 0 0 — particles extend above hero */}
       <div
-        className="absolute inset-0 opacity-50"
+        className="absolute inset-x-0 bottom-0 opacity-50"
         style={{
+          top: '-560px',
           backgroundImage: 'radial-gradient(rgba(108,245,221,0.4) 1px, transparent 1.6px)',
           backgroundSize: '96px 96px',
           animation: 'bx-pan 46s linear infinite',
         }}
       />
       <div
-        className="absolute inset-0 opacity-45"
+        className="absolute inset-x-0 bottom-0 opacity-45"
         style={{
+          top: '-560px',
           backgroundImage: 'radial-gradient(rgba(124,199,255,0.32) 1px, transparent 1.6px)',
           backgroundSize: '150px 150px',
           backgroundPosition: '40px 60px',
@@ -172,16 +175,41 @@ const CODE_TABS = [
 
 type CodeTabKey = (typeof CODE_TABS)[number]['key']
 
-const CODE_SAMPLES: Record<CodeTabKey, string> = {
-  curl: `curl https://api.you-box.com/v1/chat/completions \\
+const MINI_BARS = [42, 58, 35, 70, 52, 88, 64, 45, 76, 58, 92, 68, 50, 80, 62, 95, 74, 100]
+
+const CONNECTORS_LEFT = [21, 75, 129, 184, 238, 292].map(
+  (y) => `M0 ${y} C 60 ${y}, 60 157, 110 157`,
+)
+const CONNECTORS_RIGHT = [40, 118, 196, 274].map((y) => `M0 157 C 50 157, 50 ${y}, 110 ${y}`)
+/** Narrower, fewer paths for md — full set stays on lg. */
+const CONNECTORS_LEFT_MD = [40, 110, 180].map((y) => `M0 ${y} C 28 ${y}, 28 110, 48 110`)
+const CONNECTORS_RIGHT_MD = [55, 165].map((y) => `M0 110 C 20 110, 20 ${y}, 48 ${y}`)
+
+const VALUE_GRADS = [
+  'linear-gradient(145deg, rgba(31,213,185,0.55), rgba(12,159,140,0.28) 55%, rgba(5,40,36,0.9))',
+  'linear-gradient(215deg, rgba(53,214,244,0.5), rgba(31,213,185,0.2) 55%, rgba(4,32,40,0.92))',
+  'linear-gradient(135deg, rgba(124,199,255,0.45), rgba(53,214,244,0.18) 50%, rgba(6,25,44,0.92))',
+  'linear-gradient(160deg, rgba(31,213,185,0.4), rgba(124,199,255,0.22) 45%, rgba(3,20,26,0.94))',
+] as const
+
+const VALUE_KEYS = ['creator', 'studio', 'gateway', 'account'] as const
+
+const PRODUCT_ICONS = [ImageIcon, Monitor, LayoutDashboard, Code2] as const
+
+/** Design marketing targets for the stats band (parity with 新版-首页). */
+const STAT_TARGETS = { models: 100, modes: 3, availability: 99.9, accounts: 1 } as const
+
+function buildCodeSamples(hello: string, claudeComment: string, claudeFooter: string): Record<CodeTabKey, string> {
+  return {
+    curl: `curl https://api.you-box.com/v1/chat/completions \\
   -H "Authorization: Bearer sk-box-****" \\
   -H "Content-Type: application/json" \\
   -d '{
     "model": "claude-sonnet-4-5",
     "stream": true,
-    "messages": [{"role": "user", "content": "hello"}]
+    "messages": [{"role": "user", "content": "${hello}"}]
   }'`,
-  python: `from openai import OpenAI
+    python: `from openai import OpenAI
 
 client = OpenAI(
     base_url="https://api.you-box.com/v1",
@@ -190,22 +218,46 @@ client = OpenAI(
 
 resp = client.chat.completions.create(
     model="gpt-5",
-    messages=[{"role": "user", "content": "hello"}],
+    messages=[{"role": "user", "content": "${hello}"}],
 )`,
-  claude: `# Use with Claude Code
+    claude: `${claudeComment}
 export ANTHROPIC_BASE_URL="https://api.you-box.com"
 export ANTHROPIC_AUTH_TOKEN="sk-box-****"
 
 claude
-# ✓ Claude quota served through the BoxAI gateway`,
+${claudeFooter}`,
+  }
 }
 
-const MINI_BARS = [42, 58, 35, 70, 52, 88, 64, 45, 76, 58, 92, 68, 50, 80, 62, 95, 74, 100]
-
-const CONNECTORS_LEFT = [21, 75, 129, 184, 238, 292].map(
-  (y) => `M0 ${y} C 60 ${y}, 60 157, 110 157`,
-)
-const CONNECTORS_RIGHT = [40, 118, 196, 274].map((y) => `M0 157 C 50 157, 50 ${y}, 110 ${y}`)
+function StatusSkeletonRows({ count = 4 }: { count?: number }) {
+  return (
+    <>
+      {Array.from({ length: count }, (_, i) => (
+        <div
+          key={i}
+          className="grid grid-cols-1 items-center gap-3 border-t border-[var(--bx-line)] px-5 py-3.5 md:grid-cols-[220px_110px_1fr_130px_110px] md:gap-4"
+        >
+          <span className="flex items-center gap-2.5">
+            <span className="h-1.5 w-1.5 rounded-[2px] bg-[var(--bx-border)]" />
+            <span className="h-3.5 w-28 animate-pulse rounded bg-[var(--bx-bg-muted)]" />
+          </span>
+          <span className="h-3 w-16 animate-pulse rounded bg-[var(--bx-bg-muted)]" />
+          <span className="flex h-[18px] items-end gap-0.5">
+            {Array.from({ length: 30 }, (_, j) => (
+              <span
+                key={j}
+                className="max-w-2 flex-1 rounded-[1.5px] bg-[var(--bx-bg-muted)]"
+                style={{ height: `${40 + ((j * 17) % 60)}%` }}
+              />
+            ))}
+          </span>
+          <span className="ml-auto h-3 w-14 animate-pulse rounded bg-[var(--bx-bg-muted)] md:ml-0" />
+          <span className="ml-auto h-3 w-12 animate-pulse rounded bg-[var(--bx-bg-muted)] md:ml-0" />
+        </div>
+      ))}
+    </>
+  )
+}
 
 export function Home() {
   const { d } = useI18n()
@@ -225,29 +277,33 @@ export function Home() {
         setStatusReady(true)
       })
       .catch(() => {
-        if (!ctrl.signal.aborted) setStatusReady(true)
+        if (!ctrl.signal.aborted) {
+          setOverall(null)
+          setStatusItems([])
+          setStatusReady(true)
+        }
       })
     return () => ctrl.abort()
   }, [])
 
-  const modelCount = MODEL_MARQUEE.length
-  const meanAvail = useMemo(() => {
-    if (!statusItems.length) return null
-    const sum = statusItems.reduce((acc, it) => acc + (Number(it.availability) || 0), 0)
-    return Math.round((sum / statusItems.length) * 10) / 10
-  }, [statusItems])
-
   const marquee = useMemo(() => [...MODEL_MARQUEE, ...MODEL_MARQUEE], [])
 
-  const statModels = useCountUp(modelCount)
-  const statModes = useCountUp(3)
-  const statAvail = useCountUp(meanAvail)
+  // Design parity: always count up to marketing targets (100 / 3 / 99.9 / 1)
+  const statModels = useCountUp(STAT_TARGETS.models)
+  const statModes = useCountUp(STAT_TARGETS.modes)
+  const statAvail = useCountUp(STAT_TARGETS.availability)
+
+  const codeSamples = useMemo(
+    () =>
+      buildCodeSamples(d.home.dev.codeHello, d.home.dev.codeClaudeComment, d.home.dev.codeClaudeFooter),
+    [d.home.dev.codeHello, d.home.dev.codeClaudeComment, d.home.dev.codeClaudeFooter],
+  )
 
   const [codeTab, setCodeTab] = useState<CodeTabKey>('curl')
   const [copied, setCopied] = useState(false)
   const copyCode = () => {
     navigator.clipboard
-      ?.writeText(CODE_SAMPLES[codeTab])
+      ?.writeText(codeSamples[codeTab])
       .then(() => {
         setCopied(true)
         window.setTimeout(() => setCopied(false), 1500)
@@ -259,19 +315,26 @@ export function Home() {
   const keysHref = authed ? '/account/keys' : '/login?return_to=/account/keys'
   const accountHref = authed ? '/account' : '/login?return_to=/account'
 
-  const valueCards = [
-    { key: 'creator', title: d.home.features.items[0].title, body: d.home.features.items[0].body, grad: 'linear-gradient(145deg, rgba(31,213,185,0.55), rgba(12,159,140,0.28) 55%, rgba(5,40,36,0.9))' },
-    { key: 'studio', title: d.home.features.items[1].title, body: d.home.features.items[1].body, grad: 'linear-gradient(215deg, rgba(53,214,244,0.5), rgba(31,213,185,0.2) 55%, rgba(4,32,40,0.92))' },
-    { key: 'gateway', title: d.home.features.items[3].title, body: d.home.features.items[3].body, grad: 'linear-gradient(135deg, rgba(124,199,255,0.45), rgba(53,214,244,0.18) 50%, rgba(6,25,44,0.92))' },
-    { key: 'account', title: d.home.features.items[2].title, body: d.home.features.items[2].body, grad: 'linear-gradient(160deg, rgba(31,213,185,0.4), rgba(124,199,255,0.22) 45%, rgba(3,20,26,0.94))' },
-  ]
+  const valueCards = d.home.value.cards.map((card, i) => ({
+    key: VALUE_KEYS[i] ?? `v-${i}`,
+    title: card.title,
+    body: card.body,
+    grad: VALUE_GRADS[i] ?? VALUE_GRADS[0],
+  }))
 
-  const products = [
-    { title: d.footer.creator, desc: d.home.showcase.subtitle, icon: ImageIcon },
-    { title: d.footer.studio, desc: d.studio.features.items[0].title, icon: Monitor },
-    { title: d.footer.myAccount, desc: d.home.features.items[2].title, icon: LayoutDashboard },
-    { title: d.home.features.items[3].title, desc: 'OpenAI /v1', icon: Code2 },
-  ]
+  const products = d.home.gateway.products.map((p, i) => ({
+    title: p.title,
+    desc: p.desc,
+    icon: PRODUCT_ICONS[i] ?? Code2,
+  }))
+
+  const teaserPlans = d.home.pricingTeaser.plans
+
+  function teaserHref(ctaKind: 'signup' | 'subscribe' | 'contact') {
+    if (ctaKind === 'contact') return d.pricing.contactHref
+    if (ctaKind === 'signup') return authed ? '/create' : '/signup'
+    return '/pricing'
+  }
 
   return (
     <div className="relative isolate overflow-x-hidden">
@@ -324,28 +387,28 @@ export function Home() {
         </div>
       </section>
 
-      {/* Stats — live metrics only when available */}
+      {/* Stats — design marketing targets 100 / 3 / 99.9 / 1 */}
       <section data-screen-label="Stats" className="border-b border-[var(--bx-border)] bg-[var(--bx-bg)]">
         <div className="mx-auto grid max-w-[1200px] grid-cols-2 px-6 md:grid-cols-4">
-          <div className="py-9 pr-6 md:pr-6">
+          <div className="py-9 pr-6">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
-              {statModels != null ? Math.round(statModels) : modelCount}+
+              {statModels != null ? Math.round(statModels) : STAT_TARGETS.models}+
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[0].label}
             </p>
           </div>
-          <div className="border-l border-[var(--bx-border)] py-9 px-6">
+          <div className="border-l border-[var(--bx-border)] px-6 py-9">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
-              {statModes != null ? Math.round(statModes) : 3}
+              {statModes != null ? Math.round(statModes) : STAT_TARGETS.modes}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[1].label}
             </p>
           </div>
-          <div className="border-l border-[var(--bx-border)] py-9 px-6">
+          <div className="border-l border-[var(--bx-border)] px-6 py-9">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
-              {statAvail != null ? `${statAvail.toFixed(1)}%` : '—'}
+              {statAvail != null ? `${statAvail.toFixed(1)}%` : `${STAT_TARGETS.availability}%`}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[2].label}
@@ -353,7 +416,7 @@ export function Home() {
           </div>
           <div className="border-l border-[var(--bx-border)] py-9 pl-6">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-brand)]">
-              1
+              {STAT_TARGETS.accounts}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[3].label}
@@ -391,7 +454,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Models marquee — curated catalog, not fake metrics */}
+      {/* Models marquee */}
       <section
         data-screen-label="Models"
         className="mt-12 border-y border-[var(--bx-border)] bg-[color-mix(in_srgb,var(--bx-bg-elevated)_55%,transparent)]"
@@ -433,279 +496,345 @@ export function Home() {
             </p>
           </div>
         </Reveal>
-        <div className="grid items-center gap-4 rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] lg:grid-cols-[200px_110px_auto_110px_1fr] lg:gap-0 lg:px-8 lg:py-9">
-          <div className="flex flex-col gap-2.5">
-            {UPSTREAMS.map((u) => (
-              <div
-                key={u}
-                className="flex items-center gap-2.5 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3 py-2"
-              >
-                <span className="h-1.5 w-1.5 rounded-[2px] bg-[var(--bx-brand)] opacity-85" />
-                <span className="font-mono text-xs font-medium text-[var(--bx-text-soft)]">{u}</span>
-              </div>
-            ))}
-          </div>
-          <div aria-hidden className="relative hidden h-[314px] w-[110px] lg:block">
-            <svg viewBox="0 0 110 314" className="absolute inset-0 block h-[314px] w-[110px]">
-              {CONNECTORS_LEFT.map((p) => (
-                <path
-                  key={p}
-                  d={p}
-                  fill="none"
-                  stroke="var(--bx-brand)"
-                  strokeOpacity="0.15"
-                  strokeWidth="1"
-                />
-              ))}
-            </svg>
-            {CONNECTORS_LEFT.map((p, i) => (
-              <span
-                key={p}
-                className="absolute top-0 left-0 -mt-[2.5px] -ml-[2.5px] h-[5px] w-[5px] rounded-full bg-[var(--bx-brand-bright)] shadow-[0_0_10px_2px_var(--bx-brand-ring)]"
-                style={{
-                  offsetPath: `path('${p}')`,
-                  animation: `bx-travel 2.6s linear infinite ${(i * 0.45).toFixed(2)}s`,
-                }}
-              />
-            ))}
-          </div>
-          <div className="flex flex-col items-center gap-2.5 px-2 py-4">
-            <div className="relative flex items-center justify-center">
-              <div
-                aria-hidden
-                className="absolute h-[150px] w-[150px] rounded-full"
-                style={{
-                  background: 'radial-gradient(circle, var(--bx-brand-soft), transparent 65%)',
-                  animation: 'bx-glow 4s var(--bx-ease-inout) infinite',
-                }}
-              />
-              <div
-                aria-hidden
-                className="absolute h-[118px] w-[118px] rounded-full border border-[var(--bx-brand-ring)]"
-                style={{ animation: 'bx-ring 3.2s var(--bx-ease) infinite' }}
-              />
-              <div
-                aria-hidden
-                className="absolute h-[118px] w-[118px] rounded-full border border-[var(--bx-brand-ring)]"
-                style={{ animation: 'bx-ring 3.2s var(--bx-ease) infinite 1.6s' }}
-              />
-              <img src={BRAND_LOGO_SVG} alt={BRAND_NAME} className="relative h-[108px] w-[108px]" />
-            </div>
-            <span className="font-mono text-[11px] font-semibold tracking-[0.14em] text-[var(--bx-text-muted)] uppercase">
-              BoxAI Gateway
-            </span>
-            <span className="inline-flex gap-1.5">
-              {d.home.gateway.chips.map((chip) => (
-                <span
-                  key={chip}
-                  className="rounded bg-[var(--bx-brand-soft)] px-2 py-0.5 font-mono text-[10px] text-[var(--bx-brand)]"
-                >
-                  {chip}
-                </span>
-              ))}
-            </span>
-          </div>
-          <div aria-hidden className="relative hidden h-[314px] w-[110px] lg:block">
-            <svg viewBox="0 0 110 314" className="absolute inset-0 block h-[314px] w-[110px]">
-              {CONNECTORS_RIGHT.map((p) => (
-                <path
-                  key={p}
-                  d={p}
-                  fill="none"
-                  stroke="var(--bx-cyan)"
-                  strokeOpacity="0.18"
-                  strokeWidth="1"
-                />
-              ))}
-            </svg>
-            {CONNECTORS_RIGHT.map((p, i) => (
-              <span
-                key={p}
-                className="absolute top-0 left-0 -mt-[2.5px] -ml-[2.5px] h-[5px] w-[5px] rounded-full bg-[var(--bx-cyan)] shadow-[0_0_10px_2px_var(--bx-info-soft)]"
-                style={{
-                  offsetPath: `path('${p}')`,
-                  animation: `bx-travel 2.2s linear infinite ${(0.2 + i * 0.55).toFixed(2)}s`,
-                }}
-              />
-            ))}
-          </div>
-          <div className="flex flex-col gap-3.5">
-            {products.map((p) => {
-              const Icon = p.icon
-              return (
+        <Reveal>
+          <div className="grid items-center gap-4 rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] md:grid-cols-[minmax(0,1fr)_48px_auto_48px_minmax(0,1.15fr)] md:gap-0 md:px-5 md:py-7 lg:grid-cols-[200px_110px_auto_110px_1fr] lg:px-8 lg:py-9">
+            <div className="flex flex-col gap-2.5">
+              {UPSTREAMS.map((u) => (
                 <div
-                  key={p.title}
-                  className="flex items-center gap-3 rounded-[10px] border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3.5 py-3 transition hover:translate-x-1 hover:border-[var(--bx-brand-ring)]"
+                  key={u}
+                  className="flex items-center gap-2.5 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3 py-2"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
-                    <Icon size={15} />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-[13.5px] font-bold tracking-tight">{p.title}</span>
-                    <span className="mt-0.5 block text-[11.5px] text-[var(--bx-text-dim)]">{p.desc}</span>
-                  </span>
+                  <span className="h-1.5 w-1.5 rounded-[2px] bg-[var(--bx-brand)] opacity-85" />
+                  <span className="font-mono text-xs font-medium text-[var(--bx-text-soft)]">{u}</span>
                 </div>
-              )
-            })}
+              ))}
+            </div>
+            {/* Simplified connectors (md); full multi-path set on lg */}
+            <div aria-hidden className="relative hidden h-[220px] w-12 md:block lg:hidden">
+              <svg viewBox="0 0 48 220" className="absolute inset-0 block h-[220px] w-12">
+                {CONNECTORS_LEFT_MD.map((p) => (
+                  <path
+                    key={p}
+                    d={p}
+                    fill="none"
+                    stroke="var(--bx-brand)"
+                    strokeOpacity="0.18"
+                    strokeWidth="1"
+                  />
+                ))}
+              </svg>
+              {CONNECTORS_LEFT_MD.map((p, i) => (
+                <span
+                  key={p}
+                  className="absolute top-0 left-0 -mt-[2px] -ml-[2px] h-1 w-1 rounded-full bg-[var(--bx-brand-bright)] shadow-[0_0_8px_2px_var(--bx-brand-ring)]"
+                  style={{
+                    offsetPath: `path('${p}')`,
+                    animation: `bx-travel 2.6s linear infinite ${(i * 0.5).toFixed(2)}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <div aria-hidden className="relative hidden h-[314px] w-[110px] lg:block">
+              <svg viewBox="0 0 110 314" className="absolute inset-0 block h-[314px] w-[110px]">
+                {CONNECTORS_LEFT.map((p) => (
+                  <path
+                    key={p}
+                    d={p}
+                    fill="none"
+                    stroke="var(--bx-brand)"
+                    strokeOpacity="0.15"
+                    strokeWidth="1"
+                  />
+                ))}
+              </svg>
+              {CONNECTORS_LEFT.map((p, i) => (
+                <span
+                  key={p}
+                  className="absolute top-0 left-0 -mt-[2.5px] -ml-[2.5px] h-[5px] w-[5px] rounded-full bg-[var(--bx-brand-bright)] shadow-[0_0_10px_2px_var(--bx-brand-ring)]"
+                  style={{
+                    offsetPath: `path('${p}')`,
+                    animation: `bx-travel 2.6s linear infinite ${(i * 0.45).toFixed(2)}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col items-center gap-2.5 px-2 py-4">
+              <div className="relative flex items-center justify-center">
+                <div
+                  aria-hidden
+                  className="absolute h-[150px] w-[150px] rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, var(--bx-brand-soft), transparent 65%)',
+                    animation: 'bx-glow 4s var(--bx-ease-inout) infinite',
+                  }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute h-[118px] w-[118px] rounded-full border border-[var(--bx-brand-ring)]"
+                  style={{ animation: 'bx-ring 3.2s var(--bx-ease) infinite' }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute h-[118px] w-[118px] rounded-full border border-[var(--bx-brand-ring)]"
+                  style={{ animation: 'bx-ring 3.2s var(--bx-ease) infinite 1.6s' }}
+                />
+                <img src={BRAND_LOGO_SVG} alt={BRAND_NAME} className="relative h-[108px] w-[108px]" />
+              </div>
+              <span className="font-mono text-[11px] font-semibold tracking-[0.14em] text-[var(--bx-text-muted)] uppercase">
+                BoxAI Gateway
+              </span>
+              <span className="inline-flex gap-1.5">
+                {d.home.gateway.chips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="rounded bg-[var(--bx-brand-soft)] px-2 py-0.5 font-mono text-[10px] text-[var(--bx-brand)]"
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </span>
+            </div>
+            <div aria-hidden className="relative hidden h-[220px] w-12 md:block lg:hidden">
+              <svg viewBox="0 0 48 220" className="absolute inset-0 block h-[220px] w-12">
+                {CONNECTORS_RIGHT_MD.map((p) => (
+                  <path
+                    key={p}
+                    d={p}
+                    fill="none"
+                    stroke="var(--bx-cyan)"
+                    strokeOpacity="0.2"
+                    strokeWidth="1"
+                  />
+                ))}
+              </svg>
+              {CONNECTORS_RIGHT_MD.map((p, i) => (
+                <span
+                  key={p}
+                  className="absolute top-0 left-0 -mt-[2px] -ml-[2px] h-1 w-1 rounded-full bg-[var(--bx-cyan)] shadow-[0_0_8px_2px_var(--bx-info-soft)]"
+                  style={{
+                    offsetPath: `path('${p}')`,
+                    animation: `bx-travel 2.2s linear infinite ${(0.2 + i * 0.55).toFixed(2)}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <div aria-hidden className="relative hidden h-[314px] w-[110px] lg:block">
+              <svg viewBox="0 0 110 314" className="absolute inset-0 block h-[314px] w-[110px]">
+                {CONNECTORS_RIGHT.map((p) => (
+                  <path
+                    key={p}
+                    d={p}
+                    fill="none"
+                    stroke="var(--bx-cyan)"
+                    strokeOpacity="0.18"
+                    strokeWidth="1"
+                  />
+                ))}
+              </svg>
+              {CONNECTORS_RIGHT.map((p, i) => (
+                <span
+                  key={p}
+                  className="absolute top-0 left-0 -mt-[2.5px] -ml-[2.5px] h-[5px] w-[5px] rounded-full bg-[var(--bx-cyan)] shadow-[0_0_10px_2px_var(--bx-info-soft)]"
+                  style={{
+                    offsetPath: `path('${p}')`,
+                    animation: `bx-travel 2.2s linear infinite ${(0.2 + i * 0.55).toFixed(2)}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col gap-3.5">
+              {products.map((p) => {
+                const Icon = p.icon
+                return (
+                  <div
+                    key={p.title}
+                    className="flex items-center gap-3 rounded-[10px] border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3.5 py-3 transition hover:translate-x-1 hover:border-[var(--bx-brand-ring)]"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                      <Icon size={15} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[13.5px] font-bold tracking-tight">{p.title}</span>
+                      <span className="mt-0.5 block text-[11.5px] text-[var(--bx-text-dim)]">{p.desc}</span>
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Products bento */}
       <section data-screen-label="Products" className="mx-auto max-w-[1200px] px-6 pb-[88px]">
         <div className="grid grid-cols-1 gap-3.5 md:grid-cols-12">
-          <div className="flex flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)] md:col-span-7">
-            <div className="flex items-center gap-2.5 px-5 pt-[18px]">
-              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
-                <ImageIcon size={15} />
-              </span>
-              <h3 className="m-0 text-[17px] font-extrabold tracking-tight">{d.footer.creator}</h3>
-              <span className="rounded border border-[var(--bx-border)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--bx-text-dim)]">
-                /create
-              </span>
-              <Link
-                to={createHref}
-                className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
-              >
-                {d.home.hero.ctaPrimary} <ArrowRight size={13} strokeWidth={2.5} />
-              </Link>
-            </div>
-            <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
-              {d.home.showcase.subtitle}
-            </p>
-            <div aria-hidden className="mx-5 mt-4 mb-5 grid grid-cols-4 gap-2">
-              {[
-                'linear-gradient(120deg, rgba(31,213,185,0.55), rgba(53,214,244,0.2))',
-                'linear-gradient(200deg, rgba(53,214,244,0.4), rgba(124,199,255,0.3))',
-                'linear-gradient(160deg, rgba(12,159,140,0.5), rgba(31,213,185,0.15))',
-              ].map((bg, i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-lg border border-[var(--bx-border)]"
-                  style={{ background: bg }}
-                />
-              ))}
-              <div
-                className="flex aspect-square items-center justify-center rounded-lg border border-[var(--bx-border)]"
-                style={{
-                  background:
-                    'linear-gradient(90deg, var(--bx-bg-muted) 25%, var(--bx-hover) 50%, var(--bx-bg-muted) 75%)',
-                  backgroundSize: '200% 100%',
-                  animation: 'bx-shimmer 1.6s linear infinite',
-                }}
-              >
-                <span className="font-mono text-[10px] text-[var(--bx-text-dim)]">gen…</span>
+          <Reveal className="md:col-span-7">
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+              <div className="flex items-center gap-2.5 px-5 pt-[18px]">
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                  <ImageIcon size={15} />
+                </span>
+                <h3 className="m-0 text-[17px] font-extrabold tracking-tight">
+                  {d.home.bento.creator.title}
+                </h3>
+                <span className="rounded border border-[var(--bx-border)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--bx-text-dim)]">
+                  {d.home.bento.creator.path}
+                </span>
+                <Link
+                  to={createHref}
+                  className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+                >
+                  {d.home.bento.creator.cta} <ArrowRight size={13} strokeWidth={2.5} />
+                </Link>
               </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)] md:col-span-5">
-            <div className="flex items-center gap-2.5 px-5 pt-[18px]">
-              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
-                <Monitor size={15} />
-              </span>
-              <h3 className="m-0 text-[17px] font-extrabold tracking-tight">{d.footer.studio}</h3>
-              <Link
-                to="/studio"
-                className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
-              >
-                {d.common.download} <ArrowRight size={13} strokeWidth={2.5} />
-              </Link>
-            </div>
-            <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
-              {d.studio.subtitle}
-            </p>
-            <div
-              aria-hidden
-              className="mx-5 mt-4 mb-5 flex-1 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-deep)] px-3.5 py-3 font-mono text-[11.5px] leading-[1.8]"
-            >
-              <span className="text-[var(--bx-text-dim)]">$</span>{' '}
-              <span className="text-[var(--bx-text-soft)]">boxai agent run</span>
-              <br />
-              <span className="text-[var(--bx-success)]">✓</span>{' '}
-              <span className="text-[var(--bx-text-muted)]">signed in · gateway ready</span>
-              <br />
-              <span className="text-[var(--bx-brand)]">→</span>{' '}
-              <span className="text-[var(--bx-text-muted)]">skills: 12 · mcp: 3 · memory: on</span>
-              <span
-                className="ml-1 inline-block h-[1em] w-1.5 align-text-bottom bg-[var(--bx-brand)]"
-                style={{ animation: 'bx-blink 1s ease infinite' }}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)] md:col-span-5">
-            <div className="flex items-center gap-2.5 px-5 pt-[18px]">
-              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
-                <LayoutDashboard size={15} />
-              </span>
-              <h3 className="m-0 text-[17px] font-extrabold tracking-tight">{d.footer.myAccount}</h3>
-              <Link
-                to={accountHref}
-                className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
-              >
-                {d.nav.account} <ArrowRight size={13} strokeWidth={2.5} />
-              </Link>
-            </div>
-            <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
-              {d.home.features.items[2].body}
-            </p>
-            <div className="mx-5 mt-4 mb-5 flex-1 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] p-3.5">
-              <div className="flex justify-between font-mono text-[10.5px] text-[var(--bx-text-dim)]">
-                <span>{d.account.statTodayTokens}</span>
-                <span className="text-[var(--bx-brand)]">{authed ? '…' : '—'}</span>
-              </div>
-              <div aria-hidden className="mt-2.5 flex h-[52px] items-end gap-[3px]">
-                {MINI_BARS.map((h, i) => (
+              <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
+                {d.home.bento.creator.body}
+              </p>
+              <div aria-hidden className="mx-5 mt-4 mb-5 grid grid-cols-4 gap-2">
+                {[
+                  'linear-gradient(120deg, rgba(31,213,185,0.55), rgba(53,214,244,0.2))',
+                  'linear-gradient(200deg, rgba(53,214,244,0.4), rgba(124,199,255,0.3))',
+                  'linear-gradient(160deg, rgba(12,159,140,0.5), rgba(31,213,185,0.15))',
+                ].map((bg, i) => (
                   <div
                     key={i}
-                    className="flex-1 origin-bottom rounded-t-[2px]"
-                    style={{
-                      height: `${h}%`,
-                      background:
-                        i === MINI_BARS.length - 1
-                          ? 'var(--bx-brand)'
-                          : 'color-mix(in srgb, var(--bx-brand) 45%, transparent)',
-                      animation: `bx-bar-grow 0.8s var(--bx-ease) both ${(i * 0.04).toFixed(2)}s`,
-                    }}
+                    className="aspect-square rounded-lg border border-[var(--bx-border)]"
+                    style={{ background: bg }}
                   />
                 ))}
+                <div
+                  className="flex aspect-square items-center justify-center rounded-lg border border-[var(--bx-border)]"
+                  style={{
+                    background:
+                      'linear-gradient(90deg, var(--bx-bg-muted) 25%, var(--bx-hover) 50%, var(--bx-bg-muted) 75%)',
+                    backgroundSize: '200% 100%',
+                    animation: 'bx-shimmer 1.6s linear infinite',
+                  }}
+                >
+                  <span className="font-mono text-[10px] text-[var(--bx-text-dim)]">gen…</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="flex flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)] md:col-span-7">
-            <div className="flex flex-wrap items-center gap-2.5 px-5 pt-[18px]">
-              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
-                <Code2 size={15} />
-              </span>
-              <h3 className="m-0 text-[17px] font-extrabold tracking-tight">{d.home.features.items[3].title}</h3>
-              <span className="rounded border border-[color-mix(in_srgb,var(--bx-success)_35%,transparent)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--bx-success)]">
-                {d.home.apiBadge}
-              </span>
-              <Link
-                to={keysHref}
-                className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+          <Reveal className="md:col-span-5" delay={0.04}>
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+              <div className="flex items-center gap-2.5 px-5 pt-[18px]">
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                  <Monitor size={15} />
+                </span>
+                <h3 className="m-0 text-[17px] font-extrabold tracking-tight">
+                  {d.home.bento.studio.title}
+                </h3>
+                <Link
+                  to="/studio"
+                  className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+                >
+                  {d.home.bento.studio.cta} <ArrowRight size={13} strokeWidth={2.5} />
+                </Link>
+              </div>
+              <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
+                {d.home.bento.studio.body}
+              </p>
+              <div
+                aria-hidden
+                className="mx-5 mt-4 mb-5 flex-1 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-deep)] px-3.5 py-3 font-mono text-[11.5px] leading-[1.8]"
               >
-                {d.footer.apiKeys} <ArrowRight size={13} strokeWidth={2.5} />
-              </Link>
+                <span className="text-[var(--bx-text-dim)]">$</span>{' '}
+                <span className="text-[var(--bx-text-soft)]">boxai agent run</span>
+                <br />
+                <span className="text-[var(--bx-success)]">✓</span>{' '}
+                <span className="text-[var(--bx-text-muted)]">signed in · gateway ready</span>
+                <br />
+                <span className="text-[var(--bx-brand)]">→</span>{' '}
+                <span className="text-[var(--bx-text-muted)]">skills: 12 · mcp: 3 · memory: on</span>
+                <span
+                  className="ml-1 inline-block h-[1em] w-1.5 align-text-bottom bg-[var(--bx-brand)]"
+                  style={{ animation: 'bx-blink 1s ease infinite' }}
+                />
+              </div>
             </div>
-            <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
-              {d.home.features.items[3].body}
-            </p>
-            <pre className="mx-5 mt-4 mb-5 overflow-x-auto rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-deep)] px-4 py-3 font-mono text-xs leading-[1.85]">
-              <span className="text-[var(--bx-text-dim)]">curl</span>{' '}
-              <span className="text-[var(--bx-cyan)]">https://api.you-box.com/v1/chat/completions</span>
-              {' \\\n  '}
-              <span className="text-[var(--bx-text-dim)]">-H</span>{' '}
-              <span className="text-[var(--bx-brand-bright)]">"Authorization: Bearer sk-box-****"</span>
-              {' \\\n  '}
-              <span className="text-[var(--bx-text-dim)]">-d</span>{' '}
-              <span className="text-[var(--bx-text-soft)]">
-                {`'{"model": "claude-sonnet-4-5", "messages": [...]}'`}
-              </span>
-            </pre>
-          </div>
+          </Reveal>
+
+          <Reveal className="md:col-span-5" delay={0.06}>
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+              <div className="flex items-center gap-2.5 px-5 pt-[18px]">
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                  <LayoutDashboard size={15} />
+                </span>
+                <h3 className="m-0 text-[17px] font-extrabold tracking-tight">
+                  {d.home.bento.account.title}
+                </h3>
+                <Link
+                  to={accountHref}
+                  className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+                >
+                  {d.home.bento.account.cta} <ArrowRight size={13} strokeWidth={2.5} />
+                </Link>
+              </div>
+              <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
+                {d.home.bento.account.body}
+              </p>
+              <div className="mx-5 mt-4 mb-5 flex-1 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] p-3.5">
+                <div className="flex justify-between font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+                  <span>{d.home.bento.account.todayTokens}</span>
+                  {/* Decorative design sample — not live usage money */}
+                  <span className="text-[var(--bx-brand)]">{d.home.bento.account.tokenSample}</span>
+                </div>
+                <div aria-hidden className="mt-2.5 flex h-[52px] items-end gap-[3px]">
+                  {MINI_BARS.map((h, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 origin-bottom rounded-t-[2px]"
+                      style={{
+                        height: `${h}%`,
+                        background:
+                          i === MINI_BARS.length - 1
+                            ? 'var(--bx-brand)'
+                            : 'color-mix(in srgb, var(--bx-brand) 45%, transparent)',
+                        animation: `bx-bar-grow 0.8s var(--bx-ease) both ${(i * 0.04).toFixed(2)}s`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal className="md:col-span-7" delay={0.08}>
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+              <div className="flex flex-wrap items-center gap-2.5 px-5 pt-[18px]">
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                  <Code2 size={15} />
+                </span>
+                <h3 className="m-0 text-[17px] font-extrabold tracking-tight">{d.home.bento.api.title}</h3>
+                <span className="rounded border border-[color-mix(in_srgb,var(--bx-success)_35%,transparent)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--bx-success)]">
+                  {d.home.apiBadge}
+                </span>
+                <Link
+                  to={keysHref}
+                  className="ml-auto inline-flex items-center gap-1 text-[12.5px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+                >
+                  {d.home.bento.api.cta} <ArrowRight size={13} strokeWidth={2.5} />
+                </Link>
+              </div>
+              <p className="mx-5 mt-2 text-[13.5px] leading-relaxed text-[var(--bx-text-muted)]">
+                {d.home.bento.api.body}
+              </p>
+              <pre className="mx-5 mt-4 mb-5 overflow-x-auto rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-deep)] px-4 py-3 font-mono text-xs leading-[1.85]">
+                <span className="text-[var(--bx-text-dim)]">curl</span>{' '}
+                <span className="text-[var(--bx-cyan)]">https://api.you-box.com/v1/chat/completions</span>
+                {' \\\n  '}
+                <span className="text-[var(--bx-text-dim)]">-H</span>{' '}
+                <span className="text-[var(--bx-brand-bright)]">"Authorization: Bearer sk-box-****"</span>
+                {' \\\n  '}
+                <span className="text-[var(--bx-text-dim)]">-d</span>{' '}
+                <span className="text-[var(--bx-text-soft)]">
+                  {`'{"model": "claude-sonnet-4-5", "messages": [...]}'`}
+                </span>
+              </pre>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -720,8 +849,10 @@ export function Home() {
               <span className="h-px w-5 bg-[var(--bx-brand)]" />
               For Developers
             </p>
-            <h2 className="mt-3.5 text-[34px] font-extrabold tracking-tight text-balance">
-              {d.home.dev.title}
+            <h2 className="mt-3.5 text-[34px] font-extrabold tracking-tight">
+              {d.home.dev.titleLine1}
+              <br />
+              {d.home.dev.titleLine2}
             </h2>
             <p className="mt-4 max-w-[400px] text-[14.5px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.dev.subtitle}
@@ -771,20 +902,20 @@ export function Home() {
                   className="ml-auto inline-flex cursor-pointer items-center gap-1.5 border-none bg-transparent font-mono text-[10.5px] text-[var(--bx-text-dim)] transition-colors hover:text-[var(--bx-text-soft)]"
                 >
                   {copied ? <Check size={12} /> : <Copy size={12} />}
-                  {copied ? d.common.copied : d.common.copy}
+                  {copied ? d.common.copied : 'copy'}
                 </button>
               </div>
               <pre className="m-0 min-h-[220px] overflow-x-auto px-[22px] py-5 font-mono text-[12.5px] leading-[1.9] whitespace-pre-wrap">
-                {CODE_SAMPLES[codeTab]}
+                {codeSamples[codeTab]}
               </pre>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Live status — real API only; hide empty/failed fleet */}
-      {statusReady && statusItems.length > 0 ? (
-        <section data-screen-label="Status" className="mx-auto max-w-[1200px] px-6 py-[88px]">
+      {/* Live status — always visible shell; real API rows when available */}
+      <section data-screen-label="Status" className="mx-auto max-w-[1200px] px-6 py-[88px]">
+        <Reveal>
           <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
@@ -794,22 +925,26 @@ export function Home() {
               <h2 className="mt-3.5 text-[34px] font-extrabold tracking-tight">{d.status.homeTitle}</h2>
             </div>
             <div className="flex items-center gap-3.5">
-              {overall ? (
+              <span
+                className={cx(
+                  'inline-flex items-center gap-1.5 rounded-[6px] border px-3 py-1 font-mono text-[11px] font-semibold tracking-wider',
+                  !statusReady
+                    ? 'border-[var(--bx-border)] text-[var(--bx-text-dim)]'
+                    : overall === 'degraded'
+                      ? 'border-[color-mix(in_srgb,var(--bx-warning)_35%,transparent)] text-[var(--bx-warning)]'
+                      : 'border-[color-mix(in_srgb,var(--bx-success)_35%,transparent)] text-[var(--bx-success)]',
+                )}
+              >
                 <span
-                  className={cx(
-                    'inline-flex items-center gap-1.5 rounded-[6px] border px-3 py-1 font-mono text-[11px] font-semibold tracking-wider',
-                    overall === 'operational'
-                      ? 'border-[color-mix(in_srgb,var(--bx-success)_35%,transparent)] text-[var(--bx-success)]'
-                      : 'border-[color-mix(in_srgb,var(--bx-warning)_35%,transparent)] text-[var(--bx-warning)]',
-                  )}
-                >
-                  <span
-                    className="h-1.5 w-1.5 rounded-full bg-current"
-                    style={{ animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }}
-                  />
-                  {overall === 'operational' ? d.status.overall.operational : d.status.overall.degraded}
-                </span>
-              ) : null}
+                  className="h-1.5 w-1.5 rounded-full bg-current"
+                  style={{ animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }}
+                />
+                {!statusReady
+                  ? '…'
+                  : overall === 'degraded'
+                    ? d.status.overall.degraded
+                    : d.status.overall.operational}
+              </span>
               <Link
                 to="/status"
                 className="inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
@@ -818,180 +953,213 @@ export function Home() {
               </Link>
             </div>
           </div>
+        </Reveal>
+        <Reveal>
           <div className="overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)]">
-            <div className="hidden grid-cols-[minmax(0,1.4fr)_110px_1fr_110px_100px] gap-4 border-b border-[var(--bx-border)] px-5 py-2.5 font-mono text-[10px] font-semibold tracking-[0.14em] text-[var(--bx-text-dim)] uppercase md:grid">
-              <span>{d.status.title}</span>
-              <span>Provider</span>
-              <span>{d.status.past}</span>
-              <span className="text-right">{d.status.latency}</span>
-              <span className="text-right">{d.status.availability}</span>
+            <div className="hidden grid-cols-[220px_110px_1fr_130px_110px] gap-4 border-b border-[var(--bx-border)] px-5 py-2.5 font-mono text-[10px] font-semibold tracking-[0.14em] text-[var(--bx-text-dim)] uppercase md:grid">
+              <span>{d.home.statusTable.channel}</span>
+              <span>{d.home.statusTable.provider}</span>
+              <span>{d.home.statusTable.probes}</span>
+              <span className="text-right">{d.home.statusTable.latency}</span>
+              <span className="text-right">{d.home.statusTable.availability}</span>
             </div>
-            {statusItems.map((row) => {
-              const color = hslForPct(row.availability)
-              const timeline = (row.timeline || []).slice(-30)
-              return (
-                <Link
-                  key={row.id}
-                  to="/status"
-                  className="grid grid-cols-1 items-center gap-3 border-t border-[var(--bx-line)] px-5 py-3.5 transition-colors hover:bg-[var(--bx-hover)] md:grid-cols-[minmax(0,1.4fr)_110px_1fr_110px_100px] md:gap-4"
-                >
-                  <span className="flex items-center gap-2.5 text-[13.5px] font-semibold">
-                    <span
-                      className="h-1.5 w-1.5 rounded-[2px]"
-                      style={{
-                        background:
-                          row.status === 'operational'
-                            ? 'var(--bx-success)'
-                            : row.status === 'degraded'
-                              ? 'var(--bx-warning)'
-                              : 'var(--bx-danger)',
-                      }}
-                    />
-                    <span className="truncate">{row.name}</span>
-                  </span>
-                  <span className="font-mono text-[11.5px] text-[var(--bx-text-dim)]">
-                    {providerLabel(row.provider)}
-                  </span>
-                  <span className="flex h-[18px] items-end gap-0.5">
-                    {timeline.length
-                      ? timeline.map((seg, i) => {
-                          const ok = seg.status === 'operational'
-                          const deg = seg.status === 'degraded'
-                          return (
+            {!statusReady ? (
+              <StatusSkeletonRows />
+            ) : statusItems.length > 0 ? (
+              statusItems.map((row) => {
+                const color = hslForPct(row.availability)
+                const timeline = (row.timeline || []).slice(-30)
+                return (
+                  <Link
+                    key={row.id}
+                    to="/status"
+                    className="grid grid-cols-1 items-center gap-3 border-t border-[var(--bx-line)] px-5 py-3.5 transition-colors hover:bg-[var(--bx-hover)] md:grid-cols-[220px_110px_1fr_130px_110px] md:gap-4"
+                  >
+                    <span className="flex items-center gap-2.5 text-[13.5px] font-semibold">
+                      <span
+                        className="h-1.5 w-1.5 rounded-[2px]"
+                        style={{
+                          background:
+                            row.status === 'operational'
+                              ? 'var(--bx-success)'
+                              : row.status === 'degraded'
+                                ? 'var(--bx-warning)'
+                                : 'var(--bx-danger)',
+                        }}
+                      />
+                      <span className="truncate">{row.name}</span>
+                    </span>
+                    <span className="font-mono text-[11.5px] text-[var(--bx-text-dim)]">
+                      {providerLabel(row.provider)}
+                    </span>
+                    <span className="flex h-[18px] items-end gap-0.5">
+                      {timeline.length
+                        ? timeline.map((seg, i) => {
+                            const ok = seg.status === 'operational'
+                            const deg = seg.status === 'degraded'
+                            return (
+                              <span
+                                key={i}
+                                className="max-w-2 flex-1 origin-bottom rounded-[1.5px]"
+                                style={{
+                                  height: ok ? '100%' : deg ? '62%' : '35%',
+                                  background: ok
+                                    ? 'var(--bx-success)'
+                                    : deg
+                                      ? 'var(--bx-warning)'
+                                      : 'var(--bx-danger)',
+                                  animation: `bx-bar-grow 0.7s var(--bx-ease) both ${(i * 0.02).toFixed(2)}s`,
+                                }}
+                              />
+                            )
+                          })
+                        : Array.from({ length: 30 }, (_, i) => (
                             <span
                               key={i}
-                              className="max-w-2 flex-1 origin-bottom rounded-[1.5px]"
-                              style={{
-                                height: ok ? '100%' : deg ? '62%' : '35%',
-                                background: ok
-                                  ? 'var(--bx-success)'
-                                  : deg
-                                    ? 'var(--bx-warning)'
-                                    : 'var(--bx-danger)',
-                                animation: `bx-bar-grow 0.7s var(--bx-ease) both ${(i * 0.02).toFixed(2)}s`,
-                              }}
+                              className="max-w-2 flex-1 rounded-[1.5px] bg-[var(--bx-bg-muted)]"
+                              style={{ height: '50%' }}
                             />
-                          )
-                        })
-                      : null}
-                  </span>
-                  <span className="text-right font-mono text-[12.5px] tabular-nums text-[var(--bx-text-soft)]">
-                    {row.latency_ms != null ? `${Math.round(row.latency_ms)} ms` : '—'}
-                  </span>
+                          ))}
+                    </span>
+                    <span className="text-right font-mono text-[12.5px] tabular-nums text-[var(--bx-text-soft)]">
+                      {row.latency_ms != null ? `${Math.round(row.latency_ms)} ms` : '—'}
+                    </span>
+                    <span
+                      className="text-right font-mono text-[13px] font-semibold tabular-nums"
+                      style={color ? { color } : undefined}
+                    >
+                      {formatAvailability(row.availability)}%
+                    </span>
+                  </Link>
+                )
+              })
+            ) : (
+              <div className="border-t border-[var(--bx-line)] px-5 py-10 text-center">
+                <p className="m-0 text-sm font-semibold text-[var(--bx-text-soft)]">{d.status.emptyTitle}</p>
+                <p className="mt-2 text-[13px] text-[var(--bx-text-muted)]">{d.status.emptyBody}</p>
+              </div>
+            )}
+          </div>
+        </Reveal>
+      </section>
+
+      {/* Pricing teaser — 入门 / 专业 / 企业 from dedicated teaser plans */}
+      <section data-screen-label="Pricing" className="mx-auto max-w-[1200px] px-6 pb-[88px]">
+        <Reveal>
+          <div className="grid gap-3.5 md:grid-cols-[0.8fr_1fr_1fr_1fr]">
+            <div className="flex flex-col justify-center pr-4">
+              <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
+                <span className="h-px w-5 bg-[var(--bx-brand)]" />
+                Pricing
+              </p>
+              <h2 className="mt-3.5 text-[30px] font-extrabold tracking-tight">
+                {d.home.pricingTeaser.title}
+              </h2>
+              <Link
+                to="/pricing"
+                className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+              >
+                {d.home.pricingTeaser.cta} <ArrowRight size={13} strokeWidth={2.5} />
+              </Link>
+            </div>
+            {teaserPlans.map((plan) => {
+              const href = teaserHref(plan.ctaKind)
+              const isExternal = plan.ctaKind === 'contact'
+              const linkCls = cx(
+                'mt-4 text-[13px] font-bold',
+                plan.highlighted ? 'text-[var(--bx-brand)]' : 'text-[var(--bx-text-soft)]',
+              )
+              return (
+                <div
+                  key={plan.name}
+                  className={cx(
+                    'relative flex flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-0.5',
+                    plan.highlighted
+                      ? 'border border-transparent'
+                      : 'border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] hover:border-[var(--bx-brand-ring)]',
+                  )}
+                  style={
+                    plan.highlighted
+                      ? {
+                          background:
+                            'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box',
+                          border: '1px solid transparent',
+                        }
+                      : undefined
+                  }
+                >
+                  {plan.highlighted ? (
+                    <span className="absolute -top-2.5 right-3.5 rounded bg-[var(--bx-grad-cta)] px-2 py-0.5 font-mono text-[10px] font-semibold text-[var(--bx-ink)]">
+                      {d.pricing.highlight}
+                    </span>
+                  ) : null}
                   <span
-                    className="text-right font-mono text-[13px] font-semibold tabular-nums"
-                    style={color ? { color } : undefined}
+                    className={cx(
+                      'font-mono text-[11px] tracking-[0.12em] uppercase',
+                      plan.highlighted ? 'text-[var(--bx-brand)]' : 'text-[var(--bx-text-dim)]',
+                    )}
                   >
-                    {formatAvailability(row.availability)}%
+                    {plan.name}
                   </span>
-                </Link>
+                  <p className="mt-2.5 font-mono text-[30px] font-semibold tracking-tight">
+                    {plan.price}
+                    {plan.period ? (
+                      <span className="text-[13px] text-[var(--bx-text-dim)]">{plan.period}</span>
+                    ) : null}
+                  </p>
+                  <p className="mt-2 flex-1 text-[12.5px] leading-relaxed text-[var(--bx-text-muted)]">
+                    {plan.desc}
+                  </p>
+                  {isExternal ? (
+                    <a href={href} className={linkCls}>
+                      {plan.cta} →
+                    </a>
+                  ) : (
+                    <Link to={href} className={linkCls}>
+                      {plan.cta} →
+                    </Link>
+                  )}
+                </div>
               )
             })}
           </div>
-        </section>
-      ) : null}
-
-      {/* Pricing teaser — copy from i18n plans, not hardcoded fake ¥ */}
-      <section data-screen-label="Pricing" className="mx-auto max-w-[1200px] px-6 pb-[88px]">
-        <div className="grid gap-3.5 md:grid-cols-[0.8fr_1fr_1fr_1fr]">
-          <div className="flex flex-col justify-center pr-4">
-            <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
-              <span className="h-px w-5 bg-[var(--bx-brand)]" />
-              Pricing
-            </p>
-            <h2 className="mt-3.5 text-[30px] font-extrabold tracking-tight">{d.home.pricingTeaser.title}</h2>
-            <Link
-              to="/pricing"
-              className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
-            >
-              {d.home.pricingTeaser.cta} <ArrowRight size={13} strokeWidth={2.5} />
-            </Link>
-          </div>
-          {d.pricing.plans.slice(0, 3).map((plan, i) => (
-            <div
-              key={plan.name}
-              className={cx(
-                'relative flex flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-0.5',
-                plan.highlighted
-                  ? 'border border-transparent'
-                  : 'border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] hover:border-[var(--bx-brand-ring)]',
-              )}
-              style={
-                plan.highlighted
-                  ? {
-                      background:
-                        'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box',
-                      border: '1px solid transparent',
-                    }
-                  : undefined
-              }
-            >
-              {plan.highlighted ? (
-                <span className="absolute -top-2.5 right-3.5 rounded bg-[var(--bx-grad-cta)] px-2 py-0.5 font-mono text-[10px] font-semibold text-[var(--bx-ink)]">
-                  {d.pricing.highlight}
-                </span>
-              ) : null}
-              <span
-                className={cx(
-                  'font-mono text-[11px] tracking-[0.12em] uppercase',
-                  plan.highlighted ? 'text-[var(--bx-brand)]' : 'text-[var(--bx-text-dim)]',
-                )}
-              >
-                {plan.name}
-              </span>
-              <p className="mt-2.5 font-mono text-[30px] font-semibold tracking-tight">
-                {plan.price}
-                {plan.period ? (
-                  <span className="text-[13px] text-[var(--bx-text-dim)]">{plan.period}</span>
-                ) : null}
-              </p>
-              <p className="mt-2 flex-1 text-[12.5px] leading-relaxed text-[var(--bx-text-muted)]">
-                {plan.desc}
-              </p>
-              <Link
-                to={i === 0 ? (authed ? '/create' : '/signup') : '/pricing'}
-                className={cx(
-                  'mt-4 text-[13px] font-bold',
-                  plan.highlighted ? 'text-[var(--bx-brand)]' : 'text-[var(--bx-text-soft)]',
-                )}
-              >
-                {plan.cta} →
-              </Link>
-            </div>
-          ))}
-        </div>
+        </Reveal>
       </section>
 
       {/* FAQ */}
       <section data-screen-label="FAQ" id="faq" className="mx-auto max-w-[1200px] px-6 pb-[88px]">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
-          <div>
-            <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
-              <span className="h-px w-5 bg-[var(--bx-brand)]" />
-              {d.home.faq.eyebrow}
-            </p>
-            <h2 className="mt-3.5 text-[30px] font-extrabold tracking-tight">{d.home.faq.title}</h2>
+        <Reveal>
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
+            <div>
+              <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
+                <span className="h-px w-5 bg-[var(--bx-brand)]" />
+                {d.home.faq.eyebrow}
+              </p>
+              <h2 className="mt-3.5 text-[30px] font-extrabold tracking-tight">{d.home.faq.title}</h2>
+            </div>
+            <FaqList items={d.home.faq.items} idPrefix="home-faq" />
           </div>
-          <FaqList items={d.home.faq.items} idPrefix="home-faq" />
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA */}
       <section data-screen-label="CTA" className="mx-auto max-w-[1200px] px-6 pb-24">
-        <CtaBand
-          title={d.home.cta.title1}
-          titleAccent={d.home.cta.title2}
-          subtitle={d.home.cta.subtitle}
-          actions={[
-            {
-              kind: 'link',
-              to: authed ? '/create' : '/signup',
-              label: d.home.cta.primary,
-              primary: true,
-            },
-            { kind: 'link', to: '/pricing', label: d.home.cta.secondary, primary: false },
-          ]}
-        />
+        <Reveal>
+          <CtaBand
+            title={d.home.cta.title1}
+            titleAccent={d.home.cta.title2}
+            subtitle={d.home.cta.subtitle}
+            actions={[
+              {
+                kind: 'link',
+                to: authed ? '/create' : '/signup',
+                label: d.home.cta.primary,
+                primary: true,
+              },
+              { kind: 'link', to: '/pricing', label: d.home.cta.secondary, primary: false },
+            ]}
+          />
+        </Reveal>
       </section>
     </div>
   )

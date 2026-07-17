@@ -24,13 +24,13 @@
 |----|-----------|------|--------|
 | F1 | Tokens Precision Teal + compat | `web/src/index.css`, `design-source/tokens.css` | done |
 | F2 | 字体 Manrope + Noto Sans SC + IBM Plex Mono | `web/index.html`, tailwind | done |
-| F3 | 壳层 Header mega-menu / Footer | `Header.tsx`, `Footer.tsx` | done |
-| F4 | Home（设计 11 section + 真实 status API） | `pages/Home.tsx` | done |
-| F5 | Pricing（plan 卡 + 对比表 + 编号 FAQ + CTA band） | `pages/Pricing.tsx` | done |
-| F6 | Studio（features / download API / 编号 FAQ / CTA） | `pages/Studio.tsx` | done |
-| F7 | Status（eyebrow chrome + period pills + ready/empty） | `pages/Status.tsx` | done |
-| F8 | Auth 玻璃卡片 + brand mark + ambient | `pages/auth/*` | done |
-| F9 | Account 分组导航 + Overview/Keys/Usage 等 `bx-account-*` | `pages/account/*` | done |
+| F3 | 壳层 Header mega-menu / Footer | `Header.tsx`, `Footer.tsx` | done（2026-07-18 对照 Header/Footer.dc：解决方案 mega、footer 全部系统正常运行） |
+| F4 | Home（设计 11 section + 真实 status API） | `pages/Home.tsx` | done（2026-07-18 **100% 结构+文案**对照 `新版-首页.dc.html`：设计 stats/value/gateway/bento/teaser 企业卡；status 常显） |
+| F5 | Pricing（plan 卡 + 对比表 + 编号 FAQ + CTA band） | `pages/Pricing.tsx` | done（88px 节奏 + SectionHead eyebrow；无独立 dc.html） |
+| F6 | Studio（features / download API / 编号 FAQ / CTA） | `pages/Studio.tsx` | done（Home 语法；无独立 dc.html） |
+| F7 | Status（eyebrow chrome + period pills + ready/empty） | `pages/Status.tsx` | done（brand token；无独立 dc.html） |
+| F8 | Auth 玻璃卡片 + brand mark + ambient | `pages/auth/*` | done（含 OAuthCallback 同壳） |
+| F9 | Account 全 tab 对照 `新版-账户.dc.html` | `pages/account/*` | done（2026-07-18 布局重建：订阅/渠道/监控/批量图/资料/安全/订单等；缺 API 字段显示 —） |
 | F10 | Creator 壳 CreateLayout + tabs | `create/CreateLayout.tsx` | done |
 | F11 | 视频页 / 资产页 / ModelPicker | `create/Video`, `Assets`, `ModelPicker` | done |
 | F12 | 图像 playground teal skin | `image-playground/index.css` | done |

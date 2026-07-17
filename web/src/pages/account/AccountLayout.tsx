@@ -20,7 +20,7 @@ type NavKey =
   | 'affiliate'
   | 'announcements'
 
-type GroupKey = 'workspace' | 'billing' | 'gateway' | 'account'
+type GroupKey = 'workspace' | 'billing' | 'platform' | 'account'
 
 const groups: Array<{
   group: GroupKey
@@ -43,7 +43,7 @@ const groups: Array<{
     ],
   },
   {
-    group: 'gateway',
+    group: 'platform',
     items: [
       { to: '/account/channels', key: 'channels' },
       { to: '/account/monitor', key: 'monitor' },
@@ -108,10 +108,11 @@ export function AccountLayout() {
         : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
     )
 
+  // Design mono group headers stay English (Workspace / Billing / Platform / Account)
   const groupLabel: Record<GroupKey, string> = {
     workspace: nav.groupWorkspace,
     billing: nav.groupBilling,
-    gateway: nav.groupGateway,
+    platform: nav.groupPlatform || nav.groupGateway,
     account: nav.groupAccount,
   }
 

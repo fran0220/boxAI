@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Copy, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { Copy, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import {
   createKey,
   deleteKey,
@@ -53,24 +53,6 @@ function parseIpLines(text: string): string[] {
     .split(/[\n,]+/)
     .map((s) => s.trim())
     .filter(Boolean)
-}
-
-function progressTone(used: number, limit: number): string {
-  if (limit <= 0) return 'bg-[var(--bx-brand)]'
-  const r = used / limit
-  if (r >= 1) return 'bg-red-500'
-  if (r >= 0.8) return 'bg-amber-500'
-  return 'bg-[var(--bx-brand)]'
-}
-
-function ProgressBar({ used, limit }: { used: number; limit: number }) {
-  if (limit <= 0) return null
-  const pct = Math.min((used / limit) * 100, 100)
-  return (
-    <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[var(--bx-bg-muted)]">
-      <div className={`h-full rounded-full ${progressTone(used, limit)}`} style={{ width: `${pct}%` }} />
-    </div>
-  )
 }
 
 export function AccountKeys() {
@@ -260,7 +242,7 @@ export function AccountKeys() {
   function statusTone(status: string): string {
     switch (status) {
       case 'active':
-        return 'bx-account-status bx-account-status--brand'
+        return 'bx-account-status bx-account-status--ok'
       case 'quota_exhausted':
       case 'expired':
         return 'bx-account-status bx-account-status--warn'
@@ -520,7 +502,7 @@ export function AccountKeys() {
         ) : keys.length === 0 ? (
           <p className="bx-account-empty">{t.empty}</p>
         ) : (
-          <table className="bx-account-table min-w-[900px]">
+          <table className="bx-account-table bx-account-table--compact min-w-[820px]">
             <thead>
               <tr>
                 <th>{t.colName}</th>
@@ -528,19 +510,33 @@ export function AccountKeys() {
                 <th>{t.colGroup}</th>
                 <th>{t.colQuota}</th>
                 <th>{t.colRateLimit}</th>
-                <th>{t.colExpires}</th>
                 <th>{t.colStatus}</th>
                 <th className="text-right">{t.colActions}</th>
               </tr>
             </thead>
             <tbody>
-              {keys.map((key) => (
+              {keys.map((key) => {
+                const rateBits: string[] = []
+                if ((key.rate_limit_5h || 0) > 0) {
+                  rateBits.push(`5h $${(key.usage_5h || 0).toFixed(1)}/${key.rate_limit_5h!.toFixed(0)}`)
+                }
+                if ((key.rate_limit_1d || 0) > 0) {
+                  rateBits.push(`1d $${(key.usage_1d || 0).toFixed(1)}/${key.rate_limit_1d!.toFixed(0)}`)
+                }
+                if ((key.rate_limit_7d || 0) > 0) {
+                  rateBits.push(`7d $${(key.usage_7d || 0).toFixed(1)}/${key.rate_limit_7d!.toFixed(0)}`)
+                }
+                return (
                 <tr key={key.id}>
                   <td>
                     <div className="font-bold text-[var(--bx-text)]">{key.name}</div>
                     {key.last_used_at ? (
                       <div className="mt-0.5 font-mono text-[10px] text-[var(--bx-text-dim)]">
                         {t.colLastUsed}: {new Date(key.last_used_at).toLocaleString()}
+                      </div>
+                    ) : key.expires_at ? (
+                      <div className="mt-0.5 font-mono text-[10px] text-[var(--bx-text-dim)]">
+                        {t.colExpires}: {new Date(key.expires_at).toLocaleDateString()}
                       </div>
                     ) : null}
                   </td>
@@ -555,70 +551,50 @@ export function AccountKeys() {
                       <Copy size={11} />
                       {copiedId === key.id ? <span className="text-[var(--bx-brand-bright)]">{d.common.copied}</span> : null}
                     </button>
-                    {(key.ip_whitelist?.length || key.ip_blacklist?.length) ? (
-                      <div className="mt-1 text-[10px] text-[var(--bx-text-dim)]">
-                        IP {key.ip_whitelist?.length ? `W:${key.ip_whitelist.length}` : ''}
-                        {key.ip_blacklist?.length ? ` B:${key.ip_blacklist.length}` : ''}
-                      </div>
-                    ) : null}
                   </td>
-                  <td className="text-[var(--bx-text-muted)]">{key.group?.name || '—'}</td>
+                  <td className="text-xs text-[var(--bx-text-muted)]">{key.group?.name || '—'}</td>
                   <td className="num text-[11px]">
                     {(key.quota || 0) > 0 ? (
-                      <div className="min-w-[100px]">
-                        <span>
+                      <div className="min-w-[88px]">
+                        <span className="font-mono text-[var(--bx-text-soft)]">
                           ${key.quota_used?.toFixed(2) || '0.00'} / ${key.quota.toFixed(2)}
                         </span>
-                        <ProgressBar used={key.quota_used || 0} limit={key.quota} />
+                        <span className="bx-account-progress">
+                          <i
+                            style={{
+                              width: `${Math.min(100, ((key.quota_used || 0) / key.quota) * 100)}%`,
+                            }}
+                            className={
+                              (key.quota_used || 0) / key.quota >= 1
+                                ? 'is-danger'
+                                : (key.quota_used || 0) / key.quota >= 0.8
+                                  ? 'is-warn'
+                                  : undefined
+                            }
+                          />
+                        </span>
                       </div>
                     ) : (
                       <span className="text-[var(--bx-text-dim)]">{t.unlimited}</span>
                     )}
                   </td>
-                  <td className="num text-[11px] text-[var(--bx-text-muted)]">
-                    {(key.rate_limit_5h || 0) > 0 || (key.rate_limit_1d || 0) > 0 || (key.rate_limit_7d || 0) > 0 ? (
-                      <div className="min-w-[120px] space-y-1">
-                        {(key.rate_limit_5h || 0) > 0 ? (
-                          <div>
-                            5h: ${(key.usage_5h || 0).toFixed(2)}/{key.rate_limit_5h!.toFixed(2)}
-                            <ProgressBar used={key.usage_5h || 0} limit={key.rate_limit_5h!} />
-                          </div>
-                        ) : null}
-                        {(key.rate_limit_1d || 0) > 0 ? (
-                          <div>
-                            1d: ${(key.usage_1d || 0).toFixed(2)}/{key.rate_limit_1d!.toFixed(2)}
-                            <ProgressBar used={key.usage_1d || 0} limit={key.rate_limit_1d!} />
-                          </div>
-                        ) : null}
-                        {(key.rate_limit_7d || 0) > 0 ? (
-                          <div>
-                            7d: ${(key.usage_7d || 0).toFixed(2)}/{key.rate_limit_7d!.toFixed(2)}
-                            <ProgressBar used={key.usage_7d || 0} limit={key.rate_limit_7d!} />
-                          </div>
-                        ) : null}
-                      </div>
-                    ) : (
-                      <span className="text-[var(--bx-text-dim)]">—</span>
-                    )}
-                  </td>
-                  <td className="text-xs text-[var(--bx-text-muted)]">
-                    {key.expires_at ? new Date(key.expires_at).toLocaleDateString() : t.never}
+                  <td className="font-mono text-[11px] text-[var(--bx-text-muted)]">
+                    {rateBits.length ? rateBits.join(' · ') : '—'}
                   </td>
                   <td>
                     <span className={statusTone(key.status)}>{statusLabel(key.status)}</span>
                   </td>
                   <td>
                     <div className="flex flex-wrap justify-end gap-1">
-                      <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => openEdit(key)}>
-                        <Pencil size={12} />
+                      <button type="button" className="bx-account-outline-btn" onClick={() => openEdit(key)}>
                         {t.edit}
                       </button>
-                      <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void onToggle(key)}>
+                      <button type="button" className="bx-account-outline-btn" onClick={() => void onToggle(key)}>
                         {key.status === 'active' ? t.disable : t.enable}
                       </button>
                       <button
                         type="button"
-                        className="bx-btn bx-btn-ghost bx-btn-sm text-[var(--bx-danger)]"
+                        className="bx-account-outline-btn bx-account-outline-btn--danger"
                         onClick={() => void onDelete(key)}
                         aria-label={d.common.delete}
                       >
@@ -627,7 +603,7 @@ export function AccountKeys() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         )}

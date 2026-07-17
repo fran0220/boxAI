@@ -170,7 +170,7 @@ export function CreateLayout() {
         </button>
         {activePanel ? (
           <div className="flex min-w-0 items-center gap-2 text-sm text-[var(--bx-text-soft)]">
-            <activePanel.icon size={15} className="shrink-0 text-[var(--bx-teal-bright)]" />
+            <activePanel.icon size={15} className="shrink-0 text-[var(--bx-brand-bright)]" />
             <span className="truncate font-medium">{activePanel.label}</span>
           </div>
         ) : null}

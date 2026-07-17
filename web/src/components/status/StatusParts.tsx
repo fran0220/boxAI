@@ -136,7 +136,7 @@ export function MonitorStatusCard({
     >
       <StatusCorners />
       <div className="flex items-start gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--bx-bg-muted)] ring-1 ring-white/10 text-sm font-semibold text-[var(--bx-teal)]">
+        <span className="grid h-9 w-9 place-items-center rounded-[var(--bx-radius-xl)] bg-[var(--bx-bg-muted)] ring-1 ring-white/10 text-sm font-semibold text-[var(--bx-brand)]">
           {(item.provider || '?').slice(0, 1).toUpperCase()}
         </span>
         <div className="min-w-0 flex-1">
@@ -185,7 +185,7 @@ export function MonitorStatusCard({
 
 function MetricTile({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="rounded-xl border border-[var(--bx-border)] bg-[var(--bx-bg-muted)] p-3">
+    <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-muted)] p-3">
       <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--bx-text-dim)]">{label}</div>
       <div className="bx-status-metric-value mt-1.5 text-lg text-[var(--bx-text)]">
         {value}
@@ -201,15 +201,15 @@ export function StatusSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="bx-status-card min-h-[280px] animate-pulse p-5">
           <div className="flex gap-3">
-            <div className="h-9 w-9 rounded-xl bg-[var(--bx-bg-muted)]" />
+            <div className="h-9 w-9 rounded-[var(--bx-radius-xl)] bg-[var(--bx-bg-muted)]" />
             <div className="flex-1 space-y-2">
               <div className="h-4 w-2/3 rounded bg-[var(--bx-bg-muted)]" />
               <div className="h-3 w-1/2 rounded bg-[var(--bx-bg-muted)]" />
             </div>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-2">
-            <div className="h-16 rounded-xl bg-[var(--bx-bg-muted)]" />
-            <div className="h-16 rounded-xl bg-[var(--bx-bg-muted)]" />
+            <div className="h-16 rounded-[var(--bx-radius-xl)] bg-[var(--bx-bg-muted)]" />
+            <div className="h-16 rounded-[var(--bx-radius-xl)] bg-[var(--bx-bg-muted)]" />
           </div>
           <div className="mt-6 h-5 w-full rounded bg-[var(--bx-bg-muted)]" />
         </div>

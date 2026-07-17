@@ -16,7 +16,7 @@ export function Footer() {
       links: [
         { label: d.footer.creator, to: '/create' },
         { label: d.footer.studio, to: '/studio' },
-        { label: d.home.features.items[3].title, to: '/account/keys' },
+        { label: d.footer.openApi, to: '/account/keys' },
         { label: d.footer.pricing, to: '/pricing' },
       ],
     },
@@ -66,7 +66,7 @@ export function Footer() {
                 className="h-1.5 w-1.5 rounded-full bg-current"
                 style={{ animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }}
               />
-              {d.status.overall.operational}
+              {d.footer.systemsOk}
             </Link>
           </div>
           {columns.map((col) => (

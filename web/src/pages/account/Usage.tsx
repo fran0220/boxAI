@@ -344,21 +344,11 @@ export function AccountUsage() {
     if (tab === 'errors') void loadErrors()
   }, [tab, loadErrors])
 
-  function applyLogFilters() {
-    setAppliedLogFilters({ ...logFilters })
-    setLogPage(1)
-  }
-
   function resetLogFilters() {
     const next = emptyLogFilters()
     setLogFilters(next)
     setAppliedLogFilters(next)
     setLogPage(1)
-  }
-
-  function applyErrorFilters() {
-    setAppliedErrorFilters({ ...errorFilters })
-    setErrorPage(1)
   }
 
   function resetErrorFilters() {
@@ -476,12 +466,33 @@ export function AccountUsage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="bx-account-page-title">{t.title}</h1>
-          <p className="bx-account-page-sub">{t.subtitle}</p>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="bx-account-page-title">{t.title}</h1>
         <div className="bx-account-toolbar">
+          <input
+            type="date"
+            className="bx-account-input-sm font-mono text-[12.5px]"
+            value={logFilters.start_date}
+            onChange={(e) => {
+              const next = { ...logFilters, start_date: e.target.value }
+              setLogFilters(next)
+              setAppliedLogFilters(next)
+              setLogPage(1)
+            }}
+            aria-label={t.startDate}
+          />
+          <input
+            type="date"
+            className="bx-account-input-sm font-mono text-[12.5px]"
+            value={logFilters.end_date}
+            onChange={(e) => {
+              const next = { ...logFilters, end_date: e.target.value }
+              setLogFilters(next)
+              setAppliedLogFilters(next)
+              setLogPage(1)
+            }}
+            aria-label={t.endDate}
+          />
           <button
             type="button"
             className="bx-btn bx-btn-ghost bx-btn-sm"
@@ -489,9 +500,6 @@ export function AccountUsage() {
             disabled={exporting || logTotal === 0}
           >
             {exporting ? t.exporting : t.exportCsv}
-          </button>
-          <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void refreshAll()}>
-            {t.refresh}
           </button>
         </div>
       </div>
@@ -583,130 +591,95 @@ export function AccountUsage() {
         ))}
       </div>
 
-      {/* Shared date filters always visible; tab-specific filters below */}
-      <div className="bx-account-panel bx-account-panel-pad mt-3.5">
-        <p className="bx-account-mono-label mb-3">{t.filters}</p>
-
+      {/* Compact secondary filters — design-first, dates already on toolbar */}
+      <div className="mt-3.5 flex flex-wrap items-center gap-2">
         {tab === 'errors' ? (
-          <div className="flex flex-wrap items-end gap-3">
-            <Field label={t.colKey}>
-              <select
-                className="bx-input"
-                value={errorFilters.api_key_id}
-                onChange={(e) => setErrorFilters((f) => ({ ...f, api_key_id: e.target.value }))}
-              >
-                <option value="">{t.allKeys}</option>
-                {keys.map((k) => (
-                  <option key={k.id} value={k.id}>
-                    {k.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t.colModel}>
-              <input
-                className="bx-input"
-                value={errorFilters.model}
-                onChange={(e) => setErrorFilters((f) => ({ ...f, model: e.target.value }))}
-                placeholder={t.allModels}
-              />
-            </Field>
-            <Field label={t.colCategory}>
-              <select
-                className="bx-input"
-                value={errorFilters.category}
-                onChange={(e) => setErrorFilters((f) => ({ ...f, category: e.target.value }))}
-              >
-                <option value="">{t.categories.all}</option>
-                {ERROR_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {categoryLabel(c)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t.colStatus}>
-              <select
-                className="bx-input"
-                value={errorFilters.status_code}
-                onChange={(e) => setErrorFilters((f) => ({ ...f, status_code: e.target.value }))}
-              >
-                <option value="">—</option>
-                {ERROR_STATUS_CODES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t.startDate}>
-              <input
-                type="date"
-                className="bx-input"
-                value={logFilters.start_date}
-                onChange={(e) => setLogFilters((f) => ({ ...f, start_date: e.target.value }))}
-              />
-            </Field>
-            <Field label={t.endDate}>
-              <input
-                type="date"
-                className="bx-input"
-                value={logFilters.end_date}
-                onChange={(e) => setLogFilters((f) => ({ ...f, end_date: e.target.value }))}
-              />
-            </Field>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                className="bx-btn bx-btn-primary bx-btn-sm"
-                onClick={() => {
-                  setAppliedLogFilters({ ...logFilters })
-                  applyErrorFilters()
-                }}
-              >
-                {t.apply}
-              </button>
-              <button
-                type="button"
-                className="bx-btn bx-btn-ghost bx-btn-sm"
-                onClick={() => {
-                  resetErrorFilters()
-                  resetLogFilters()
-                }}
-              >
-                {t.reset}
-              </button>
-            </div>
-          </div>
+          <>
+            <select
+              className="bx-account-input-sm"
+              value={errorFilters.category}
+              onChange={(e) => {
+                const next = { ...errorFilters, category: e.target.value }
+                setErrorFilters(next)
+                setAppliedErrorFilters(next)
+                setErrorPage(1)
+              }}
+              aria-label={t.colCategory}
+            >
+              <option value="">{t.categories.all}</option>
+              {ERROR_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {categoryLabel(c)}
+                </option>
+              ))}
+            </select>
+            <select
+              className="bx-account-input-sm"
+              value={errorFilters.status_code}
+              onChange={(e) => {
+                const next = { ...errorFilters, status_code: e.target.value }
+                setErrorFilters(next)
+                setAppliedErrorFilters(next)
+                setErrorPage(1)
+              }}
+              aria-label={t.colStatus}
+            >
+              <option value="">{t.colStatus}</option>
+              {ERROR_STATUS_CODES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </>
         ) : (
-          <div className="flex flex-wrap items-end gap-3">
-            <Field label={t.colKey}>
+          <>
+            <select
+              className="bx-account-input-sm"
+              value={logFilters.api_key_id}
+              onChange={(e) => {
+                const next = { ...logFilters, api_key_id: e.target.value }
+                setLogFilters(next)
+                setAppliedLogFilters(next)
+                setLogPage(1)
+              }}
+              aria-label={t.colKey}
+            >
+              <option value="">{t.allKeys}</option>
+              {keys.map((k) => (
+                <option key={k.id} value={k.id}>
+                  {k.name}
+                </option>
+              ))}
+            </select>
+            <input
+              className="bx-account-input-sm w-[140px]"
+              value={logFilters.model}
+              onChange={(e) => setLogFilters((f) => ({ ...f, model: e.target.value }))}
+              onBlur={() => {
+                setAppliedLogFilters({ ...logFilters })
+                setLogPage(1)
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setAppliedLogFilters({ ...logFilters })
+                  setLogPage(1)
+                }
+              }}
+              placeholder={t.allModels}
+              aria-label={t.colModel}
+            />
+            {groups.length > 0 ? (
               <select
-                className="bx-input"
-                value={logFilters.api_key_id}
-                onChange={(e) => setLogFilters((f) => ({ ...f, api_key_id: e.target.value }))}
-              >
-                <option value="">{t.allKeys}</option>
-                {keys.map((k) => (
-                  <option key={k.id} value={k.id}>
-                    {k.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t.colModel}>
-              <input
-                className="bx-input"
-                value={logFilters.model}
-                onChange={(e) => setLogFilters((f) => ({ ...f, model: e.target.value }))}
-                placeholder={t.allModels}
-              />
-            </Field>
-            <Field label={t.colGroup}>
-              <select
-                className="bx-input"
+                className="bx-account-input-sm"
                 value={logFilters.group_id}
-                onChange={(e) => setLogFilters((f) => ({ ...f, group_id: e.target.value }))}
+                onChange={(e) => {
+                  const next = { ...logFilters, group_id: e.target.value }
+                  setLogFilters(next)
+                  setAppliedLogFilters(next)
+                  setLogPage(1)
+                }}
+                aria-label={t.colGroup}
               >
                 <option value="">{t.allGroups}</option>
                 {groups.map((g) => (
@@ -715,74 +688,74 @@ export function AccountUsage() {
                   </option>
                 ))}
               </select>
-            </Field>
-            <Field label={t.startDate}>
-              <input
-                type="date"
-                className="bx-input"
-                value={logFilters.start_date}
-                onChange={(e) => setLogFilters((f) => ({ ...f, start_date: e.target.value }))}
-              />
-            </Field>
-            <Field label={t.endDate}>
-              <input
-                type="date"
-                className="bx-input"
-                value={logFilters.end_date}
-                onChange={(e) => setLogFilters((f) => ({ ...f, end_date: e.target.value }))}
-              />
-            </Field>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" className="bx-btn bx-btn-primary bx-btn-sm" onClick={applyLogFilters}>
-                {t.apply}
-              </button>
-              <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={resetLogFilters}>
-                {t.reset}
-              </button>
-            </div>
-          </div>
+            ) : null}
+          </>
         )}
+        <button
+          type="button"
+          className="bx-account-outline-btn"
+          onClick={() => {
+            if (tab === 'errors') {
+              resetErrorFilters()
+            } else {
+              resetLogFilters()
+            }
+          }}
+        >
+          {t.reset}
+        </button>
+        <button type="button" className="bx-account-outline-btn" onClick={() => void refreshAll()}>
+          {t.refresh}
+        </button>
       </div>
 
       {/* Tab content */}
       {tab === 'logs' ? (
-        <div className="mt-4">
+        <div className="mt-3.5">
           {logsLoading ? (
             <div className="flex justify-center py-16">
               <Spinner />
             </div>
           ) : logs.length === 0 ? (
-            <p className="py-12 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+            <div className="bx-account-panel">
+              <p className="bx-account-empty">{t.empty}</p>
+            </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="bx-account-table-wrap overflow-x-auto">
               <table className="bx-account-table min-w-[720px]">
-                <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
+                <thead>
                   <tr>
-                    <th className="pb-2 pr-3 font-medium">{t.colTime}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colModel}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colKey}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colGroup}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colTokens}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colCost}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colDuration}</th>
-                    <th className="pb-2 font-medium">{t.colStream}</th>
+                    <th>{t.colTime}</th>
+                    <th>{t.colModel}</th>
+                    <th>{t.colKey}</th>
+                    <th className="text-right">{t.colTokens}</th>
+                    <th className="text-right">{t.colCost}</th>
+                    <th className="text-right">{t.colDuration}</th>
+                    <th className="text-right">{t.colStream}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {logs.map((row) => (
-                    <tr key={row.id} className="border-b border-[var(--bx-border)]/60">
-                      <td className="py-2.5 pr-3 whitespace-nowrap text-[var(--bx-text-muted)]">
+                    <tr key={row.id}>
+                      <td className="whitespace-nowrap font-mono text-[11px] text-[var(--bx-text-muted)]">
                         {row.created_at ? new Date(row.created_at).toLocaleString() : '—'}
                       </td>
-                      <td className="py-2.5 pr-3 font-mono text-xs">{row.model || '—'}</td>
-                      <td className="py-2.5 pr-3 text-[var(--bx-text-soft)]">{logKeyName(row)}</td>
-                      <td className="py-2.5 pr-3 text-[var(--bx-text-soft)]">{logGroupName(row)}</td>
-                      <td className="py-2.5 pr-3 tabular-nums">{row.total_tokens ?? '—'}</td>
-                      <td className="py-2.5 pr-3 tabular-nums">{formatCost(logCost(row), 6)}</td>
-                      <td className="py-2.5 pr-3 tabular-nums text-[var(--bx-text-muted)]">
+                      <td className="max-w-[180px] truncate font-mono text-[11.5px] text-[var(--bx-text-soft)]">
+                        {row.model || '—'}
+                      </td>
+                      <td className="text-[var(--bx-text-muted)]">{logKeyName(row)}</td>
+                      <td className="num text-right">{row.total_tokens ?? '—'}</td>
+                      <td className="num text-right">{formatCost(logCost(row), 4)}</td>
+                      <td className="num text-right text-[var(--bx-text-muted)]">
                         {formatDuration(row.duration_ms)}
                       </td>
-                      <td className="py-2.5 text-[var(--bx-text-muted)]">{row.stream ? t.yes : t.no}</td>
+                      <td className="text-right">
+                        {row.stream ? (
+                          <span className="bx-account-stream-sse">SSE</span>
+                        ) : (
+                          <span className="bx-account-stream-off">—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -802,47 +775,49 @@ export function AccountUsage() {
       ) : null}
 
       {tab === 'errors' ? (
-        <div className="mt-4">
+        <div className="mt-3.5">
           {errorsLoading ? (
             <div className="flex justify-center py-16">
               <Spinner />
             </div>
           ) : errors.length === 0 ? (
-            <p className="py-12 text-center text-sm text-[var(--bx-text-dim)]">{t.errorEmpty}</p>
+            <div className="bx-account-panel">
+              <p className="bx-account-empty">{t.errorEmpty}</p>
+            </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="bx-account-table-wrap overflow-x-auto">
               <table className="bx-account-table min-w-[720px]">
-                <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
+                <thead>
                   <tr>
-                    <th className="pb-2 pr-3 font-medium">{t.colTime}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colModel}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colKey}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colStatus}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colCategory}</th>
-                    <th className="pb-2 pr-3 font-medium">{t.colMessage}</th>
-                    <th className="pb-2 font-medium">{t.detail}</th>
+                    <th>{t.colTime}</th>
+                    <th>{t.colModel}</th>
+                    <th>{t.colKey}</th>
+                    <th>{t.colStatus}</th>
+                    <th>{t.colCategory}</th>
+                    <th>{t.colMessage}</th>
+                    <th>{t.detail}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {errors.map((row) => (
-                    <tr key={row.id} className="border-b border-[var(--bx-border)]/60">
-                      <td className="py-2.5 pr-3 whitespace-nowrap text-[var(--bx-text-muted)]">
+                    <tr key={row.id}>
+                      <td className="whitespace-nowrap font-mono text-[11px] text-[var(--bx-text-muted)]">
                         {row.created_at ? new Date(row.created_at).toLocaleString() : '—'}
                       </td>
-                      <td className="py-2.5 pr-3 font-mono text-xs">{row.model || '—'}</td>
-                      <td className="py-2.5 pr-3 text-[var(--bx-text-soft)]">
+                      <td className="font-mono text-[11.5px]">{row.model || '—'}</td>
+                      <td className="text-[var(--bx-text-soft)]">
                         {row.key_name || '—'}
                         {row.key_deleted ? ' †' : ''}
                       </td>
-                      <td className="py-2.5 pr-3 tabular-nums font-medium">{row.status_code}</td>
-                      <td className="py-2.5 pr-3">{categoryLabel(row.category)}</td>
-                      <td className="max-w-[240px] truncate py-2.5 pr-3 text-[var(--bx-text-muted)]" title={row.message}>
+                      <td className="num font-medium">{row.status_code}</td>
+                      <td>{categoryLabel(row.category)}</td>
+                      <td className="max-w-[240px] truncate text-[var(--bx-text-muted)]" title={row.message}>
                         {row.message || '—'}
                       </td>
-                      <td className="py-2.5">
+                      <td>
                         <button
                           type="button"
-                          className="bx-btn bx-btn-ghost bx-btn-sm"
+                          className="bx-account-outline-btn"
                           onClick={() => void openErrorDetail(row.id)}
                         >
                           {t.detail}
@@ -867,51 +842,47 @@ export function AccountUsage() {
       ) : null}
 
       {tab === 'models' ? (
-        <div className="mt-4">
+        <div className="mt-3.5">
           {modelsLoading ? (
             <div className="flex justify-center py-16">
               <Spinner />
             </div>
           ) : models.length === 0 ? (
-            <p className="py-12 text-center text-sm text-[var(--bx-text-dim)]">{t.noModels}</p>
+            <div className="bx-account-panel">
+              <p className="bx-account-empty">{t.noModels}</p>
+            </div>
           ) : (
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-[var(--bx-text-soft)]">{t.modelBreakdown}</h3>
-              <div className="overflow-x-auto">
-                <table className="bx-account-table min-w-[560px]">
-                  <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
-                    <tr>
-                      <th className="pb-2 pr-3 font-medium">{t.colModel}</th>
-                      <th className="pb-2 pr-3 font-medium">{t.todayRequests}</th>
-                      <th className="pb-2 pr-3 font-medium">{t.colTokens}</th>
-                      <th className="pb-2 pr-3 font-medium">{t.colCost}</th>
-                      <th className="pb-2 font-medium w-[40%]"> </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {models.map((m) => {
-                      const tokens = modelTokens(m)
-                      const pct = Math.max(2, (tokens / maxModelTokens) * 100)
-                      return (
-                        <tr key={m.model} className="border-b border-[var(--bx-border)]/60">
-                          <td className="py-2.5 pr-3 font-mono text-xs">{m.model || '—'}</td>
-                          <td className="py-2.5 pr-3 tabular-nums">{formatNum(m.requests)}</td>
-                          <td className="py-2.5 pr-3 tabular-nums">{formatNum(tokens)}</td>
-                          <td className="py-2.5 pr-3 tabular-nums">{formatCost(modelCost(m), 4)}</td>
-                          <td className="py-2.5">
-                            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--bx-bg-muted)]">
-                              <div
-                                className="h-full rounded-full bg-[var(--bx-brand)]"
-                                style={{ width: `${pct}%` }}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
+            <div className="bx-account-table-wrap overflow-x-auto">
+              <table className="bx-account-table min-w-[560px]">
+                <thead>
+                  <tr>
+                    <th>{t.colModel}</th>
+                    <th className="text-right">{t.todayRequests}</th>
+                    <th className="text-right">{t.colTokens}</th>
+                    <th className="text-right">{t.colCost}</th>
+                    <th className="w-[30%]"> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {models.map((m) => {
+                    const tokens = modelTokens(m)
+                    const pct = Math.max(2, (tokens / maxModelTokens) * 100)
+                    return (
+                      <tr key={m.model}>
+                        <td className="font-mono text-xs">{m.model || '—'}</td>
+                        <td className="num text-right">{formatNum(m.requests)}</td>
+                        <td className="num text-right">{formatNum(tokens)}</td>
+                        <td className="num text-right">{formatCost(modelCost(m), 4)}</td>
+                        <td>
+                          <span className="bx-account-progress">
+                            <i style={{ width: `${pct}%` }} />
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -988,15 +959,6 @@ function Card({ label, value }: { label: string; value: string }) {
       <p className="bx-account-mono-label">{label}</p>
       <p className="mt-1.5 font-mono text-[19px] font-semibold tabular-nums">{value}</p>
     </div>
-  )
-}
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <label className="flex min-w-[140px] flex-col gap-1 text-xs text-[var(--bx-text-dim)]">
-      <span>{label}</span>
-      {children}
-    </label>
   )
 }
 

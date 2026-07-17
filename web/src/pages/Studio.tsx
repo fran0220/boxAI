@@ -58,6 +58,7 @@ export function Studio() {
   const recommendedSection = release?.sections.find((s) => s.title === platform)
   const primaryDownload = recommendedSection?.items[0]
   const featureIcons = [Cpu, Puzzle, KeyRound, Globe]
+  const chrome = d.studio.chrome
 
   function scrollTo(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -126,25 +127,25 @@ export function Studio() {
             <div className="flex items-center gap-2 border-b border-[var(--bx-border)] px-4 py-3">
               <span className="h-2.5 w-2.5 rounded-full bg-[var(--bx-text-dim)]" />
               <span className="font-mono text-[11px] tracking-tight text-[var(--bx-text-dim)]">
-                BoxAI Studio
+                {chrome.terminalTitle}
               </span>
             </div>
             <div className="bg-[var(--bx-bg-deep)] p-5 font-mono text-[12px] leading-relaxed">
               <span className="text-[var(--bx-text-dim)]">$</span>{' '}
-              <span className="text-[var(--bx-text-soft)]">boxai agent run</span>
+              <span className="text-[var(--bx-text-soft)]">{chrome.cmd}</span>
               <br />
               <span className="text-[var(--bx-success)]">✓</span>{' '}
-              <span className="text-[var(--bx-text-muted)]">signed in · gateway ready</span>
+              <span className="text-[var(--bx-text-muted)]">{chrome.signedIn}</span>
               <br />
               <span className="text-[var(--bx-brand)]">→</span>{' '}
-              <span className="text-[var(--bx-text-muted)]">skills · mcp · memory</span>
+              <span className="text-[var(--bx-text-muted)]">{chrome.skills}</span>
             </div>
           </div>
         </Reveal>
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
+      <section className="mx-auto max-w-[1200px] px-6 py-[88px]">
         <SectionHead
           eyebrow={d.studio.features.eyebrow}
           title={d.studio.features.title}
@@ -157,7 +158,7 @@ export function Studio() {
             return (
               <StaggerItem
                 key={item.title}
-                className="h-full rounded-[var(--bx-radius-lg)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]"
+                className="h-full overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
               >
                 <div className="bx-icon-box">
                   <Icon size={19} />
@@ -174,7 +175,7 @@ export function Studio() {
 
       {/* Browser (WebUI) */}
       <div id="browser" className="scroll-mt-16">
-        <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
+        <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
           <SectionHead
             eyebrow={d.studio.browser.eyebrow}
             title={d.studio.browser.title}
@@ -182,7 +183,7 @@ export function Studio() {
           />
           <Reveal>
             <div
-              className="grid items-center gap-8 rounded-[var(--bx-radius-xl)] p-7 sm:p-10 lg:grid-cols-2"
+              className="grid items-center gap-8 rounded-[var(--bx-radius-xl)] p-7 shadow-[var(--bx-shadow-card)] sm:p-10 lg:grid-cols-2"
               style={{
                 background:
                   'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box',
@@ -196,7 +197,7 @@ export function Studio() {
                 <ul className="mt-5 space-y-2.5">
                   {d.studio.browser.points.map((point) => (
                     <li key={point} className="flex items-start gap-2.5 text-[13.5px]">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bx-spark)] shadow-[0_0_8px_var(--bx-spark-dim)]" />
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bx-brand-bright)] shadow-[0_0_8px_var(--bx-brand-ring)]" />
                       {point}
                     </li>
                   ))}
@@ -214,13 +215,13 @@ export function Studio() {
                   <span className="h-2.5 w-2.5 rounded-full bg-[var(--bx-bg-muted)]" />
                   <span className="h-2.5 w-2.5 rounded-full bg-[var(--bx-bg-muted)]" />
                   <div className="ml-2 flex-1 rounded-[var(--bx-radius-sm)] bg-[var(--bx-bg-muted)] px-3 py-1 font-mono text-[10px] text-[var(--bx-text-dim)]">
-                    studio.you-box.com
+                    {chrome.browserUrl}
                   </div>
                 </div>
                 <div className="space-y-3 p-5">
                   <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--bx-text-dim)]">
                     <span className="h-2 w-2 rounded-full bg-[var(--bx-success)]" />
-                    Desktop agent online
+                    {chrome.agentOnline}
                   </div>
                   <div className="h-2.5 w-4/5 rounded-full bg-[var(--bx-bg-muted)]" />
                   <div className="h-2.5 w-3/5 rounded-full bg-[var(--bx-bg-muted)]" />
@@ -235,15 +236,16 @@ export function Studio() {
 
       {/* Download */}
       <div id="download" className="scroll-mt-16">
-        <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
+        <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
           <SectionHead
+            eyebrow={d.studio.download.eyebrow}
             title={d.studio.download.title}
             subtitle={d.studio.download.subtitle}
             className="mb-8"
           />
 
           {status === 'loading' ? (
-            <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-8 text-center text-sm text-[var(--bx-text-muted)]">
+            <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-8 text-center text-sm text-[var(--bx-text-muted)] shadow-[var(--bx-shadow-card)]">
               {d.studio.download.lookingUp}
             </div>
           ) : null}
@@ -295,7 +297,7 @@ export function Studio() {
                   return (
                     <StaggerItem
                       key={section.title}
-                      className="h-full rounded-[var(--bx-radius-lg)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6"
+                      className="h-full overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
                     >
                       <div className="flex items-center gap-2.5">
                         <Icon size={19} className="text-[var(--bx-brand-bright)]" />
@@ -328,7 +330,7 @@ export function Studio() {
           ) : null}
 
           {status === 'error' ? (
-            <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-8 text-center">
+            <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-8 text-center shadow-[var(--bx-shadow-card)]">
               <h3 className="text-lg font-bold">{d.studio.download.lookupFailed}</h3>
               <p className="mt-2 text-sm text-[var(--bx-text-muted)]">
                 {d.studio.download.lookupFailedBody}
@@ -347,15 +349,19 @@ export function Studio() {
       </div>
 
       {/* Install notes */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
-        <SectionHead title={d.studio.install.title} className="mb-8" />
+      <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
+        <SectionHead
+          eyebrow={d.studio.install.eyebrow}
+          title={d.studio.install.title}
+          className="mb-8"
+        />
         <Stagger className="grid gap-3.5 sm:grid-cols-3">
           {d.studio.install.items.map((item) => {
             const Icon = PLATFORM_ICONS[item.title as PlatformName] ?? Monitor
             return (
               <StaggerItem
                 key={item.title}
-                className="h-full rounded-[var(--bx-radius-lg)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6"
+                className="h-full overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
               >
                 <div className="flex items-center gap-2.5">
                   <Icon size={18} className="text-[var(--bx-brand-bright)]" />
@@ -371,9 +377,9 @@ export function Studio() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
+      <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
-          <SectionHead title={d.studio.faq.title} />
+          <SectionHead eyebrow={d.studio.faq.eyebrow} title={d.studio.faq.title} />
           <Reveal>
             <FaqList items={d.studio.faq.items} idPrefix="studio-faq" />
           </Reveal>

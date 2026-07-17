@@ -7,6 +7,10 @@ import {
   getUsageDashboardModels,
   getUsageDashboardStats,
   getUsageDashboardTrend,
+  listKeys,
+  listUsage,
+  type ApiKey,
+  type UsageLog,
   type UsageModelStat,
   type UsageTrendPoint,
   type UserDashboardStats,
@@ -64,6 +68,8 @@ export function AccountOverview() {
   const [stats, setStats] = useState<UserDashboardStats | null>(null)
   const [trend, setTrend] = useState<UsageTrendPoint[]>([])
   const [models, setModels] = useState<UsageModelStat[]>([])
+  const [recent, setRecent] = useState<UsageLog[]>([])
+  const [keys, setKeys] = useState<ApiKey[]>([])
   const [keyInfo, setKeyInfo] = useState('')
   const [error, setError] = useState('')
   const [ready, setReady] = useState(false)
@@ -73,7 +79,7 @@ export function AccountOverview() {
     const range = lastNDaysRange(14)
     ;(async () => {
       try {
-        const [p, s, tr, md] = await Promise.all([
+        const [p, s, tr, md, usage, keyList] = await Promise.all([
           getProfile(),
           getUsageDashboardStats().catch(() => null),
           getUsageDashboardTrend({
@@ -85,12 +91,16 @@ export function AccountOverview() {
             start_date: range.start_date,
             end_date: range.end_date,
           }).catch(() => null),
+          listUsage(1, 6, { sort_by: 'created_at', sort_order: 'desc' }).catch(() => null),
+          listKeys(1, 50).catch(() => null),
         ])
         if (cancelled) return
         setProfile(p)
         if (s) setStats(s)
         setTrend(tr?.trend || [])
         setModels((md?.models || []).slice(0, 6))
+        setRecent(usage?.items || [])
+        setKeys(keyList?.items || [])
         try {
           const key = await ensureCreatorKey()
           if (!cancelled) {
@@ -126,6 +136,37 @@ export function AccountOverview() {
 
   const trendStart = trend[0]?.date ? shortDate(String(trend[0].date)) : ''
   const trendEnd = trend.length ? shortDate(String(trend[trend.length - 1]?.date || '')) : ''
+
+  // Month spend from recent 30d trend actual_cost when available
+  const monthSpend = useMemo(() => {
+    if (!trend.length) return null
+    const sum = trend.reduce((acc, p) => acc + Number(p.actual_cost ?? p.cost ?? 0), 0)
+    return sum
+  }, [trend])
+
+  // Δ% day-over-day from last two trend request points when present
+  const reqDelta = useMemo(() => {
+    if (trend.length < 2) return null
+    const a = Number(trend[trend.length - 2]?.requests ?? 0)
+    const b = Number(trend[trend.length - 1]?.requests ?? 0)
+    if (a <= 0) return b > 0 ? 100 : 0
+    return Math.round(((b - a) / a) * 100)
+  }, [trend])
+
+  // Rough RPM/TPM from today's stats (over 24h)
+  const rpmTpm = useMemo(() => {
+    if (!stats) return null
+    const rpm = Math.round((stats.today_requests || 0) / 24)
+    const tpm = Math.round((stats.today_tokens || 0) / 24)
+    return { rpm, tpm }
+  }, [stats])
+
+  const quotaExhausted = useMemo(
+    () => keys.filter((k) => k.status === 'quota_exhausted').length,
+    [keys],
+  )
+
+  const showRecentCalls = recent.length > 0
 
   if (!ready && !error) {
     return (
@@ -164,15 +205,31 @@ export function AccountOverview() {
             {typeof balance === 'number' ? `$${balance.toFixed(2)}` : '—'}
           </p>
           <p className="bx-account-stat-hint">
-            {username} · {email}
+            {monthSpend != null
+              ? t.monthSpendHint.replace('{cost}', `$${monthSpend.toFixed(2)}`)
+              : `${username} · ${email}`}
           </p>
         </div>
 
         <div className="bx-account-panel bx-account-panel-pad">
           <p className="bx-account-mono-label">{t.statTodayReq}</p>
           <p className="bx-account-stat-value">{stats ? formatNum(stats.today_requests) : '—'}</p>
-          <p className="bx-account-stat-hint">
-            {stats ? `$${Number(stats.today_actual_cost ?? stats.today_cost ?? 0).toFixed(2)}` : '—'}
+          <p
+            className="bx-account-stat-hint"
+            style={{
+              color:
+                reqDelta != null && reqDelta > 0
+                  ? 'var(--bx-success)'
+                  : reqDelta != null && reqDelta < 0
+                    ? 'var(--bx-danger)'
+                    : undefined,
+            }}
+          >
+            {reqDelta != null
+              ? `${reqDelta >= 0 ? '▲' : '▼'} ${Math.abs(reqDelta)}% ${t.vsYesterday}`
+              : stats
+                ? `$${Number(stats.today_actual_cost ?? stats.today_cost ?? 0).toFixed(2)}`
+                : '—'}
           </p>
         </div>
 
@@ -180,7 +237,11 @@ export function AccountOverview() {
           <p className="bx-account-mono-label">{t.statTodayTokens}</p>
           <p className="bx-account-stat-value">{stats ? formatNum(stats.today_tokens) : '—'}</p>
           <p className="bx-account-stat-hint">
-            {stats ? t.statTotalTokensHint.replace('{n}', formatNum(stats.total_tokens)) : '—'}
+            {rpmTpm
+              ? `RPM ${formatNum(rpmTpm.rpm)} · TPM ${formatNum(rpmTpm.tpm)}`
+              : stats
+                ? t.statTotalTokensHint.replace('{n}', formatNum(stats.total_tokens))
+                : '—'}
           </p>
         </div>
 
@@ -196,13 +257,18 @@ export function AccountOverview() {
               '—'
             )}
           </p>
-          <p className="bx-account-stat-hint">
-            {stats
-              ? t.statCostShort.replace(
-                  '{cost}',
-                  `$${Number(stats.total_actual_cost ?? stats.total_cost ?? 0).toFixed(2)}`,
-                )
-              : '—'}
+          <p
+            className="bx-account-stat-hint"
+            style={{ color: quotaExhausted > 0 ? 'var(--bx-warning)' : undefined }}
+          >
+            {quotaExhausted > 0
+              ? t.quotaExhaustedHint.replace('{n}', String(quotaExhausted))
+              : stats
+                ? t.statCostShort.replace(
+                    '{cost}',
+                    `$${Number(stats.total_actual_cost ?? stats.total_cost ?? 0).toFixed(2)}`,
+                  )
+                : '—'}
           </p>
         </div>
       </div>
@@ -246,11 +312,32 @@ export function AccountOverview() {
         )}
       </div>
 
-      {/* recent models + quick links */}
+      {/* recent calls (or models fallback) + quick links */}
       <div className="mt-3 grid gap-3 lg:grid-cols-[1.5fr_1fr]">
         <div className="bx-account-panel">
-          <p className="m-0 px-5 pt-3.5 pb-2.5 text-[13.5px] font-bold">{t.recentModels}</p>
-          {models.length === 0 ? (
+          <p className="m-0 px-5 pt-3.5 pb-2.5 text-[13.5px] font-bold">
+            {showRecentCalls ? t.recentCalls : t.recentModels}
+          </p>
+          {showRecentCalls ? (
+            <ul className="m-0 list-none p-0">
+              {recent.map((row) => (
+                <li
+                  key={row.id}
+                  className="grid grid-cols-[1fr_90px_80px] items-center gap-3 border-t border-[var(--bx-line)] px-5 py-2.5 text-[12.5px]"
+                >
+                  <span className="truncate font-mono text-[11.5px] text-[var(--bx-text-soft)]">
+                    {row.model || '—'}
+                  </span>
+                  <span className="text-right font-mono text-[11px] text-[var(--bx-text-dim)]">
+                    {row.total_tokens != null ? formatNum(row.total_tokens) : '—'}
+                  </span>
+                  <span className="text-right font-mono text-[11px] tabular-nums">
+                    ${Number(row.actual_cost ?? row.total_cost ?? 0).toFixed(4)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : models.length === 0 ? (
             <p className="bx-account-empty">{t.noModels}</p>
           ) : (
             <ul className="m-0 list-none p-0">
