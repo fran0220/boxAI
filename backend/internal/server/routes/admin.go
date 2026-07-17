@@ -652,6 +652,11 @@ func registerChannelMonitorRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 	{
 		monitors.GET("", h.Admin.ChannelMonitor.List)
 		monitors.POST("", h.Admin.ChannelMonitor.Create)
+		// BOXAI: public_visible batch + toggle (product-first, raw SQL column)
+		if h.PublicStatus != nil {
+			monitors.GET("/public-visible", h.PublicStatus.BatchPublicVisible)
+			monitors.PUT("/:id/public-visible", h.PublicStatus.SetPublicVisible)
+		}
 		monitors.GET("/:id", h.Admin.ChannelMonitor.Get)
 		monitors.PUT("/:id", h.Admin.ChannelMonitor.Update)
 		monitors.DELETE("/:id", h.Admin.ChannelMonitor.Delete)

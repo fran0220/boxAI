@@ -483,6 +483,7 @@ export default {
       updateSuccess: 'Đã cập nhật trình giám sát',
       deleteSuccess: 'Đã xóa trình giám sát',
       loadError: 'Không thể tải trình giám sát',
+      publicVisibleLoadError: 'Không tải được cờ hiển thị công khai; hãy làm mới và thử lại',
       deleteConfirm: 'Bạn có chắc muốn xóa trình giám sát "{name}"? Không thể hoàn tác thao tác này.',
       nameRequired: 'Vui lòng nhập tên trình giám sát',
       primaryModelRequired: 'Vui lòng nhập mô hình chính',
@@ -493,6 +494,7 @@ export default {
         availability7d: 'Khả dụng 7 ngày',
         latency: 'Độ trễ (ms)',
         enabled: 'Đã bật',
+        publicVisible: 'Trạng thái công khai',
         actions: 'Thao tác'
       },
       form: {

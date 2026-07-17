@@ -109,20 +109,21 @@
             </span>
           </div>
 
-          <router-link
+          <!-- BOXAI: admin personal account lives on apex customer shell -->
+          <a
             v-for="item in personalNavItems"
             :key="item.path"
-            :to="item.path"
+            :href="item.path"
             class="sidebar-link mb-1"
-            :class="{ 'sidebar-link-active': isActive(item.path), 'sidebar-link-collapsed': sidebarCollapsed }"
+            :class="{ 'sidebar-link-collapsed': sidebarCollapsed }"
             :title="sidebarCollapsed ? item.label : undefined"
-            :data-tour="item.path === '/keys' ? 'sidebar-my-keys' : undefined"
-            @click="handleMenuItemClick(item.path)"
+            :data-tour="item.path.includes('/account/keys') ? 'sidebar-my-keys' : undefined"
+            rel="noopener"
           >
             <span v-if="item.iconSvg" class="h-5 w-5 flex-shrink-0 sidebar-svg-icon" v-html="sanitizeSvg(item.iconSvg)"></span>
             <component v-else :is="item.icon" class="h-5 w-5 flex-shrink-0" />
             <span class="sidebar-label" :class="{ 'sidebar-label-collapsed': sidebarCollapsed }" :aria-hidden="sidebarCollapsed ? 'true' : 'false'">{{ item.label }}</span>
-          </router-link>
+          </a>
         </div>
       </template>
 
@@ -197,7 +198,7 @@ import { sanitizeSvg } from '@/utils/sanitize'
 import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, makeSidebarFlag } from '@/utils/featureFlags'
 import { useBatchImageAccess } from '@/composables/useBatchImageAccess'
-import { customerShellRedirectEnabled } from '@/utils/apexOrigin'
+import { apexUrl, customerShellRedirectEnabled } from '@/utils/apexOrigin'
 
 interface NavItem {
   path: string
@@ -738,8 +739,13 @@ const userNavItems = computed((): NavItem[] => {
   return finalizeNav(buildSelfNavItems(true))
 })
 
-// Personal navigation items (for admin's "My Account" section, without Dashboard).
-const personalNavItems = computed((): NavItem[] => finalizeNav(buildSelfNavItems(false)))
+// Personal navigation: always open apex customer shell (console user views removed).
+const personalNavItems = computed((): NavItem[] => [
+  { path: apexUrl('/account'), label: t('nav.profile'), icon: UserIcon },
+  { path: apexUrl('/account/keys'), label: t('nav.apiKeys'), icon: KeyIcon },
+  { path: apexUrl('/account/usage'), label: t('nav.usage'), icon: ChartIcon },
+  { path: apexUrl('/checkout'), label: t('nav.buySubscription'), icon: RechargeSubscriptionIcon },
+])
 
 // Custom menu items filtered by visibility
 const customMenuItemsForUser = computed(() => {

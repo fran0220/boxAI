@@ -1,56 +1,61 @@
 <template>
-  <section class="py-3 md:py-4">
-    <div class="flex items-center justify-end gap-3 flex-wrap">
-      <div
-        role="tablist"
-        class="inline-flex p-0.5 rounded-xl bg-[color:var(--bx-bg-muted)] border border-[color:var(--bx-border)] /60 text-xs"
-      >
-        <button
-          v-for="opt in windowOptions"
-          :key="opt.value"
-          type="button"
-          role="tab"
-          :aria-selected="window === opt.value"
-          class="px-3 py-1 rounded-lg transition-colors"
-          :class="window === opt.value
-            ? 'bg-[color:var(--bx-bg-elevated)] shadow-sm text-[color:var(--bx-text)] font-semibold'
-            : 'text-[color:var(--bx-text-dim)] hover:text-gray-700  dark:hover:text-gray-200'"
-          @click="emit('update:window', opt.value)"
-        >
-          {{ opt.label }}
-        </button>
+  <section class="py-4 md:py-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-xs font-medium tracking-[0.14em] uppercase text-[color:var(--bx-text-dim)]">
+          {{ t('channelStatus.eyebrow') }}
+        </p>
+        <h1 class="mt-1 text-2xl font-bold tracking-tight text-[color:var(--bx-text)] sm:text-3xl">
+          {{ t('channelStatus.title') }}
+        </h1>
+        <p class="mt-1 max-w-xl text-sm text-[color:var(--bx-text-muted)]">
+          {{ t('channelStatus.description') }}
+        </p>
       </div>
 
-      <span
-        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wider uppercase"
-        :class="overallChipClass"
-      >
+      <div class="flex items-center justify-end gap-3 flex-wrap">
+        <div class="bx-status-period" role="tablist">
+          <button
+            v-for="opt in windowOptions"
+            :key="opt.value"
+            type="button"
+            role="tab"
+            :aria-selected="window === opt.value"
+            :class="window === opt.value ? 'is-active' : ''"
+            @click="emit('update:window', opt.value)"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+
         <span
-          class="w-1.5 h-1.5 rounded-full mr-1.5"
-          :class="overallDotClass"
-        ></span>
-        {{ overallLabel }}
-      </span>
+          class="bx-status-overall"
+          :class="overallStatus === 'operational' ? 'bx-status-overall--ok' : 'bx-status-overall--degraded'"
+        >
+          <span class="bx-status-overall__dot"></span>
+          {{ overallLabel }}
+        </span>
 
-      <button
-        type="button"
-        class="h-8 w-8 rounded-lg flex items-center justify-center text-[color:var(--bx-text-dim)] hover:text-gray-700 hover:bg-[color:var(--bx-hover)]  dark:hover:text-gray-200  transition-colors disabled:opacity-50"
-        :disabled="loading"
-        :title="t('common.refresh')"
-        @click="emit('refresh')"
-      >
-        <Icon name="refresh" size="md" :class="loading ? 'animate-spin' : ''" />
-      </button>
+        <button
+          type="button"
+          class="h-8 w-8 rounded-lg flex items-center justify-center text-[color:var(--bx-text-dim)] hover:text-gray-700 hover:bg-[color:var(--bx-hover)] dark:hover:text-gray-200 transition-colors disabled:opacity-50"
+          :disabled="loading"
+          :title="t('common.refresh')"
+          @click="emit('refresh')"
+        >
+          <Icon name="refresh" size="md" :class="loading ? 'animate-spin' : ''" />
+        </button>
 
-      <AutoRefreshButton
-        v-if="autoRefresh"
-        :enabled="autoRefresh.enabled.value"
-        :interval-seconds="autoRefresh.intervalSeconds.value"
-        :countdown="autoRefresh.countdown.value"
-        :intervals="autoRefresh.intervals"
-        @update:enabled="autoRefresh.setEnabled"
-        @update:interval="autoRefresh.setInterval"
-      />
+        <AutoRefreshButton
+          v-if="autoRefresh"
+          :enabled="autoRefresh.enabled.value"
+          :interval-seconds="autoRefresh.intervalSeconds.value"
+          :countdown="autoRefresh.countdown.value"
+          :intervals="autoRefresh.intervals"
+          @update:enabled="autoRefresh.setEnabled"
+          @update:interval="autoRefresh.setInterval"
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -92,25 +97,4 @@ const windowOptions = computed<{ value: MonitorWindow; label: string }[]>(() => 
 ])
 
 const overallLabel = computed(() => t(`channelStatus.overall.${props.overallStatus}`))
-
-const overallChipClass = computed(() => {
-  switch (props.overallStatus) {
-    case 'operational':
-      return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300'
-    case 'degraded':
-    default:
-      return 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300'
-  }
-})
-
-const overallDotClass = computed(() => {
-  switch (props.overallStatus) {
-    case 'operational':
-      return 'bg-emerald-500 animate-pulse'
-    case 'degraded':
-    default:
-      return 'bg-amber-500 animate-pulse'
-  }
-})
-
 </script>

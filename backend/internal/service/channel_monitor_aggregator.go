@@ -48,6 +48,47 @@ func (s *ChannelMonitorService) BatchMonitorStatusSummary(
 	return out
 }
 
+// BatchPrimaryAvailabilityPct returns primary-model availability % for a window
+// for many monitors in one SQL aggregation (avoids N+1 GetUserDetail).
+//
+// BOXAI: used by public marketing status for period=15d|30d list.
+// On repo error returns (nil, err). On success, missing models simply omit keys
+// (caller treats as 0% / no samples — not a hard failure).
+//
+// // BOXAI: product-first public status helper — keep thin; prefer not growing further.
+func (s *ChannelMonitorService) BatchPrimaryAvailabilityPct(
+	ctx context.Context,
+	ids []int64,
+	primaryByID map[int64]string,
+	windowDays int,
+) (map[int64]float64, error) {
+	out := make(map[int64]float64, len(ids))
+	if len(ids) == 0 {
+		return out, nil
+	}
+	if windowDays <= 0 {
+		windowDays = monitorAvailability7Days
+	}
+	availMap, err := s.repo.ComputeAvailabilityForMonitors(ctx, ids, windowDays)
+	if err != nil {
+		slog.Warn("channel_monitor: batch primary availability failed", "window_days", windowDays, "error", err)
+		return nil, err
+	}
+	for _, id := range ids {
+		primary := primaryByID[id]
+		if primary == "" {
+			continue
+		}
+		for _, a := range availMap[id] {
+			if a != nil && a.Model == primary {
+				out[id] = a.AvailabilityPct
+				break
+			}
+		}
+	}
+	return out, nil
+}
+
 // ListUserView 用户只读视图：列出所有 enabled 监控的概览。
 // 使用批量聚合接口避免 N+1：
 //

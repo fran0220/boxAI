@@ -96,6 +96,13 @@ func (h *AuthHandler) respondWithBrowserSession(c *gin.Context, user *service.Us
 // issueBrowserSession is the low-level BOXAI primitive shared by response
 // envelopes, OAuth JSON completions, and provider redirects.
 func (h *AuthHandler) issueBrowserSession(c *gin.Context, user *service.User, surface string) (*service.BrowserSession, bool) {
+	// BOXAI: console sessions are intended for admins (and temporary WeChat payment).
+	// Non-admin console sessions remain allowed for payment exception paths; ops can
+	// set BOXAI_CONSOLE_ADMIN_SESSION_ONLY=1 to refuse non-admin console cookies.
+	if surface == service.BrowserSurfaceConsole && user != nil && !user.IsAdmin() && consoleAdminSessionOnly() {
+		response.Forbidden(c, "Console browser sessions are admin-only")
+		return nil, false
+	}
 	session, err := h.authService.GenerateBrowserSession(c.Request.Context(), user, surface)
 	if err != nil {
 		response.InternalError(c, "Failed to create browser session")
@@ -103,6 +110,18 @@ func (h *AuthHandler) issueBrowserSession(c *gin.Context, user *service.User, su
 	}
 	setBrowserSessionCookie(c, session.SessionToken, session.SessionMaxAge)
 	return session, true
+}
+
+// consoleAdminSessionOnly: when true, non-admin users cannot establish a console host session.
+// Default off so WeChat MP purchase re-login on console still works.
+func consoleAdminSessionOnly() bool {
+	v := strings.TrimSpace(os.Getenv("BOXAI_CONSOLE_ADMIN_SESSION_ONLY"))
+	switch strings.ToLower(v) {
+	case "1", "true", "on", "yes":
+		return true
+	default:
+		return false
+	}
 }
 
 func (h *AuthHandler) writeOAuthTokenPairResponse(c *gin.Context, tokenPair *service.TokenPair, user *service.User) {

@@ -47,6 +47,15 @@
             <Toggle :modelValue="row.enabled" @update:modelValue="toggleEnabled(row)" />
           </template>
 
+          <template #cell-public_visible="{ row }">
+            <Toggle
+              v-if="row.public_visible !== undefined"
+              :modelValue="row.public_visible === true"
+              @update:modelValue="togglePublicVisible(row)"
+            />
+            <span v-else class="text-xs text-[color:var(--bx-text-dim)]">—</span>
+          </template>
+
           <template #cell-actions="{ row }">
             <MonitorActionsCell
               :row="row"
@@ -178,6 +187,7 @@ const columns = computed<Column[]>(() => [
   { key: 'availability_7d', label: t('admin.channelMonitor.columns.availability7d'), sortable: false },
   { key: 'latency', label: t('admin.channelMonitor.columns.latency'), sortable: false },
   { key: 'enabled', label: t('admin.channelMonitor.columns.enabled'), sortable: false },
+  { key: 'public_visible', label: t('admin.channelMonitor.columns.publicVisible'), sortable: false },
   { key: 'actions', label: t('admin.channelMonitor.columns.actions'), sortable: false },
 ])
 
@@ -203,7 +213,24 @@ async function reload() {
 
     const res = await adminAPI.channelMonitor.list(params, { signal: ctrl.signal })
     if (ctrl.signal.aborted || abortController !== ctrl) return
-    monitors.value = res.items || []
+    const items = res.items || []
+    // BOXAI: merge public_visible flags (column not in upstream list DTO)
+    try {
+      const flags = await adminAPI.channelMonitor.batchPublicVisible(items.map((m) => m.id))
+      for (const m of items) {
+        const key = String(m.id)
+        // Only set when key present; leave undefined on batch miss (column shows off).
+        if (Object.prototype.hasOwnProperty.call(flags, key)) {
+          m.public_visible = flags[key]
+        } else {
+          m.public_visible = undefined
+        }
+      }
+    } catch {
+      for (const m of items) m.public_visible = undefined
+      appStore.showError(t('admin.channelMonitor.publicVisibleLoadError'))
+    }
+    monitors.value = items
     pagination.total = res.total
   } catch (err: unknown) {
     const e = err as { name?: string; code?: string }
@@ -256,6 +283,17 @@ async function toggleEnabled(row: ChannelMonitor) {
   try {
     await adminAPI.channelMonitor.update(row.id, { enabled: next })
     row.enabled = next
+  } catch (err: unknown) {
+    appStore.showError(extractApiErrorMessage(err, t('common.error')))
+  }
+}
+
+async function togglePublicVisible(row: ChannelMonitor) {
+  if (row.public_visible === undefined) return
+  const next = !row.public_visible
+  try {
+    await adminAPI.channelMonitor.setPublicVisible(row.id, next)
+    row.public_visible = next
   } catch (err: unknown) {
     appStore.showError(extractApiErrorMessage(err, t('common.error')))
   }

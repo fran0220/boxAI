@@ -75,7 +75,7 @@ Gradients: `--bx-grad-cta` / `--bx-grad-hero` (`#2dd4bf → #22d3ee` / hero mult
 
 Public marketing and Creator UI: React app on **`you-box.com`** (`web/`).
 
-- Routes: `/`, `/studio`, `/pricing`, `/create/*` (image · video · assets), `/login`, `/account`
+- Routes: `/`, `/studio`, `/pricing`, `/status`, `/create/*` (image · video · assets), `/login`, `/account`
 - Tokens: `--bx-*` in `web/src/index.css` (aligned with console)
 - Creator shell: `CreateLayout` + workspace primitives (`.bx-create-*`)
 - Image workbench: vendored playground under `web/src/image-playground` (teal primary HSL)

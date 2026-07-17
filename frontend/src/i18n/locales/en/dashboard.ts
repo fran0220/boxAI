@@ -424,6 +424,7 @@ export default {
 
   // Channel Status (user-facing read-only view)
   channelStatus: {
+    eyebrow: 'System Status',
     title: 'Channel Status',
     description: 'Inspect channel availability, latency and recent status',
     searchPlaceholder: 'Search channels...',

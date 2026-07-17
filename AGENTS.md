@@ -15,6 +15,8 @@ Read this before non-trivial work. SOPs: [`docs/agents/`](docs/agents/README.md)
 
 Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · Ops: [docs/PRODUCTION.md](docs/PRODUCTION.md).
 
+**Production config:** change SMTP / site settings via **Admin API** on `https://console.you-box.com` only (not apex `you-box.com`). Ops secrets live in `/root/.boxai/admin-api.env` or `~/.config/boxai/admin.env` — never commit.
+
 ## Identity
 
 | Item | Value |

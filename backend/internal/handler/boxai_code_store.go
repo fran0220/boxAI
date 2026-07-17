@@ -17,6 +17,8 @@ var ErrBoxAICodeNotFound = errors.New("boxai auth code not found")
 // Implemented outside handler (typically Redis) so this package stays depguard-clean.
 type BoxAICodeStore interface {
 	Put(ctx context.Context, key, value string, ttl time.Duration) error
+	// Get is a non-consuming read (or ErrBoxAICodeNotFound).
+	Get(ctx context.Context, key string) (string, error)
 	// Take removes and returns the value, or ErrBoxAICodeNotFound.
 	Take(ctx context.Context, key string) (string, error)
 }
