@@ -2,15 +2,15 @@
 
 Canonical product architecture for **you-box.com**: **customer shell on apex React**, admin console on Vue, shared Go gateway.
 
-> **Migration:** See [CUSTOMER_SHELL_UNIFICATION.md](./CUSTOMER_SHELL_UNIFICATION.md). Target: one customer domain/session; console is admin-only; Web SSO is a transitional bridge only.
+> **Architecture:** See [CUSTOMER_SHELL_UNIFICATION.md](./CUSTOMER_SHELL_UNIFICATION.md). One customer domain/session on apex; console is admin-first. **Web SSO has been removed.**
 
 ## Hosts
 
 | Host | Serves | Origin of content |
 |------|--------|-------------------|
-| `you-box.com` | Marketing, Studio, Creator, **customer account/auth/checkout**, (legacy Web SSO pages) | React static (`web/dist` → `/var/www/you-box.com`); edge allowlists browser APIs and proxies `/v1/*`, `/health` |
+| `you-box.com` | Marketing, Studio, Creator, **customer account/auth/checkout** | React static (`web/dist` → `/var/www/you-box.com`); edge allowlists browser APIs and proxies `/v1/*`, `/health` |
 | `www.you-box.com` | Permanent redirect | → `https://you-box.com` |
-| `console.you-box.com` | **Admin** (+ transitional customer pages / SSO until cutover); Desktop browser login (legacy URL) | Go binary embeds Vue (`frontend/` build) |
+| `console.you-box.com` | **Admin** (+ WeChat MP payment exception paths); Desktop browser login (legacy URL) | Go binary embeds Vue (`frontend/` build) |
 | `api.you-box.com` | Public model API + token exchange | Same Go process; **edge-filtered** paths only |
 
 One Docker image (`ghcr.io/fran0220/boxai:<pin>`) runs the Go server (Vue embed + API). React is **never** embedded in that binary.
@@ -30,8 +30,9 @@ Browser session API (same-origin UI hosts only):
 | `POST /api/v1/auth/session` | Bootstrap: validate the host cookie and mint a short-lived access JWT for that host/audience |
 | `POST /api/v1/auth/session/adopt` | One-time rollout import of a legacy refresh token into a host cookie |
 | `POST /api/v1/auth/session/logout` | Revoke the browser session and clear its cookie |
-| `POST /api/v1/auth/registration/prepare` | Console-only: hash the password server-side, create a 15-minute opaque registration transaction, and send the first email code |
-| `POST /api/v1/auth/registration/complete` | Console-only: verify the email code, consume the transaction, create the account, and establish the console browser session |
+| `POST /api/v1/auth/registration/prepare` | Apex (and console): opaque registration transaction + email code |
+| `POST /api/v1/auth/registration/complete` | Complete registration and establish a **host-bound** browser session |
+| `POST /api/v1/auth/login` · `/login/2fa` | Password login (+ 2FA); browser session when `X-BoxAI-Browser-Session: 1` |
 | `GET /api/v1/auth/me` | Resolve the current user with the in-memory access JWT |
 | `POST /api/v1/auth/revoke-all-sessions` | Revoke every session for the user |
 
@@ -47,55 +48,23 @@ email address, safe return path, and resend countdown in `sessionStorage`.
 Plaintext passwords and Turnstile responses never leave the registration page;
 Redis retains only the bcrypt password hash and registration business fields.
 
-**Apex is the customer identity UI (target).** Password login/register/forgot/reset
-and account center live on `you-box.com`. Console remains the admin host and still
-hosts full credential forms during transition. Web SSO remains available as a
-rollback bridge until customer cutover is complete.
+**Apex is the customer identity UI.** Password login/register/forgot/reset and the
+account center live on `you-box.com`. There is **no cross-origin Web SSO** and no
+parent-domain cookie (`Domain=.you-box.com` is forbidden).
 
-**Web SSO (PKCE)** (transitional) links sessions between apex and console:
+**Console is admin-first.** Non-admin navigations to customer UI hard-redirect to
+apex (`VITE_CUSTOMER_SHELL_REDIRECT`, default on for `console.you-box.com`). Admin
+login remains on console. **Exception:** WeChat in-WeChat MP payment may still use
+console `/purchase` + `/payment/*` (registered callback domain); users re-login on
+console for that path only.
 
-| Step | Endpoint |
-|------|----------|
-| Mint code (authenticated) | `POST /api/v1/auth/boxai/sso/authorize` |
-| Exchange code (public) | `POST /api/v1/auth/boxai/sso/token` |
-
-Pages:
-
-- Apex cold → console: apex `/login` · `/signup` → console `/boxai/sso/authorize`
-  (console credentials) → apex `/sso/callback` → token exchange on apex.
-- Apex warm → console cold: Header/links open console `/boxai/sso/start` →
-  (console cold) apex `/sso/authorize` mints with apex JWT → console
-  `/boxai/sso/callback` → token exchange on console.
-- Console warm: console `/boxai/sso/start` mints locally → console callback.
-
-Either UI origin can mint a code with its in-memory access JWT. Only the console
-hosts credential forms. The PKCE verifier stays in memory/session-scoped state;
-the one-time code does not transfer a cookie between hosts.
-
-Rules:
-
-- Code is one-time, Redis-backed, short TTL; delivered in URL **fragment**.
-- `redirect_uri` is required and allowlisted.
-- Production callbacks are built in. Local callbacks require the explicit
-  `BOXAI_WEB_SSO_REDIRECT_URIS` opt-in; restart to apply.
-- Flags: `BOXAI_BROWSER_SESSION=true`, `BOXAI_LEGACY_BROWSER_ADOPTION=true`
-  during migration, and `BOXAI_WEB_SSO=true`.
-
-### Rollout and rollback
-
-1. Deploy backend/session schema and edge allowlist; set access lifetime to 15
-   minutes and enable browser sessions plus legacy adoption.
-2. Deploy Vue image and React static build. Each host adopts its old refresh token
-   once, deletes legacy storage, then bootstraps from its own cookie.
-3. After adoption telemetry has drained, set `BOXAI_LEGACY_BROWSER_ADOPTION=false`.
-4. Rollback UI first while adoption remains enabled. For an emergency backend
-   rollback, disable `BOXAI_BROWSER_SESSION`; users may need to sign in again.
-   Never re-expose login/register/admin APIs on the apex or session APIs on API host.
+Flags: `BOXAI_BROWSER_SESSION=true`; `BOXAI_LEGACY_BROWSER_ADOPTION` only if legacy
+refresh tokens remain to adopt. **`BOXAI_WEB_SSO` is retired and ignored.**
 
 **Desktop login** uses a separate PKCE pair:
 
 - `POST /api/v1/auth/boxai/desktop/authorize` · `POST /api/v1/auth/boxai/desktop/token`
-- Browser page: `console.you-box.com/desktop-auth` → `boxai-desktop://` callback
+- Preferred browser page: `you-box.com/desktop-auth` (console `/desktop-auth` still works)
 
 ## Apex pages
 
@@ -142,7 +111,6 @@ JWT is translated to the user’s API key by `BOXAI_DESKTOP_JWT_GATEWAY` (shared
 `api.you-box.com` allows only:
 
 - `/v1/*`
-- `/api/v1/auth/boxai/sso/token`
 - `/api/v1/auth/boxai/desktop/token`
 - `/api/v1/auth/refresh`
 - `/api/v1/settings/public`
@@ -150,8 +118,8 @@ JWT is translated to the user’s API key by `BOXAI_DESKTOP_JWT_GATEWAY` (shared
 
 The apex allowlist is deny-by-default for `/api/*` with **admin/setup hard-denied**,
 then explicit customer paths: session bootstrap, credential login/register,
-customer keys/usage/user/payment/subscriptions/redeem, Web SSO (transitional), and
-Creator ensure-key. Console continues to proxy the complete backend surface.
+customer keys/usage/user/payment/subscriptions/redeem, and Creator ensure-key.
+Console continues to proxy the complete backend surface.
 
 ## Code map
 

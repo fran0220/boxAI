@@ -65,9 +65,9 @@ function CheckoutInner() {
     e.preventDefault()
     if (!method) return
 
-    // WeChat in-WeChat MP stays on console for v1 (external callback domain).
+    // WeChat in-WeChat MP stays on console (external callback domain). Re-login once.
     if (isWeChatBrowser() && (method === 'wxpay' || method.includes('wechat'))) {
-      window.location.href = `${consoleOrigin()}/boxai/sso/start?return_to=${encodeURIComponent('/purchase')}`
+      window.location.href = `${consoleOrigin()}/login?redirect=${encodeURIComponent('/purchase')}`
       return
     }
 
@@ -91,7 +91,8 @@ function CheckoutInner() {
       })
 
       if (result.oauth?.authorize_url) {
-        window.location.href = `${consoleOrigin()}/boxai/sso/start?return_to=${encodeURIComponent('/purchase')}`
+        // Provider OAuth for payment (e.g. WeChat) — console hosts registered callback.
+        window.location.href = `${consoleOrigin()}/login?redirect=${encodeURIComponent('/purchase')}`
         return
       }
 
@@ -106,14 +107,12 @@ function CheckoutInner() {
       }
 
       if (result.client_secret) {
-        // Stripe/Airwallex hosted Elements still on console for complex SDK flows;
-        // if only client_secret without pay_url, fall back temporarily.
-        const resume = result.resume_token
-          ? `/payment/result?resume_token=${encodeURIComponent(result.resume_token)}`
-          : '/payment/result'
-        window.location.href = `${consoleOrigin()}/boxai/sso/start?return_to=${encodeURIComponent(
-          method === 'airwallex' ? '/payment/airwallex' : '/payment/stripe',
-        )}&fallback=${encodeURIComponent(resume)}`
+        // Prefer staying on apex: show resume status; hosted SDK pages remain console-only.
+        if (result.resume_token) {
+          window.location.href = `/payment/result?resume_token=${encodeURIComponent(result.resume_token)}`
+          return
+        }
+        setError(t.noPayUrl)
         return
       }
 

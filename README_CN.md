@@ -31,7 +31,7 @@ BoxAI 是**同一网关后端上的多表面产品**：
 | 开发者 **API** | Go 网关 | https://api.you-box.com/v1 | `backend/` |
 | **Desktop** 办公客户端 | Tauri | 下载页获取安装包 | `desktop/` |
 
-跨域登录使用 **PKCE Web SSO**（不用 Cookie 父域共享）。架构见 [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · 本地三进程 [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 生产 [docs/PRODUCTION.md](docs/PRODUCTION.md)。
+客户认证在 you-box.com 同源完成（不用父域 Cookie；console 为管理后台）。架构见 [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · 本地三进程 [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 生产 [docs/PRODUCTION.md](docs/PRODUCTION.md)。
 
 ## ⚠️ 重要提醒
 

@@ -5,7 +5,6 @@ import {
   logoutSession,
   markSessionRejected,
   sessionRequestHeaders,
-  setSession,
   type AuthUser,
 } from './session'
 
@@ -117,30 +116,6 @@ export async function fetchMe(): Promise<AuthUser> {
 
 export async function logout(): Promise<void> {
   await logoutSession()
-}
-
-export async function authorizeSso(params: {
-  codeChallenge: string
-  redirectUri: string
-}): Promise<{ code: string; expires_in: number }> {
-  return apiPost('/api/v1/auth/boxai/sso/authorize', {
-    code_challenge: params.codeChallenge,
-    redirect_uri: params.redirectUri,
-  })
-}
-
-export async function exchangeSsoToken(params: {
-  code: string
-  codeVerifier: string
-  redirectUri?: string
-}): Promise<AuthResponse> {
-  const data = await apiPost<AuthResponse>('/api/v1/auth/boxai/sso/token', {
-    code: params.code,
-    code_verifier: params.codeVerifier,
-    redirect_uri: params.redirectUri,
-  })
-  setSession(data)
-  return data
 }
 
 export async function ensureCreatorKey(): Promise<{

@@ -31,7 +31,7 @@ BoxAI は**同一ゲートウェイ上の多面プロダクト**です。
 | 開発者 **API** | Go ゲートウェイ | https://api.you-box.com/v1 | `backend/` |
 | **Desktop** | Tauri | ダウンロードページ | `desktop/` |
 
-オリジン間ログインは **PKCE Web SSO**。設計: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · ローカル: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 本番: [docs/PRODUCTION.md](docs/PRODUCTION.md)。
+顧客認証は you-box.com 同一オリジン（親ドメイン Cookie なし；console は管理専用）。設計: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · ローカル: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 本番: [docs/PRODUCTION.md](docs/PRODUCTION.md)。
 
 ## ⚠️ 重要なお知らせ
 

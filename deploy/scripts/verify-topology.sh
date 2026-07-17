@@ -47,7 +47,8 @@ check "apex session bootstrap unauth" "$APEX/api/v1/auth/session" "401|403" POST
 check "apex session adopt unauth" "$APEX/api/v1/auth/session/adopt" "401|403" POST
 check "apex session logout exists" "$APEX/api/v1/auth/session/logout" "200|204|400|401|403" POST
 check "apex auth me unauth" "$APEX/api/v1/auth/me" "401|403"
-check "apex SSO authorize unauth" "$APEX/api/v1/auth/boxai/sso/authorize" "401|403" POST
+check "apex SSO authorize removed" "$APEX/api/v1/auth/boxai/sso/authorize" "404" POST
+check "apex SSO token removed" "$APEX/api/v1/auth/boxai/sso/token" "404" POST
 check "apex Creator ensure-key unauth" "$APEX/api/v1/boxai/creator/ensure-key" "401|403" POST
 # BOXAI: customer shell — credential + account APIs reach backend (401/4xx), not edge 404.
 check "apex credential login reaches backend" "$APEX/api/v1/auth/login" "400|401|403|422|429" POST
@@ -75,7 +76,6 @@ echo "=== Console (Vue) ==="
 check "console home" "$CONSOLE/" "200"
 check "console health via proxy" "$CONSOLE/health" "200"
 check "console public settings" "$CONSOLE/api/v1/settings/public" "200"
-check "console SSO start route exists" "$CONSOLE/boxai/sso/start" "200|302|401"
 check "console registration prepare exists" "$CONSOLE/api/v1/auth/registration/prepare" "400|422|429" POST
 check "console registration complete exists" "$CONSOLE/api/v1/auth/registration/complete" "400|422|429" POST
 

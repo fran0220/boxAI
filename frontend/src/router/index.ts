@@ -176,36 +176,6 @@ const routes: RouteRecordRaw[] = [
       title: 'Desktop Sign-in'
     }
   },
-  // BOXAI: Web SSO start / callback (PKCE between you-box.com and console).
-  {
-    path: '/boxai/sso/start',
-    name: 'BoxAISsoStart',
-    component: () => import('@/views/auth/BoxAISsoStartView.vue'),
-    meta: {
-      requiresAuth: false,
-      title: 'SSO Start'
-    }
-  },
-  {
-    path: '/boxai/sso/callback',
-    name: 'BoxAISsoCallback',
-    component: () => import('@/views/auth/BoxAISsoCallbackView.vue'),
-    meta: {
-      requiresAuth: false,
-      title: 'SSO Callback'
-    }
-  },
-  // BOXAI: console is the identity host — mints a Web SSO code for the
-  // marketing origin. requiresAuth routes cold sessions through /login first.
-  {
-    path: '/boxai/sso/authorize',
-    name: 'BoxAISsoAuthorize',
-    component: () => import('@/views/auth/BoxAISsoAuthorizeView.vue'),
-    meta: {
-      requiresAuth: true,
-      title: 'SSO Authorize'
-    }
-  },
   // BOXAI: public download page for the BoxAI Desktop app.
   {
     path: '/download/desktop',
@@ -804,7 +774,7 @@ router.beforeEach(async (to, _from, next) => {
   }
 
   // BOXAI: customer shell unification — console is admin-first.
-  // Non-admins are sent to apex for all customer UI; public auth/SSO/legal stay for bridge.
+  // Non-admins are sent to apex for customer UI; public auth/legal + payment exception stay.
   // Admins keep admin routes + optional legacy personal pages under "My Account".
   if (customerShellRedirectEnabled() && !authStore.isAdmin) {
     if (!isConsolePublicPath(to.path) && !isConsoleAdminPath(to.path)) {

@@ -51,10 +51,11 @@ func (s *AuthService) GenerateTokenForAudienceScope(user *User, audience string,
 }
 
 func browserScopes(user *User, surface string) []string {
+	// BOXAI: customer shell is apex-only — no cross-origin "sso" scope.
 	if surface == BrowserSurfaceWeb {
-		return []string{"web", "creator", "sso"}
+		return []string{"web", "creator"}
 	}
-	scopes := []string{"console", "user", "sso"}
+	scopes := []string{"console", "user"}
 	if user.IsAdmin() {
 		scopes = append(scopes, "admin")
 	}

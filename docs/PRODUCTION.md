@@ -123,9 +123,7 @@ AUTO_SETUP=true
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15
 BOXAI_BROWSER_SESSION=true
 BOXAI_LEGACY_BROWSER_ADOPTION=true
-BOXAI_WEB_SSO=true
 # 仅额外回调；生产内置回调无需填写。生产不要加入 localhost。
-BOXAI_WEB_SSO_REDIRECT_URIS=
 ```
 
 | 变量 | 说明 |
@@ -138,7 +136,6 @@ BOXAI_WEB_SSO_REDIRECT_URIS=
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15` | 浏览器内存 access JWT 的短有效期；优先于 `JWT_EXPIRE_HOUR` |
 | `BOXAI_BROWSER_SESSION` | 启用每个 UI host 独立的 `__Host-boxai_session` |
 | `BOXAI_LEGACY_BROWSER_ADOPTION` | 迁移期一次性接收旧 localStorage refresh token；迁移完成后设为 `false` |
-| `BOXAI_WEB_SSO_REDIRECT_URIS` | 额外 PKCE callback 白名单；生产通常留空，本地必须显式加入 localhost |
 
 完整变量表见仓库 `deploy/.env.example`。
 

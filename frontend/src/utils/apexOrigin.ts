@@ -16,7 +16,6 @@ export function apexOrigin(): string {
 /**
  * When true, non-admin navigations to customer paths hard-redirect to apex.
  * Default on for production console host; opt-out with VITE_CUSTOMER_SHELL_REDIRECT=0.
- * Local: set VITE_CUSTOMER_SHELL_REDIRECT=1 to exercise redirects.
  */
 export function customerShellRedirectEnabled(): boolean {
   const flag = (import.meta.env.VITE_CUSTOMER_SHELL_REDIRECT as string | undefined)?.trim()
@@ -28,7 +27,11 @@ export function customerShellRedirectEnabled(): boolean {
   return false
 }
 
-/** Console paths that remain valid for everyone (auth bridge, legal, setup). */
+/**
+ * Console paths that remain valid without redirecting to apex.
+ * Auth forms stay for admin login; WeChat MP payment still needs console host
+ * (external callback domain) so /purchase + /payment/* stay for non-admins.
+ */
 const CONSOLE_PUBLIC_PREFIXES = [
   '/login',
   '/register',
@@ -36,11 +39,16 @@ const CONSOLE_PUBLIC_PREFIXES = [
   '/forgot-password',
   '/reset-password',
   '/auth/',
-  '/boxai/sso/',
   '/legal/',
   '/setup',
   '/key-usage',
   '/download/desktop',
+]
+
+/** WeChat MP / legacy payment completion on console host only. */
+const CONSOLE_PAYMENT_EXCEPTION_PREFIXES = [
+  '/purchase',
+  '/payment/',
 ]
 
 /** Console customer paths → apex React routes. */
@@ -52,7 +60,6 @@ export const APEX_CUSTOMER_PATH_MAP: Record<string, string> = {
   '/usage': '/account/usage',
   '/profile': '/account/profile',
   '/subscriptions': '/account/subscription',
-  '/purchase': '/checkout',
   '/orders': '/account/orders',
   '/redeem': '/account/redeem',
   '/affiliate': '/account/affiliate',
@@ -60,16 +67,11 @@ export const APEX_CUSTOMER_PATH_MAP: Record<string, string> = {
   '/monitor': '/account/monitor',
   '/batch-image': '/account/batch-image',
   '/desktop-auth': '/desktop-auth',
-  '/payment/result': '/payment/result',
-  '/payment/qrcode': '/checkout',
-  '/payment/stripe': '/checkout',
-  '/payment/airwallex': '/checkout',
-  '/payment/stripe-popup': '/checkout',
 }
 
 export function isConsolePublicPath(path: string): boolean {
   if (CONSOLE_PUBLIC_PREFIXES.some((p) => path === p || path.startsWith(p))) return true
-  // OAuth / SSO exact routes already covered by prefixes
+  if (CONSOLE_PAYMENT_EXCEPTION_PREFIXES.some((p) => path === p || path.startsWith(p))) return true
   return false
 }
 
@@ -78,16 +80,14 @@ export function isConsoleAdminPath(path: string): boolean {
 }
 
 export function mapConsolePathToApex(path: string, search = ''): string | null {
+  // Payment stays on console for WeChat MP / Elements fallback — do not map.
+  if (path === '/purchase' || path.startsWith('/payment/')) return null
   const exact = APEX_CUSTOMER_PATH_MAP[path]
   if (exact) return `${apexOrigin()}${exact}${search}`
   if (path.startsWith('/custom/')) return `${apexOrigin()}/account${search}`
-  if (path.startsWith('/payment/')) return `${apexOrigin()}/checkout${search}`
   return null
 }
 
-/**
- * Absolute apex URL for a path (used by admin "open customer shell" links).
- */
 export function apexUrl(path: string): string {
   const p = path.startsWith('/') ? path : `/${path}`
   return `${apexOrigin()}${p}`

@@ -8,9 +8,6 @@ import { Studio } from '@/pages/Studio'
 import { Pricing } from '@/pages/Pricing'
 import { Status } from '@/pages/Status'
 import { NotFound } from '@/pages/NotFound'
-import { SsoStart } from '@/pages/SsoStart'
-import { SsoCallback } from '@/pages/SsoCallback'
-import { SsoAuthorize } from '@/pages/SsoAuthorize'
 import { AccountLayout } from '@/pages/account/AccountLayout'
 import { AccountOverview } from '@/pages/account/Overview'
 import { AccountKeys } from '@/pages/account/Keys'
@@ -68,16 +65,15 @@ export default function App() {
         <Route path="pricing" element={<Pricing />} />
         <Route path="status" element={<Status />} />
 
-        {/* Customer auth on apex (console remains admin + SSO rollback bridge). */}
+        {/* Customer auth on apex; console is admin-only (no Web SSO). */}
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="reset-password" element={<ResetPassword />} />
-
-        {/* Legacy Web SSO pages — kept until Phase 10 delete */}
-        <Route path="sso" element={<SsoStart />} />
-        <Route path="sso/callback" element={<SsoCallback />} />
-        <Route path="sso/authorize" element={<SsoAuthorize />} />
+        {/* Legacy SSO URLs → login (return_to preserved by query if present). */}
+        <Route path="sso" element={<Navigate to="/login" replace />} />
+        <Route path="sso/callback" element={<Navigate to="/account" replace />} />
+        <Route path="sso/authorize" element={<Navigate to="/login" replace />} />
 
         <Route path="checkout" element={<Checkout />} />
         <Route path="payment/result" element={<PaymentResult />} />

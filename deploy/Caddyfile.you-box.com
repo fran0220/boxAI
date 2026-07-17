@@ -6,7 +6,7 @@
 #   - React marketing/Creator build at /var/www/you-box.com (web/dist)
 #   - DNS: you-box.com, www, console, api → this host (or CF proxy)
 #
-# Shared security headers (SSO authorize is zero-click — frame/XSS hardening matters):
+# Shared security headers (frame/XSS hardening for product + admin hosts):
 #   Strict-Transport-Security, X-Content-Type-Options, X-Frame-Options,
 #   Referrer-Policy, Permissions-Policy
 
@@ -78,7 +78,6 @@ you-box.com {
 		path /api/v1/auth/registration/prepare /api/v1/auth/registration/complete
 		path /api/v1/auth/send-verify-code /api/v1/auth/forgot-password /api/v1/auth/reset-password
 		path /api/v1/auth/validate-promo-code /api/v1/auth/validate-invitation-code
-		path /api/v1/auth/boxai/sso/authorize /api/v1/auth/boxai/sso/token
 		path /api/v1/auth/boxai/desktop/authorize
 		path /api/v1/boxai/creator/ensure-key
 		path /api/v1/keys /api/v1/keys/*
@@ -178,8 +177,6 @@ console.you-box.com {
 #
 # Allowed:
 #   /v1/*                              gateway (models)
-#   /api/v1/auth/boxai/sso/token       Web SSO token exchange (public)
-#   /api/v1/auth/boxai/desktop/token   Desktop PKCE token exchange (public)
 #   /api/v1/auth/refresh               token refresh for clients
 #   /api/v1/settings/public            public site settings
 #   /health
@@ -196,8 +193,7 @@ api.you-box.com {
 
 	@allowed {
 		path /v1/*
-		path /api/v1/auth/boxai/sso/token
-		path /api/v1/auth/boxai/desktop/token
+			path /api/v1/auth/boxai/desktop/token
 		path /api/v1/auth/refresh
 		path /api/v1/settings/public
 		path /health
