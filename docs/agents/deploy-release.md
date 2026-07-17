@@ -5,9 +5,9 @@
 | Item | Value |
 |------|--------|
 | SSH | `youbox` (`160.187.1.155`) |
-| Product | `https://you-box.com` — React `/var/www/you-box.com` + proxy `/api` `/v1` `/health` |
-| Console | `https://console.you-box.com` — proxy to Go embed |
-| API | `https://api.you-box.com` — filtered gateway + public tokens |
+| Customer shell | `https://you-box.com` — React `/var/www/you-box.com` + allowlisted `/api` + `/v1` + `/health` |
+| Admin console | `https://console.you-box.com` — proxy to Go embed (Vue) |
+| API | `https://api.you-box.com` — filtered gateway (API Key; no browser session) |
 | App dir | `/opt/boxAI` |
 | Compose | `docker-compose.yml` (from `deploy/docker-compose.local.yml`) |
 | Image | `ghcr.io/fran0220/boxai:<pin>` |

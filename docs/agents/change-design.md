@@ -31,33 +31,40 @@ Design every change so the next upstream release-tag merge stays mechanical.
 ### Handler layering
 
 - Handlers must not import `redis` or `repository` (depguard).
-- Redis-backed SSO/desktop codes: `BoxAICodeStore` in handler + adapter in `routes/boxai_code_store.go`.
+- Redis-backed **desktop PKCE** (and similar) codes: `BoxAICodeStore` in handler + adapter in `routes/boxai_code_store.go`.
+- Browser sessions: host-only cookies per UI host; short memory JWT; no parent-domain cookie.
+- **Do not** re-add Web SSO code exchange between apex and console.
 
 ## Frontends
 
 | Surface | Path | Policy |
 |---------|------|--------|
-| Console | `frontend/` | Hybrid; brand via `frontend/src/constants/brand.ts` |
-| Marketing + Creator | `web/` | Product-first entire tree; brand via `web/src/lib/brand.ts` |
+| **Customer shell** | `web/` | Product-first; brand via `web/src/lib/brand.ts` |
+| **Admin console** | `frontend/` | Hybrid; brand via `frontend/src/constants/brand.ts` |
 | Desktop UI | `desktop/crates/agent-gui/` | Product-first vendored tree |
 
-### Console (`frontend/`)
+### Customer shell (`web/`)
 
-- Brand strings/logos only through `brand.ts`.
-- BoxAI-only screens: dedicated views + routes (SSO, desktop-auth, download).
-- Do not grow Creator/marketing product surface here; that belongs in `web/`.
-
-### Product web (`web/`)
-
-- Apex host UI only in `web/`.
+- All **normal-user** UX: marketing, Creator, login/register/OAuth callback, account center, checkout, status, desktop-auth.
+- Same-origin session on apex; edge allowlist for customer + auth APIs only.
 - Never embed `web/dist` into Go.
 - Publish with `deploy/scripts/deploy-web-static.sh`.
-- Edge: `deploy/nginx-you-box.com.conf`.
+- Edge: `deploy/nginx-you-box.com.conf` / `Caddyfile.you-box.com`.
+
+### Admin console (`frontend/`)
+
+- Brand strings/logos only through `brand.ts`.
+- **Admin** product surface: users, channels, pricing, ops, risk, compliance, settings.
+- BoxAI bridges: `DesktopAuthView`, `ApexCustomerRedirect`, download page.
+- **WeChat MP payment exception:** keep `Payment*.vue` / Stripe / Airwallex until product drops in-WeChat console re-login.
+- Do **not** grow Creator/marketing/**customer account** surface here; that belongs in `web/`.
+- Non-admin routes should redirect to apex (`frontend/src/utils/apexOrigin.ts`), not rebuild dual shells.
 
 ### Desktop (`desktop/`)
 
 - Product edits do not need `// BOXAI:` markers.
 - Auth/server integration contracts stay in monorepo backend handlers + `desktop/UPSTREAM.md`.
+- Prefer apex `/desktop-auth` for new client defaults; console path may remain for old builds.
 
 ## Compliance
 

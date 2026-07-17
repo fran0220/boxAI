@@ -9,13 +9,16 @@ Entry: repository root [AGENTS.md](../../AGENTS.md).
 | [upstream-sync.md](./upstream-sync.md) | Merging an upstream release tag |
 | [deploy-release.md](./deploy-release.md) | Image + edge (React static) publish |
 | [pr-checklist.md](./pr-checklist.md) | Before opening/merging a PR |
+| [next-actions.md](./next-actions.md) | Post customer-shell unification backlog |
 
 ## Product surfaces (do not invent alternate hosts)
 
-| Host | Code |
-|------|------|
-| `you-box.com` | `web/` |
-| `console.you-box.com` | `frontend/` (embed) |
-| `api.you-box.com` | `backend/` gateway edge |
+| Host | Role | Code |
+|------|------|------|
+| `you-box.com` | **Customer shell** (marketing, Creator, auth, account, checkout) | `web/` |
+| `console.you-box.com` | **Admin console** (+ WeChat MP payment exception) | `frontend/` (Go embed) |
+| `api.you-box.com` | Public model API (API Key / gateway) | `backend/` edge-filtered |
 
-Detail: [WEB_PLATFORM.md](../WEB_PLATFORM.md).
+**Not current architecture:** dual customer shells linked by Web SSO, console-as-identity-host, parent-domain cookies.
+
+Detail: [WEB_PLATFORM.md](../WEB_PLATFORM.md) · Unification status: [CUSTOMER_SHELL_UNIFICATION.md](../CUSTOMER_SHELL_UNIFICATION.md).

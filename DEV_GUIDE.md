@@ -9,8 +9,8 @@
 | **产品名** | BoxAI |
 | **上游仓库** | [Wei-Shaw/sub2api](https://github.com/Wei-Shaw/sub2api) |
 | **本仓库** | [fran0220/boxAI](https://github.com/fran0220/boxAI) |
-| **技术栈** | Go 后端 (Ent + Gin) + **双前端**：Vue3 控制台 (`frontend/`) + React 营销/Creator (`web/`) + Tauri Desktop (`desktop/`) |
-| **生产域名** | 产品面 `you-box.com` · 控制台 `console.you-box.com` · API `api.you-box.com` |
+| **技术栈** | Go 后端 (Ent + Gin) + **客户壳 React** (`web/`) + **管理台 Vue** (`frontend/`) + Tauri Desktop (`desktop/`) |
+| **生产域名** | 客户壳 `you-box.com` · 管理台 `console.you-box.com` · API `api.you-box.com` |
 | **数据库** | PostgreSQL 16+ + Redis |
 | **包管理** | 后端: Go modules；控制台与 web: **pnpm**（各自 lockfile） |
 | **Go 版本** | 以 `backend/go.mod` 为准（当前 **1.26.5**；release CI 会校验） |
@@ -23,8 +23,10 @@
 |------|------|
 | [AGENTS.md](./AGENTS.md) | Agent 硬规则入口 |
 | [docs/agents/](./docs/agents/) | 分区 / 改码 / 同步 / 发布 / PR 清单 |
-| [docs/WEB_PLATFORM.md](./docs/WEB_PLATFORM.md) | 双前端拓扑、客户壳、Creator |
-| [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md) | 本地三进程（backend + Vue + React） |
+| [docs/WEB_PLATFORM.md](./docs/WEB_PLATFORM.md) | 主机拓扑、客户壳、管理台、Creator |
+| [docs/CUSTOMER_SHELL_UNIFICATION.md](./docs/CUSTOMER_SHELL_UNIFICATION.md) | 客户壳统一状态（已上线） |
+| [docs/agents/next-actions.md](./docs/agents/next-actions.md) | 统一后的优化 backlog |
+| [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md) | 本地三进程（backend + Vue 管理台 + React 客户壳） |
 | [docs/PRODUCTION.md](./docs/PRODUCTION.md) | 生产拓扑与切换脚本 |
 | [docs/OFFICE_MODULE.md](./docs/OFFICE_MODULE.md) | Desktop 客户端 |
 | [FORK_DELTA.md](./FORK_DELTA.md) | 相对上游的产品 delta 清单 |

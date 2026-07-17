@@ -65,8 +65,9 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `frontend/public/logo-mono.svg` | Monochrome mark |
 | `frontend/public/logo.png` | Raster mark |
 | `docs/BRAND.md` | Brand system |
-| `docs/PRODUCTION.md` | Production dual-frontend ops (product overlay) |
-| `DEV_GUIDE.md` | Local + dual-frontend developer guide |
+| `docs/PRODUCTION.md` | Production topology ops (product overlay) |
+| `DEV_GUIDE.md` | Local + multi-surface developer guide |
+| `docs/agents/next-actions.md` | Post customer-shell optimization backlog for agents |
 | `AGENTS.md` | Agent hard rules |
 | `docs/agents/*` | Agent SOPs |
 | `FORK_DELTA.md` | This inventory |

@@ -4,18 +4,27 @@ Soft fork of [Wei-Shaw/sub2api](https://github.com/Wei-Shaw/sub2api), productize
 
 Read this before non-trivial work. SOPs: [`docs/agents/`](docs/agents/README.md).
 
-## Product map
+## Product map (current)
 
-| Surface | Host | Code | Stack |
-|---------|------|------|--------|
-| Marketing + Creator | `you-box.com` | `web/` | React (Vite), static on edge |
-| User + admin console | `console.you-box.com` | `frontend/` | Vue 3, embedded in Go |
-| Gateway API | `api.you-box.com` | `backend/` | Go; edge-filtered paths |
-| Desktop | installers | `desktop/` | Tauri |
+| Surface | Host | Code | Stack | Who |
+|---------|------|------|--------|-----|
+| **Customer shell** | `you-box.com` | `web/` | React (Vite), edge-static | All normal-user UX: marketing, Creator, auth, account, checkout, status |
+| **Admin console** | `console.you-box.com` | `frontend/` | Vue 3, embedded in Go | Admins (+ WeChat MP **payment exception** paths) |
+| Gateway API | `api.you-box.com` | `backend/` | Go; edge-filtered | Developers / API Key clients |
+| Desktop | installers | `desktop/` | Tauri | Desktop app (PKCE browser login) |
 
-Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · Ops: [docs/PRODUCTION.md](docs/PRODUCTION.md).
+| Auth fact | Rule |
+|-----------|------|
+| Customer session | Apex host-only `__Host-boxai_session` + short **memory** access JWT |
+| Admin session | Console host-only cookie (separate origin from Creator) |
+| Web SSO | **Removed** — no cross-origin customer SSO |
+| Parent-domain cookie | **Forbidden** (`Domain=.you-box.com`) |
+| Admin APIs on apex | **Never** — edge deny `/api/v1/admin/*`, setup |
+| React in Docker | **Never** — ship with `deploy/scripts/deploy-web-static.sh` |
 
-**Production config:** change SMTP / site settings via **Admin API** on `https://console.you-box.com` only (not apex `you-box.com`). Ops secrets live in `/root/.boxai/admin-api.env` or `~/.config/boxai/admin.env` — never commit.
+Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Unification ledger: [docs/CUSTOMER_SHELL_UNIFICATION.md](docs/CUSTOMER_SHELL_UNIFICATION.md) · Local: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · Ops: [docs/PRODUCTION.md](docs/PRODUCTION.md) · Next work: [docs/agents/next-actions.md](docs/agents/next-actions.md).
+
+**Production config:** SMTP / site settings via **Admin API** on `https://console.you-box.com` only (not apex). Ops secrets in `/root/.boxai/admin-api.env` or `~/.config/boxai/admin.env` — never commit.
 
 ## Identity
 
@@ -41,6 +50,7 @@ Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL
 | [upstream-sync.md](docs/agents/upstream-sync.md) | Merge upstream release tags |
 | [deploy-release.md](docs/agents/deploy-release.md) | Image + edge publish |
 | [pr-checklist.md](docs/agents/pr-checklist.md) | PR gates |
+| [next-actions.md](docs/agents/next-actions.md) | Post-unification optimization backlog |
 | [FORK_DELTA.md](FORK_DELTA.md) | Enumerated product delta |
 | [docs/BRAND.md](docs/BRAND.md) | Brand + compliance freeze |
 | [DEV_GUIDE.md](DEV_GUIDE.md) | Tooling and CI |
@@ -54,6 +64,8 @@ Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL
 5. **Upstream sync** — merge by upstream **release tag**; **merge not rebase** on published `main`; sync PRs contain no feature work.
 6. **No full-repo rebrand** — do not mass-rename binary, env keys, embed path, ports, `/health`, or DB names.
 7. **Do not embed React in Go** — apex HTML is edge-static; image rebuild does not update `you-box.com` without `deploy-web-static.sh`.
+8. **Do not migrate admin ops into `web/`** — channels admin, users, pricing, risk, compliance, ops stay Vue console. Customer account/Creator stay React.
+9. **Do not revive Web SSO** or parent-domain cookies for “simpler” multi-host login.
 
 ## Ownership (summary)
 
@@ -88,8 +100,11 @@ Full table: [ownership-zones.md](docs/agents/ownership-zones.md).
 - Changing upstream API shapes without flag + `FORK_DELTA` row
 - Rebase of published `main`
 - Feature commits inside a sync PR
-- Putting Creator/marketing UI into Vue console instead of `web/`
+- Putting Creator/marketing/**customer account** into Vue instead of `web/`
+- Putting **admin** product surface into `web/` instead of `frontend/`
 - Shipping apex React only via Docker image (without static deploy)
+- Re-adding Web SSO / parent-domain session sharing “for convenience”
+- Pixel-parity rewrites of admin tables as “customer migration”
 
 ## Workflow
 
@@ -97,14 +112,15 @@ Full table: [ownership-zones.md](docs/agents/ownership-zones.md).
 2. Prefer config/seed → branding/`brand.ts` → product-first package → minimal sync-first wire.
 3. Touch sync-first file → marker + `FORK_DELTA.md`.
 4. Run [pr-checklist.md](docs/agents/pr-checklist.md).
-5. Finish multi-step goals without stopping for “continue?”.
+5. For post-unification product work, prefer [next-actions.md](docs/agents/next-actions.md) over inventing new shells.
+6. Finish multi-step goals without stopping for “continue?”.
 
 ## Tooling
 
 | Area | Tool |
 |------|------|
-| Console | `frontend/` + pnpm (`pnpm-lock.yaml`) |
-| Product web | `web/` + pnpm (own lockfile) |
+| Customer web | `web/` + pnpm (own lockfile) |
+| Admin console | `frontend/` + pnpm (`pnpm-lock.yaml`) |
 | Backend | Go — see `backend/go.mod` (CI **1.26.5**) |
 | Edge publish | `deploy/scripts/deploy-web-static.sh`, `apply-nginx-topology.sh`, `verify-topology.sh` |
 | Local three-process | [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) |

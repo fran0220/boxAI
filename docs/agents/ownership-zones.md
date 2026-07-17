@@ -19,18 +19,19 @@ Default merge and edit policy by path. Unknown backend paths → **sync-first**.
 | `backend/ent/`, `backend/cmd/` | sync-first | Schema via ent; cmd only product display wires | theirs + replay |
 | `backend/internal/branding/` | product-first | Product identity constants | — |
 | `backend/internal/boxai/` | product-first | Optional product package | — |
-| `backend/internal/handler/boxai_*.go` | product-first | Browser session, desktop auth, Creator key, JWT bridge | — |
+| `backend/internal/handler/boxai_*.go` | product-first | Browser session, desktop auth, Creator key, public status, JWT bridge | — |
 | `backend/internal/server/routes/boxai_*.go` | product-first | Redis code store adapter | — |
 | `backend/migrations/*` version `<900` | sync-first (read-only) | Only via upstream merge | theirs |
 | `backend/migrations/9xx_boxai_*.sql` | product-first | Forward-only, idempotent; prefer `boxai_` settings keys | — |
-| `web/` | product-first | React marketing + Creator; not Go-embed | — |
+| `web/` | product-first | **Customer shell** (marketing, Creator, auth, account, checkout); not Go-embed | — |
 | `desktop/` | product-first | Vendored Tauri app; `desktop/UPSTREAM.md` | — |
 | `frontend/src/constants/brand.ts`, `frontend/public/logo*` | product-first | Console brand assets | — |
-| `frontend/src/views/auth/BoxAISso*.vue`, `DesktopAuthView.vue`, `public/DesktopDownloadView.vue` | product-first | BoxAI-only console routes | — |
-| Other `frontend/src/` | hybrid | Brand via `brand.ts` | theirs, replay brand |
+| `frontend/src/views/auth/DesktopAuthView.vue`, `public/DesktopDownloadView.vue`, `public/ApexCustomerRedirect.vue` | product-first | BoxAI console bridges (desktop + apex redirects) | — |
+| `frontend/src/views/user/Payment*.vue`, Stripe/Airwallex | hybrid / keep | **WeChat MP payment exception** only — not a second customer shell | — |
+| Other `frontend/src/` | hybrid | Brand via `brand.ts`; **admin UI** | theirs, replay brand |
 | `frontend/src/stores/adminCompliance.ts` | frozen | Legal phrases | human |
 | `docs/legal/` | frozen | Compliance markdown | human |
-| `docs/WEB_PLATFORM.md`, `LOCAL_DEV.md`, `OFFICE_MODULE.md`, `PRODUCTION.md`, `docs/README.md` | product-first | Product architecture docs | — |
+| `docs/WEB_PLATFORM.md`, `LOCAL_DEV.md`, `OFFICE_MODULE.md`, `PRODUCTION.md`, `CUSTOMER_SHELL_UNIFICATION.md`, `docs/README.md` | product-first | Product architecture docs | — |
 | `deploy/nginx-you-box.com.conf`, `deploy/Caddyfile.you-box.com`, `deploy/scripts/*` | product-first | Edge topology + publish helpers | — |
 | Other `deploy/` | hybrid | Env names, volumes, ports, healthchecks; pin `BOXAI_IMAGE` | structure theirs |
 | `.goreleaser*.yaml`, `.github/workflows/` | hybrid | Image/URL product; build tracks upstream | structure theirs |
@@ -41,3 +42,8 @@ Default merge and edit policy by path. Unknown backend paths → **sync-first**.
 ## New zones
 
 Add long-lived product packages to this table and to root `AGENTS.md` in the same PR.
+
+## Notes for agents
+
+- **Deleted product paths:** Web SSO handlers/pages (`boxai_web_sso`, `BoxAISso*`, apex `Sso*`) are gone. Do not reintroduce without an explicit product decision.
+- **Console user views** for keys/usage/profile/etc. are removed; non-admin hits `ApexCustomerRedirect` → `you-box.com`. Do not rebuild a dual customer shell in Vue.

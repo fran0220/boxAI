@@ -13,7 +13,8 @@
 - [ ] Backend tests/lint for touched packages
 - [ ] Console (`frontend/`): pnpm lockfile if `package.json` changed; typecheck/lint as needed
 - [ ] Product web (`web/`): typecheck + tests if touched
-- [ ] Topology/auth docs updated if hosts, SSO, or deploy paths change
+- [ ] Topology/auth docs updated if **hosts**, **edge allowlist**, **session model**, or **deploy paths** change
+- [ ] Customer features land in `web/`; admin features stay in `frontend/` (no dual shells / no Web SSO revival)
 
 ## Sync PR
 
@@ -29,3 +30,4 @@
 - [ ] `BOXAI_IMAGE` pin recorded for operators
 - [ ] `web/` changes: static deploy + `verify-topology.sh`
 - [ ] Image-only: confirm apex HTML does not need a web rebuild
+- [ ] If edge allowlist changed: nginx/Caddy applied on host

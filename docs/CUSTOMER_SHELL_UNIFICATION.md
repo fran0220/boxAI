@@ -1,58 +1,46 @@
 # Customer Shell Unification
 
-**Status:** in progress  
-**Oracle:** approve-with-changes (2026-07-17)  
-**Goal:** one customer domain, one customer frontend, one customer session; Vue console admin-only.
+**Status:** **shipped on main** (architecture complete; residual = ops + optional polish)  
+**Oracle:** approve-with-changes (plan) + residual review (2026-07-17)  
+**Goal:** one customer domain, one customer frontend, one customer session; Vue console admin-first.
 
-## End state
+## End state (current)
 
 | Surface | Role | Credential |
 |---------|------|------------|
 | `you-box.com` React | All normal-user UX | `__Host-boxai_session` (web) + memory access JWT |
-| `console.you-box.com` Vue | Admin only | `__Host-boxai_session` (console, admin-only) |
+| `console.you-box.com` Vue | Admin-first (+ WeChat MP payment exception) | Console host cookie |
 | Desktop | Client app | OAuth PKCE |
 | `api.you-box.com` | Developer API | API Key only (no browser cookie) |
 
 Invariants:
 
 - No parent-domain cookie (`Domain=.you-box.com`)
-- No Web SSO for customer journeys after cutover
-- No cookie-BFF for all `/api/*` (keep short memory JWT + CSRF headers)
+- **No Web SSO**
+- No cookie-BFF for all `/api/*` (short memory JWT + CSRF headers)
 - Apex never proxies `/api/v1/admin/*` or setup
-- Auth next_action driven by backend (Auth Transaction); React renders steps
-- After login, return to original intent (`return_to`), not Dashboard by default
+- After login, prefer `return_to` intent (not generic Dashboard)
+- Admin platform features stay on Vue; not a hard-migration target
 
-## Rejected alternatives
+## Shipped phases (history)
 
-| Option | Why not |
-|--------|---------|
-| Vue at `you-box.com/console` | Shares Origin with Creator; weakens admin/customer isolation |
-| `auth.you-box.com` + OIDC | Still two customer shells + third service |
-| Parent-domain cookie | Breaks `__Host-`, spreads cookie to api subdomain |
+| # | Phase | Status |
+|---|-------|--------|
+| 0 | Freeze SSO extensions | Done → SSO deleted |
+| 1 | Edge allowlist + surface JWT | Done |
+| 2–3 | Customer pages + checkout on React | Done |
+| 4 | Auth UI + OAuth on apex | Done (pending registration chooser parked) |
+| 5 | Desktop-auth on apex | Done (console URL retained for old clients) |
+| 6 | Adminize console + delete Web SSO | Done |
+| 7 | Cleanup / quality | Ongoing → [next-actions.md](./agents/next-actions.md) |
 
-## Phases (Oracle-revised)
-
-| # | Phase | Notes |
-|---|-------|-------|
-| 0 | Freeze SSO *extensions* | Keep SSO as rollback bridge until Phase 6 |
-| 1 | Edge allowlist restructure + surface JWT verify | Unblocks customer APIs on apex |
-| 2 | Customer pages → React (keys, usage, profile, subs, redeem, orders) | Highest value first |
-| 3 | Purchase on React (Stripe/QR/Airwallex; WeChat MP stays console v1) | |
-| 3∥ | Auth Transaction backend (dark) | Parallel with 2–3 |
-| 4 | Auth UI on React (password/email first, then OAuth dual URI) | |
-| 5 | Desktop-auth on apex | Keep console URL for old clients |
-| 6 | Adminize console + delete Web SSO | |
-| 7 | Cleanup legacy | |
-
-## Non-goals (v1)
+## Non-goals (still valid)
 
 - Token unification across surfaces
 - Cookie-BFF for all APIs
-- External IdP
-- WeChat MP in-WeChat purchase on apex (still console deep-link)
-- Pixel-perfect Vue Keys/Usage tables (parity of actions, not every column)
-- Immediate hard-delete of Vue user view files (redirect + hide nav first)
-- Full Stripe Elements / Airwallex SDK embed (pay_url + QR first; hosted fallback)
+- External IdP as prerequisite
+- Pixel-parity admin or Vue tables on React
+- Migrating admin ops into `web/`
 
 ## Migrated customer routes (apex)
 
@@ -61,92 +49,19 @@ Invariants:
 | `/account` | `/dashboard` |
 | `/account/keys` | `/keys` |
 | `/account/usage` | `/usage` |
-| `/account/profile` | `/profile` |
-| `/account/security` | profile TOTP |
+| `/account/profile` · `/security` | `/profile` |
 | `/account/subscription` | `/subscriptions` |
 | `/account/orders` | `/orders` |
-| `/account/redeem` | `/redeem` |
-| `/account/affiliate` | `/affiliate` |
-| `/account/channels` | `/available-channels` |
-| `/account/monitor` | `/monitor` |
-| `/account/batch-image` | `/batch-image` |
-| `/account/announcements` | announcements |
-| `/checkout` | `/purchase` + payment subroutes |
-| `/payment/result` | `/payment/result` |
-| `/login`… | console auth (admin login remains) |
-| `/desktop-auth` | `/desktop-auth` | (keep dark for rollback ≥1 release)
+| `/account/redeem` · `/affiliate` | same |
+| `/account/channels` · `/monitor` | `/available-channels` · `/monitor` |
+| `/checkout` · `/payment/result` | `/purchase` · payment result |
+| `/login` · `/signup` · OAuth callbacks | console identity host |
+| `/desktop-auth` | console desktop-auth |
 
-## PR Plan
+## Exception (intentional)
 
-### PR 1: Edge allowlist restructure + customer API surface
+**WeChat in-WeChat MP payment** may still use console `/purchase` + `/payment/*` (callback domain). Users re-login on console once — **no SSO**. Removal is a **product/data decision**, not unfinished migration. See [next-actions.md](./agents/next-actions.md) P1-1.
 
-- **Files:** `deploy/nginx-you-box.com.conf`, `deploy/Caddyfile.you-box.com`, `deploy/scripts/verify-topology.sh`, `docs/WEB_PLATFORM.md`
-- **Dependencies:** None
-- **Description:** Explicit per-prefix apex proxy locations for customer APIs; deny admin/setup; verify web-audience JWT is accepted on same-host customer routes (middleware already host-gates audience).
+## Next work
 
-### PR 2: React account shell + Keys + Usage
-
-- **Files:** `web/src/pages/account/*`, `web/src/lib/customer-api.ts`, `web/src/App.tsx`, i18n
-- **Dependencies:** PR 1
-- **Description:** `/account`, `/account/keys`, `/account/usage` with full CRUD/list against existing JSON APIs.
-
-### PR 3: Profile, Security, Subscriptions, Redeem, Orders, Affiliate
-
-- **Files:** `web/src/pages/account/*`, nav/footer links
-- **Dependencies:** PR 2
-- **Description:** Remaining customer-center pages; console deep links replaced for these routes.
-
-### PR 4: Purchase v1 on apex
-
-- **Files:** `web/src/pages/checkout/*`, `/payment/result`, Pricing CTA, CSP if needed
-- **Dependencies:** PR 1, PR 3
-- **Description:** Stripe redirect + QR polling + Airwallex hosted; WeChat browser → temporary console deep link.
-
-### PR 5: Auth Transaction backend (dark)
-
-- **Files:** `backend/internal/handler/boxai_auth_tx.go`, routes, Redis store, flag `BOXAI_AUTH_TX`
-- **Dependencies:** None (parallel)
-- **Description:** Opaque transaction_id + `next_action` envelope; wraps existing registration/2FA/OAuth completion without breaking Vue.
-
-### PR 6: Auth UI password/email on apex
-
-- **Files:** `web/src/pages/auth/*`, edge allowlist for login/register/forgot/reset, `return_to`
-- **Dependencies:** PR 5 (preferred) or existing login + browser session headers
-- **Description:** Feature-flagged forms on apex; SSO AuthRedirect remains fallback until flag on.
-
-### PR 7: OAuth dual redirect URIs
-
-- **Files:** browser session OAuth redirect for web surface, React OAuth callback pages
-- **Dependencies:** PR 6
-- **Description:** Register apex callbacks at providers; dual-host during transition.
-
-### PR 8: Desktop-auth on apex
-
-- **Files:** `web/src/pages/DesktopAuth.tsx`, desktop default URL bump later
-- **Dependencies:** PR 6
-- **Description:** `you-box.com/desktop-auth`; console page retained.
-
-### PR 9: CTA flip + console user-route redirects
-
-- **Files:** React links, Vue router guards → apex
-- **Dependencies:** PR 4, PR 7
-- **Description:** Flagged redirects; rollback = flag off.
-
-### PR 10: Adminize console + delete Web SSO
-
-- **Files:** delete SSO handlers/pages, docs rewrite, console nav
-- **Dependencies:** PR 9 soak + PR 8
-- **Description:** Console session admin-only; remove `BOXAI_WEB_SSO`.
-
-### PR 11: Cleanup
-
-- **Files:** dead Vue user views (after window), FORK_DELTA, legacy adoption
-- **Dependencies:** PR 10 + soak
-
-## Verification
-
-- Apex: customer paths → 401 not 404; admin/setup → 404
-- API host: no browser session
-- Login → return_to checkout/keys/create
-- Payment: create → provider → apex `/payment/result`
-- No cross-host token leakage
+Track in **[docs/agents/next-actions.md](./agents/next-actions.md)** (P0 ops, P1 product decisions, P2 optional engineering). Do not re-open dual-shell design unless product explicitly reverses course.

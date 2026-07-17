@@ -26,12 +26,12 @@ BoxAI 是**同一网关后端上的多表面产品**：
 
 | 表面 | 技术 | 生产 URL | 代码 |
 |------|------|----------|------|
-| 营销 + **Creator**（聊天/图/视频） | React (Vite) | https://you-box.com | `web/` |
-| 用户/管理 **控制台** | Vue 3（Go 内嵌） | https://console.you-box.com | `frontend/` |
+| **客户壳**（营销、Creator、账户、认证、结账） | React (Vite) | https://you-box.com | `web/` |
+| **管理台**（运营；微信内支付为例外） | Vue 3（Go 内嵌） | https://console.you-box.com | `frontend/` |
 | 开发者 **API** | Go 网关 | https://api.you-box.com/v1 | `backend/` |
 | **Desktop** 办公客户端 | Tauri | 下载页获取安装包 | `desktop/` |
 
-客户认证在 you-box.com 同源完成（不用父域 Cookie；console 为管理后台）。架构见 [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · 本地三进程 [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 生产 [docs/PRODUCTION.md](docs/PRODUCTION.md)。
+客户会话在 you-box.com 同源完成（不用父域 Cookie、**无 Web SSO**；console 为管理台）。架构见 [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Agent 规范 [AGENTS.md](AGENTS.md) · 后续优化 [docs/agents/next-actions.md](docs/agents/next-actions.md) · 本地 [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · 生产 [docs/PRODUCTION.md](docs/PRODUCTION.md)。
 
 ## ⚠️ 重要提醒
 

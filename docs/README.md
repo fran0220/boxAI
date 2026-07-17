@@ -5,7 +5,8 @@
 | Doc | Content |
 |-----|---------|
 | [WEB_PLATFORM.md](./WEB_PLATFORM.md) | Hosts, customer shell (apex React), Creator, edge paths |
-| [CUSTOMER_SHELL_UNIFICATION.md](./CUSTOMER_SHELL_UNIFICATION.md) | Target: apex React customer shell; console admin-only |
+| [CUSTOMER_SHELL_UNIFICATION.md](./CUSTOMER_SHELL_UNIFICATION.md) | Customer shell **shipped**; residual → next-actions |
+| [agents/next-actions.md](./agents/next-actions.md) | Post-unification optimization backlog |
 | [OFFICE_MODULE.md](./OFFICE_MODULE.md) | Desktop client |
 | [BRAND.md](./BRAND.md) | Brand tokens and compliance freeze |
 
@@ -37,6 +38,7 @@
 | [agents/upstream-sync.md](./agents/upstream-sync.md) | Upstream merge SOP |
 | [agents/deploy-release.md](./agents/deploy-release.md) | Image + edge publish |
 | [agents/pr-checklist.md](./agents/pr-checklist.md) | PR gates |
+| [agents/next-actions.md](./agents/next-actions.md) | Optimization backlog |
 
 ## Other
 

@@ -26,12 +26,12 @@ BoxAI is a **multi-surface** product on one gateway backend:
 
 | Surface | Stack | Production URL | Code |
 |---------|-------|----------------|------|
-| Marketing + **Creator** (chat / image / video) | React (Vite) | https://you-box.com | `web/` |
-| User + admin **console** | Vue 3 (embedded in Go) | https://console.you-box.com | `frontend/` |
+| **Customer shell** (marketing, Creator, account, auth, checkout) | React (Vite) | https://you-box.com | `web/` |
+| **Admin console** (ops; WeChat MP payment exception only) | Vue 3 (embedded in Go) | https://console.you-box.com | `frontend/` |
 | Developer **API** | Go gateway | https://api.you-box.com/v1 | `backend/` |
 | **Desktop** office client | Tauri | installers via download page | `desktop/` |
 
-Customer auth is same-origin on you-box.com (no parent-domain cookie; console is admin-first). Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · local three-process: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · production: [docs/PRODUCTION.md](docs/PRODUCTION.md).
+Same-origin customer session on you-box.com (no parent-domain cookie, **no Web SSO**). Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · agent rules: [AGENTS.md](AGENTS.md) · next work: [docs/agents/next-actions.md](docs/agents/next-actions.md) · local: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · production: [docs/PRODUCTION.md](docs/PRODUCTION.md).
 
 ## ⚠️ Important Notice
 
