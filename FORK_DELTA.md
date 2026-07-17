@@ -20,16 +20,14 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `desktop/` | Vendored BoxAI Desktop (Tauri app + gateway + WebUI); provenance in `desktop/UPSTREAM.md` |
 | `frontend/src/views/auth/DesktopAuthView.vue` | BoxAI Desktop browser-login handshake page (mints PKCE code, redirects to desktop scheme) |
 | `frontend/src/views/public/DesktopDownloadView.vue` | Public desktop download page (lists newest `desktop-v*` GitHub release assets) |
-| `frontend/src/utils/safeReturnPath.ts` | Safe relative post-SSO return paths (console) |
+| `frontend/src/utils/safeReturnPath.ts` | Safe relative post-auth return paths (console) |
 | `.github/workflows/desktop-release.yml` | Desktop release workflow (monorepo adaptation of `desktop/.github/workflows/desktop-release.yml`; `desktop-v*` tags, never marks releases "latest") |
 | `backend/internal/handler/boxai_desktop_gateway_auth.go` | Desktop JWT-as-credential gateway auth bridge (new BOXAI file in sync-first pkg; needs AuthHandler services) |
 | `backend/internal/handler/boxai_desktop_gateway_auth_test.go` | Unit tests for the JWT→API-key gateway bridge |
 | `backend/internal/handler/boxai_desktop_auth.go` | Desktop OAuth (PKCE) browser-login endpoints (authorize + token exchange) |
 | `backend/internal/handler/boxai_desktop_auth_test.go` | Unit tests for the desktop OAuth PKCE helpers |
-| `backend/internal/handler/boxai_web_sso.go` | Web PKCE SSO authorize/token between you-box.com and console |
 | `backend/internal/handler/boxai_code_store.go` | BoxAICodeStore interface (depguard-safe code store) |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis adapter for BoxAICodeStore |
-| `backend/internal/handler/boxai_web_sso_test.go` | Unit tests for web SSO allowlist / PKCE helpers |
 | `backend/internal/handler/boxai_browser_session.go` | Host-only HttpOnly browser-session boundary, CSRF/origin enforcement, and OAuth browser response adapter |
 | `backend/internal/handler/boxai_browser_session_test.go` | Cookie, host/origin, browser OAuth response, and credential-leak regression tests |
 | `backend/internal/handler/boxai_registration.go` | Console-only opaque email-registration prepare/complete transaction handlers |
@@ -41,7 +39,7 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/migrations/900_boxai_channel_monitor_public_visible.sql` | `public_visible` column for marketing status |
 | `docs/status-surface.md` | Shared status surface design conventions (check-cx language, teal brand) |
 | `web/` | React marketing + Creator + **customer shell** SPA (Vite + TS + Tailwind); static dist on apex (not Go-embed) |
-| `docs/WEB_PLATFORM.md` | Host topology, customer shell migration, SSO bridge, env flags |
+| `docs/WEB_PLATFORM.md` | Host topology, customer shell, admin console, env flags |
 | `docs/CUSTOMER_SHELL_UNIFICATION.md` | Target architecture + PR plan (apex customer, console admin-only) |
 | `web/src/lib/customer-api.ts` | Apex customer-center JSON API client |
 | `web/src/pages/account/*` | Customer account center (keys, usage, profile, security/2FA, orders, channels, monitor, batch-image, announcements, …) |
@@ -57,9 +55,6 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `deploy/scripts/deploy-web-static.sh` | Build+rsync React to production docroot |
 | `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
 | `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
-| `frontend/src/views/auth/BoxAISsoStartView.vue` | Console SSO start (PKCE; cold → marketing `/sso/authorize` mint) |
-| `frontend/src/views/auth/BoxAISsoCallbackView.vue` | Console SSO callback (fragment code → token) |
-| `frontend/src/views/auth/BoxAISsoAuthorizeView.vue` | Console SSO authorize (identity host mints code for marketing origin) |
 | `backend/internal/branding/` | Backend product name/tagline helpers |
 | `frontend/src/constants/brand.ts` | Frontend brand constants |
 | `frontend/src/styles/tokens.css` | Global design tokens (`--bx-*`, dark-first) |
@@ -107,7 +102,7 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/service/payment_order.go` | Payment subject product prefix |
 | `backend/internal/service/payment_order_result_test.go` | Subject assertion uses branding |
 | `backend/internal/server/routes/gateway.go` | BOXAI: desktop JWT-as-credential middleware wired before `apiKeyAuth` on `/v1` (flag `BOXAI_DESKTOP_JWT_GATEWAY`, default-on) |
-| `backend/internal/server/routes/auth.go` | BOXAI: browser session + opaque registration + desktop OAuth (PKCE) + web SSO + public status routes (rate-limited) |
+| `backend/internal/server/routes/auth.go` | BOXAI: browser session + opaque registration + desktop OAuth (PKCE) + public status routes (rate-limited) |
 | `backend/internal/server/routes/admin.go` | BOXAI: channel-monitor public_visible admin routes |
 | `backend/internal/handler/handler.go` | BOXAI: PublicStatus handler field |
 | `backend/internal/handler/wire.go` | BOXAI: ProvideBoxAIPublicStatusHandler wire set |
@@ -153,11 +148,11 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `frontend/src/auth/browserSession.ts` | Console in-memory access-token owner, cookie bootstrap/adoption, expiry refresh, and cross-tab coordination |
 | `frontend/src/auth/finalizeOAuth.ts` | Centralized OAuth browser-session completion/adoption adapter |
 | `frontend/src/auth/registrationDraft.ts` | Sensitive in-memory OAuth draft plus safe opaque registration-transaction recovery metadata |
-| `frontend/src/api/auth.ts` | BOXAI: memory-only browser auth, opaque registration, desktop login, and Web SSO helpers |
+| `frontend/src/api/auth.ts` | BOXAI: memory-only browser auth, opaque registration, desktop login helpers |
 | `frontend/src/api/client.ts` | In-memory bearer injection plus one cookie-bootstrap retry on 401 |
-| `frontend/src/router/index.ts` | BOXAI: `/desktop-auth`, `/download/desktop`, `/boxai/sso/start`, `/boxai/sso/callback`, `/boxai/sso/authorize` |
+| `frontend/src/router/index.ts` | BOXAI: `/desktop-auth`, `/download/desktop`; non-admin customer routes → apex |
 | `frontend/src/stores/auth.ts` | BOXAI: Pinia view over the centralized in-memory browser session; no persisted JWT pair |
-| `frontend/src/views/auth/LoginView.vue` | BOXAI: register link carries `?redirect=` for SSO handoff |
+| `frontend/src/views/auth/LoginView.vue` | BOXAI: register/login redirect for admin + WeChat payment exception |
 | `frontend/src/views/auth/RegisterView.vue` | BOXAI: direct-register success honors safe `?redirect=` |
 | `frontend/src/views/admin/SettingsView.vue` | Product settings copy and documentation links support zh/en/vi |
 | `frontend/src/views/admin/settings/EmailTemplateEditor.vue` | Vietnamese email-event metadata and locale-aware administration copy |

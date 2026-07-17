@@ -229,30 +229,35 @@ const router = useRouter()
 const authStore = useAuthStore()
 const appStore = useAppStore()
 
-// BOXAI: after password/2FA login — admins stay on console; customers go to apex shell.
+// BOXAI: after password/2FA login — admins stay on console; customers go to apex
+// (except WeChat MP payment paths still hosted on console).
 async function redirectAfterLogin(): Promise<void> {
   const raw = router.currentRoute.value.query.redirect as string | undefined
-  // Transitional Web SSO authorize handoff must stay on console.
-  if (typeof raw === 'string' && raw.startsWith('/boxai/sso/authorize')) {
-    await router.push(safeLoginReturnPath(raw, '/admin/dashboard'))
-    return
-  }
   if (authStore.isAdmin) {
     const redirectTo = safeLoginReturnPath(raw, '/admin/dashboard')
     await router.push(redirectTo)
     return
   }
+  // Non-admin may complete WeChat MP purchase on console after re-login.
+  if (typeof raw === 'string' && (raw === '/purchase' || raw.startsWith('/purchase?') || raw.startsWith('/payment/'))) {
+    await router.push(safeLoginReturnPath(raw, '/purchase'))
+    return
+  }
   if (customerShellRedirectEnabled()) {
     const relative = safeLoginReturnPath(raw, '/account')
-    const mapped = mapConsolePathToApex(relative.split('?')[0], relative.includes('?') ? relative.slice(relative.indexOf('?')) : '')
+    const mapped = mapConsolePathToApex(
+      relative.split('?')[0],
+      relative.includes('?') ? relative.slice(relative.indexOf('?')) : '',
+    )
     window.location.replace(mapped || apexUrl('/account'))
     return
   }
-  // Local dual-shell without redirect flag: still prefer apex for non-admins.
-  const fallback = `${apexOrigin()}/account`
   const dest = safeLoginReturnPath(raw, '/dashboard')
-  const apexMapped = mapConsolePathToApex(dest.split('?')[0], dest.includes('?') ? dest.slice(dest.indexOf('?')) : '')
-  window.location.replace(apexMapped || fallback)
+  const apexMapped = mapConsolePathToApex(
+    dest.split('?')[0],
+    dest.includes('?') ? dest.slice(dest.indexOf('?')) : '',
+  )
+  window.location.replace(apexMapped || `${apexOrigin()}/account`)
 }
 
 // BOXAI: carry ?redirect= across the register link so sign-ups started from

@@ -31,7 +31,7 @@ BoxAI is a **multi-surface** product on one gateway backend:
 | Developer **API** | Go gateway | https://api.you-box.com/v1 | `backend/` |
 | **Desktop** office client | Tauri | installers via download page | `desktop/` |
 
-Cross-origin login uses **PKCE Web SSO** (not cookie Domain SSO). Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · local three-process: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · production: [docs/PRODUCTION.md](docs/PRODUCTION.md).
+Customer auth is same-origin on you-box.com (no parent-domain cookie; console is admin-first). Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · local three-process: [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) · production: [docs/PRODUCTION.md](docs/PRODUCTION.md).
 
 ## ⚠️ Important Notice
 

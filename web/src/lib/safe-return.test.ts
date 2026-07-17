@@ -5,19 +5,13 @@ describe('safeReturnPath', () => {
   it('allows relative paths', () => {
     expect(safeReturnPath('/create')).toBe('/create')
     expect(safeReturnPath('/account?x=1')).toBe('/account?x=1')
-    expect(safeReturnPath('/sso/authorize?code_challenge=x')).toContain('/sso/authorize')
+    expect(safeReturnPath('/checkout?plan=pro')).toBe('/checkout?plan=pro')
   })
 
-  it('allows cold SSO authorize with absolute redirect_uri in query', () => {
-    const cold =
-      '/sso/authorize?code_challenge=abc&redirect_uri=https://console.you-box.com/boxai/sso/callback&state=xyz'
-    expect(safeReturnPath(cold)).toBe(cold)
-
-    const encoded =
-      '/sso/authorize?code_challenge=abc&redirect_uri=' +
-      encodeURIComponent('https://console.you-box.com/boxai/sso/callback') +
-      '&state=xyz'
-    expect(safeReturnPath(encoded)).toBe(encoded)
+  it('allows absolute redirect_uri only inside query of relative path', () => {
+    const withAbs =
+      '/login?return_to=' + encodeURIComponent('/checkout?plan=pro')
+    expect(safeReturnPath(withAbs)).toBe(withAbs)
   })
 
   it('rejects open redirects', () => {

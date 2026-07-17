@@ -23,7 +23,7 @@
 |------|------|
 | [AGENTS.md](./AGENTS.md) | Agent 硬规则入口 |
 | [docs/agents/](./docs/agents/) | 分区 / 改码 / 同步 / 发布 / PR 清单 |
-| [docs/WEB_PLATFORM.md](./docs/WEB_PLATFORM.md) | 双前端拓扑、Web SSO、Creator |
+| [docs/WEB_PLATFORM.md](./docs/WEB_PLATFORM.md) | 双前端拓扑、客户壳、Creator |
 | [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md) | 本地三进程（backend + Vue + React） |
 | [docs/PRODUCTION.md](./docs/PRODUCTION.md) | 生产拓扑与切换脚本 |
 | [docs/OFFICE_MODULE.md](./docs/OFFICE_MODULE.md) | Desktop 客户端 |

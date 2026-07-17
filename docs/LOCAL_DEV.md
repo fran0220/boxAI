@@ -31,23 +31,17 @@ Production mapping: `5173` → `you-box.com`, `3000` → `console.you-box.com`.
 
 Local SSO callbacks are an explicit backend opt-in (comma-separated):
 
-- `http://localhost:5173/sso/callback`
-- `http://localhost:3000/boxai/sso/callback`
 
 | Env | Default | Meaning |
 |-----|---------|---------|
-| `BOXAI_WEB_SSO` | on | Web SSO endpoints |
 | `BOXAI_BROWSER_SESSION` | on | Host-only browser cookie and bootstrap/logout endpoints |
 | `BOXAI_LEGACY_BROWSER_ADOPTION` | on during rollout | One-time legacy localStorage refresh-token adoption |
-| `BOXAI_WEB_SSO_REDIRECT_URIS` | empty | Set to `http://localhost:5173/sso/callback,http://localhost:3000/boxai/sso/callback` for local SSO |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | In-memory browser access JWT lifetime |
 | `BOXAI_DESKTOP_JWT_GATEWAY` | on | JWT→API key on `/v1/*` |
 
 Example before starting the backend:
 
 ```bash
-export BOXAI_BROWSER_SESSION=true BOXAI_LEGACY_BROWSER_ADOPTION=true BOXAI_WEB_SSO=true
-export BOXAI_WEB_SSO_REDIRECT_URIS='http://localhost:5173/sso/callback,http://localhost:3000/boxai/sso/callback'
 export JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15
 ```
 
@@ -74,7 +68,7 @@ Copy `web/.env.example` → `web/.env.local` if needed.
 
 ```bash
 # Backend
-cd backend && go test -tags=unit ./internal/handler/ -run 'WebSSO|Creator|ResolveUserGateway'
+cd backend && go test -tags=unit ./internal/handler/ -run 'Creator|ResolveUserGateway'
 
 # Console
 cd frontend && pnpm typecheck

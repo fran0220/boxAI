@@ -96,41 +96,6 @@ export async function authorizeDesktopLogin(params: {
 }
 
 /**
- * BOXAI: Mint a one-time Web SSO (PKCE) code for cross-origin handoff
- * (you-box.com ↔ console.you-box.com).
- */
-export async function authorizeWebSso(params: {
-  codeChallenge: string
-  redirectUri: string
-}): Promise<{ code: string; expires_in: number }> {
-  const { data } = await apiClient.post<{ code: string; expires_in: number }>(
-    '/auth/boxai/sso/authorize',
-    {
-      code_challenge: params.codeChallenge,
-      redirect_uri: params.redirectUri
-    }
-  )
-  return data
-}
-
-/**
- * BOXAI: Exchange Web SSO code + PKCE verifier for access/refresh tokens.
- * Public endpoint; does not require an existing session on this origin.
- */
-export async function exchangeWebSsoToken(params: {
-  code: string
-  codeVerifier: string
-  redirectUri?: string
-}): Promise<AuthResponse> {
-  const { data } = await apiClient.post<AuthResponse>('/auth/boxai/sso/token', {
-    code: params.code,
-    code_verifier: params.codeVerifier,
-    redirect_uri: params.redirectUri
-  })
-  return data
-}
-
-/**
  * User login
  * @param credentials - Email and password
  * @returns Authentication response with token and user data, or 2FA required response
