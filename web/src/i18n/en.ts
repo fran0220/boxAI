@@ -278,7 +278,7 @@ export const en: Dict = {
     badge: 'Pricing',
     title: 'Simple, transparent pricing',
     subtitle:
-      'Start free and pay as you go; subscribe in the console when you need more. Live prices and plan details are shown in the console.',
+      'Start free and pay as you go; subscribe when you need more. Live prices and plan details are shown at checkout.',
     highlight: 'Most popular',
     plans: [
       {
@@ -296,7 +296,7 @@ export const en: Dict = {
         period: '/mo',
         desc: 'For heavy individual creators',
         features: ['Everything in Starter', 'Higher request concurrency', 'Better subscription rates', 'Priority model routing'],
-        cta: 'Activate in console',
+        cta: 'Subscribe',
         highlighted: true,
       },
       {
@@ -305,7 +305,7 @@ export const en: Dict = {
         period: '/mo',
         desc: 'Small-team collaboration and grouping',
         features: ['Everything in Pro', 'Multi-key and group management', 'Usage reports', 'Priority support'],
-        cta: 'Activate in console',
+        cta: 'Subscribe',
         highlighted: false,
       },
       {
@@ -318,7 +318,7 @@ export const en: Dict = {
         highlighted: false,
       },
     ],
-    note: 'Plan activation, top-ups and invoices happen in the console; the above is a plan overview and the console is authoritative.',
+    note: 'Plan activation and top-ups complete on you-box.com checkout; the above is a plan overview and live checkout is authoritative.',
     compare: {
       title: 'Compare plans',
       plans: ['Starter', 'Pro', 'Team', 'Enterprise'],
@@ -341,15 +341,15 @@ export const en: Dict = {
         },
         {
           q: 'How do I top up or subscribe?',
-          a: 'Log in to the console and complete a top-up or subscription on the plans page. Multiple payment methods are supported.',
+          a: 'Log in on you-box.com and complete a top-up or subscription at Checkout. Multiple payment methods are supported.',
         },
         {
           q: 'Can I cancel anytime?',
-          a: 'Subscriptions are self-managed in the console; pay-as-you-go balance never expires until used.',
+          a: 'Subscriptions are self-managed under Account → Subscription; pay-as-you-go balance never expires until used.',
         },
       ],
     },
-    consoleCta: 'Manage plans in the console',
+    consoleCta: 'Go to checkout',
   },
   account: {
     metaTitle: 'My account',
@@ -806,6 +806,20 @@ export const en: Dict = {
     resetSubmit: 'Set new password',
     resetOk: 'Password reset. Please log in.',
     resetFailed: 'Reset failed',
+    oauthOrContinue: 'Or continue with',
+    oauthContinueWith: 'Continue with {provider}',
+    oauthLinuxDo: 'LinuxDo',
+    oauthGitHub: 'GitHub',
+    oauthGoogle: 'Google',
+    oauthWeChat: 'WeChat',
+    oauthDingTalk: 'DingTalk',
+    oauthOidc: 'OIDC',
+    oauthCallbackTitle: 'Completing sign-in…',
+    oauthCallbackHint: 'Confirming your session. This only takes a moment.',
+    oauthFailedTitle: 'Sign-in incomplete',
+    oauthFailed: 'OAuth sign-in failed. Please try again.',
+    oauthPendingUnsupported:
+      'This OAuth account still needs registration steps that are not available on this page yet. Sign up with email, or finish setup on the provider-linked account if you already have one.',
   },
   desktopAuth: {
     metaTitle: 'Desktop auth',

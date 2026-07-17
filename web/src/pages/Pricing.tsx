@@ -16,7 +16,11 @@ export function Pricing() {
 
   function planCta(index: number): { to?: string; href?: string } {
     if (index === 0) return authed ? { to: '/create' } : { to: '/signup?return_to=/create' }
-    return authed ? { to: '/checkout?type=subscription' } : { to: '/login?return_to=/checkout?type=subscription' }
+    // Encode nested query so return_to keeps ?type=subscription (not a sibling login param).
+    const checkout = '/checkout?type=subscription'
+    return authed
+      ? { to: checkout }
+      : { to: `/login?return_to=${encodeURIComponent(checkout)}` }
   }
 
   return (
@@ -157,7 +161,11 @@ export function Pricing() {
             <GradientRing>
               <div className="px-6 py-10 text-center">
                 <Link
-                  to={authed ? '/checkout?type=subscription' : '/login?return_to=/checkout?type=subscription'}
+                  to={
+                    authed
+                      ? '/checkout?type=subscription'
+                      : `/login?return_to=${encodeURIComponent('/checkout?type=subscription')}`
+                  }
                   className="bx-btn bx-btn-primary bx-btn-lg"
                 >
                   {d.pricing.consoleCta}

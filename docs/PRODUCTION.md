@@ -140,8 +140,9 @@ AUTO_SETUP=true
 
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15
 BOXAI_BROWSER_SESSION=true
-BOXAI_LEGACY_BROWSER_ADOPTION=true
-# 仅额外回调；生产内置回调无需填写。生产不要加入 localhost。
+# 仅在仍有旧 localStorage refresh 需要一次性 adopt 时设 true；默认 false
+BOXAI_LEGACY_BROWSER_ADOPTION=false
+# BOXAI_WEB_SSO 已退役，忽略
 ```
 
 | 变量 | 说明 |
@@ -153,7 +154,7 @@ BOXAI_LEGACY_BROWSER_ADOPTION=true
 | `AUTO_SETUP=true` | 首次启动写配置、跑迁移、创建管理员 |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15` | 浏览器内存 access JWT 的短有效期；优先于 `JWT_EXPIRE_HOUR` |
 | `BOXAI_BROWSER_SESSION` | 启用每个 UI host 独立的 `__Host-boxai_session` |
-| `BOXAI_LEGACY_BROWSER_ADOPTION` | 迁移期一次性接收旧 localStorage refresh token；迁移完成后设为 `false` |
+| `BOXAI_LEGACY_BROWSER_ADOPTION` | 迁移期一次性接收旧 localStorage refresh token；compose/example 默认 `false`，仅排水期开 `true`。Go 在 **未设置** env 时仍默认 on，生产务必显式写入 |
 
 完整变量表见仓库 `deploy/.env.example`。
 

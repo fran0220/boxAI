@@ -36,6 +36,8 @@ type PublicProfileSettings = {
   wechat_oauth_mp_enabled?: boolean
   oidc_oauth_enabled: boolean
   oidc_oauth_provider_name: string
+  github_oauth_enabled: boolean
+  google_oauth_enabled: boolean
 }
 
 const DEFAULT_SETTINGS: PublicProfileSettings = {
@@ -47,6 +49,8 @@ const DEFAULT_SETTINGS: PublicProfileSettings = {
   wechat_oauth_enabled: false,
   oidc_oauth_enabled: false,
   oidc_oauth_provider_name: 'OIDC',
+  github_oauth_enabled: false,
+  google_oauth_enabled: false,
 }
 
 const MAX_EXTRA_EMAILS = 3
@@ -68,11 +72,7 @@ function parsePublicSettings(raw: Record<string, unknown> | null | undefined): P
   const open = raw.wechat_oauth_open_enabled
   const mp = raw.wechat_oauth_mp_enabled
   const wechatLegacy = asBool(raw.wechat_oauth_enabled)
-  const wechatEnabled =
-    wechatLegacy ||
-    open === true ||
-    mp === true ||
-    (typeof open !== 'boolean' && typeof mp !== 'boolean' && wechatLegacy)
+  const wechatEnabled = wechatLegacy || open === true || mp === true
 
   return {
     contact_info: asString(raw.contact_info),
@@ -85,6 +85,8 @@ function parsePublicSettings(raw: Record<string, unknown> | null | undefined): P
     wechat_oauth_mp_enabled: typeof mp === 'boolean' ? mp : undefined,
     oidc_oauth_enabled: asBool(raw.oidc_oauth_enabled),
     oidc_oauth_provider_name: asString(raw.oidc_oauth_provider_name, 'OIDC') || 'OIDC',
+    github_oauth_enabled: asBool(raw.github_oauth_enabled),
+    google_oauth_enabled: asBool(raw.google_oauth_enabled),
   }
 }
 
@@ -264,8 +266,8 @@ export function AccountProfile() {
       dingtalk: settings.dingtalk_oauth_enabled,
       wechat: settings.wechat_oauth_enabled,
       oidc: settings.oidc_oauth_enabled,
-      github: false,
-      google: false,
+      github: settings.github_oauth_enabled,
+      google: settings.google_oauth_enabled,
     }
 
     const candidates: BindableOAuthProvider[] = ['linuxdo', 'dingtalk', 'wechat', 'oidc', 'github', 'google']
