@@ -26,13 +26,13 @@ const (
 type AuthTxNextAction string
 
 const (
-	AuthTxNextSession             AuthTxNextAction = "session"
-	AuthTxNextTOTP                AuthTxNextAction = "totp"
-	AuthTxNextEmailVerify         AuthTxNextAction = "email_verify"
-	AuthTxNextInvitationRequired  AuthTxNextAction = "invitation_required"
-	AuthTxNextLinkConfirm         AuthTxNextAction = "link_confirm"
-	AuthTxNextProfileAdopt        AuthTxNextAction = "profile_adopt"
-	AuthTxNextAuthenticated       AuthTxNextAction = "authenticated"
+	AuthTxNextSession            AuthTxNextAction = "session"
+	AuthTxNextTOTP               AuthTxNextAction = "totp"
+	AuthTxNextEmailVerify        AuthTxNextAction = "email_verify"
+	AuthTxNextInvitationRequired AuthTxNextAction = "invitation_required"
+	AuthTxNextLinkConfirm        AuthTxNextAction = "link_confirm"
+	AuthTxNextProfileAdopt       AuthTxNextAction = "profile_adopt"
+	AuthTxNextAuthenticated      AuthTxNextAction = "authenticated"
 )
 
 // AuthTxResponse is the uniform envelope for auth multi-step flows.

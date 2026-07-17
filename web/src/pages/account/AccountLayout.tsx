@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { getPublicSettings } from '@/lib/customer-api'
 
 const links = [
   { to: '/account', end: true, key: 'overview' as const },
@@ -18,9 +20,39 @@ const links = [
   { to: '/account/announcements', end: false, key: 'announcements' as const },
 ]
 
+type CustomMenuItem = {
+  id: string
+  label: string
+  url: string
+  page_slug?: string
+  visibility?: string
+  sort_order?: number
+}
+
 export function AccountLayout() {
   const { d } = useI18n()
   const nav = d.accountNav
+  const [customItems, setCustomItems] = useState<CustomMenuItem[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    getPublicSettings()
+      .then((settings) => {
+        if (cancelled) return
+        const items = (settings.custom_menu_items as CustomMenuItem[] | undefined) || []
+        const userItems = items
+          .filter((it) => !it.visibility || it.visibility === 'user')
+          .slice()
+          .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+        setCustomItems(userItems)
+      })
+      .catch(() => {
+        /* optional menu */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:flex-row lg:py-14">
@@ -45,6 +77,39 @@ export function AccountLayout() {
               {nav[link.key]}
             </NavLink>
           ))}
+          {customItems.map((item) => {
+            const slug = item.page_slug || item.id
+            const isExternal = Boolean(item.url && /^https?:\/\//i.test(item.url) && !item.page_slug)
+            if (isExternal) {
+              return (
+                <a
+                  key={item.id}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="whitespace-nowrap rounded-[var(--bx-radius-sm)] px-3 py-2 text-sm text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+                >
+                  {item.label}
+                </a>
+              )
+            }
+            return (
+              <NavLink
+                key={item.id}
+                to={`/account/pages/${encodeURIComponent(slug)}`}
+                className={({ isActive }) =>
+                  cx(
+                    'whitespace-nowrap rounded-[var(--bx-radius-sm)] px-3 py-2 text-sm transition-colors',
+                    isActive
+                      ? 'bg-[var(--bx-bg-muted)] font-medium text-[var(--bx-text)]'
+                      : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
+                  )
+                }
+              >
+                {item.label}
+              </NavLink>
+            )
+          })}
         </nav>
       </aside>
       <main className="min-w-0 flex-1">

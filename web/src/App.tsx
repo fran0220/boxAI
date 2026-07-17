@@ -25,6 +25,7 @@ import { AccountChannels } from '@/pages/account/Channels'
 import { AccountMonitor } from '@/pages/account/Monitor'
 import { AccountBatchImage } from '@/pages/account/BatchImage'
 import { AccountAnnouncements } from '@/pages/account/Announcements'
+import { AccountCustomPage } from '@/pages/account/CustomPage'
 import { Login } from '@/pages/auth/Login'
 import { Signup } from '@/pages/auth/Signup'
 import { ForgotPassword } from '@/pages/auth/ForgotPassword'
@@ -105,6 +106,7 @@ export default function App() {
           <Route path="monitor" element={<AccountMonitor />} />
           <Route path="batch-image" element={<AccountBatchImage />} />
           <Route path="announcements" element={<AccountAnnouncements />} />
+          <Route path="pages/:slug" element={<AccountCustomPage />} />
         </Route>
 
         <Route

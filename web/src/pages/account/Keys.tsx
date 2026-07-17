@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Copy, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { Copy, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import {
   createKey,
   deleteKey,
@@ -14,6 +14,65 @@ import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
 import { Spinner } from '@/components/ui/Spinner'
 
+type FormState = {
+  name: string
+  groupId: string
+  customKey: string
+  ipWhitelist: string
+  ipBlacklist: string
+  enableQuota: boolean
+  quota: string
+  enableRateLimit: boolean
+  rateLimit5h: string
+  rateLimit1d: string
+  rateLimit7d: string
+  expiresInDays: string
+  resetQuota: boolean
+  resetRateUsage: boolean
+}
+
+const emptyForm = (): FormState => ({
+  name: '',
+  groupId: '',
+  customKey: '',
+  ipWhitelist: '',
+  ipBlacklist: '',
+  enableQuota: false,
+  quota: '',
+  enableRateLimit: false,
+  rateLimit5h: '',
+  rateLimit1d: '',
+  rateLimit7d: '',
+  expiresInDays: '0',
+  resetQuota: false,
+  resetRateUsage: false,
+})
+
+function parseIpLines(text: string): string[] {
+  return text
+    .split(/[\n,]+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
+function progressTone(used: number, limit: number): string {
+  if (limit <= 0) return 'bg-[var(--bx-brand)]'
+  const r = used / limit
+  if (r >= 1) return 'bg-red-500'
+  if (r >= 0.8) return 'bg-amber-500'
+  return 'bg-[var(--bx-brand)]'
+}
+
+function ProgressBar({ used, limit }: { used: number; limit: number }) {
+  if (limit <= 0) return null
+  const pct = Math.min((used / limit) * 100, 100)
+  return (
+    <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[var(--bx-bg-muted)]">
+      <div className={`h-full rounded-full ${progressTone(used, limit)}`} style={{ width: `${pct}%` }} />
+    </div>
+  )
+}
+
 export function AccountKeys() {
   const { d } = useI18n()
   const t = d.accountKeys
@@ -24,10 +83,13 @@ export function AccountKeys() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
-  const [showCreate, setShowCreate] = useState(false)
-  const [name, setName] = useState('')
-  const [groupId, setGroupId] = useState<string>('')
-  const [creating, setCreating] = useState(false)
+  const [statusFilter, setStatusFilter] = useState('')
+  const [page, setPage] = useState(1)
+  const [pages, setPages] = useState(1)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState<ApiKey | null>(null)
+  const [form, setForm] = useState<FormState>(emptyForm)
+  const [saving, setSaving] = useState(false)
   const [createdSecret, setCreatedSecret] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<number | null>(null)
 
@@ -36,41 +98,112 @@ export function AccountKeys() {
     setError('')
     try {
       const [list, g] = await Promise.all([
-        listKeys(1, 50, search ? { search } : undefined),
+        listKeys(page, 20, {
+          search: search || undefined,
+          status: statusFilter || undefined,
+        }),
         listAvailableGroups().catch(() => [] as ApiKeyGroup[]),
       ])
       setKeys(list.items || [])
+      setPages(list.pages || 1)
       setGroups(g || [])
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.loadFailed)
     } finally {
       setLoading(false)
     }
-  }, [search, t.loadFailed])
+  }, [page, search, statusFilter, t.loadFailed])
 
   useEffect(() => {
     void load()
   }, [load])
 
-  async function onCreate(e: React.FormEvent) {
+  function openCreate() {
+    setEditing(null)
+    setForm(emptyForm())
+    setShowForm(true)
+  }
+
+  function openEdit(key: ApiKey) {
+    setEditing(key)
+    setForm({
+      name: key.name,
+      groupId: key.group_id != null ? String(key.group_id) : '',
+      customKey: '',
+      ipWhitelist: (key.ip_whitelist || []).join('\n'),
+      ipBlacklist: (key.ip_blacklist || []).join('\n'),
+      enableQuota: (key.quota || 0) > 0,
+      quota: key.quota > 0 ? String(key.quota) : '',
+      enableRateLimit:
+        (key.rate_limit_5h || 0) > 0 || (key.rate_limit_1d || 0) > 0 || (key.rate_limit_7d || 0) > 0,
+      rateLimit5h: key.rate_limit_5h ? String(key.rate_limit_5h) : '',
+      rateLimit1d: key.rate_limit_1d ? String(key.rate_limit_1d) : '',
+      rateLimit7d: key.rate_limit_7d ? String(key.rate_limit_7d) : '',
+      expiresInDays: '0',
+      resetQuota: false,
+      resetRateUsage: false,
+    })
+    setShowForm(true)
+  }
+
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim()) return
-    setCreating(true)
+    if (!form.name.trim()) return
+    setSaving(true)
     setError('')
     try {
-      const key = await createKey({
-        name: name.trim(),
-        group_id: groupId ? Number(groupId) : null,
-      })
-      setCreatedSecret(key.key)
-      setName('')
-      setGroupId('')
-      setShowCreate(false)
+      const ipWhitelist = parseIpLines(form.ipWhitelist)
+      const ipBlacklist = parseIpLines(form.ipBlacklist)
+      const quota = form.enableQuota && form.quota ? Number(form.quota) : 0
+      const ratePayload = form.enableRateLimit
+        ? {
+            rate_limit_5h: form.rateLimit5h ? Number(form.rateLimit5h) : 0,
+            rate_limit_1d: form.rateLimit1d ? Number(form.rateLimit1d) : 0,
+            rate_limit_7d: form.rateLimit7d ? Number(form.rateLimit7d) : 0,
+          }
+        : { rate_limit_5h: 0, rate_limit_1d: 0, rate_limit_7d: 0 }
+
+      if (editing) {
+        const days = Number(form.expiresInDays)
+        let expires_at: string | null | undefined
+        if (days > 0) {
+          const d = new Date()
+          d.setDate(d.getDate() + days)
+          expires_at = d.toISOString()
+        }
+        await updateKey(editing.id, {
+          name: form.name.trim(),
+          group_id: form.groupId ? Number(form.groupId) : null,
+          ip_whitelist: ipWhitelist,
+          ip_blacklist: ipBlacklist,
+          quota: form.enableQuota ? quota : 0,
+          reset_quota: form.resetQuota || undefined,
+          ...ratePayload,
+          reset_rate_limit_usage: form.resetRateUsage || undefined,
+          ...(expires_at ? { expires_at } : {}),
+        })
+      } else {
+        const days = Number(form.expiresInDays)
+        const key = await createKey({
+          name: form.name.trim(),
+          group_id: form.groupId ? Number(form.groupId) : null,
+          custom_key: form.customKey.trim() || undefined,
+          ip_whitelist: ipWhitelist.length ? ipWhitelist : undefined,
+          ip_blacklist: ipBlacklist.length ? ipBlacklist : undefined,
+          quota: form.enableQuota && quota > 0 ? quota : undefined,
+          expires_in_days: days > 0 ? days : undefined,
+          ...ratePayload,
+        })
+        setCreatedSecret(key.key)
+      }
+      setShowForm(false)
+      setEditing(null)
+      setForm(emptyForm())
       await load()
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : t.createFailed)
+      setError(err instanceof ApiError ? err.message : editing ? t.updateFailed : t.createFailed)
     } finally {
-      setCreating(false)
+      setSaving(false)
     }
   }
 
@@ -109,6 +242,21 @@ export function AccountKeys() {
     return `${key.slice(0, 6)}…${key.slice(-4)}`
   }
 
+  function statusLabel(status: string): string {
+    switch (status) {
+      case 'active':
+        return t.statusActive
+      case 'inactive':
+        return t.statusInactive
+      case 'quota_exhausted':
+        return t.statusQuotaExhausted
+      case 'expired':
+        return t.statusExpired
+      default:
+        return status
+    }
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -120,20 +268,38 @@ export function AccountKeys() {
           <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void load()} disabled={loading}>
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           </button>
-          <button type="button" className="bx-btn bx-btn-primary bx-btn-sm" onClick={() => setShowCreate(true)}>
+          <button type="button" className="bx-btn bx-btn-primary bx-btn-sm" onClick={openCreate}>
             <Plus size={14} />
             {t.create}
           </button>
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-wrap gap-2">
         <input
           className="bx-input w-full max-w-xs"
           placeholder={t.search}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setPage(1)
+            setSearch(e.target.value)
+          }}
         />
+        <select
+          className="bx-input w-full max-w-[160px]"
+          value={statusFilter}
+          onChange={(e) => {
+            setPage(1)
+            setStatusFilter(e.target.value)
+          }}
+          aria-label={t.filterStatus}
+        >
+          <option value="">{t.filterAll}</option>
+          <option value="active">{t.statusActive}</option>
+          <option value="inactive">{t.statusInactive}</option>
+          <option value="quota_exhausted">{t.statusQuotaExhausted}</option>
+          <option value="expired">{t.statusExpired}</option>
+        </select>
       </div>
 
       {createdSecret ? (
@@ -156,16 +322,25 @@ export function AccountKeys() {
 
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
-      {showCreate ? (
-        <form onSubmit={onCreate} className="bx-card mt-4 space-y-3 p-4">
-          <h3 className="font-semibold">{t.createTitle}</h3>
+      {showForm ? (
+        <form onSubmit={onSubmit} className="bx-card mt-4 space-y-3 p-4">
+          <h3 className="font-semibold">{editing ? t.editTitle : t.createTitle}</h3>
           <label className="block text-sm">
             <span className="text-[var(--bx-text-muted)]">{t.name}</span>
-            <input className="bx-input mt-1 w-full" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input
+              className="bx-input mt-1 w-full"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              required
+            />
           </label>
           <label className="block text-sm">
             <span className="text-[var(--bx-text-muted)]">{t.group}</span>
-            <select className="bx-input mt-1 w-full" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+            <select
+              className="bx-input mt-1 w-full"
+              value={form.groupId}
+              onChange={(e) => setForm((f) => ({ ...f, groupId: e.target.value }))}
+            >
               <option value="">{t.groupDefault}</option>
               {groups.map((g) => (
                 <option key={g.id} value={g.id}>
@@ -174,11 +349,154 @@ export function AccountKeys() {
               ))}
             </select>
           </label>
+          {!editing ? (
+            <label className="block text-sm">
+              <span className="text-[var(--bx-text-muted)]">{t.customKey}</span>
+              <input
+                className="bx-input mt-1 w-full font-mono text-xs"
+                value={form.customKey}
+                onChange={(e) => setForm((f) => ({ ...f, customKey: e.target.value }))}
+              />
+              <span className="mt-1 block text-xs text-[var(--bx-text-dim)]">{t.customKeyHint}</span>
+            </label>
+          ) : null}
+          <label className="block text-sm">
+            <span className="text-[var(--bx-text-muted)]">{t.ipWhitelist}</span>
+            <textarea
+              className="bx-input mt-1 w-full font-mono text-xs"
+              rows={2}
+              value={form.ipWhitelist}
+              onChange={(e) => setForm((f) => ({ ...f, ipWhitelist: e.target.value }))}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="text-[var(--bx-text-muted)]">{t.ipBlacklist}</span>
+            <textarea
+              className="bx-input mt-1 w-full font-mono text-xs"
+              rows={2}
+              value={form.ipBlacklist}
+              onChange={(e) => setForm((f) => ({ ...f, ipBlacklist: e.target.value }))}
+            />
+            <span className="mt-1 block text-xs text-[var(--bx-text-dim)]">{t.ipHint}</span>
+          </label>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.enableQuota}
+              onChange={(e) => setForm((f) => ({ ...f, enableQuota: e.target.checked }))}
+            />
+            {t.enableQuota}
+          </label>
+          {form.enableQuota ? (
+            <label className="block text-sm">
+              <span className="text-[var(--bx-text-muted)]">{t.quotaLimit}</span>
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                className="bx-input mt-1 w-full"
+                value={form.quota}
+                onChange={(e) => setForm((f) => ({ ...f, quota: e.target.value }))}
+              />
+            </label>
+          ) : null}
+          {editing && (editing.quota || 0) > 0 ? (
+            <p className="text-xs text-[var(--bx-text-dim)]">
+              {t.quotaUsed}: ${editing.quota_used?.toFixed(4) ?? '0'} / ${editing.quota?.toFixed(2)}
+            </p>
+          ) : null}
+          {editing ? (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.resetQuota}
+                onChange={(e) => setForm((f) => ({ ...f, resetQuota: e.target.checked }))}
+              />
+              {t.resetQuota}
+            </label>
+          ) : null}
+
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.enableRateLimit}
+              onChange={(e) => setForm((f) => ({ ...f, enableRateLimit: e.target.checked }))}
+            />
+            {t.enableRateLimit}
+          </label>
+          {form.enableRateLimit ? (
+            <div className="grid gap-2 sm:grid-cols-3">
+              <label className="block text-sm">
+                <span className="text-[var(--bx-text-muted)]">{t.rateLimit5h}</span>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  className="bx-input mt-1 w-full"
+                  value={form.rateLimit5h}
+                  onChange={(e) => setForm((f) => ({ ...f, rateLimit5h: e.target.value }))}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="text-[var(--bx-text-muted)]">{t.rateLimit1d}</span>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  className="bx-input mt-1 w-full"
+                  value={form.rateLimit1d}
+                  onChange={(e) => setForm((f) => ({ ...f, rateLimit1d: e.target.value }))}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="text-[var(--bx-text-muted)]">{t.rateLimit7d}</span>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  className="bx-input mt-1 w-full"
+                  value={form.rateLimit7d}
+                  onChange={(e) => setForm((f) => ({ ...f, rateLimit7d: e.target.value }))}
+                />
+              </label>
+            </div>
+          ) : null}
+          {editing ? (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.resetRateUsage}
+                onChange={(e) => setForm((f) => ({ ...f, resetRateUsage: e.target.checked }))}
+              />
+              {t.resetRateUsage}
+            </label>
+          ) : null}
+
+          <label className="block text-sm">
+            <span className="text-[var(--bx-text-muted)]">{t.expiresInDays}</span>
+            <input
+              type="number"
+              min={0}
+              className="bx-input mt-1 w-full"
+              value={form.expiresInDays}
+              onChange={(e) => setForm((f) => ({ ...f, expiresInDays: e.target.value }))}
+            />
+            <span className="mt-1 block text-xs text-[var(--bx-text-dim)]">{t.expiresInDaysHint}</span>
+          </label>
+
           <div className="flex gap-2">
-            <button type="submit" className="bx-btn bx-btn-primary bx-btn-sm" disabled={creating}>
-              {creating ? d.common.loading : t.create}
+            <button type="submit" className="bx-btn bx-btn-primary bx-btn-sm" disabled={saving}>
+              {saving ? d.common.loading : editing ? t.save : t.create}
             </button>
-            <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => setShowCreate(false)}>
+            <button
+              type="button"
+              className="bx-btn bx-btn-ghost bx-btn-sm"
+              onClick={() => {
+                setShowForm(false)
+                setEditing(null)
+              }}
+            >
               {d.common.cancel}
             </button>
           </div>
@@ -193,20 +511,30 @@ export function AccountKeys() {
         ) : keys.length === 0 ? (
           <p className="py-12 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
         ) : (
-          <table className="w-full min-w-[640px] text-left text-sm">
+          <table className="w-full min-w-[900px] text-left text-sm">
             <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
               <tr>
                 <th className="pb-2 pr-3 font-medium">{t.colName}</th>
                 <th className="pb-2 pr-3 font-medium">{t.colKey}</th>
                 <th className="pb-2 pr-3 font-medium">{t.colGroup}</th>
+                <th className="pb-2 pr-3 font-medium">{t.colQuota}</th>
+                <th className="pb-2 pr-3 font-medium">{t.colRateLimit}</th>
+                <th className="pb-2 pr-3 font-medium">{t.colExpires}</th>
                 <th className="pb-2 pr-3 font-medium">{t.colStatus}</th>
                 <th className="pb-2 font-medium">{t.colActions}</th>
               </tr>
             </thead>
             <tbody>
               {keys.map((key) => (
-                <tr key={key.id} className="border-b border-[var(--bx-border)]/60">
-                  <td className="py-3 pr-3 font-medium">{key.name}</td>
+                <tr key={key.id} className="border-b border-[var(--bx-border)]/60 align-top">
+                  <td className="py-3 pr-3">
+                    <div className="font-medium">{key.name}</div>
+                    {key.last_used_at ? (
+                      <div className="mt-0.5 text-[10px] text-[var(--bx-text-dim)]">
+                        {t.colLastUsed}: {new Date(key.last_used_at).toLocaleString()}
+                      </div>
+                    ) : null}
+                  </td>
                   <td className="py-3 pr-3">
                     <button
                       type="button"
@@ -218,21 +546,74 @@ export function AccountKeys() {
                       <Copy size={12} />
                       {copiedId === key.id ? <span className="text-[var(--bx-brand-bright)]">{d.common.copied}</span> : null}
                     </button>
+                    {(key.ip_whitelist?.length || key.ip_blacklist?.length) ? (
+                      <div className="mt-1 text-[10px] text-[var(--bx-text-dim)]">
+                        IP {key.ip_whitelist?.length ? `W:${key.ip_whitelist.length}` : ''}
+                        {key.ip_blacklist?.length ? ` B:${key.ip_blacklist.length}` : ''}
+                      </div>
+                    ) : null}
                   </td>
                   <td className="py-3 pr-3 text-[var(--bx-text-muted)]">{key.group?.name || '—'}</td>
+                  <td className="py-3 pr-3 text-xs tabular-nums">
+                    {(key.quota || 0) > 0 ? (
+                      <div className="min-w-[100px]">
+                        <span>
+                          ${key.quota_used?.toFixed(2) || '0.00'} / ${key.quota.toFixed(2)}
+                        </span>
+                        <ProgressBar used={key.quota_used || 0} limit={key.quota} />
+                      </div>
+                    ) : (
+                      <span className="text-[var(--bx-text-dim)]">{t.unlimited}</span>
+                    )}
+                  </td>
+                  <td className="py-3 pr-3 text-xs tabular-nums">
+                    {(key.rate_limit_5h || 0) > 0 || (key.rate_limit_1d || 0) > 0 || (key.rate_limit_7d || 0) > 0 ? (
+                      <div className="min-w-[120px] space-y-1">
+                        {(key.rate_limit_5h || 0) > 0 ? (
+                          <div>
+                            5h: ${(key.usage_5h || 0).toFixed(2)}/{key.rate_limit_5h!.toFixed(2)}
+                            <ProgressBar used={key.usage_5h || 0} limit={key.rate_limit_5h!} />
+                          </div>
+                        ) : null}
+                        {(key.rate_limit_1d || 0) > 0 ? (
+                          <div>
+                            1d: ${(key.usage_1d || 0).toFixed(2)}/{key.rate_limit_1d!.toFixed(2)}
+                            <ProgressBar used={key.usage_1d || 0} limit={key.rate_limit_1d!} />
+                          </div>
+                        ) : null}
+                        {(key.rate_limit_7d || 0) > 0 ? (
+                          <div>
+                            7d: ${(key.usage_7d || 0).toFixed(2)}/{key.rate_limit_7d!.toFixed(2)}
+                            <ProgressBar used={key.usage_7d || 0} limit={key.rate_limit_7d!} />
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : (
+                      <span className="text-[var(--bx-text-dim)]">—</span>
+                    )}
+                  </td>
+                  <td className="py-3 pr-3 text-xs text-[var(--bx-text-muted)]">
+                    {key.expires_at ? new Date(key.expires_at).toLocaleDateString() : t.never}
+                  </td>
                   <td className="py-3 pr-3">
                     <span
                       className={
                         key.status === 'active'
                           ? 'text-[var(--bx-brand-bright)]'
-                          : 'text-[var(--bx-text-dim)]'
+                          : key.status === 'quota_exhausted' || key.status === 'expired'
+                            ? 'text-amber-500'
+                            : 'text-[var(--bx-text-dim)]'
                       }
                     >
-                      {key.status}
+                      {statusLabel(key.status)}
                     </span>
                   </td>
                   <td className="py-3">
-                    <div className="flex gap-1">
+                    <div className="flex flex-wrap gap-1">
+                      <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => openEdit(key)}>
+                        <Pencil size={12} />
+                        {t.edit}
+                      </button>
                       <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void onToggle(key)}>
                         {key.status === 'active' ? t.disable : t.enable}
                       </button>
@@ -252,6 +633,30 @@ export function AccountKeys() {
           </table>
         )}
       </div>
+
+      {pages > 1 ? (
+        <div className="mt-4 flex items-center gap-2">
+          <button
+            type="button"
+            className="bx-btn bx-btn-ghost bx-btn-sm"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            ←
+          </button>
+          <span className="text-xs text-[var(--bx-text-dim)]">
+            {t.page.replace('{page}', String(page)).replace('{pages}', String(pages))}
+          </span>
+          <button
+            type="button"
+            className="bx-btn bx-btn-ghost bx-btn-sm"
+            disabled={page >= pages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            →
+          </button>
+        </div>
+      ) : null}
     </div>
   )
 }
