@@ -339,11 +339,15 @@ type PublicSettings struct {
 	OIDCOAuthEnabled                 bool                     `json:"oidc_oauth_enabled"`
 	OIDCOAuthProviderName            string                   `json:"oidc_oauth_provider_name"`
 	GitHubOAuthEnabled               bool                     `json:"github_oauth_enabled"`
-	GoogleOAuthEnabled               bool                     `json:"google_oauth_enabled"`
-	SoraClientEnabled                bool                     `json:"sora_client_enabled"`
-	BackendModeEnabled               bool                     `json:"backend_mode_enabled"`
-	PaymentEnabled                   bool                     `json:"payment_enabled"`
-	Version                          string                   `json:"version"`
+	// BOXAI: backend OAuth callback URL (public) so apex can hide cross-host providers.
+	GitHubOAuthRedirectURL string `json:"github_oauth_redirect_url"`
+	GoogleOAuthEnabled     bool   `json:"google_oauth_enabled"`
+	// BOXAI: backend OAuth callback URL (public) so apex can hide cross-host providers.
+	GoogleOAuthRedirectURL string `json:"google_oauth_redirect_url"`
+	SoraClientEnabled      bool   `json:"sora_client_enabled"`
+	BackendModeEnabled     bool   `json:"backend_mode_enabled"`
+	PaymentEnabled         bool   `json:"payment_enabled"`
+	Version                string `json:"version"`
 	// 服务器全局时区（IANA 名称与当前 UTC 偏移，如 "Asia/Shanghai" / "+08:00"）。
 	// 高峰时段等按服务器本地时间判定的窗口，前端展示时据此标注，避免用户按浏览器本地时间误读。
 	ServerTimezone              string  `json:"server_timezone"`

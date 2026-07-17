@@ -6,6 +6,7 @@ import {
   getMyPlatformQuotas,
   getProfile,
   getPublicSettings,
+  oauthRedirectCompatibleWithHost,
   removeNotifyEmail,
   sendEmailBindingCode,
   sendNotifyEmailCode,
@@ -38,6 +39,8 @@ type PublicProfileSettings = {
   oidc_oauth_provider_name: string
   github_oauth_enabled: boolean
   google_oauth_enabled: boolean
+  github_oauth_redirect_url?: string
+  google_oauth_redirect_url?: string
 }
 
 const DEFAULT_SETTINGS: PublicProfileSettings = {
@@ -87,6 +90,8 @@ function parsePublicSettings(raw: Record<string, unknown> | null | undefined): P
     oidc_oauth_provider_name: asString(raw.oidc_oauth_provider_name, 'OIDC') || 'OIDC',
     github_oauth_enabled: asBool(raw.github_oauth_enabled),
     google_oauth_enabled: asBool(raw.google_oauth_enabled),
+    github_oauth_redirect_url: asString(raw.github_oauth_redirect_url),
+    google_oauth_redirect_url: asString(raw.google_oauth_redirect_url),
   }
 }
 
@@ -261,13 +266,22 @@ export function AccountProfile() {
       details: UserAuthBindingStatus | null
     }
     const oidcName = settings.oidc_oauth_provider_name
+    const host =
+      typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : ''
+    // Hide google/github bind when IdP callback host ≠ this host (state cookies).
+    const githubOk =
+      settings.github_oauth_enabled &&
+      oauthRedirectCompatibleWithHost(settings.github_oauth_redirect_url, host)
+    const googleOk =
+      settings.google_oauth_enabled &&
+      oauthRedirectCompatibleWithHost(settings.google_oauth_redirect_url, host)
     const enabled: Record<BindableOAuthProvider, boolean> = {
       linuxdo: settings.linuxdo_oauth_enabled,
       dingtalk: settings.dingtalk_oauth_enabled,
       wechat: settings.wechat_oauth_enabled,
       oidc: settings.oidc_oauth_enabled,
-      github: settings.github_oauth_enabled,
-      google: settings.google_oauth_enabled,
+      github: githubOk,
+      google: googleOk,
     }
 
     const candidates: BindableOAuthProvider[] = ['linuxdo', 'dingtalk', 'wechat', 'oidc', 'github', 'google']

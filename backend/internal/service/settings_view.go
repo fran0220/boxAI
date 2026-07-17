@@ -309,8 +309,12 @@ type PublicSettings struct {
 	OIDCOAuthEnabled         bool
 	OIDCOAuthProviderName    string
 	GitHubOAuthEnabled       bool
-	GoogleOAuthEnabled       bool
-	Version                  string
+	// BOXAI: public redirect_uri host gate for apex vs console OAuth start.
+	GitHubOAuthRedirectURL string
+	GoogleOAuthEnabled     bool
+	// BOXAI: public redirect_uri host gate for apex vs console OAuth start.
+	GoogleOAuthRedirectURL string
+	Version                string
 
 	BalanceLowNotifyEnabled     bool
 	AccountQuotaNotifyEnabled   bool
