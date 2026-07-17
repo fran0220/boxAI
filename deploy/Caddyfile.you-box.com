@@ -61,12 +61,36 @@ you-box.com {
 	}
 	header @static Cache-Control "public, max-age=31536000, immutable"
 
+	# BOXAI: admin/setup never on apex (customer shell unification).
+	handle /api/v1/admin/* {
+		respond "Not Found" 404
+	}
+	handle /api/v1/setup* {
+		respond "Not Found" 404
+	}
+
 	@apex_api {
 		path /api/v1/settings/public
+		path /api/v1/public/status /api/v1/public/status/*
 		path /api/v1/auth/session /api/v1/auth/session/adopt /api/v1/auth/session/logout
 		path /api/v1/auth/me /api/v1/auth/logout /api/v1/auth/revoke-all-sessions
+		path /api/v1/auth/login /api/v1/auth/login/2fa /api/v1/auth/register
+		path /api/v1/auth/registration/prepare /api/v1/auth/registration/complete
+		path /api/v1/auth/send-verify-code /api/v1/auth/forgot-password /api/v1/auth/reset-password
+		path /api/v1/auth/validate-promo-code /api/v1/auth/validate-invitation-code
 		path /api/v1/auth/boxai/sso/authorize /api/v1/auth/boxai/sso/token
+		path /api/v1/auth/boxai/desktop/authorize
 		path /api/v1/boxai/creator/ensure-key
+		path /api/v1/keys /api/v1/keys/*
+		path /api/v1/usage /api/v1/usage/*
+		path /api/v1/user /api/v1/user/*
+		path /api/v1/groups /api/v1/groups/*
+		path /api/v1/subscriptions /api/v1/subscriptions/*
+		path /api/v1/redeem /api/v1/redeem/*
+		path /api/v1/payment /api/v1/payment/*
+		path /api/v1/announcements /api/v1/announcements/*
+		path /api/v1/channels/available
+		path /api/v1/channel-monitors /api/v1/channel-monitors/*
 	}
 	handle @apex_api {
 		reverse_proxy 127.0.0.1:8080 {

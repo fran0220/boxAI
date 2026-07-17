@@ -49,13 +49,21 @@ check "apex session logout exists" "$APEX/api/v1/auth/session/logout" "200|204|4
 check "apex auth me unauth" "$APEX/api/v1/auth/me" "401|403"
 check "apex SSO authorize unauth" "$APEX/api/v1/auth/boxai/sso/authorize" "401|403" POST
 check "apex Creator ensure-key unauth" "$APEX/api/v1/boxai/creator/ensure-key" "401|403" POST
-check "apex credential login blocked" "$APEX/api/v1/auth/login" "404" POST
-check "apex credential register blocked" "$APEX/api/v1/auth/register" "404" POST
-check "apex registration prepare blocked" "$APEX/api/v1/auth/registration/prepare" "404" POST
-check "apex registration complete blocked" "$APEX/api/v1/auth/registration/complete" "404" POST
+# BOXAI: customer shell — credential + account APIs reach backend (401/4xx), not edge 404.
+check "apex credential login reaches backend" "$APEX/api/v1/auth/login" "400|401|403|422|429" POST
+check "apex credential register reaches backend" "$APEX/api/v1/auth/register" "400|401|403|422|429" POST
+check "apex registration prepare reaches backend" "$APEX/api/v1/auth/registration/prepare" "400|401|403|422|429" POST
+check "apex registration complete reaches backend" "$APEX/api/v1/auth/registration/complete" "400|401|403|422|429" POST
+check "apex keys unauth" "$APEX/api/v1/keys" "401|403"
+check "apex usage unauth" "$APEX/api/v1/usage/dashboard/stats" "401|403"
+check "apex payment plans unauth" "$APEX/api/v1/payment/plans" "401|403"
+check "apex user profile unauth" "$APEX/api/v1/user/profile" "401|403"
 check "apex admin blocked" "$APEX/api/v1/admin/settings" "404"
+check "apex setup blocked" "$APEX/api/v1/setup/status" "404|401|403"
 check "apex create SPA" "$APEX/create" "200"
 check "apex login SPA" "$APEX/login" "200"
+check "apex account SPA" "$APEX/account" "200"
+check "apex checkout SPA" "$APEX/checkout" "200"
 # React index should not be Vue title-only; look for root div
 if curl -sS "$APEX/" | grep -q 'id="root"\|id='\''root'\'''; then
   echo "OK  React root mount present on apex"

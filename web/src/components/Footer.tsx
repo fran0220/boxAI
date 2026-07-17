@@ -18,20 +18,15 @@ export function Footer() {
         { label: d.footer.creator, to: '/create' },
         { label: d.footer.studio, to: '/studio' },
         { label: d.footer.pricing, to: '/pricing' },
+        { label: d.footer.status, to: '/status' },
       ],
     },
     {
       title: d.footer.resources,
       links: [
-        { label: d.footer.console, href: `${console_}/boxai/sso/start` },
-        {
-          label: d.footer.apiKeys,
-          href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/keys')}`,
-        },
-        {
-          label: d.footer.usage,
-          href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/usage')}`,
-        },
+        { label: d.footer.apiKeys, to: '/account/keys' },
+        { label: d.footer.usage, to: '/account/usage' },
+        { label: d.footer.myAccount, to: '/account' },
         { label: d.footer.github, href: RELEASES_PAGE_URL },
       ],
     },

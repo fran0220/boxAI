@@ -124,20 +124,33 @@ func (h *AuthHandler) writeOAuthTokenPairResponse(c *gin.Context, tokenPair *ser
 }
 
 // redirectOAuthTokenPairOrBrowserSession handles provider callbacks, which do
-// not carry the Origin/CSRF headers available to frontend fetch requests. Only
-// the exact production console callback may establish a console cookie.
+// not carry the Origin/CSRF headers available to frontend fetch requests.
+// Production UI hosts (console or apex) may establish a host-bound session cookie.
+// BOXAI: customer shell unification — apex (web surface) can mint browser sessions too.
 func (h *AuthHandler) redirectOAuthTokenPairOrBrowserSession(c *gin.Context, frontendCallback string, tokenPair *service.TokenPair, user *service.User, redirectTo string) {
 	surface, _, hostOK := browserSurface(c)
 	callbackURL, parseErr := url.Parse(frontendCallback)
 	callbackIsConsole := parseErr == nil && ((callbackURL.Scheme == "https" && callbackURL.Host == "console.you-box.com") ||
 		(callbackURL.Scheme == "" && callbackURL.Host == "" && strings.HasPrefix(callbackURL.Path, "/")))
-	if BrowserSessionEnabled() && hostOK && surface == service.BrowserSurfaceConsole && callbackIsConsole {
-		_ = h.authService.RevokeRefreshToken(c.Request.Context(), tokenPair.RefreshToken)
-		if _, ok := h.issueBrowserSession(c, user, surface); !ok {
+	callbackIsWeb := parseErr == nil && ((callbackURL.Scheme == "https" && callbackURL.Host == "you-box.com") ||
+		(callbackURL.Scheme == "http" && (callbackURL.Host == "localhost:5173" || callbackURL.Host == "127.0.0.1:5173")))
+	if BrowserSessionEnabled() && hostOK {
+		if surface == service.BrowserSurfaceConsole && callbackIsConsole {
+			_ = h.authService.RevokeRefreshToken(c.Request.Context(), tokenPair.RefreshToken)
+			if _, ok := h.issueBrowserSession(c, user, surface); !ok {
+				return
+			}
+			redirectOAuthBrowserSession(c, frontendCallback, redirectTo)
 			return
 		}
-		redirectOAuthBrowserSession(c, frontendCallback, redirectTo)
-		return
+		if surface == service.BrowserSurfaceWeb && callbackIsWeb {
+			_ = h.authService.RevokeRefreshToken(c.Request.Context(), tokenPair.RefreshToken)
+			if _, ok := h.issueBrowserSession(c, user, surface); !ok {
+				return
+			}
+			redirectOAuthBrowserSession(c, frontendCallback, redirectTo)
+			return
+		}
 	}
 	redirectOAuthTokenPair(c, frontendCallback, tokenPair, redirectTo)
 }

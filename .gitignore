@@ -148,6 +148,7 @@ docs/*
 !docs/BRAND.md
 !docs/PRODUCTION.md
 !docs/WEB_PLATFORM.md
+!docs/CUSTOMER_SHELL_UNIFICATION.md
 !docs/OFFICE_MODULE.md
 !docs/LOCAL_DEV.md
 !docs/README.md

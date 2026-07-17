@@ -36,8 +36,20 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/internal/handler/boxai_registration_test.go` | Registration transaction validation, retry, consumption, and response tests |
 | `backend/internal/handler/boxai_creator_key.go` | Idempotent `boxai-creator` API key ensure endpoint |
 | `backend/internal/handler/boxai_creator_key_test.go` | Unit tests for Creator ensure-key |
-| `web/` | React marketing + Creator SPA (Vite + TS + Tailwind); static dist on apex (not Go-embed) |
-| `docs/WEB_PLATFORM.md` | Dual-frontend topology, SSO, env flags, deploy notes |
+| `backend/internal/handler/boxai_public_status.go` | Public unauthenticated system status API + admin public_visible toggle |
+| `backend/internal/handler/boxai_public_status_test.go` | Public status period/ETag/secret-leak unit tests |
+| `backend/migrations/900_boxai_channel_monitor_public_visible.sql` | `public_visible` column for marketing status |
+| `docs/status-surface.md` | Shared status surface design conventions (check-cx language, teal brand) |
+| `web/` | React marketing + Creator + **customer shell** SPA (Vite + TS + Tailwind); static dist on apex (not Go-embed) |
+| `docs/WEB_PLATFORM.md` | Host topology, customer shell migration, SSO bridge, env flags |
+| `docs/CUSTOMER_SHELL_UNIFICATION.md` | Target architecture + PR plan (apex customer, console admin-only) |
+| `web/src/lib/customer-api.ts` | Apex customer-center JSON API client |
+| `web/src/pages/account/*` | Customer account center (keys, usage, profile, orders, …) |
+| `web/src/pages/auth/Login.tsx` (and Signup/Forgot/Reset) | Apex credential forms (password + registration transaction) |
+| `web/src/pages/Checkout.tsx` | Apex checkout (Stripe/QR/Airwallex; WeChat MP → console) |
+| `web/src/pages/DesktopAuth.tsx` | Apex Desktop PKCE authorize page |
+| `frontend/src/utils/apexOrigin.ts` | Console → apex customer path map + redirect flag |
+| `backend/internal/handler/boxai_auth_tx.go` | Auth Transaction types/helpers (flag `BOXAI_AUTH_TX`, dark) |
 | `docs/LOCAL_DEV.md` | Local three-process developer guide |
 | `docs/OFFICE_MODULE.md` | Desktop module + web URL map |
 | `deploy/Caddyfile.you-box.com` | 3-host Caddy (apex / console / api) |
@@ -95,7 +107,14 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/service/payment_order.go` | Payment subject product prefix |
 | `backend/internal/service/payment_order_result_test.go` | Subject assertion uses branding |
 | `backend/internal/server/routes/gateway.go` | BOXAI: desktop JWT-as-credential middleware wired before `apiKeyAuth` on `/v1` (flag `BOXAI_DESKTOP_JWT_GATEWAY`, default-on) |
-| `backend/internal/server/routes/auth.go` | BOXAI: browser session + opaque registration + desktop OAuth (PKCE) + web SSO routes |
+| `backend/internal/server/routes/auth.go` | BOXAI: browser session + opaque registration + desktop OAuth (PKCE) + web SSO + public status routes (rate-limited) |
+| `backend/internal/server/routes/admin.go` | BOXAI: channel-monitor public_visible admin routes |
+| `backend/internal/handler/handler.go` | BOXAI: PublicStatus handler field |
+| `backend/internal/handler/wire.go` | BOXAI: ProvideBoxAIPublicStatusHandler wire set |
+| `backend/cmd/server/wire_gen.go` | BOXAI: public status handler injection |
+| `backend/internal/service/channel_monitor_aggregator.go` | BOXAI: `BatchPrimaryAvailabilityPct` for public multi-window list (no N+1) |
+| `frontend/src/api/admin/channelMonitor.ts` | BOXAI: `setPublicVisible` / `batchPublicVisible` admin helpers |
+| `frontend/src/views/admin/ChannelMonitorView.vue` | BOXAI: public_visible column + toggle |
 | `backend/internal/server/middleware/jwt_auth.go` | Host/audience boundary for browser access JWTs; legacy audience-less JWT compatibility |
 | `backend/internal/server/middleware/admin_auth.go` | Console audience plus explicit admin scope required for browser admin JWTs |
 | `backend/internal/server/middleware/cors.go` | Browser-session opt-in and fixed CSRF request headers |

@@ -4,7 +4,8 @@
 
 | Doc | Content |
 |-----|---------|
-| [WEB_PLATFORM.md](./WEB_PLATFORM.md) | Hosts, Web SSO, Creator, edge paths |
+| [WEB_PLATFORM.md](./WEB_PLATFORM.md) | Hosts, customer shell, Web SSO bridge, Creator, edge paths |
+| [CUSTOMER_SHELL_UNIFICATION.md](./CUSTOMER_SHELL_UNIFICATION.md) | Target: apex React customer shell; console admin-only |
 | [OFFICE_MODULE.md](./OFFICE_MODULE.md) | Desktop client |
 | [BRAND.md](./BRAND.md) | Brand tokens and compliance freeze |
 

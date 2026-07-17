@@ -67,10 +67,37 @@ export async function apiGet<T>(path: string, token?: string | null): Promise<T>
   return apiRequest<T>(path, { method: 'GET' }, token)
 }
 
+export async function apiPut<T>(path: string, body?: unknown, token?: string | null): Promise<T> {
+  return apiRequest<T>(path, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  }, token)
+}
+
+export async function apiDelete<T>(path: string, body?: unknown, token?: string | null): Promise<T> {
+  return apiRequest<T>(path, {
+    method: 'DELETE',
+    headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  }, token)
+}
+
+/** Build `/api/v1/...` path with optional query string. */
+export function withQuery(path: string, params?: Record<string, string | number | boolean | undefined | null>): string {
+  if (!params) return path
+  const qs = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === '') continue
+    qs.set(key, String(value))
+  }
+  const s = qs.toString()
+  return s ? `${path}?${s}` : path
+}
+
 /**
- * Interactive login/registration is NOT implemented on this origin.
- * The console (Vue app) is the identity host; sessions arrive here via the
- * PKCE Web SSO handoff (`exchangeSsoToken`).
+ * Browser session auth responses (password login, registration, SSO exchange).
+ * When X-BoxAI-Browser-Session is set, backend mints a host cookie + short JWT.
  */
 export interface AuthResponse {
   access_token: string
@@ -78,6 +105,10 @@ export interface AuthResponse {
   expires_in?: number
   token_type?: string
   user: AuthUser
+  auth_result?: string
+  requires_2fa?: boolean
+  temp_token?: string
+  user_email_masked?: string
 }
 
 export async function fetchMe(): Promise<AuthUser> {

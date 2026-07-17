@@ -6,12 +6,28 @@ import { Spinner } from '@/components/ui/Spinner'
 import { Home } from '@/pages/Home'
 import { Studio } from '@/pages/Studio'
 import { Pricing } from '@/pages/Pricing'
-import { Account } from '@/pages/Account'
+import { Status } from '@/pages/Status'
 import { NotFound } from '@/pages/NotFound'
-import { AuthRedirect } from '@/pages/auth/AuthRedirect'
 import { SsoStart } from '@/pages/SsoStart'
 import { SsoCallback } from '@/pages/SsoCallback'
 import { SsoAuthorize } from '@/pages/SsoAuthorize'
+import { AccountLayout } from '@/pages/account/AccountLayout'
+import { AccountOverview } from '@/pages/account/Overview'
+import { AccountKeys } from '@/pages/account/Keys'
+import { AccountUsage } from '@/pages/account/Usage'
+import { AccountProfile } from '@/pages/account/Profile'
+import { AccountSecurity } from '@/pages/account/Security'
+import { AccountSubscription } from '@/pages/account/Subscription'
+import { AccountOrders } from '@/pages/account/Orders'
+import { AccountRedeem } from '@/pages/account/Redeem'
+import { AccountAffiliate } from '@/pages/account/Affiliate'
+import { Login } from '@/pages/auth/Login'
+import { Signup } from '@/pages/auth/Signup'
+import { ForgotPassword } from '@/pages/auth/ForgotPassword'
+import { ResetPassword } from '@/pages/auth/ResetPassword'
+import { Checkout } from '@/pages/Checkout'
+import { PaymentResult } from '@/pages/PaymentResult'
+import { DesktopAuth } from '@/pages/DesktopAuth'
 
 const CreateLayout = lazy(() =>
   import('@/pages/create/CreateLayout').then((m) => ({ default: m.CreateLayout })),
@@ -28,31 +44,61 @@ function CreateFallback() {
   )
 }
 
+function AccountFallback() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center">
+      <Spinner />
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="studio" element={<Studio />} />
-        {/* Legacy URLs: Desktop + Download merged into /studio */}
         <Route path="desktop" element={<Navigate to="/studio" replace />} />
         <Route path="download" element={<Navigate to="/studio" replace />} />
         <Route path="pricing" element={<Pricing />} />
-        {/* No credential forms here — console (Vue) is the identity host */}
-        <Route path="login" element={<AuthRedirect mode="login" />} />
-        <Route path="signup" element={<AuthRedirect mode="register" />} />
+        <Route path="status" element={<Status />} />
+
+        {/* Customer auth on apex (console remains admin + SSO rollback bridge). */}
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
+
+        {/* Legacy Web SSO pages — kept until Phase 10 delete */}
         <Route path="sso" element={<SsoStart />} />
         <Route path="sso/callback" element={<SsoCallback />} />
         <Route path="sso/authorize" element={<SsoAuthorize />} />
+
+        <Route path="checkout" element={<Checkout />} />
+        <Route path="payment/result" element={<PaymentResult />} />
+        <Route path="desktop-auth" element={<DesktopAuth />} />
+
         <Route
           path="account"
           element={
             <ProtectedRoute>
-              <Account />
+              <Suspense fallback={<AccountFallback />}>
+                <AccountLayout />
+              </Suspense>
             </ProtectedRoute>
           }
-        />
-        {/* Creator: same site chrome as home; internal panels for image/video/assets */}
+        >
+          <Route index element={<AccountOverview />} />
+          <Route path="keys" element={<AccountKeys />} />
+          <Route path="usage" element={<AccountUsage />} />
+          <Route path="profile" element={<AccountProfile />} />
+          <Route path="security" element={<AccountSecurity />} />
+          <Route path="subscription" element={<AccountSubscription />} />
+          <Route path="orders" element={<AccountOrders />} />
+          <Route path="redeem" element={<AccountRedeem />} />
+          <Route path="affiliate" element={<AccountAffiliate />} />
+        </Route>
+
         <Route
           path="create"
           element={
