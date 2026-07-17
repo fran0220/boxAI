@@ -23,13 +23,16 @@ import { Spinner } from '@/components/ui/Spinner'
  *
  * Uses `runOAuthCallbackOnce` so React StrictMode remounts share one exchange.
  */
+/** Three-way status so success never renders the failure card. */
+type OAuthCallbackPhase = 'loading' | 'error' | 'done'
+
 export function OAuthCallback() {
   const { d } = useI18n()
   const t = d.authForms
   usePageMeta(t.oauthCallbackTitle)
   const navigate = useNavigate()
   const [error, setError] = useState('')
-  const [busy, setBusy] = useState(true)
+  const [phase, setPhase] = useState<OAuthCallbackPhase>('loading')
 
   useEffect(() => {
     let cancelled = false
@@ -46,22 +49,21 @@ export function OAuthCallback() {
       if (cancelled) return
 
       if (outcome.kind === 'authenticated') {
-        // Clear busy before navigate so a no-op/same-route replace cannot leave
-        // a perpetual “Completing login…” spinner.
-        setBusy(false)
+        // Neutral "done" keeps spinner/redirect UI; never the failure card.
+        setPhase('done')
         navigate(outcome.redirect, { replace: true })
         return
       }
       if (outcome.kind === 'parked') {
         setError(t.oauthPendingUnsupported)
-        setBusy(false)
+        setPhase('error')
         return
       }
       // Provider fragment errors keep descriptive text; exchange/session use i18n.
       const isInternal =
         outcome.message === 'session_bootstrap_failed' || outcome.message === 'exchange_failed'
       setError(isInternal || !outcome.message ? t.oauthFailed : outcome.message)
-      setBusy(false)
+      setPhase('error')
     })()
     return () => {
       cancelled = true
@@ -70,13 +72,7 @@ export function OAuthCallback() {
 
   return (
     <div className="mx-auto flex min-h-[50vh] max-w-md flex-col justify-center px-4 py-14 text-center sm:px-6">
-      {busy ? (
-        <>
-          <Spinner className="mx-auto" />
-          <h1 className="bx-display mt-4 text-xl font-bold">{t.oauthCallbackTitle}</h1>
-          <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.oauthCallbackHint}</p>
-        </>
-      ) : (
+      {phase === 'error' ? (
         <>
           <h1 className="bx-display text-xl font-bold">{t.oauthFailedTitle}</h1>
           <p className="bx-text-danger mt-3 text-sm">{error || t.oauthFailed}</p>
@@ -88,6 +84,12 @@ export function OAuthCallback() {
               {d.auth.signupTitle}
             </Link>
           </div>
+        </>
+      ) : (
+        <>
+          <Spinner className="mx-auto" />
+          <h1 className="bx-display mt-4 text-xl font-bold">{t.oauthCallbackTitle}</h1>
+          <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.oauthCallbackHint}</p>
         </>
       )}
     </div>
