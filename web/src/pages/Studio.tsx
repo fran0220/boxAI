@@ -127,8 +127,10 @@ export function Studio() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => scrollTo('download')}
-                  className="bx-btn bx-btn-ghost bx-btn-lg"
+                  disabled
+                  aria-disabled="true"
+                  title={d.common.comingSoon}
+                  className="bx-btn bx-btn-ghost bx-btn-lg cursor-not-allowed opacity-60"
                 >
                   {d.studio.ctaBrowser}
                   <span className="rounded bg-[var(--bx-brand-soft)] px-[7px] py-0.5 font-mono text-[9.5px] font-semibold text-[var(--bx-brand)]">

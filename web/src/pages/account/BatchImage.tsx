@@ -124,13 +124,21 @@ export function AccountBatchImage() {
     [prompts],
   )
 
+  // Only show a $ estimate when models API exposes a real unit price.
+  // Never invent 0.04/0.05/0.08 client-side placeholders.
+  const selectedModel = useMemo(
+    () => models.find((m) => m.id === model) ?? null,
+    [models, model],
+  )
+  const unitPrice = useMemo(() => {
+    const raw = selectedModel?.unit_price ?? selectedModel?.price
+    return typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? raw : null
+  }, [selectedModel])
   const estimatedHint = useMemo(() => {
-    if (promptCount <= 0) return null
-    // Lightweight client estimate when model unit price is unknown (~$0.04/image @ 1K)
-    const unit = imageSize === '4K' ? 0.08 : imageSize === '2K' ? 0.05 : 0.04
-    const est = promptCount * unit
+    if (promptCount <= 0 || unitPrice == null) return null
+    const est = promptCount * unitPrice
     return t.estCost.replace('{amount}', est.toFixed(2))
-  }, [promptCount, imageSize, t.estCost])
+  }, [promptCount, unitPrice, t.estCost])
 
   const onApiKeyChange = (value: string) => {
     setApiKey(value)
@@ -453,7 +461,9 @@ export function AccountBatchImage() {
                 ? t.submitting
                 : estimatedHint
                   ? `${t.submit} · ${estimatedHint}`
-                  : t.submit}
+                  : promptCount > 0
+                    ? `${t.submit} · ${t.estItems.replace('{n}', String(promptCount))}`
+                    : t.submit}
             </button>
             {!keyReady ? (
               <p className="bx-account-stat-hint mt-2">

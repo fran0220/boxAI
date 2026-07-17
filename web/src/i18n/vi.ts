@@ -179,7 +179,7 @@ export const vi: Dict = {
         body: 'Runtime Agent cục bộ: Skills, MCP và bộ nhớ dài hạn; trình duyệt có thể điều khiển từ xa.',
         demoCmd: 'boxai agent run',
         demoReady: 'signed in · gateway ready',
-        demoStack: 'skills · mcp · memory',
+        demoStack: 'skills: 12 · mcp: 3 · memory: on',
       },
       account: {
         title: 'Trung tâm tài khoản',
@@ -719,6 +719,7 @@ export const vi: Dict = {
     bioPlaceholder: 'Một câu về bạn…',
     changeAvatar: 'Đổi ảnh đại diện',
     avatarUnavailable: 'Chưa hỗ trợ tải ảnh đại diện',
+    fieldComingSoon: 'Sắp hỗ trợ',
 },
   accountSecurity: {
     metaTitle: 'Bảo mật',
@@ -775,6 +776,8 @@ export const vi: Dict = {
     dangerTitle: 'Xóa tài khoản',
     dangerBody: 'Xóa vĩnh viễn tài khoản và dữ liệu. Liên hệ hỗ trợ để tiếp tục.',
     dangerUnavailable: 'Liên hệ hỗ trợ để xóa tài khoản',
+    dangerContactSupport: 'Liên hệ hỗ trợ để xóa',
+    dangerSupportHref: 'mailto:hello@you-box.com?subject=BoxAI%20Xoa%20tai%20khoan',
     deleteAccount: 'Xóa tài khoản',
     twoFactorBoundHint: 'Đã liên kết qua app xác thực',
     loginAlert: 'Email cảnh báo đăng nhập',
@@ -1089,7 +1092,10 @@ export const vi: Dict = {
     featureStudioDesc: 'Agent cục bộ · Skills · MCP',
     featureApi: 'API mở',
     featureApiDesc: 'Tương thích OpenAI /v1 · một khóa',
-    statusOk: 'Trạng thái hệ thống công khai',
+    statusOk: 'Tất cả hệ thống hoạt động bình thường',
+    statusDegraded: 'Một số hệ thống suy giảm',
+    statusUnknown: 'Không lấy được trạng thái',
+    statusChecking: 'Đang kiểm tra trạng thái…',
     domain: 'you-box.com',
   },
   authForms: {
@@ -1237,6 +1243,11 @@ export const vi: Dict = {
       emptyBody:
         'Nhập mô tả, chọn tỷ lệ khung hình và số lượng; thêm ảnh tham chiếu để remix. Quá trình tạo không chặn, có thể gửi liên tục.',
       gallery: 'Thư viện',
+      searchPlaceholder: 'Tìm prompt, model…',
+      filterAll: 'Tất cả',
+      filterFavorites: 'Yêu thích',
+      filterRunning: 'Đang tạo',
+      itemsLocal: '{n} items · Cục bộ',
     },
     video: {
       title: 'Tạo video',

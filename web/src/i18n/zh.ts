@@ -154,7 +154,7 @@ export const zh = {
         body: '本地 Agent 运行时：Skills、MCP 与长期记忆，浏览器可远程接管。',
         demoCmd: 'boxai agent run',
         demoReady: 'signed in · gateway ready',
-        demoStack: 'skills · mcp · memory',
+        demoStack: 'skills: 12 · mcp: 3 · memory: on',
       },
       account: {
         title: '账户中心',
@@ -693,6 +693,7 @@ export const zh = {
     bioPlaceholder: '一句话介绍自己…',
     changeAvatar: '更换头像',
     avatarUnavailable: '头像上传暂不可用',
+    fieldComingSoon: '即将支持',
   },
   accountSecurity: {
     metaTitle: '安全',
@@ -748,6 +749,8 @@ export const zh = {
     dangerTitle: '注销账户',
     dangerBody: '永久删除账户及全部数据，此操作不可撤销。请联系客服处理。',
     dangerUnavailable: '请联系客服注销账户',
+    dangerContactSupport: '联系客服注销',
+    dangerSupportHref: 'mailto:hello@you-box.com?subject=BoxAI%20%E6%B3%A8%E9%94%80%E8%B4%A6%E6%88%B7',
     deleteAccount: '删除账户',
     twoFactorBoundHint: '已通过验证器 App 绑定',
     loginAlert: '登录提醒邮件',
@@ -1055,7 +1058,10 @@ export const zh = {
     featureStudioDesc: '本地 Agent · Skills · MCP',
     featureApi: '开放 API',
     featureApiDesc: 'OpenAI 兼容 /v1 · 一把密钥',
-    statusOk: '系统状态公开可查',
+    statusOk: '全部系统正常',
+    statusDegraded: '部分系统降级',
+    statusUnknown: '状态暂不可用',
+    statusChecking: '正在检查状态…',
     domain: 'you-box.com',
   },
   authForms: {
@@ -1191,7 +1197,7 @@ export const zh = {
     },
     image: {
       title: '图像生成',
-      promptPlaceholder: '描述你想生成的画面,或添加参考图进行 Remix…',
+      promptPlaceholder: '描述你想生成的画面，或添加参考图进行 Remix…',
       count: '张数',
       reference: '参考图',
       referenceAdd: '添加参考图',
@@ -1202,6 +1208,11 @@ export const zh = {
       emptyTitle: '开始你的第一张图',
       emptyBody: '输入提示词,选择宽高比与张数;添加参考图即可 Remix。生成过程不阻塞,可连续提交。',
       gallery: '画廊',
+      searchPlaceholder: '搜索提示词、模型…',
+      filterAll: '全部',
+      filterFavorites: '收藏',
+      filterRunning: '生成中',
+      itemsLocal: '{n} items · 本地存储',
     },
     video: {
       title: '视频生成',

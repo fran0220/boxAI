@@ -9,6 +9,7 @@ import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
 import { BX_EASE } from '@/components/motion/Reveal'
+import { useStore as usePlaygroundStore } from '@/image-playground/store'
 
 export interface CreateOutletContext {
   keyReady: boolean
@@ -51,6 +52,8 @@ export function CreateLayout() {
     video: 0,
     assets: 0,
   })
+  // Align image nav badge with playground gallery task count when available
+  const playgroundTaskCount = usePlaygroundStore((s) => s.tasks.length)
 
   useEffect(() => {
     let cancelled = false
@@ -151,7 +154,8 @@ export function CreateLayout() {
         to: '/create/image',
         label: d.create.nav.image,
         icon: ImageIcon,
-        count: counts.image,
+        // Prefer live playground task count (gallery) when store has items
+        count: playgroundTaskCount > 0 ? playgroundTaskCount : counts.image,
       },
       {
         to: '/create/video',
@@ -166,7 +170,7 @@ export function CreateLayout() {
         count: counts.assets,
       },
     ],
-    [d.create.nav, counts],
+    [d.create.nav, counts, playgroundTaskCount],
   )
 
   const activePanel =

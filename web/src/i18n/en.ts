@@ -167,7 +167,7 @@ export const en: Dict = {
         body: 'Local Agent runtime: Skills, MCP and long-term memory, with browser remote takeover.',
         demoCmd: 'boxai agent run',
         demoReady: 'signed in · gateway ready',
-        demoStack: 'skills · mcp · memory',
+        demoStack: 'skills: 12 · mcp: 3 · memory: on',
       },
       account: {
         title: 'Account center',
@@ -707,6 +707,7 @@ export const en: Dict = {
     bioPlaceholder: 'A short intro…',
     changeAvatar: 'Change avatar',
     avatarUnavailable: 'Avatar upload is not available yet',
+    fieldComingSoon: 'Coming soon',
 },
   accountSecurity: {
     metaTitle: 'Security',
@@ -763,6 +764,8 @@ export const en: Dict = {
     dangerTitle: 'Delete account',
     dangerBody: 'Permanently delete your account and data. Contact support to proceed.',
     dangerUnavailable: 'Contact support to delete your account',
+    dangerContactSupport: 'Contact support to delete',
+    dangerSupportHref: 'mailto:hello@you-box.com?subject=BoxAI%20Delete%20account',
     deleteAccount: 'Delete account',
     twoFactorBoundHint: 'Bound via authenticator app',
     loginAlert: 'Login alert email',
@@ -1077,7 +1080,10 @@ export const en: Dict = {
     featureStudioDesc: 'Local Agent · Skills · MCP',
     featureApi: 'Open API',
     featureApiDesc: 'OpenAI-compatible /v1 · one key',
-    statusOk: 'System status is public',
+    statusOk: 'All systems operational',
+    statusDegraded: 'Some systems degraded',
+    statusUnknown: 'Status unavailable',
+    statusChecking: 'Checking status…',
     domain: 'you-box.com',
   },
   authForms: {
@@ -1225,6 +1231,11 @@ export const en: Dict = {
       emptyBody:
         'Type a prompt, pick an aspect ratio and count; add a reference image to remix. Generation never blocks, keep submitting.',
       gallery: 'Gallery',
+      searchPlaceholder: 'Search prompts, models…',
+      filterAll: 'All',
+      filterFavorites: 'Favorites',
+      filterRunning: 'Generating',
+      itemsLocal: '{n} items · Local',
     },
     video: {
       title: 'Video generation',

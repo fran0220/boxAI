@@ -1,10 +1,13 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { ALL_FAVORITES_COLLECTION_ID, getTaskFavoriteCollectionIds, useStore, reuseConfig, editOutputs, removeTask, taskMatchesFilterStatus, taskMatchesSearchQuery } from '../store'
 import TaskCard from './TaskCard'
+import CreateShellTaskCard from './CreateShellTaskCard'
 import { usePg } from '../lib/pgI18n'
+import { useIsCreateShell } from '../shellContext'
 
 export default function TaskGrid() {
   const { pg, t } = usePg()
+  const isCreateShell = useIsCreateShell()
 
   const tasks = useStore((s) => s.tasks)
   const searchQuery = useStore((s) => s.searchQuery)
@@ -284,36 +287,56 @@ export default function TaskGrid() {
     )
   }
 
+  const handleCardClick = (task: (typeof tasks)[0], e: React.MouseEvent | React.TouchEvent) => {
+    if (Date.now() < suppressClickUntil.current) {
+      e.preventDefault()
+      return
+    }
+    suppressClickUntil.current = 0
+    const native = 'nativeEvent' in e ? e.nativeEvent : e
+    const isCtrl =
+      isMac
+        ? Boolean((native as MouseEvent).metaKey)
+        : Boolean((native as MouseEvent).ctrlKey)
+    if (isCtrl) {
+      useStore.getState().toggleTaskSelection(task.id)
+      return
+    }
+    setDetailTaskId(task.id)
+  }
+
   return (
     <div 
       ref={rootRef}
       data-task-grid-root
-      className="relative min-h-[50vh]"
+      className={isCreateShell ? 'relative min-h-0' : 'relative min-h-[50vh]'}
     >
-      <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
+      <div
+        ref={gridRef}
+        className={
+          isCreateShell
+            ? 'bx-create-image-task-grid'
+            : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10'
+        }
+      >
         {filteredTasks.map((task) => (
           <div key={task.id} className="task-card-wrapper" data-task-id={task.id}>
-            <TaskCard
-              task={task}
-              onClick={(e) => {
-                if (Date.now() < suppressClickUntil.current) {
-                  e.preventDefault()
-                  return
-                }
-                suppressClickUntil.current = 0
-                const isCtrl = isMac ? e.metaKey : e.ctrlKey
-                if (isCtrl) {
-                  useStore.getState().toggleTaskSelection(task.id)
-                  return
-                }
-
-                setDetailTaskId(task.id)
-              }}
-              onReuse={() => reuseConfig(task)}
-              onEditOutputs={() => editOutputs(task)}
-              onDelete={() => handleDelete(task)}
-              isSelected={selectedTaskIds.includes(task.id)}
-            />
+            {isCreateShell ? (
+              <CreateShellTaskCard
+                task={task}
+                onClick={(e) => handleCardClick(task, e)}
+                isSelected={selectedTaskIds.includes(task.id)}
+              />
+            ) : (
+              <TaskCard
+                task={task}
+                onClick={(e) => handleCardClick(task, e)}
+                onReuse={() => reuseConfig(task)}
+                onEditOutputs={() => editOutputs(task)}
+                onDelete={() => handleDelete(task)}
+                isSelected={selectedTaskIds.includes(task.id)}
+              />
+            )}
           </div>
         ))}
       </div>

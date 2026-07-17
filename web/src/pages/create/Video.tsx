@@ -32,6 +32,36 @@ import { ModelPicker } from './components/ModelPicker'
 
 type JobStatus = 'queued' | 'processing' | 'succeeded' | 'failed'
 
+/** Duration badge only when media metadata yields a real duration. */
+function VideoThumb({ src }: { src: string }) {
+  const [durationLabel, setDurationLabel] = useState<string | null>(null)
+  return (
+    <div className="relative flex aspect-video items-center justify-center bg-[var(--bx-bg-muted)]">
+      <video
+        src={src}
+        preload="metadata"
+        muted
+        className="absolute inset-0 h-full w-full object-cover"
+        onLoadedMetadata={(e) => {
+          const sec = e.currentTarget.duration
+          if (!Number.isFinite(sec) || sec <= 0) return
+          const m = Math.floor(sec / 60)
+          const s = Math.floor(sec % 60)
+          setDurationLabel(`${m}:${String(s).padStart(2, '0')}`)
+        }}
+      />
+      <span className="bx-media-overlay relative z-[1] flex h-[38px] w-[38px] items-center justify-center rounded-lg">
+        <Play size={15} fill="currentColor" />
+      </span>
+      {durationLabel ? (
+        <span className="absolute bottom-2 right-2 z-[1] rounded bg-[rgba(2,4,5,0.6)] px-[7px] py-0.5 font-mono text-[9.5px] text-white/90">
+          {durationLabel}
+        </span>
+      ) : null}
+    </div>
+  )
+}
+
 interface VideoJob {
   localId: string
   remoteId?: string
@@ -475,17 +505,7 @@ export function VideoGen() {
                         key={asset.id}
                         className="bx-create-panel overflow-hidden transition-[border-color] duration-[var(--bx-dur-fast)] hover:border-[var(--bx-brand-ring)]"
                       >
-                        <div className="relative flex aspect-video items-center justify-center bg-[var(--bx-bg-muted)]">
-                          <video
-                            src={asset.payload}
-                            preload="metadata"
-                            muted
-                            className="absolute inset-0 h-full w-full object-cover"
-                          />
-                          <span className="bx-media-overlay relative z-[1] flex h-[38px] w-[38px] items-center justify-center rounded-lg">
-                            <Play size={15} fill="currentColor" />
-                          </span>
-                        </div>
+                        <VideoThumb src={asset.payload} />
                         <div className="flex items-center gap-1.5 px-3 py-2.5">
                           <p
                             className="min-w-0 flex-1 truncate text-xs text-[var(--bx-text-muted)]"

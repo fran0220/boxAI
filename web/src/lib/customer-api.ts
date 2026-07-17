@@ -823,6 +823,9 @@ export interface BatchImageModel {
   id: string
   object?: string
   provider: string
+  /** Present only if API returns real unit pricing; never invent client-side. */
+  unit_price?: number
+  price?: number
 }
 
 function gatewayOrigin(): string {

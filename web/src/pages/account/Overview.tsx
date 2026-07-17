@@ -137,8 +137,8 @@ export function AccountOverview() {
   const trendStart = trend[0]?.date ? shortDate(String(trend[0].date)) : ''
   const trendEnd = trend.length ? shortDate(String(trend[trend.length - 1]?.date || '')) : ''
 
-  // Month spend from recent 30d trend actual_cost when available
-  const monthSpend = useMemo(() => {
+  // Spend from loaded trend window (14d) — i18n must say "近14天" / "Last 14d", not "本月"
+  const spend14d = useMemo(() => {
     if (!trend.length) return null
     const sum = trend.reduce((acc, p) => acc + Number(p.actual_cost ?? p.cost ?? 0), 0)
     return sum
@@ -197,8 +197,8 @@ export function AccountOverview() {
             {typeof balance === 'number' ? `$${balance.toFixed(2)}` : '—'}
           </p>
           <p className="bx-account-stat-hint">
-            {monthSpend != null
-              ? t.monthSpendHint.replace('{cost}', `$${monthSpend.toFixed(2)}`)
+            {spend14d != null
+              ? t.monthSpendHint.replace('{cost}', `$${spend14d.toFixed(2)}`)
               : `${username} · ${email}`}
           </p>
         </div>

@@ -176,9 +176,6 @@ export function AccountProfile() {
   const [quotas, setQuotas] = useState<PlatformQuotaItem[] | null>(null)
 
   const [username, setUsername] = useState('')
-  const [displayName, setDisplayName] = useState('')
-  const [region, setRegion] = useState('')
-  const [bio, setBio] = useState('')
 
   const [bindEmail, setBindEmail] = useState('')
   const [bindCode, setBindCode] = useState('')
@@ -206,10 +203,6 @@ export function AccountProfile() {
   const applyProfile = useCallback((p: UserProfile) => {
     setProfile(p)
     setUsername(p.username || '')
-    // Design chrome fields — not all persisted by API yet
-    setDisplayName(p.username || '')
-    setRegion('')
-    setBio('')
     setNotifyEnabled(p.balance_notify_enabled ?? true)
     setThreshold(
       typeof p.balance_notify_threshold === 'number' ? p.balance_notify_threshold : '',
@@ -329,9 +322,6 @@ export function AccountProfile() {
   function resetForm() {
     if (profile) {
       setUsername(profile.username || '')
-      setDisplayName(profile.username || '')
-      setRegion('')
-      setBio('')
     }
   }
 
@@ -574,7 +564,7 @@ export function AccountProfile() {
             )}
           </div>
           <p className="mt-3.5 mb-0 text-[15px] font-extrabold">
-            {displayName || username || '—'}
+            {username || '—'}
           </p>
           <p className="mt-0.5 mb-0 font-mono text-[11px] text-[var(--bx-text-dim)]">
             {primaryEmail || profile?.email || '—'}
@@ -608,12 +598,19 @@ export function AccountProfile() {
               />
             </label>
             <label className="block">
-              <span className="bx-account-field-label">{t.displayName}</span>
+              <span className="bx-account-field-label">
+                {t.displayName}
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
+                  {t.fieldComingSoon}
+                </span>
+              </span>
               <input
-                className="bx-account-input-muted"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                autoComplete="nickname"
+                className="bx-account-input-muted opacity-70"
+                value=""
+                disabled
+                readOnly
+                placeholder={t.fieldComingSoon}
+                title={t.fieldComingSoon}
               />
             </label>
             <label className="block">
@@ -626,23 +623,36 @@ export function AccountProfile() {
               />
             </label>
             <label className="block">
-              <span className="bx-account-field-label">{t.region}</span>
+              <span className="bx-account-field-label">
+                {t.region}
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
+                  {t.fieldComingSoon}
+                </span>
+              </span>
               <input
-                className="bx-account-input-muted"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                placeholder={t.regionPlaceholder}
-                autoComplete="country-name"
+                className="bx-account-input-muted opacity-70"
+                value=""
+                disabled
+                readOnly
+                placeholder={t.fieldComingSoon}
+                title={t.fieldComingSoon}
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="bx-account-field-label">{t.bio}</span>
+              <span className="bx-account-field-label">
+                {t.bio}
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
+                  {t.fieldComingSoon}
+                </span>
+              </span>
               <textarea
                 rows={3}
-                className="bx-account-input-muted"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder={t.bioPlaceholder}
+                className="bx-account-input-muted opacity-70"
+                value=""
+                disabled
+                readOnly
+                placeholder={t.fieldComingSoon}
+                title={t.fieldComingSoon}
               />
             </label>
           </div>

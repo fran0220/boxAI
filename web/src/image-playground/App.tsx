@@ -18,8 +18,10 @@ import Toast from './components/Toast'
 import MaskEditorModal from './components/MaskEditorModal'
 import ImageContextMenu from './components/ImageContextMenu'
 import SupportPromptModal from './components/SupportPromptModal'
+import CreateShellToolbar from './components/CreateShellToolbar'
 import { FavoriteCollectionPickerModal, FavoriteCollectionsView, ManageCollectionsModal } from './components/FavoriteCollections'
 import { useGlobalClickSuppression } from './lib/clickSuppression'
+import { useIsCreateShell } from './shellContext'
 
 let customProviderConfigUrlImportStarted = false
 
@@ -28,6 +30,7 @@ export default function App() {
   const appMode = useStore((s) => s.appMode)
   const filterFavorite = useStore((s) => s.filterFavorite)
   const activeFavoriteCollectionId = useStore((s) => s.activeFavoriteCollectionId)
+  const isCreateShell = useIsCreateShell()
   useDockerApiUrlMigrationNotice()
   useGlobalClickSuppression()
 
@@ -106,6 +109,46 @@ export default function App() {
     return () => document.removeEventListener('dragstart', preventPageImageDrag)
   }, [])
 
+  const modals = (
+    <>
+      <DetailModal />
+      <Lightbox />
+      <ConfirmDialog />
+      <SupportPromptModal />
+      <FavoriteCollectionPickerModal />
+      <ManageCollectionsModal />
+      <Toast />
+      <MaskEditorModal />
+      <ImageContextMenu />
+    </>
+  )
+
+  // Create workspace shell: design toolbar + 5-col gallery + floating composer
+  if (isCreateShell) {
+    return (
+      <>
+        <CreateShellToolbar />
+        {appMode === 'agent' ? (
+          <AgentWorkspace />
+        ) : (
+          <main
+            data-home-main
+            data-drag-select-surface
+            className="bx-create-image-gallery"
+          >
+            {filterFavorite && !activeFavoriteCollectionId ? (
+              <FavoriteCollectionsView />
+            ) : (
+              <TaskGrid />
+            )}
+          </main>
+        )}
+        <InputBar />
+        {modals}
+      </>
+    )
+  }
+
   return (
     <>
       <Header />
@@ -120,15 +163,7 @@ export default function App() {
         </main>
       )}
       <InputBar />
-      <DetailModal />
-      <Lightbox />
-      <ConfirmDialog />
-      <SupportPromptModal />
-      <FavoriteCollectionPickerModal />
-      <ManageCollectionsModal />
-      <Toast />
-      <MaskEditorModal />
-      <ImageContextMenu />
+      {modals}
     </>
   )
 }

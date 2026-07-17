@@ -393,7 +393,7 @@ export function Home() {
           >
             <Link
               to={createHref}
-              className="inline-flex items-center gap-2 rounded-[10px] bg-[linear-gradient(120deg,#1fd5b9,#22c9e0)] px-7 py-[13px] text-[15px] font-bold tracking-tight text-[#03261f] shadow-[0_10px_30px_-8px_rgba(31,213,185,0.6)] transition hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-[10px] bg-[linear-gradient(120deg,#1fd5b9,#22c9e0)] px-7 py-[13px] text-[15px] font-bold tracking-tight text-[#03261f] shadow-[0_10px_30px_-8px_rgba(31,213,185,0.6)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_40px_-8px_rgba(31,213,185,0.7)]"
             >
               {d.home.hero.ctaPrimary}
               <ArrowRight size={15} strokeWidth={2.5} />
@@ -428,7 +428,8 @@ export function Home() {
               {d.home.stats[1].label}
             </p>
           </div>
-          <div className="border-l border-[var(--bx-border)] px-6 py-9">
+          {/* Mobile 2-col: top border only (no left edge border). md+: left divider like design. */}
+          <div className="border-t border-[var(--bx-border)] px-6 py-9 md:border-t-0 md:border-l">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
               {statAvail != null
                 ? `${statAvail.toFixed(1)}%`
@@ -440,7 +441,7 @@ export function Home() {
               {d.home.stats[2].label}
             </p>
           </div>
-          <div className="border-l border-[var(--bx-border)] py-9 pl-6">
+          <div className="border-t border-l border-[var(--bx-border)] py-9 pl-6 md:border-t-0">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-brand)]">
               {STAT_ACCOUNTS}
             </p>
@@ -490,7 +491,7 @@ export function Home() {
             {d.home.marqueeTitle}
           </span>
           <div className="bx-marquee min-w-0 flex-1">
-            <div className="bx-marquee-track gap-2">
+            <div className="bx-marquee-track">
               {marquee.map((name, i) => (
                 <span
                   key={`${name}-${i}`}
@@ -692,10 +693,10 @@ export function Home() {
       </section>
 
       {/* Products bento */}
-      <section data-screen-label="Products" className="mx-auto max-w-[1200px] px-6 pb-[88px]">
+      <section data-screen-label="Products" className="mx-auto max-w-[1200px] px-6 pt-6 pb-[88px]">
         <div className="grid grid-cols-1 gap-3.5 md:grid-cols-12">
           <Reveal className="md:col-span-7">
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
               <div className="flex items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <ImageIcon size={15} />
@@ -744,7 +745,7 @@ export function Home() {
           </Reveal>
 
           <Reveal className="md:col-span-5" delay={0.04}>
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
               <div className="flex items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <Monitor size={15} />
@@ -783,7 +784,7 @@ export function Home() {
           </Reveal>
 
           <Reveal className="md:col-span-5" delay={0.06}>
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
               <div className="flex items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <LayoutDashboard size={15} />
@@ -828,7 +829,7 @@ export function Home() {
           </Reveal>
 
           <Reveal className="md:col-span-7" delay={0.08}>
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]">
+            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
               <div className="flex flex-wrap items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <Code2 size={15} />
@@ -1106,7 +1107,7 @@ export function Home() {
                 <div
                   key={plan.name}
                   className={cx(
-                    'relative flex flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-0.5',
+                    'relative flex flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-[3px]',
                     plan.highlighted
                       ? 'border border-transparent'
                       : 'border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] hover:border-[var(--bx-brand-ring)]',

@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { Code2, Image as ImageIcon, Monitor } from 'lucide-react'
 import { BRAND_LOGO_SVG, BRAND_NAME, BRAND_PLATFORM_BADGE } from '@/lib/brand'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { fetchPublicStatus } from '@/lib/public-status'
 
 export type AuthTab = 'login' | 'signup'
 
@@ -22,6 +23,8 @@ function tabTo(path: string, returnTo?: string) {
   return `${path}?return_to=${encodeURIComponent(returnTo)}`
 }
 
+type LiveStatus = 'checking' | 'operational' | 'degraded' | 'unknown'
+
 export function AuthSplitLayout({
   activeTab,
   title,
@@ -32,6 +35,33 @@ export function AuthSplitLayout({
   const { d } = useI18n()
   const t = d.authForms
   const side = d.authSplit
+  const [liveStatus, setLiveStatus] = useState<LiveStatus>('checking')
+
+  useEffect(() => {
+    let cancelled = false
+    const controller = new AbortController()
+    fetchPublicStatus('7d', controller.signal)
+      .then((res) => {
+        if (cancelled) return
+        setLiveStatus(res.overall === 'degraded' ? 'degraded' : 'operational')
+      })
+      .catch(() => {
+        if (!cancelled) setLiveStatus('unknown')
+      })
+    return () => {
+      cancelled = true
+      controller.abort()
+    }
+  }, [])
+
+  const statusLabel =
+    liveStatus === 'operational'
+      ? side.statusOk
+      : liveStatus === 'degraded'
+        ? side.statusDegraded
+        : liveStatus === 'checking'
+          ? side.statusChecking
+          : side.statusUnknown
 
   const features = [
     {
@@ -89,10 +119,25 @@ export function AuthSplitLayout({
         </div>
 
         <div className="bx-auth-brand-foot">
-          <span className="bx-auth-status">
-            <span className="bx-auth-status-dot" aria-hidden="true" />
-            {side.statusOk}
-          </span>
+          <Link
+            to="/status"
+            className={cx(
+              'bx-auth-status no-underline',
+              liveStatus === 'degraded' && 'text-[var(--bx-warning)]',
+              liveStatus === 'unknown' && 'opacity-80',
+            )}
+          >
+            <span
+              className={cx(
+                'bx-auth-status-dot',
+                liveStatus === 'degraded' && 'bg-[var(--bx-warning)]',
+                liveStatus === 'unknown' && 'bg-[var(--bx-text-dim)]',
+                liveStatus === 'checking' && 'opacity-50',
+              )}
+              aria-hidden="true"
+            />
+            {statusLabel}
+          </Link>
           <span className="bx-auth-domain">{side.domain}</span>
         </div>
       </aside>

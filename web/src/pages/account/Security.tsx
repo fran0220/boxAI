@@ -406,58 +406,42 @@ export function AccountSecurity() {
         </div>
       </div>
 
-      {/* Sessions — multi-device list API unavailable; only current session + revoke-all */}
-      <div className="bx-account-table-wrap mt-3">
-        <p className="m-0 px-5 pb-2.5 pt-3.5 text-[13.5px] font-bold">{t.sessions}</p>
-        <div className="overflow-x-auto">
-          <table className="bx-account-table min-w-[480px]">
-            <thead>
-              <tr>
-                <th>{t.colDevice}</th>
-                <th>{t.colLastActive}</th>
-                <th className="text-right">{t.colActions}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <span className="font-bold text-[var(--bx-text)]">{t.currentSession}</span>
-                  <span className="bx-account-pill-brand ml-2">{t.thisDevice}</span>
-                </td>
-                <td className="font-mono text-[11px] text-[var(--bx-text-dim)]">{t.now}</td>
-                <td className="text-right text-[var(--bx-text-dim)]">—</td>
-              </tr>
-            </tbody>
-          </table>
+      {/* Sessions — no multi-device list API; simple current session + revoke-all */}
+      <div className="bx-account-panel mt-3 px-[22px] py-5">
+        <p className="m-0 text-[13.5px] font-bold">{t.sessions}</p>
+        <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--bx-border)] bg-[var(--bx-bg-muted)] px-4 py-3.5">
+          <div className="min-w-0">
+            <p className="m-0 text-sm font-bold text-[var(--bx-text)]">
+              {t.currentSession}
+              <span className="bx-account-pill-brand ml-2">{t.thisDevice}</span>
+            </p>
+            <p className="mt-1 mb-0 font-mono text-[11px] text-[var(--bx-text-dim)]">{t.now}</p>
+          </div>
         </div>
-        <div className="border-t border-[var(--bx-line)] px-5 py-4">
-          <p className="m-0 mb-1 text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
-          <p className="m-0 mb-3 text-xs text-[var(--bx-text-dim)]">{t.deviceListUnavailable}</p>
-          <button
-            type="button"
-            className="bx-btn bx-btn-ghost bx-btn-sm"
-            disabled={busy}
-            onClick={() => void onRevoke()}
-          >
-            {t.revokeAll}
-          </button>
-        </div>
+        <p className="mt-3 mb-1 text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
+        <p className="m-0 mb-3 text-xs text-[var(--bx-text-dim)]">{t.deviceListUnavailable}</p>
+        <button
+          type="button"
+          className="bx-btn bx-btn-ghost bx-btn-sm"
+          disabled={busy}
+          onClick={() => void onRevoke()}
+        >
+          {t.revokeAll}
+        </button>
       </div>
 
-      {/* Danger zone — no user delete API; chrome + contact path */}
+      {/* Danger zone — no user delete API; support contact only */}
       <div className="bx-account-danger-zone mt-3">
         <div>
           <p className="m-0 text-[13.5px] font-bold text-[var(--bx-danger)]">{t.dangerTitle}</p>
           <p className="mt-1.5 mb-0 text-xs text-[var(--bx-text-muted)]">{t.dangerBody}</p>
         </div>
-        <button
-          type="button"
-          className="shrink-0 rounded-[var(--bx-radius)] border border-[var(--bx-danger)] bg-transparent px-[18px] py-2 text-[13px] font-bold text-[var(--bx-danger)] opacity-60"
-          disabled
-          title={t.dangerUnavailable}
+        <a
+          href={t.dangerSupportHref}
+          className="shrink-0 rounded-[var(--bx-radius)] border border-[var(--bx-danger)] bg-transparent px-[18px] py-2 text-[13px] font-bold text-[var(--bx-danger)] transition hover:bg-[var(--bx-danger)]/10"
         >
-          {t.deleteAccount}
-        </button>
+          {t.dangerContactSupport}
+        </a>
       </div>
     </div>
   )
