@@ -49,7 +49,6 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `web/src/pages/auth/Login.tsx` (and Signup/Forgot/Reset) | Apex credential forms (password + registration transaction) |
 | `web/src/pages/Checkout.tsx` | Apex checkout (Stripe/QR/Airwallex; WeChat MP → console) |
 | `web/src/pages/DesktopAuth.tsx` | Apex Desktop PKCE authorize page |
-| `frontend/src/utils/apexOrigin.ts` | Console → apex customer path map + redirect flag |
 | `backend/internal/handler/boxai_auth_tx.go` | Auth Transaction types/helpers (flag `BOXAI_AUTH_TX`, dark) |
 | `docs/LOCAL_DEV.md` | Local three-process developer guide |
 | `docs/OFFICE_MODULE.md` | Desktop module + web URL map |
