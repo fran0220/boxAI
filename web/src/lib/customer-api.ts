@@ -433,6 +433,55 @@ export function buildOAuthBindingStartURL(
   return `${base}/auth/oauth/${provider}/bind/start?${params.toString()}`
 }
 
+/** Start OAuth login (full navigation). Same-origin apex → edge allowlisted `/auth/oauth/*`. */
+export function buildOAuthLoginStartURL(
+  provider: BindableOAuthProvider,
+  redirectTo = '/account',
+): string {
+  const base = '/api/v1'
+  const params = new URLSearchParams({
+    redirect: redirectTo,
+  })
+  if (provider === 'wechat') {
+    const mode =
+      typeof navigator !== 'undefined' && /MicroMessenger/i.test(navigator.userAgent) ? 'mp' : 'open'
+    params.set('mode', mode)
+  }
+  return `${base}/auth/oauth/${provider}/start?${params.toString()}`
+}
+
+export type OAuthLoginFlags = {
+  linuxdo: boolean
+  dingtalk: boolean
+  wechat: boolean
+  oidc: boolean
+  oidcName: string
+  github: boolean
+  google: boolean
+}
+
+export function parseOAuthLoginFlags(raw: Record<string, unknown> | null | undefined): OAuthLoginFlags {
+  const asBool = (v: unknown) => v === true
+  const asString = (v: unknown, fallback: string) => (typeof v === 'string' && v.trim() ? v : fallback)
+  const open = raw?.wechat_oauth_open_enabled
+  const mp = raw?.wechat_oauth_mp_enabled
+  const wechatLegacy = asBool(raw?.wechat_oauth_enabled)
+  const wechat = wechatLegacy || open === true || mp === true
+  return {
+    linuxdo: asBool(raw?.linuxdo_oauth_enabled),
+    dingtalk: asBool(raw?.dingtalk_oauth_enabled),
+    wechat,
+    oidc: asBool(raw?.oidc_oauth_enabled),
+    oidcName: asString(raw?.oidc_oauth_provider_name, 'OIDC'),
+    github: asBool(raw?.github_oauth_enabled),
+    google: asBool(raw?.google_oauth_enabled),
+  }
+}
+
+export function anyOAuthLoginEnabled(flags: OAuthLoginFlags): boolean {
+  return flags.linuxdo || flags.dingtalk || flags.wechat || flags.oidc || flags.github || flags.google
+}
+
 export async function getMyPlatformQuotas(): Promise<{ items?: PlatformQuotaItem[]; [key: string]: unknown }> {
   return apiGet('/api/v1/user/platform-quotas')
 }

@@ -107,6 +107,22 @@ func TestBrowserSessionCookieAttributesAndClear(t *testing.T) {
 	require.Empty(t, cookie.Value)
 }
 
+func TestLegacyBrowserAdoptionEnabledDefaultOff(t *testing.T) {
+	// BOXAI: process default flipped off (compose/example already prefer false).
+	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "")
+	require.False(t, LegacyBrowserAdoptionEnabled())
+	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "false")
+	require.False(t, LegacyBrowserAdoptionEnabled())
+	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "0")
+	require.False(t, LegacyBrowserAdoptionEnabled())
+	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "true")
+	require.True(t, LegacyBrowserAdoptionEnabled())
+	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "1")
+	require.True(t, LegacyBrowserAdoptionEnabled())
+	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "on")
+	require.True(t, LegacyBrowserAdoptionEnabled())
+}
+
 func TestBrowserSurfaceAndRequireBrowserRequestMatrix(t *testing.T) {
 	t.Setenv("BOXAI_BROWSER_SESSION", "1")
 	tests := []struct {
@@ -176,13 +192,14 @@ func TestRedirectOAuthBrowserSessionSanitizesCredentials(t *testing.T) {
 	require.False(t, strings.Contains(location, "%2F%2Fevil"))
 }
 
-func TestRedirectOAuthTokenPairOrBrowserSessionUsesCookieOnlyOnConsoleHost(t *testing.T) {
+func TestRedirectOAuthTokenPairOrBrowserSessionUsesCookieOnUIHosts(t *testing.T) {
 	t.Setenv("BOXAI_BROWSER_SESSION", "1")
 	h := browserTestHandler()
 	user := &service.User{ID: 7, Email: "u@example.com", Role: "user", Status: service.StatusActive}
 	pair, err := h.authService.GenerateTokenPair(context.Background(), user, "")
 	require.NoError(t, err)
 
+	// BOXAI: relative frontend callback on console → host cookie.
 	c, w := newBrowserContext(http.MethodGet, "console.you-box.com", "")
 	h.redirectOAuthTokenPairOrBrowserSession(c, "/auth/oauth/callback", pair, user, "/dashboard")
 	require.NotNil(t, findCookie(w.Result().Cookies(), browserSessionCookie))
@@ -190,6 +207,17 @@ func TestRedirectOAuthTokenPairOrBrowserSessionUsesCookieOnlyOnConsoleHost(t *te
 	require.NotContains(t, w.Header().Get("Location"), "access_token")
 	require.NotContains(t, w.Header().Get("Location"), "refresh_token")
 
+	// BOXAI: relative frontend callback on apex → web host cookie (customer OAuth).
+	pair, err = h.authService.GenerateTokenPair(context.Background(), user, "")
+	require.NoError(t, err)
+	c, w = newBrowserContext(http.MethodGet, "you-box.com", "")
+	h.redirectOAuthTokenPairOrBrowserSession(c, "/auth/oauth/callback", pair, user, "/account")
+	require.NotNil(t, findCookie(w.Result().Cookies(), browserSessionCookie))
+	require.Contains(t, w.Header().Get("Location"), "auth_result=session")
+	require.NotContains(t, w.Header().Get("Location"), "access_token")
+	require.NotContains(t, w.Header().Get("Location"), "refresh_token")
+
+	// Absolute console callback on non-UI host still falls back to token fragment.
 	pair, err = h.authService.GenerateTokenPair(context.Background(), user, "")
 	require.NoError(t, err)
 	c, w = newBrowserContext(http.MethodGet, "api.you-box.com", "")

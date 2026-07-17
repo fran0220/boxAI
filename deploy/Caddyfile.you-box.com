@@ -80,6 +80,8 @@ you-box.com {
 		path /api/v1/auth/send-verify-code /api/v1/auth/forgot-password /api/v1/auth/reset-password
 		path /api/v1/auth/validate-promo-code /api/v1/auth/validate-invitation-code
 		path /api/v1/auth/boxai/desktop/authorize
+		# BOXAI: customer OAuth start/callback/bind/pending on apex (dual-host with console).
+		path /api/v1/auth/oauth /api/v1/auth/oauth/*
 		path /api/v1/boxai/creator/ensure-key
 		path /api/v1/keys /api/v1/keys/*
 		path /api/v1/usage /api/v1/usage/*

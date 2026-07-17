@@ -33,9 +33,9 @@ import (
 )
 
 const (
-	publicStatusCacheControl   = "public, max-age=45"
-	publicStatusDefaultPeriod  = "7d"
-	publicStatusBatchIDsMax    = 200
+	publicStatusCacheControl  = "public, max-age=45"
+	publicStatusDefaultPeriod = "7d"
+	publicStatusBatchIDsMax   = 200
 	// Empty fleet uses a fixed timestamp so ETag stays stable.
 	publicStatusEmptyUpdatedAt = "1970-01-01T00:00:00Z"
 )
@@ -108,10 +108,10 @@ type publicStatusGroup struct {
 }
 
 type publicStatusDetailResponse struct {
-	ID        int64                     `json:"id"`
-	Name      string                    `json:"name"`
-	Provider  string                    `json:"provider"`
-	GroupName string                    `json:"group_name"`
+	ID        int64  `json:"id"`
+	Name      string `json:"name"`
+	Provider  string `json:"provider"`
+	GroupName string `json:"group_name"`
 	// Period is echo-only for Get; payload always includes 7d/15d/30d windows.
 	Period    string                    `json:"period"`
 	UpdatedAt string                    `json:"updated_at"`
@@ -346,7 +346,7 @@ func (h *BoxAIPublicStatusHandler) ListPublicVisibleFlags(ctx context.Context, i
 		}
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	for rows.Next() {
 		var id int64
 		var vis bool
@@ -413,7 +413,7 @@ func (h *BoxAIPublicStatusHandler) listPublicVisibleIDs(ctx context.Context) (ma
 		}
 		return nil, fmt.Errorf("list public monitors: %w", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	out := make(map[int64]struct{})
 	for rows.Next() {
 		var id int64

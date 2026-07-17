@@ -55,6 +55,42 @@ check "apex credential login reaches backend" "$APEX/api/v1/auth/login" "400|401
 check "apex credential register reaches backend" "$APEX/api/v1/auth/register" "400|401|403|422|429" POST
 check "apex registration prepare reaches backend" "$APEX/api/v1/auth/registration/prepare" "400|401|403|422|429" POST
 check "apex registration complete reaches backend" "$APEX/api/v1/auth/registration/complete" "400|401|403|422|429" POST
+# BOXAI: OAuth start/exchange must reach backend on apex — not plain edge "Not Found".
+# Disabled providers may return backend 404 JSON; edge deny is plain text "Not Found".
+check_apex_api_not_edge_blocked() {
+  local name="$1" url="$2" method="${3:-GET}"
+  local code body
+  if [[ "$method" == "POST" ]]; then
+    code=$(curl -sS -X POST -o "$body_file" -w '%{http_code}' --max-time 25 \
+      -H 'Content-Type: application/json' -H 'Accept: application/json' \
+      -d '{}' "$url" || echo "000")
+  else
+    code=$(curl -sS -o "$body_file" -w '%{http_code}' --max-time 25 \
+      -H 'Accept: application/json' "$url" || echo "000")
+  fi
+  body=$(head -c 240 "$body_file" 2>/dev/null || true)
+  # Edge deny-by-default returns plain text "Not Found\n" (not Gin JSON).
+  if [[ "$code" == "404" ]] && echo "$body" | grep -Eqx 'Not Found[[:space:]]*'; then
+    echo "FAIL [$code] $name  $url  edge-blocked body=${body}"
+    fail=1
+    return
+  fi
+  # Backend-distinct: redirect, JSON 4xx/5xx, or JSON 404 (provider disabled).
+  if echo "$code" | grep -qE '302|400|401|403|404|422|429|500|502|503'; then
+    if [[ "$code" == "404" ]] && ! echo "$body" | grep -Eqi '[{"]|code|message|oauth|disabled'; then
+      echo "FAIL [$code] $name  $url  non-JSON 404 body=${body}"
+      fail=1
+      return
+    fi
+    echo "OK  [$code] $name  $url"
+  else
+    echo "FAIL [$code] $name  $url  body=${body}"
+    fail=1
+  fi
+}
+check_apex_api_not_edge_blocked "apex oauth linuxdo start reaches backend" "$APEX/api/v1/auth/oauth/linuxdo/start"
+check_apex_api_not_edge_blocked "apex oauth github start reaches backend" "$APEX/api/v1/auth/oauth/github/start"
+check_apex_api_not_edge_blocked "apex oauth pending exchange reaches backend" "$APEX/api/v1/auth/oauth/pending/exchange" POST
 check "apex keys unauth" "$APEX/api/v1/keys" "401|403"
 check "apex usage unauth" "$APEX/api/v1/usage/dashboard/stats" "401|403"
 check "apex payment plans unauth" "$APEX/api/v1/payment/plans" "401|403"

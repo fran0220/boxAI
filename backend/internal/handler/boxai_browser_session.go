@@ -30,8 +30,25 @@ func envDefaultOn(name string) bool {
 	}
 }
 
-func BrowserSessionEnabled() bool        { return envDefaultOn("BOXAI_BROWSER_SESSION") }
-func LegacyBrowserAdoptionEnabled() bool { return envDefaultOn("BOXAI_LEGACY_BROWSER_ADOPTION") }
+// envDefaultOff is true only when the env is explicitly on. Unset / empty → off.
+// BOXAI: used for one-time migration flags that must not stay on by accident.
+func envDefaultOff(name string) bool {
+	switch strings.ToLower(strings.TrimSpace(os.Getenv(name))) {
+	case "1", "true", "yes", "on":
+		return true
+	default:
+		return false
+	}
+}
+
+func BrowserSessionEnabled() bool { return envDefaultOn("BOXAI_BROWSER_SESSION") }
+
+// LegacyBrowserAdoptionEnabled: one-time localStorage refresh-token adopt.
+// Compose / .env.example default false; process default is now off when unset
+// (was envDefaultOn). Set BOXAI_LEGACY_BROWSER_ADOPTION=true only while draining.
+func LegacyBrowserAdoptionEnabled() bool {
+	return envDefaultOff("BOXAI_LEGACY_BROWSER_ADOPTION")
+}
 
 func browserSurface(c *gin.Context) (string, string, bool) {
 	host := strings.ToLower(strings.TrimSpace(c.Request.Host))
@@ -146,13 +163,16 @@ func (h *AuthHandler) writeOAuthTokenPairResponse(c *gin.Context, tokenPair *ser
 // not carry the Origin/CSRF headers available to frontend fetch requests.
 // Production UI hosts (console or apex) may establish a host-bound session cookie.
 // BOXAI: customer shell unification — apex (web surface) can mint browser sessions too.
+// Relative frontend callbacks mean "same host as this callback request" (not console-only).
 func (h *AuthHandler) redirectOAuthTokenPairOrBrowserSession(c *gin.Context, frontendCallback string, tokenPair *service.TokenPair, user *service.User, redirectTo string) {
 	surface, _, hostOK := browserSurface(c)
 	callbackURL, parseErr := url.Parse(frontendCallback)
+	callbackIsRelative := parseErr == nil && callbackURL.Scheme == "" && callbackURL.Host == "" && strings.HasPrefix(callbackURL.Path, "/")
 	callbackIsConsole := parseErr == nil && ((callbackURL.Scheme == "https" && callbackURL.Host == "console.you-box.com") ||
-		(callbackURL.Scheme == "" && callbackURL.Host == "" && strings.HasPrefix(callbackURL.Path, "/")))
+		(callbackIsRelative && surface == service.BrowserSurfaceConsole))
 	callbackIsWeb := parseErr == nil && ((callbackURL.Scheme == "https" && callbackURL.Host == "you-box.com") ||
-		(callbackURL.Scheme == "http" && (callbackURL.Host == "localhost:5173" || callbackURL.Host == "127.0.0.1:5173")))
+		(callbackURL.Scheme == "http" && (callbackURL.Host == "localhost:5173" || callbackURL.Host == "127.0.0.1:5173")) ||
+		(callbackIsRelative && surface == service.BrowserSurfaceWeb))
 	if BrowserSessionEnabled() && hostOK {
 		if surface == service.BrowserSurfaceConsole && callbackIsConsole {
 			_ = h.authService.RevokeRefreshToken(c.Request.Context(), tokenPair.RefreshToken)

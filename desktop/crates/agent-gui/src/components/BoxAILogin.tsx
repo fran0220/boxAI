@@ -28,7 +28,8 @@ function collectCallbackUrls(payload: unknown): string[] {
 
 export function BoxAILogin(props: { onAuthenticated: (session: BoxAISession) => void }) {
   const { onAuthenticated } = props;
-  const [serverUrl, setServerUrl] = useState("");
+  // Default API gateway; browser PKCE page is remapped to you-box.com/desktop-auth.
+  const [serverUrl, setServerUrl] = useState("https://api.you-box.com");
   const [status, setStatus] = useState<LoginStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [manualUrl, setManualUrl] = useState("");
@@ -92,7 +93,9 @@ export function BoxAILogin(props: { onAuthenticated: (session: BoxAISession) => 
     const normalized = normalizeServerUrl(serverUrl);
     if (!normalized) {
       setStatus("error");
-      setErrorMessage("Enter a valid BoxAI server URL (for example https://boxai.example.com).");
+      setErrorMessage(
+        "Enter a valid BoxAI server URL (for example https://api.you-box.com).",
+      );
       return;
     }
     setStatus("awaiting");
@@ -129,7 +132,7 @@ export function BoxAILogin(props: { onAuthenticated: (session: BoxAISession) => 
         <input
           id="boxai-server-url"
           className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-          placeholder="https://boxai.example.com"
+          placeholder="https://api.you-box.com"
           autoComplete="off"
           spellCheck={false}
           value={serverUrl}

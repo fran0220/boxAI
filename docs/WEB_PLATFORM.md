@@ -48,30 +48,96 @@ email address, safe return path, and resend countdown in `sessionStorage`.
 Plaintext passwords and Turnstile responses never leave the registration page;
 Redis retains only the bcrypt password hash and registration business fields.
 
-**Apex is the customer identity UI.** Password login/register/forgot/reset and the
-account center live on `you-box.com`. There is **no cross-origin Web SSO** and no
-parent-domain cookie (`Domain=.you-box.com` is forbidden).
+**Apex is the customer identity UI.** Password login/register/forgot/reset, OAuth
+login for existing accounts, and the account center live on `you-box.com`. There is
+**no cross-origin Web SSO** and no parent-domain cookie (`Domain=.you-box.com` is
+forbidden).
+
+### Customer OAuth (apex)
+
+OAuth is a **real customer path** when admin enables LinuxDo / WeChat / GitHub /
+Google / DingTalk / OIDC in public settings. Apex `/login` shows provider buttons
+that full-navigate to same-origin:
+
+| Step | Path |
+|------|------|
+| Start | `GET /api/v1/auth/oauth/{provider}/start?redirect=/account…` |
+| Provider callback (API) | `GET /api/v1/auth/oauth/{provider}/callback` (and WeChat payment variants) |
+| SPA completion | `/auth/{provider}/callback` or `/auth/oauth/callback` (see modes below) |
+
+**SPA completion modes (both required for customer OAuth):**
+
+| Mode | When | Apex SPA behavior |
+|------|------|-------------------|
+| **(A) Session fragment** | Email OAuth (GitHub/Google) login and some auto-register paths call `redirectOAuthTokenPairOrBrowserSession` → `#auth_result=session` (+ optional `redirect`) | `bootstrapSession` → navigate |
+| **(B) Pending exchange** | LinuxDo / WeChat / OIDC / DingTalk **existing-user login** and **Profile bind** set pending cookies and `redirectToFrontendCallback` with an **empty fragment** | `POST /api/v1/auth/oauth/pending/exchange` with browser-session headers; on `auth_result=session` / access token accept session; navigate to `redirect` |
+
+Edge allowlists `/api/v1/auth/oauth/*` on apex so start/callback/bind/pending reach
+the Go process. Relative `FrontendRedirectURL` values resolve on the **request host**
+and mint a host-bound `__Host-boxai_session` when the session-fragment path is used;
+pending exchange mints the cookie on the exchange POST (browser mode).
+
+**Ops requirement:** each provider’s registered OAuth `redirect_uri` must hit the
+host customers use to start login. For apex customer login set e.g.
+`https://you-box.com/api/v1/auth/oauth/linuxdo/callback` (or dual-register console
++ apex and point admin settings at apex after cutover). Start and callback must
+share a host so OAuth state cookies match.
+
+**Intentionally not on apex (parked):** full pending-OAuth registration chooser
+(invitation / create-vs-bind / TOTP challenge UI). Mode (B) **does** auto-complete
+silent existing-user + bind exchange; only multi-step payloads show a clear error
+and email-signup CTA. Pending cookies are HttpOnly (≈10m TTL); OAuth start and
+successful/failed session lookup clear them server-side. Console still hosts the
+full pending machine. Do not enable `BOXAI_AUTH_TX` for customers yet.
 
 **Console is admin-first.** Non-admin navigations to customer UI hard-redirect to
 apex (`VITE_CUSTOMER_SHELL_REDIRECT`, default on for `console.you-box.com`). Admin
-login remains on console. **Exception:** WeChat in-WeChat MP payment may still use
-console `/purchase` + `/payment/*` (registered callback domain); users re-login on
-console for that path only.
+login remains on console. **Exception (permanent product decision):** WeChat
+in-WeChat MP payment may still use console `/purchase` + `/payment/*` (registered
+callback domain). Checkout on apex sends WeChat in-app browsers to
+`console…/login?redirect=/purchase` (no SSO) so they re-login once on console.
+Do **not** set `BOXAI_CONSOLE_ADMIN_SESSION_ONLY=1` while this exception remains.
+Never delete Vue payment paths solely as “migration cleanup.”
 
-Flags: `BOXAI_BROWSER_SESSION=true`; `BOXAI_LEGACY_BROWSER_ADOPTION` only if legacy
-refresh tokens remain to adopt. **`BOXAI_WEB_SSO` is retired and ignored.**
+Flags: `BOXAI_BROWSER_SESSION=true`; `BOXAI_LEGACY_BROWSER_ADOPTION` defaults
+**false** in compose / `.env.example` **and** in the Go process when the env is
+unset (`envDefaultOff`). Set `true` only while legacy localStorage refresh tokens
+still need one-time adopt. **`BOXAI_WEB_SSO` is retired and ignored.**
+
+### Customer OAuth (prod)
+
+Public flags: `GET /api/v1/settings/public` (console or apex after edge allowlist).
+Apex Login only renders buttons for enabled providers (see `parseOAuthLoginFlags`).
+
+| Provider | Typical prod flag | Notes |
+|----------|-------------------|-------|
+| Google | `google_oauth_enabled` | Customer login when true |
+| GitHub / LinuxDo / OIDC / DingTalk / WeChat | off unless enabled in admin settings | Hidden in UI when off |
+
+**Provider `redirect_uri` (backend callback)** must be registered with the IdP.
+Relative `*_oauth_frontend_redirect_url` (e.g. `/auth/oauth/callback`) resolves on
+the **callback request host**. For apex browser sessions, prefer dual-registering
+IdP callbacks for both:
+
+- `https://you-box.com/api/v1/auth/oauth/<provider>/callback`
+- `https://console.you-box.com/api/v1/auth/oauth/<provider>/callback`
+
+and setting the active `*_oauth_redirect_url` (or start from the host you intend
+to mint the cookie on). Edge must allowlist apex `auth/oauth/*` (see
+`deploy/nginx-you-box.com.conf`).
 
 **Desktop login** uses a separate PKCE pair:
 
 - `POST /api/v1/auth/boxai/desktop/authorize` · `POST /api/v1/auth/boxai/desktop/token`
-- Preferred browser page: `you-box.com/desktop-auth` (console `/desktop-auth` still works)
+- Preferred browser page: `https://you-box.com/desktop-auth` (console
+  `/desktop-auth` remains for old clients; Desktop remaps api/console hosts → apex)
 
 ## Apex pages
 
 Trilingual (zh / en / vi) React SPA. `/studio` is the single Studio (desktop app +
 browser WebUI) product + download page (legacy `/desktop` and `/download` redirect
-to it). `/pricing` shows static plan cards; purchase CTAs deep-link into the
-console via Web SSO.
+to it). `/pricing` shows static plan cards; purchase CTAs go to apex
+`/checkout` (or `/login?return_to=/checkout…` when anonymous).
 
 ## Creator
 
@@ -118,7 +184,8 @@ JWT is translated to the user’s API key by `BOXAI_DESKTOP_JWT_GATEWAY` (shared
 
 The apex allowlist is deny-by-default for `/api/*` with **admin/setup hard-denied**,
 then explicit customer paths: session bootstrap, credential login/register,
-customer keys/usage/user/payment/subscriptions/redeem, and Creator ensure-key.
+**OAuth start/callback/bind/pending** (`/api/v1/auth/oauth/*`), customer
+keys/usage/user/payment/subscriptions/redeem, and Creator ensure-key.
 Console continues to proxy the complete backend surface.
 
 ## Code map
@@ -127,7 +194,7 @@ Console continues to proxy the complete backend surface.
 |------|------|
 | `web/` | React product SPA |
 | `frontend/` | Vue console (embedded) |
-| `backend/internal/handler/boxai_*.go` | SSO, desktop auth, Creator key, JWT bridge |
+| `backend/internal/handler/boxai_*.go` | Browser session, desktop auth, Creator key, JWT bridge |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis store adapter |
 | `desktop/` | Tauri client |
 | `deploy/scripts/` | Static deploy, nginx apply, topology verify |

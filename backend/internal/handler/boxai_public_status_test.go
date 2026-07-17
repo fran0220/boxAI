@@ -215,8 +215,10 @@ func TestMaxTimelineUpdatedAtStable(t *testing.T) {
 		t.Fatalf("got %s", got)
 	}
 	// Same input → same output (ETag stability dependency)
-	if maxTimelineUpdatedAt(items) != maxTimelineUpdatedAt(items) {
-		t.Fatal("unstable")
+	got1 := maxTimelineUpdatedAt(items)
+	got2 := maxTimelineUpdatedAt(items)
+	if got1 != got2 {
+		t.Fatalf("unstable: %q vs %q", got1, got2)
 	}
 }
 

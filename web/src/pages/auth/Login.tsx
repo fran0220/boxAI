@@ -1,6 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { loginWith2FA, loginWithPassword } from '@/lib/customer-api'
+import {
+  anyOAuthLoginEnabled,
+  buildOAuthLoginStartURL,
+  getPublicSettings,
+  loginWith2FA,
+  loginWithPassword,
+  parseOAuthLoginFlags,
+  type BindableOAuthProvider,
+  type OAuthLoginFlags,
+} from '@/lib/customer-api'
 import { ApiError } from '@/lib/api'
 import { safeReturnPath } from '@/lib/safe-return'
 import { useI18n } from '@/i18n'
@@ -8,6 +17,16 @@ import { usePageMeta } from '@/lib/meta'
 import { useAuth } from '@/lib/use-auth'
 import { BRAND_LOGO_SVG } from '@/lib/brand'
 import { Spinner } from '@/components/ui/Spinner'
+
+const EMPTY_OAUTH: OAuthLoginFlags = {
+  linuxdo: false,
+  dingtalk: false,
+  wechat: false,
+  oidc: false,
+  oidcName: 'OIDC',
+  github: false,
+  google: false,
+}
 
 export function Login() {
   const { d } = useI18n()
@@ -27,17 +46,49 @@ export function Login() {
   const [tempToken, setTempToken] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [oauth, setOauth] = useState<OAuthLoginFlags>(EMPTY_OAUTH)
+  const [oauthReady, setOauthReady] = useState(false)
 
-  if (status === 'bootstrapping') {
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const settings = await getPublicSettings()
+        if (!cancelled) setOauth(parseOAuthLoginFlags(settings))
+      } catch {
+        if (!cancelled) setOauth(EMPTY_OAUTH)
+      } finally {
+        if (!cancelled) setOauthReady(true)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      navigate(returnTo, { replace: true })
+    }
+  }, [status, returnTo, navigate])
+
+  const oauthButtons = useMemo(() => {
+    const rows: { provider: BindableOAuthProvider; label: string }[] = []
+    if (oauth.linuxdo) rows.push({ provider: 'linuxdo', label: t.oauthLinuxDo })
+    if (oauth.github) rows.push({ provider: 'github', label: t.oauthGitHub })
+    if (oauth.google) rows.push({ provider: 'google', label: t.oauthGoogle })
+    if (oauth.wechat) rows.push({ provider: 'wechat', label: t.oauthWeChat })
+    if (oauth.dingtalk) rows.push({ provider: 'dingtalk', label: t.oauthDingTalk })
+    if (oauth.oidc) rows.push({ provider: 'oidc', label: oauth.oidcName || t.oauthOidc })
+    return rows
+  }, [oauth, t])
+
+  if (status === 'bootstrapping' || status === 'authenticated') {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <Spinner />
       </div>
     )
-  }
-  if (status === 'authenticated') {
-    navigate(returnTo, { replace: true })
-    return null
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -61,6 +112,10 @@ export function Login() {
     } finally {
       setBusy(false)
     }
+  }
+
+  function startOAuth(provider: BindableOAuthProvider) {
+    window.location.href = buildOAuthLoginStartURL(provider, returnTo)
   }
 
   return (
@@ -117,6 +172,28 @@ export function Login() {
           {busy ? d.common.loading : tempToken ? t.verify2fa : t.login}
         </button>
       </form>
+
+      {!tempToken && oauthReady && anyOAuthLoginEnabled(oauth) ? (
+        <div className="mt-6 space-y-3">
+          <div className="flex items-center gap-3 text-xs text-[var(--bx-text-dim)]">
+            <div className="h-px flex-1 bg-[var(--bx-border)]" />
+            <span>{t.oauthOrContinue}</span>
+            <div className="h-px flex-1 bg-[var(--bx-border)]" />
+          </div>
+          <div className="space-y-2">
+            {oauthButtons.map((btn) => (
+              <button
+                key={btn.provider}
+                type="button"
+                className="bx-btn bx-btn-ghost w-full"
+                onClick={() => startOAuth(btn.provider)}
+              >
+                {t.oauthContinueWith.replace('{provider}', btn.label)}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-[var(--bx-text-muted)]">
         <Link to={`/signup?return_to=${encodeURIComponent(returnTo)}`} className="hover:text-[var(--bx-text)]">

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { completeRegistration, prepareRegistration } from '@/lib/customer-api'
 import { ApiError } from '@/lib/api'
@@ -25,16 +25,18 @@ export function Signup() {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
-  if (status === 'bootstrapping') {
+  useEffect(() => {
+    if (status === 'authenticated') {
+      navigate(returnTo, { replace: true })
+    }
+  }, [status, returnTo, navigate])
+
+  if (status === 'bootstrapping' || status === 'authenticated') {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <Spinner />
       </div>
     )
-  }
-  if (status === 'authenticated') {
-    navigate(returnTo, { replace: true })
-    return null
   }
 
   async function onPrepare(e: React.FormEvent) {
