@@ -5,6 +5,20 @@ import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
 import { Spinner } from '@/components/ui/Spinner'
 
+function statusTone(status: string | undefined): string {
+  const s = (status || '').toLowerCase()
+  if (s.includes('operat') || s === 'ok' || s === 'up' || s === 'healthy') {
+    return 'bx-account-status bx-account-status--ok'
+  }
+  if (s.includes('degrad') || s.includes('slow') || s.includes('warn')) {
+    return 'bx-account-status bx-account-status--warn'
+  }
+  if (s.includes('down') || s.includes('fail') || s.includes('error')) {
+    return 'bx-account-status bx-account-status--danger'
+  }
+  return 'bx-account-status bx-account-status--muted'
+}
+
 export function AccountMonitor() {
   const { d } = useI18n()
   const t = d.accountMonitor
@@ -41,40 +55,50 @@ export function AccountMonitor() {
 
   return (
     <div>
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-      <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+      <h1 className="bx-account-page-title">{t.title}</h1>
+      <p className="bx-account-page-sub">{t.subtitle}</p>
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
       {items.length === 0 ? (
-        <p className="mt-10 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+        <div className="bx-account-panel mt-5">
+          <p className="bx-account-empty">{t.empty}</p>
+        </div>
       ) : (
-        <div className="mt-6 overflow-x-auto">
-          <table className="w-full min-w-[560px] text-left text-sm">
-            <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
+        <div className="bx-account-table-wrap mt-5 overflow-x-auto">
+          <table className="bx-account-table min-w-[560px]">
+            <thead>
               <tr>
-                <th className="pb-2 pr-3 font-medium">{t.colName}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colModel}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colStatus}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colLatency}</th>
-                <th className="pb-2 font-medium">{t.colAvail}</th>
+                <th>{t.colName}</th>
+                <th>{t.colModel}</th>
+                <th>{t.colStatus}</th>
+                <th>{t.colLatency}</th>
+                <th>{t.colAvail}</th>
               </tr>
             </thead>
             <tbody>
               {items.map((m) => (
-                <tr key={m.id} className="border-b border-[var(--bx-border)]/60">
-                  <td className="py-2.5 pr-3 font-medium">
-                    {m.name}
+                <tr key={m.id}>
+                  <td>
+                    <span className="font-bold text-[var(--bx-text)]">{m.name}</span>
                     {m.group_name ? (
-                      <span className="ml-1 text-xs text-[var(--bx-text-dim)]">({m.group_name})</span>
+                      <span className="ml-1 font-mono text-[10px] text-[var(--bx-text-dim)]">
+                        ({m.group_name})
+                      </span>
                     ) : null}
                   </td>
-                  <td className="py-2.5 pr-3 font-mono text-xs">{m.primary_model || '—'}</td>
-                  <td className="py-2.5 pr-3">{m.primary_status || '—'}</td>
-                  <td className="py-2.5 pr-3 tabular-nums">
+                  <td className="font-mono text-[11.5px]">{m.primary_model || '—'}</td>
+                  <td>
+                    <span className={statusTone(m.primary_status)}>
+                      {m.primary_status || '—'}
+                    </span>
+                  </td>
+                  <td className="num">
                     {m.primary_latency_ms != null ? `${m.primary_latency_ms}ms` : '—'}
                   </td>
-                  <td className="py-2.5 tabular-nums">
-                    {m.availability_7d != null ? `${(m.availability_7d * 100).toFixed(1)}%` : '—'}
+                  <td className="num">
+                    {m.availability_7d != null
+                      ? `${Math.min(100, Math.max(0, m.availability_7d)).toFixed(1)}%`
+                      : '—'}
                   </td>
                 </tr>
               ))}

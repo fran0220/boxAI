@@ -41,26 +41,44 @@ export function AccountChannels() {
 
   return (
     <div>
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-      <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+      <h1 className="bx-account-page-title">{t.title}</h1>
+      <p className="bx-account-page-sub">{t.subtitle}</p>
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
       {items.length === 0 ? (
-        <p className="mt-10 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+        <div className="bx-account-panel mt-5">
+          <p className="bx-account-empty">{t.empty}</p>
+        </div>
       ) : (
-        <ul className="mt-6 space-y-3">
-          {items.map((ch, i) => (
-            <li key={(ch.id as number) ?? i} className="bx-card p-4">
-              <p className="font-semibold">{(ch.name as string) || (ch.group_name as string) || t.unnamed}</p>
-              <p className="mt-1 text-xs text-[var(--bx-text-dim)]">
-                {ch.platform ? String(ch.platform) : ''}
-                {Array.isArray(ch.models) && ch.models.length
-                  ? ` · ${ch.models.slice(0, 8).join(', ')}${ch.models.length > 8 ? '…' : ''}`
-                  : ''}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <div className="bx-account-table-wrap mt-5 overflow-x-auto">
+          <table className="bx-account-table min-w-[560px]">
+            <thead>
+              <tr>
+                <th>{t.colName}</th>
+                <th>{t.colPlatform}</th>
+                <th>{t.colModels}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((ch, i) => {
+                const name = (ch.name as string) || (ch.group_name as string) || t.unnamed
+                const platform = ch.platform ? String(ch.platform) : '—'
+                const models = Array.isArray(ch.models) ? ch.models : []
+                return (
+                  <tr key={(ch.id as number) ?? i}>
+                    <td className="font-bold text-[var(--bx-text)]">{name}</td>
+                    <td className="text-[var(--bx-text-muted)]">{platform}</td>
+                    <td className="font-mono text-[11.5px] text-[var(--bx-text-soft)]">
+                      {models.length
+                        ? `${models.slice(0, 8).join(', ')}${models.length > 8 ? '…' : ''}`
+                        : '—'}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

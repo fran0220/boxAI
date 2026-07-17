@@ -257,53 +257,62 @@ export function AccountKeys() {
     }
   }
 
+  function statusTone(status: string): string {
+    switch (status) {
+      case 'active':
+        return 'bx-account-status bx-account-status--brand'
+      case 'quota_exhausted':
+      case 'expired':
+        return 'bx-account-status bx-account-status--warn'
+      case 'inactive':
+        return 'bx-account-status bx-account-status--muted'
+      default:
+        return 'bx-account-status bx-account-status--muted'
+    }
+  }
+
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-          <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
-        </div>
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="bx-account-page-title">{t.title}</h1>
+        <div className="bx-account-toolbar">
+          <input
+            className="bx-account-input-sm w-[220px] max-w-full"
+            placeholder={t.search}
+            value={search}
+            onChange={(e) => {
+              setPage(1)
+              setSearch(e.target.value)
+            }}
+          />
+          <select
+            className="bx-account-input-sm"
+            value={statusFilter}
+            onChange={(e) => {
+              setPage(1)
+              setStatusFilter(e.target.value)
+            }}
+            aria-label={t.filterStatus}
+          >
+            <option value="">{t.filterAll}</option>
+            <option value="active">{t.statusActive}</option>
+            <option value="inactive">{t.statusInactive}</option>
+            <option value="quota_exhausted">{t.statusQuotaExhausted}</option>
+            <option value="expired">{t.statusExpired}</option>
+          </select>
           <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => void load()} disabled={loading}>
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           </button>
           <button type="button" className="bx-btn bx-btn-primary bx-btn-sm" onClick={openCreate}>
-            <Plus size={14} />
+            <Plus size={13} />
             {t.create}
           </button>
         </div>
       </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <input
-          className="bx-input w-full max-w-xs"
-          placeholder={t.search}
-          value={search}
-          onChange={(e) => {
-            setPage(1)
-            setSearch(e.target.value)
-          }}
-        />
-        <select
-          className="bx-input w-full max-w-[160px]"
-          value={statusFilter}
-          onChange={(e) => {
-            setPage(1)
-            setStatusFilter(e.target.value)
-          }}
-          aria-label={t.filterStatus}
-        >
-          <option value="">{t.filterAll}</option>
-          <option value="active">{t.statusActive}</option>
-          <option value="inactive">{t.statusInactive}</option>
-          <option value="quota_exhausted">{t.statusQuotaExhausted}</option>
-          <option value="expired">{t.statusExpired}</option>
-        </select>
-      </div>
+      <p className="bx-account-page-sub">{t.subtitle}</p>
 
       {createdSecret ? (
-        <div className="bx-card mt-4 border border-[var(--bx-brand)]/30 p-4 text-sm">
+        <div className="bx-account-panel bx-account-panel-pad mt-4 border-[var(--bx-brand)]/30 text-sm">
           <p className="font-medium text-[var(--bx-brand-bright)]">{t.secretOnce}</p>
           <code className="mt-2 block break-all rounded bg-[var(--bx-bg-muted)] p-2 font-mono text-xs">{createdSecret}</code>
           <button
@@ -323,7 +332,7 @@ export function AccountKeys() {
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
       {showForm ? (
-        <form onSubmit={onSubmit} className="bx-card mt-4 space-y-3 p-4">
+        <form onSubmit={onSubmit} className="bx-account-panel bx-account-panel-pad mt-4 space-y-3">
           <h3 className="font-semibold">{editing ? t.editTitle : t.createTitle}</h3>
           <label className="block text-sm">
             <span className="text-[var(--bx-text-muted)]">{t.name}</span>
@@ -503,47 +512,47 @@ export function AccountKeys() {
         </form>
       ) : null}
 
-      <div className="mt-6 overflow-x-auto">
+      <div className="bx-account-table-wrap mt-5 overflow-x-auto">
         {loading && keys.length === 0 ? (
           <div className="flex justify-center py-16">
             <Spinner />
           </div>
         ) : keys.length === 0 ? (
-          <p className="py-12 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+          <p className="bx-account-empty">{t.empty}</p>
         ) : (
-          <table className="w-full min-w-[900px] text-left text-sm">
-            <thead className="border-b border-[var(--bx-border)] text-xs text-[var(--bx-text-dim)]">
+          <table className="bx-account-table min-w-[900px]">
+            <thead>
               <tr>
-                <th className="pb-2 pr-3 font-medium">{t.colName}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colKey}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colGroup}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colQuota}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colRateLimit}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colExpires}</th>
-                <th className="pb-2 pr-3 font-medium">{t.colStatus}</th>
-                <th className="pb-2 font-medium">{t.colActions}</th>
+                <th>{t.colName}</th>
+                <th>{t.colKey}</th>
+                <th>{t.colGroup}</th>
+                <th>{t.colQuota}</th>
+                <th>{t.colRateLimit}</th>
+                <th>{t.colExpires}</th>
+                <th>{t.colStatus}</th>
+                <th className="text-right">{t.colActions}</th>
               </tr>
             </thead>
             <tbody>
               {keys.map((key) => (
-                <tr key={key.id} className="border-b border-[var(--bx-border)]/60 align-top">
-                  <td className="py-3 pr-3">
-                    <div className="font-medium">{key.name}</div>
+                <tr key={key.id}>
+                  <td>
+                    <div className="font-bold text-[var(--bx-text)]">{key.name}</div>
                     {key.last_used_at ? (
-                      <div className="mt-0.5 text-[10px] text-[var(--bx-text-dim)]">
+                      <div className="mt-0.5 font-mono text-[10px] text-[var(--bx-text-dim)]">
                         {t.colLastUsed}: {new Date(key.last_used_at).toLocaleString()}
                       </div>
                     ) : null}
                   </td>
-                  <td className="py-3 pr-3">
+                  <td>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1.5 font-mono text-xs text-[var(--bx-text-soft)] hover:text-[var(--bx-text)]"
+                      className="inline-flex items-center gap-1.5 font-mono text-[11.5px] text-[var(--bx-text-soft)] hover:text-[var(--bx-brand-bright)]"
                       onClick={() => void copyKey(key)}
                       title={t.copy}
                     >
                       {mask(key.key)}
-                      <Copy size={12} />
+                      <Copy size={11} />
                       {copiedId === key.id ? <span className="text-[var(--bx-brand-bright)]">{d.common.copied}</span> : null}
                     </button>
                     {(key.ip_whitelist?.length || key.ip_blacklist?.length) ? (
@@ -553,8 +562,8 @@ export function AccountKeys() {
                       </div>
                     ) : null}
                   </td>
-                  <td className="py-3 pr-3 text-[var(--bx-text-muted)]">{key.group?.name || '—'}</td>
-                  <td className="py-3 pr-3 text-xs tabular-nums">
+                  <td className="text-[var(--bx-text-muted)]">{key.group?.name || '—'}</td>
+                  <td className="num text-[11px]">
                     {(key.quota || 0) > 0 ? (
                       <div className="min-w-[100px]">
                         <span>
@@ -566,7 +575,7 @@ export function AccountKeys() {
                       <span className="text-[var(--bx-text-dim)]">{t.unlimited}</span>
                     )}
                   </td>
-                  <td className="py-3 pr-3 text-xs tabular-nums">
+                  <td className="num text-[11px] text-[var(--bx-text-muted)]">
                     {(key.rate_limit_5h || 0) > 0 || (key.rate_limit_1d || 0) > 0 || (key.rate_limit_7d || 0) > 0 ? (
                       <div className="min-w-[120px] space-y-1">
                         {(key.rate_limit_5h || 0) > 0 ? (
@@ -592,24 +601,14 @@ export function AccountKeys() {
                       <span className="text-[var(--bx-text-dim)]">—</span>
                     )}
                   </td>
-                  <td className="py-3 pr-3 text-xs text-[var(--bx-text-muted)]">
+                  <td className="text-xs text-[var(--bx-text-muted)]">
                     {key.expires_at ? new Date(key.expires_at).toLocaleDateString() : t.never}
                   </td>
-                  <td className="py-3 pr-3">
-                    <span
-                      className={
-                        key.status === 'active'
-                          ? 'text-[var(--bx-brand-bright)]'
-                          : key.status === 'quota_exhausted' || key.status === 'expired'
-                            ? 'text-amber-500'
-                            : 'text-[var(--bx-text-dim)]'
-                      }
-                    >
-                      {statusLabel(key.status)}
-                    </span>
+                  <td>
+                    <span className={statusTone(key.status)}>{statusLabel(key.status)}</span>
                   </td>
-                  <td className="py-3">
-                    <div className="flex flex-wrap gap-1">
+                  <td>
+                    <div className="flex flex-wrap justify-end gap-1">
                       <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={() => openEdit(key)}>
                         <Pencil size={12} />
                         {t.edit}
@@ -619,11 +618,11 @@ export function AccountKeys() {
                       </button>
                       <button
                         type="button"
-                        className="bx-btn bx-btn-ghost bx-btn-sm text-red-400"
+                        className="bx-btn bx-btn-ghost bx-btn-sm text-[var(--bx-danger)]"
                         onClick={() => void onDelete(key)}
                         aria-label={d.common.delete}
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={12} />
                       </button>
                     </div>
                   </td>
@@ -634,8 +633,12 @@ export function AccountKeys() {
         )}
       </div>
 
+      <p className="bx-account-foot-meta">
+        {t.keysCount.replace('{n}', String(keys.length))} ·{' '}
+        {t.page.replace('{page}', String(page)).replace('{pages}', String(pages))}
+      </p>
       {pages > 1 ? (
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-2 flex items-center gap-2">
           <button
             type="button"
             className="bx-btn bx-btn-ghost bx-btn-sm"
@@ -644,9 +647,6 @@ export function AccountKeys() {
           >
             ←
           </button>
-          <span className="text-xs text-[var(--bx-text-dim)]">
-            {t.page.replace('{page}', String(page)).replace('{pages}', String(pages))}
-          </span>
           <button
             type="button"
             className="bx-btn bx-btn-ghost bx-btn-sm"

@@ -5,8 +5,20 @@ import { LANGS, useI18n, type Lang } from '@/i18n'
 import { cx } from '@/lib/cx'
 import { BX_EASE } from '@/components/motion/Reveal'
 
-export function LangSwitcher({ align = 'right' }: { align?: 'left' | 'right' }) {
-  const { lang, setLang } = useI18n()
+const SHORT: Record<Lang, string> = {
+  zh: '中',
+  en: 'EN',
+  vi: 'VI',
+}
+
+export function LangSwitcher({
+  align = 'right',
+  variant = 'dropdown',
+}: {
+  align?: 'left' | 'right'
+  variant?: 'dropdown' | 'segmented'
+}) {
+  const { lang, setLang, d } = useI18n()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -18,6 +30,34 @@ export function LangSwitcher({ align = 'right' }: { align?: 'left' | 'right' }) 
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
   }, [open])
+
+  if (variant === 'segmented') {
+    return (
+      <div
+        role="group"
+        aria-label={d.nav.language}
+        className="inline-flex items-center overflow-hidden rounded-[6px] border border-[var(--bx-border)]"
+      >
+        {LANGS.map((l, i) => (
+          <button
+            key={l.code}
+            type="button"
+            onClick={() => setLang(l.code)}
+            className={cx(
+              'border-none px-2 py-1 font-mono text-[10.5px] font-semibold transition-colors',
+              i > 0 && 'border-l border-[var(--bx-border)]',
+              lang === l.code
+                ? 'bg-[var(--bx-active)] font-semibold text-[var(--bx-brand-bright)]'
+                : 'bg-transparent font-medium text-[var(--bx-text-dim)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
+            )}
+            aria-pressed={lang === l.code}
+          >
+            {SHORT[l.code]}
+          </button>
+        ))}
+      </div>
+    )
+  }
 
   function pick(code: Lang) {
     setLang(code)

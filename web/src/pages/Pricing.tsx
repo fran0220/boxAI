@@ -4,125 +4,163 @@ import { usePageMeta } from '@/lib/meta'
 import { useAuth } from '@/lib/use-auth'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
-import { Section } from '@/components/ui/Section'
-import { Accordion } from '@/components/ui/Accordion'
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
-import { GradientRing } from '@/components/brand/GradientRing'
+import { CtaBand, FaqList, SectionHead } from '@/components/marketing'
+
+type PlanCta =
+  | { kind: 'link'; to: string }
+  | { kind: 'href'; href: string }
 
 export function Pricing() {
   const { d } = useI18n()
   usePageMeta(d.pricing.metaTitle, d.pricing.subtitle)
   const { authed } = useAuth()
 
-  function planCta(index: number): { to?: string; href?: string } {
-    if (index === 0) return authed ? { to: '/create' } : { to: '/signup?return_to=/create' }
+  function planCta(ctaKind: 'signup' | 'subscribe' | 'contact'): PlanCta {
+    if (ctaKind === 'contact') {
+      return { kind: 'href', href: d.pricing.contactHref }
+    }
+    if (ctaKind === 'signup') {
+      return { kind: 'link', to: authed ? '/create' : '/signup?return_to=/create' }
+    }
     // Encode nested query so return_to keeps ?type=subscription (not a sibling login param).
     const checkout = '/checkout?type=subscription'
-    return authed
-      ? { to: checkout }
-      : { to: `/login?return_to=${encodeURIComponent(checkout)}` }
+    return {
+      kind: 'link',
+      to: authed ? checkout : `/login?return_to=${encodeURIComponent(checkout)}`,
+    }
   }
+
+  const checkoutTo = authed
+    ? '/checkout?type=subscription'
+    : `/login?return_to=${encodeURIComponent('/checkout?type=subscription')}`
 
   return (
     <div>
-      <section className="mx-auto max-w-6xl px-4 pt-16 text-center sm:px-6 sm:pt-24">
+      {/* Hero */}
+      <section className="mx-auto max-w-[1200px] px-6 pt-16 sm:pt-24">
         <Reveal>
-          <p className="bx-eyebrow mb-4 justify-center">{d.pricing.badge}</p>
-          <h1 className="bx-display text-4xl font-bold tracking-tight sm:text-5xl">
+          <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
+            <span className="h-px w-5 bg-[var(--bx-brand)]" />
+            {d.pricing.badge}
+          </p>
+          <h1 className="mt-3.5 max-w-2xl text-[36px] font-extrabold tracking-tight sm:text-[48px]">
             {d.pricing.title}
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base text-[var(--bx-text-muted)] sm:text-lg">
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--bx-text-muted)] sm:text-base">
             {d.pricing.subtitle}
           </p>
         </Reveal>
       </section>
 
-      <Section className="pt-12 sm:pt-14">
-        <Stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {d.pricing.plans.map((plan, i) => {
-            const cta = planCta(i)
-            const inner = (
-              <>
-                {plan.cta}
-                <ArrowRight size={15} />
-              </>
-            )
+      {/* Plans */}
+      <section className="mx-auto max-w-[1200px] px-6 pt-12 pb-4 sm:pt-14">
+        <Stagger className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-4">
+          {d.pricing.plans.map((plan) => {
+            const cta = planCta(plan.ctaKind)
             return (
-              <StaggerItem
-                key={plan.name}
-                className={cx(
-                  'relative flex h-full flex-col p-6',
-                  plan.highlighted ? 'bx-card-grad' : 'bx-card bx-card-hover',
-                )}
-              >
-                {plan.highlighted ? (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-[var(--bx-radius-sm)] bg-[var(--bx-grad-cta)] px-3 py-1 text-xs font-semibold text-[var(--bx-brand-ink)]">
-                    {d.pricing.highlight}
-                  </span>
-                ) : null}
-                <h2 className="bx-display text-base font-semibold tracking-tight">{plan.name}</h2>
-                <p className="mt-1 text-xs text-[var(--bx-text-dim)]">{plan.desc}</p>
-                <p className="mt-4">
-                  <span className="bx-display bx-num text-3xl font-bold tracking-tight">
-                    {plan.price}
-                  </span>
-                  <span className="text-sm text-[var(--bx-text-muted)]">{plan.period}</span>
-                </p>
-                <ul className="mt-5 flex-1 space-y-2.5">
-                  {plan.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-start gap-2 text-sm text-[var(--bx-text-soft)]"
-                    >
-                      <Check size={15} className="mt-0.5 shrink-0 text-[var(--bx-spark)]" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-6">
-                  {cta.to ? (
-                    <Link
-                      to={cta.to}
-                      className={cx(
-                        'bx-btn w-full',
-                        plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost',
-                      )}
-                    >
-                      {inner}
-                    </Link>
-                  ) : (
-                    <a
-                      href={cta.href}
-                      className={cx(
-                        'bx-btn w-full',
-                        plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost',
-                      )}
-                    >
-                      {inner}
-                    </a>
+              <StaggerItem key={plan.name} className="h-full">
+                <div
+                  className={cx(
+                    'relative flex h-full flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-0.5',
+                    plan.highlighted
+                      ? 'border border-transparent'
+                      : 'border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] hover:border-[var(--bx-brand-ring)]',
                   )}
+                  style={
+                    plan.highlighted
+                      ? {
+                          background:
+                            'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box',
+                          border: '1px solid transparent',
+                        }
+                      : undefined
+                  }
+                >
+                  {plan.highlighted ? (
+                    <span className="absolute -top-2.5 right-3.5 rounded bg-[var(--bx-grad-cta)] px-2 py-0.5 font-mono text-[10px] font-semibold text-[var(--bx-ink)]">
+                      {d.pricing.highlight}
+                    </span>
+                  ) : null}
+                  <span
+                    className={cx(
+                      'font-mono text-[11px] tracking-[0.12em] uppercase',
+                      plan.highlighted ? 'text-[var(--bx-brand)]' : 'text-[var(--bx-text-dim)]',
+                    )}
+                  >
+                    {plan.name}
+                  </span>
+                  <p className="mt-2.5 font-mono text-[30px] font-semibold tracking-tight">
+                    {plan.price}
+                    {plan.period ? (
+                      <span className="text-[13px] text-[var(--bx-text-dim)]">{plan.period}</span>
+                    ) : null}
+                  </p>
+                  <p className="mt-2 text-[12.5px] leading-relaxed text-[var(--bx-text-muted)]">
+                    {plan.desc}
+                  </p>
+                  <ul className="mt-5 flex-1 space-y-2.5">
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-start gap-2 text-[13px] text-[var(--bx-text-soft)]"
+                      >
+                        <Check size={14} className="mt-0.5 shrink-0 text-[var(--bx-spark)]" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6">
+                    {cta.kind === 'link' ? (
+                      <Link
+                        to={cta.to}
+                        className={cx(
+                          'bx-btn w-full',
+                          plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost',
+                        )}
+                      >
+                        {plan.cta}
+                        <ArrowRight size={15} />
+                      </Link>
+                    ) : (
+                      <a
+                        href={cta.href}
+                        className={cx(
+                          'bx-btn w-full',
+                          plan.highlighted ? 'bx-btn-primary' : 'bx-btn-ghost',
+                        )}
+                      >
+                        {plan.cta}
+                        <ArrowRight size={15} />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </StaggerItem>
             )
           })}
         </Stagger>
         <Reveal>
-          <p className="mt-6 text-center text-xs text-[var(--bx-text-dim)]">{d.pricing.note}</p>
+          <p className="mt-6 text-center font-mono text-[11px] text-[var(--bx-text-dim)]">
+            {d.pricing.note}
+          </p>
         </Reveal>
-      </Section>
+      </section>
 
-      <Section title={d.pricing.compare.title}>
+      {/* Compare */}
+      <section className="mx-auto max-w-[1200px] px-6 py-[72px]">
+        <SectionHead title={d.pricing.compare.title} className="mb-8" />
         <Reveal>
-          <div className="bx-card overflow-x-auto">
+          <div className="overflow-x-auto rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)]">
             <table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="border-b border-[var(--bx-border)]">
-                  <th className="px-5 py-4 text-left font-medium text-[var(--bx-text-muted)]" />
+                  <th className="px-5 py-4 text-left font-mono text-[10px] font-semibold tracking-[0.12em] text-[var(--bx-text-dim)] uppercase" />
                   {d.pricing.compare.plans.map((name, i) => (
                     <th
                       key={name}
                       className={cx(
-                        'bx-display px-4 py-4 text-center font-semibold tracking-tight',
+                        'px-4 py-4 text-center text-[13px] font-bold tracking-tight',
                         i === 1 && 'text-[var(--bx-brand-bright)]',
                       )}
                     >
@@ -133,10 +171,15 @@ export function Pricing() {
               </thead>
               <tbody>
                 {d.pricing.compare.rows.map((row) => (
-                  <tr key={row.label} className="border-b border-[var(--bx-border)] last:border-0">
-                    <td className="px-5 py-3.5 text-[var(--bx-text-soft)]">{row.label}</td>
+                  <tr key={row.label} className="border-b border-[var(--bx-line)] last:border-0">
+                    <td className="px-5 py-3.5 text-[13px] text-[var(--bx-text-soft)]">
+                      {row.label}
+                    </td>
                     {row.values.map((value, i) => (
-                      <td key={i} className="px-4 py-3.5 text-center text-[var(--bx-text-muted)]">
+                      <td
+                        key={i}
+                        className="px-4 py-3.5 text-center text-[13px] text-[var(--bx-text-muted)]"
+                      >
                         {value === '✓' ? (
                           <BadgeCheck size={17} className="inline text-[var(--bx-spark)]" />
                         ) : (
@@ -150,32 +193,34 @@ export function Pricing() {
             </table>
           </div>
         </Reveal>
-      </Section>
+      </section>
 
-      <Section title={d.pricing.faq.title} className="max-w-3xl pb-24">
-        <Reveal>
-          <Accordion items={d.pricing.faq.items} />
-        </Reveal>
-        <Reveal delay={0.1}>
-          <div className="mt-10">
-            <GradientRing>
-              <div className="px-6 py-10 text-center">
-                <Link
-                  to={
-                    authed
-                      ? '/checkout?type=subscription'
-                      : `/login?return_to=${encodeURIComponent('/checkout?type=subscription')}`
-                  }
-                  className="bx-btn bx-btn-primary bx-btn-lg"
-                >
-                  {d.pricing.consoleCta}
-                  <ArrowRight size={17} />
-                </Link>
-              </div>
-            </GradientRing>
-          </div>
-        </Reveal>
-      </Section>
+      {/* FAQ */}
+      <section className="mx-auto max-w-[1200px] px-6 pb-[72px]">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
+          <SectionHead title={d.pricing.faq.title} />
+          <Reveal>
+            <FaqList items={d.pricing.faq.items} idPrefix="pricing-faq" />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mx-auto max-w-[1200px] px-6 pb-24">
+        <CtaBand
+          title={d.pricing.ctaBandTitle}
+          subtitle={d.pricing.ctaBandSubtitle}
+          actions={[
+            { kind: 'link', to: checkoutTo, label: d.pricing.consoleCta, primary: true },
+            {
+              kind: 'link',
+              to: authed ? '/create' : '/signup?return_to=/create',
+              label: d.nav.signup,
+              primary: false,
+            },
+          ]}
+        />
+      </section>
     </div>
   )
 }

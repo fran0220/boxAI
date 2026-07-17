@@ -1,30 +1,54 @@
 # 设计语言统一台账
 
-**目标：** `you-box.com`（React 产品面）与 `console.you-box.com`（Vue 控制台）共用同一套 **teal→cyan** `--bx-*` token 与深色优先。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)、[BRAND.md](./BRAND.md)。  
-**默认主题：** 深色（`#080a0d`）。浅色为用户显式切换（控制台）。  
+**目标：** `you-box.com`（React 产品面）与 `console.you-box.com`（Vue 控制台）共用同一套 **Precision Teal** `--bx-*` token 与深色优先。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)、[BRAND.md](./BRAND.md)。  
+**默认主题：** 深色（`#06080a`，brand `#1fd5b9`）。浅色为用户显式切换。  
+**设计源：** Claude Design `5c213057…` → `web/design-source/`（单一设计包，无版本后缀）。  
 **状态：** `pending` → `done` · 审查时更新本表。
 
-## F. React 营销 + 创作台（web/）
+## 单一设计系统
 
-| ID | 项 | 路径 | 状态 |
-|----|-----|------|------|
-| F1 | Token 与控制台对齐（teal/cyan，无紫）+ 圆角矩形/expo-out | `web/src/index.css` | done |
-| F2 | 字体 Space Grotesk + Noto Sans SC | `web/index.html`, tailwind | done |
-| F3 | Aurora / Cube / GradientRing | `web/src/components/brand/*` | done |
-| F4 | 壳层 Header/Footer/Layout | `web/src/components/*` | done |
-| F5 | Home 融合布局 | `web/src/pages/Home.tsx` | done |
-| F6 | Studio / Pricing / Account | `web/src/pages/*` | done |
-| F7 | Creator 壳 CreateLayout + tabs | `web/src/pages/create/CreateLayout.tsx` | done |
-| F8 | 视频页 / 资产页 / ModelPicker | `create/Video`, `Assets`, `ModelPicker` | done |
-| F9 | 图像 playground 对齐 teal primary | `image-playground/index.css` | done |
-| F10 | Logo 资产 | `web/public/logo.svg`, `logo.png` | done |
-| F11 | 语义色 danger/success/warning + icon-btn | `web/src/index.css` | done |
-| F12 | Creator 左抽屉 + 自研页 token 收干净 | `create/*` | done |
-| F13 | Playground 品牌皮肤（teal/rect/focus） | `image-playground` | done |
-| F14 | Public System Status `/status` + homepage summary | `web/src/pages/Status.tsx`, `HomeStatusSummary` | done |
-| F15 | Status surface CSS (grid/card/timeline/pills) | `web/src/index.css` `.bx-status-*` | done |
+| 层 | 真相源 | 备注 |
+|----|--------|------|
+| Product tokens | `web/src/index.css` | `--bx-*` + compat aliases |
+| Design reference | `web/design-source/tokens.css` | Claude Design export |
+| Console tokens | `frontend/src/styles/tokens.css` | 同一 Precision Teal 语义 |
+| Marketing primitives | `web/src/components/marketing/*` | FAQ 编号行、CTA 网格带、SectionHead |
+| Account primitives | `.bx-account-*` in `web/src/index.css` | 工具条 / 表壳 / 状态 pill |
+| Creator shell | `.bx-create-*` | 左抽屉 + panels |
 
-## A. 设计源与全局
+**已移除的旧营销组件：** `Accordion`、`GradientRing`、`AuroraBackground`、`CubeMark`、`Section`（旧 Section+Accordion 套件）。Home 自带 `HeroBackdrop`，Layout 不再叠第二层 ambient。
+
+## F. React 营销 + 创作台（web/）— 视口 parity
+
+| ID | 页面 / 面 | 路径 | Parity |
+|----|-----------|------|--------|
+| F1 | Tokens Precision Teal + compat | `web/src/index.css`, `design-source/tokens.css` | done |
+| F2 | 字体 Manrope + Noto Sans SC + IBM Plex Mono | `web/index.html`, tailwind | done |
+| F3 | 壳层 Header mega-menu / Footer | `Header.tsx`, `Footer.tsx` | done |
+| F4 | Home（设计 11 section + 真实 status API） | `pages/Home.tsx` | done |
+| F5 | Pricing（plan 卡 + 对比表 + 编号 FAQ + CTA band） | `pages/Pricing.tsx` | done |
+| F6 | Studio（features / download API / 编号 FAQ / CTA） | `pages/Studio.tsx` | done |
+| F7 | Status（eyebrow chrome + period pills + ready/empty） | `pages/Status.tsx` | done |
+| F8 | Auth 玻璃卡片 + brand mark + ambient | `pages/auth/*` | done |
+| F9 | Account 分组导航 + Overview/Keys/Usage 等 `bx-account-*` | `pages/account/*` | done |
+| F10 | Creator 壳 CreateLayout + tabs | `create/CreateLayout.tsx` | done |
+| F11 | 视频页 / 资产页 / ModelPicker | `create/Video`, `Assets`, `ModelPicker` | done |
+| F12 | 图像 playground teal skin | `image-playground/index.css` | done |
+| F13 | Logo 资产 | `web/public/logo.svg`, `logo.png` | done |
+| F14 | 语义色 + icon-btn | `web/src/index.css` | done |
+| F15 | Public System Status surface CSS | `.bx-status-*` | done |
+| F16 | 命名收敛（单一 design-source 包，无版本后缀） | `design-source/`, docs | done |
+
+### Waves（本轮全部完成）
+
+| Wave | 范围 | 状态 |
+|------|------|------|
+| 1 | Marketing: Pricing / Studio / Status / Home ambient | **done** |
+| 2 | Auth glass + Account depth (`bx-account-*`) | **done** |
+| 3 | Creator shell residual | **done**（已 token 化；本轮确认） |
+| 4 | 单一设计包命名 + 删除旧营销组件 + 台账 | **done** |
+
+## A. 设计源与全局（Vue 控制台）
 
 | ID | 项 | 路径 | 状态 |
 |----|-----|------|------|
@@ -97,3 +121,6 @@
 - [x] 登录页与首页同系
 - [x] 首页动画与文案未回归
 - [x] 业务页表面批量切到 token（非仅壳层）
+- [x] React 营销面单一设计语言（无 v1/v2 标志）
+- [x] Pricing / Studio / Status 与 Home 同系 section / FAQ / CTA
+- [x] 空成功态显式 empty（非永久 loading）

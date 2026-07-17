@@ -1,22 +1,25 @@
 /* Vendored gpt_image_playground styles — scoped for BoxAI Creator embed.
  * Tailwind utilities come from web/src/index.css (single PostCSS pipeline).
  * Source: https://github.com/CookSleep/gpt_image_playground (MIT)
+ * BOXAI skin: Precision Teal — map HSL tokens to --bx-*; keep core logic intact.
  */
 
 /* Portaled modals attach to body; keep tokens on html.dark as well. */
 html.dark {
-  --background: 210 14% 4%;
-  --foreground: 210 20% 96%;
-  --muted: 210 10% 12%;
-  --muted-foreground: 215 10% 65%;
-  --border: 210 10% 16%;
-  --input: 210 10% 16%;
-  --primary: 168 76% 42%;
-  --primary-foreground: 168 40% 6%;
-  --sidebar: 210 12% 8%;
-  --sidebar-foreground: 210 20% 96%;
-  --font-ui-sans: var(--bx-font, 'Noto Sans SC', 'Space Grotesk', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
-  --font-mono: var(--bx-font-mono, 'SF Mono', Menlo, Consolas, monospace);
+  /* Surfaces aligned to --bx-bg / --bx-bg-card / --bx-border */
+  --background: 210 25% 3%;
+  --foreground: 180 20% 96%;
+  --muted: 210 18% 9%;
+  --muted-foreground: 190 10% 62%;
+  --border: 200 12% 16%;
+  --input: 200 12% 16%;
+  --primary: 171 74% 45%;
+  --primary-foreground: 168 80% 8%;
+  --sidebar: 210 20% 5%;
+  --sidebar-foreground: 180 20% 96%;
+  --font-ui-sans: var(--bx-font, 'Manrope', 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
+  --font-mono: var(--bx-font-mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  --radius: 0.5rem;
   --safe-area-top: 0px;
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -25,18 +28,19 @@ html.dark {
 
 /* Light mode playground HSL tokens (when site theme is light) */
 html:not(.dark) {
-  --background: 200 20% 97%;
-  --foreground: 222 47% 11%;
-  --muted: 210 20% 94%;
-  --muted-foreground: 215 16% 40%;
-  --border: 214 20% 88%;
-  --input: 214 20% 88%;
-  --primary: 168 76% 36%;
+  --background: 200 16% 96%;
+  --foreground: 195 30% 8%;
+  --muted: 200 14% 93%;
+  --muted-foreground: 200 10% 38%;
+  --border: 200 12% 86%;
+  --input: 200 12% 86%;
+  --primary: 171 84% 36%;
   --primary-foreground: 0 0% 100%;
-  --sidebar: 200 20% 98%;
-  --sidebar-foreground: 222 47% 11%;
-  --font-ui-sans: var(--bx-font, 'Noto Sans SC', 'Space Grotesk', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
-  --font-mono: var(--bx-font-mono, 'SF Mono', Menlo, Consolas, monospace);
+  --sidebar: 200 16% 98%;
+  --sidebar-foreground: 195 30% 8%;
+  --font-ui-sans: var(--bx-font, 'Manrope', 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
+  --font-mono: var(--bx-font-mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  --radius: 0.5rem;
   --safe-area-top: 0px;
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -46,41 +50,42 @@ html:not(.dark) {
 .image-playground {
   /* Inherit HSL from html.dark / html:not(.dark); surface from --bx-* */
   --background: inherit;
+  --radius: 0.5rem;
   color-scheme: inherit;
   font-family: var(--font-ui-sans);
   -webkit-user-select: none;
   user-select: none;
-  background: var(--bx-bg, #080a0d);
-  color: var(--bx-text, #f4f5f7);
+  background: var(--bx-bg, #06080a);
+  color: var(--bx-text, #f2f5f6);
   min-height: 100%;
   flex: 1;
 }
 
 html.dark .image-playground {
-  --background: 210 14% 4%;
-  --foreground: 210 20% 96%;
-  --muted: 210 10% 12%;
-  --muted-foreground: 215 10% 65%;
-  --border: 210 10% 16%;
-  --input: 210 10% 16%;
-  --primary: 168 76% 42%;
-  --primary-foreground: 168 40% 6%;
-  --sidebar: 210 12% 8%;
-  --sidebar-foreground: 210 20% 96%;
+  --background: 210 25% 3%;
+  --foreground: 180 20% 96%;
+  --muted: 210 18% 9%;
+  --muted-foreground: 190 10% 62%;
+  --border: 200 12% 16%;
+  --input: 200 12% 16%;
+  --primary: 171 74% 45%;
+  --primary-foreground: 168 80% 8%;
+  --sidebar: 210 20% 5%;
+  --sidebar-foreground: 180 20% 96%;
   color-scheme: dark;
 }
 
 html:not(.dark) .image-playground {
-  --background: 200 20% 97%;
-  --foreground: 222 47% 11%;
-  --muted: 210 20% 94%;
-  --muted-foreground: 215 16% 40%;
-  --border: 214 20% 88%;
-  --input: 214 20% 88%;
-  --primary: 168 76% 36%;
+  --background: 200 16% 96%;
+  --foreground: 195 30% 8%;
+  --muted: 200 14% 93%;
+  --muted-foreground: 200 10% 38%;
+  --border: 200 12% 86%;
+  --input: 200 12% 86%;
+  --primary: 171 84% 36%;
   --primary-foreground: 0 0% 100%;
-  --sidebar: 200 20% 98%;
-  --sidebar-foreground: 222 47% 11%;
+  --sidebar: 200 16% 98%;
+  --sidebar-foreground: 195 30% 8%;
   color-scheme: light;
 }
 
@@ -101,29 +106,46 @@ html:not(.dark) .image-playground {
   -webkit-user-select: none;
 }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-::-webkit-scrollbar-track { background: transparent; }
+.image-playground ::-webkit-scrollbar { width: 8px; height: 8px; }
+.image-playground ::-webkit-scrollbar-thumb {
+  background: var(--bx-scrollbar, rgba(151, 173, 185, 0.3));
+  border-radius: 9999px;
+}
+.image-playground ::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--bx-brand, #1fd5b9) 40%, transparent);
+}
+.image-playground ::-webkit-scrollbar-track { background: transparent; }
 
-/* 隐藏 number input 的增减按?*/
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+/* 隐藏 number input 的增减按钮 */
+.image-playground input[type="number"]::-webkit-inner-spin-button,
+.image-playground input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="number"] {
+.image-playground input[type="number"] {
   -moz-appearance: textfield;
 }
 
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb { background: #3f3f46; }
-  ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--bx-brand, #1fd5b9); }
+  50% { border-color: var(--bx-brand-bright, #6cf5dd); }
 }
 
-@keyframes pulse-border {
-  0%, 100% { border-color: #3b82f6; }
-  50% { border-color: #93c5fd; }
+/* Tighter tool chrome: cards / modals use v2 radius */
+.image-playground .rounded-2xl {
+  border-radius: var(--bx-radius-lg, 12px);
+}
+.image-playground .rounded-xl {
+  border-radius: var(--bx-radius-md, 10px);
+}
+.image-playground .rounded-lg {
+  border-radius: var(--bx-radius, 8px);
+}
+
+/* Focus rings → brand */
+.image-playground :focus-visible {
+  outline: 2px solid var(--bx-brand, #1fd5b9);
+  outline-offset: 2px;
 }
 
 @keyframes agent-web-search-text-sweep {

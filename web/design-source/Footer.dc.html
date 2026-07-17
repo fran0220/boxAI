@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+<footer style="border-top: 1px solid var(--bx-border); background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font);">
+  <div style="margin-inline: auto; max-width: 1200px; padding: 48px 24px 32px;">
+    <div style="display: grid; gap: 40px; grid-template-columns: 2fr 1fr 1fr 1fr 1fr;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 800; letter-spacing: -0.02em;">
+          <img src="web/public/logo.svg" alt="" style="height: 26px; width: 26px;">
+          <span>BoxAI</span>
+        </div>
+        <p style="margin: 12px 0 0; max-width: 300px; font-size: 13px; line-height: 1.6; color: var(--bx-text-muted);">一个盒子，装下所有 AI。图像、视频、Agent 与 OpenAI 兼容网关，共享同一个账户。</p>
+        <div style="margin-top: 16px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--bx-border); border-radius: 6px; padding: 5px 10px; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-success);">
+          <span style="width: 6px; height: 6px; border-radius: 999px; background: currentColor; animation: bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></span>
+          全部系统正常运行
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim); margin: 0;">产品</h3>
+        <ul style="margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px;">
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">在线创作台</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">Studio 工作台</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">开放 API</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">定价</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim); margin: 0;">资源</h3>
+        <ul style="margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px;">
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">系统状态</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">API 密钥</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">用量统计</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim); margin: 0;">账户</h3>
+        <ul style="margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px;">
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">登录</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">注册</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">账户中心</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim); margin: 0;">法律</h3>
+        <ul style="margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px;">
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">服务条款</a></li>
+          <li><a href="#" style="font-size: 13px; color: var(--bx-text-muted);" style-hover="color: var(--bx-brand-bright);">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top: 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--bx-border); padding-top: 20px;">
+      <span style="font-size: 12.5px; color: var(--bx-text-dim);">© 2026 BoxAI · 保留所有权利</span>
+      <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">you-box.com · api.you-box.com/v1 · console.you-box.com</span>
+    </div>
+  </div>
+</footer>
+</x-dc>
+</body>
+</html>

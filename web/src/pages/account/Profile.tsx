@@ -565,8 +565,8 @@ export function AccountProfile() {
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <div>
-        <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-        <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+        <h1 className="bx-account-page-title">{t.title}</h1>
+        <p className="bx-account-page-sub">{t.subtitle}</p>
       </div>
 
       {error ? <p className="bx-text-danger text-sm">{error}</p> : null}

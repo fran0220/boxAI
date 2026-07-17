@@ -32,7 +32,7 @@ function applyThemeClass(mode: ThemeMode) {
   // theme-color for mobile chrome
   const meta = document.querySelector('meta[name="theme-color"]')
   if (meta) {
-    meta.setAttribute('content', mode === 'dark' ? '#080a0d' : '#f4f7f8')
+    meta.setAttribute('content', mode === 'dark' ? '#06080a' : '#f5f7f8')
   }
 }
 

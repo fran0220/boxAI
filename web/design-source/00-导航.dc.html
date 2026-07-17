@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+<div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font); padding: 64px 24px;">
+  <div style="margin-inline: auto; max-width: 960px;">
+    <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+      <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+      BoxAI Web Redesign
+    </p>
+    <h1 style="margin: 14px 0 0; font-size: 36px; font-weight: 800; letter-spacing: -0.035em;">BoxAI 首页与功能页重设计 · 导航</h1>
+    <p style="margin: 12px 0 0; font-size: 14px; color: var(--bx-text-muted);">统一采用设计 Token「Precision Teal」（tokens.css）。所有页面右上角可切换深浅主题。</p>
+
+    <div style="margin-top: 40px; max-width: 560px;">
+      <div>
+        <h2 style="margin: 0 0 12px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bx-brand);">页面 · Design Tokens</h2>
+        <div style="display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); overflow: hidden;">
+          <a href="新版-设计Token.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">设计 Token 规范 <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">tokens.css</span></a>
+          <a href="新版-首页.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">首页（重构） <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/</span></a>
+          <a href="新版-定价.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">定价 <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/pricing</span></a>
+          <a href="新版-状态.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">系统状态 <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/status</span></a>
+          <a href="新版-登录注册.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">登录 / 注册 <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/login</span></a>
+          <a href="新版-账户.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">账户中心（概览/密钥/用量） <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/account</span></a>
+          <a href="新版-创作台.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text); border-bottom: 1px solid var(--bx-line);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">创作台（图像/视频/资产） <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/create</span></a>
+          <a href="新版-Studio.dc.html" style="display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; font-size: 14px; font-weight: 700; color: var(--bx-text);" style-hover="background: var(--bx-hover); color: var(--bx-brand-bright);">Studio <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">/studio</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

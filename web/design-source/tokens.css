@@ -1,0 +1,185 @@
+/**
+ * BoxAI Design Tokens — Precision Teal
+ * 演进方向：青色品牌延续 · Nebius 式工具感 · 高信息密度 · 双主题并重
+ * 用法：--bx-* 变量；产品真相源为 web/src/index.css，本文件为设计源参考。
+ */
+
+:root {
+  /* ── Surfaces（深色为默认）── */
+  --bx-bg: #06080a;
+  --bx-bg-elevated: #0b0e12;
+  --bx-bg-card: #0d1117;
+  --bx-bg-muted: #11161d;
+  --bx-bg-deep: #030507;
+
+  /* ── Text ── */
+  --bx-text: #f2f5f6;
+  --bx-text-soft: rgba(238, 244, 245, 0.78);
+  --bx-text-muted: rgba(238, 244, 245, 0.58);
+  --bx-text-dim: rgba(238, 244, 245, 0.38);
+
+  /* ── Borders / hairlines ── */
+  --bx-border: rgba(151, 173, 185, 0.15);
+  --bx-border-strong: rgba(151, 173, 185, 0.26);
+  --bx-line: rgba(151, 173, 185, 0.09);
+
+  /* ── Brand（青色演进：主青 + 电光青）── */
+  --bx-brand: #1fd5b9;
+  --bx-brand-bright: #6cf5dd;
+  --bx-brand-deep: #0c9f8c;
+  --bx-cyan: #35d6f4;
+  --bx-sky: #7cc7ff;
+  --bx-ink: #03261f;
+  --bx-brand-soft: rgba(31, 213, 185, 0.12);
+  --bx-brand-ring: rgba(31, 213, 185, 0.38);
+
+  /* ── Gradients ── */
+  --bx-grad-hero: linear-gradient(95deg, #1fd5b9 0%, #35d6f4 55%, #7cc7ff 100%);
+  --bx-grad-cta: linear-gradient(120deg, #1fd5b9, #22c9e0);
+  --bx-grad-border: linear-gradient(115deg, #1fd5b9, #35d6f4, #7cc7ff, #1fd5b9);
+
+  /* ── Semantic ── */
+  --bx-success: #3ddc97;
+  --bx-success-soft: rgba(61, 220, 151, 0.13);
+  --bx-warning: #ffc24b;
+  --bx-warning-soft: rgba(255, 194, 75, 0.12);
+  --bx-danger: #ff6b6b;
+  --bx-danger-soft: rgba(255, 107, 107, 0.12);
+  --bx-info: #35d6f4;
+  --bx-info-soft: rgba(53, 214, 244, 0.12);
+
+  /* ── Type ── */
+  --bx-font: 'Manrope', 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --bx-font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ── Radius（收紧 → 工具感）── */
+  --bx-radius-xs: 4px;
+  --bx-radius-sm: 6px;
+  --bx-radius: 8px;
+  --bx-radius-md: 10px;
+  --bx-radius-lg: 12px;
+  --bx-radius-xl: 16px;
+  --bx-radius-btn: 8px;
+
+  /* ── Elevation（收敛光晕，改用锐利层次）── */
+  --bx-shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 8px 24px rgba(0, 0, 0, 0.42);
+  --bx-shadow-pop: 0 20px 48px -12px rgba(0, 0, 0, 0.65);
+  --bx-shadow-cta: 0 8px 24px -8px rgba(31, 213, 185, 0.55);
+  --bx-hover: rgba(255, 255, 255, 0.05);
+  --bx-active: rgba(31, 213, 185, 0.12);
+  --bx-overlay: rgba(2, 4, 5, 0.66);
+  --bx-scrollbar: rgba(151, 173, 185, 0.3);
+
+  /* ── Motion ── */
+  --bx-dur-fast: 120ms;
+  --bx-dur: 240ms;
+  --bx-dur-med: 420ms;
+  --bx-dur-slow: 700ms;
+  --bx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --bx-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --bx-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Layout chrome ── */
+  --bx-nav-h: 56px;
+  --bx-container: 1200px;
+  color-scheme: dark;
+}
+
+/* ── 浅色主题 ── */
+html.light {
+  --bx-bg: #f5f7f8;
+  --bx-bg-elevated: #ffffff;
+  --bx-bg-card: #ffffff;
+  --bx-bg-muted: #eef1f4;
+  --bx-bg-deep: #e8ecef;
+  --bx-text: #0b1518;
+  --bx-text-soft: rgba(11, 21, 24, 0.8);
+  --bx-text-muted: rgba(11, 21, 24, 0.6);
+  --bx-text-dim: rgba(11, 21, 24, 0.4);
+  --bx-border: rgba(11, 33, 40, 0.12);
+  --bx-border-strong: rgba(11, 33, 40, 0.2);
+  --bx-line: rgba(11, 33, 40, 0.07);
+  --bx-brand: #0eae96;
+  --bx-brand-bright: #0c9f8c;
+  --bx-brand-deep: #0a8071;
+  --bx-cyan: #0993b6;
+  --bx-sky: #2c7fd4;
+  --bx-ink: #03261f;
+  --bx-brand-soft: rgba(14, 174, 150, 0.1);
+  --bx-brand-ring: rgba(14, 174, 150, 0.32);
+  --bx-grad-hero: linear-gradient(95deg, #0eae96 0%, #0993b6 55%, #2c7fd4 100%);
+  --bx-grad-cta: linear-gradient(120deg, #10bda3, #0aa9c9);
+  --bx-grad-border: linear-gradient(115deg, #0eae96, #0993b6, #2c7fd4, #0eae96);
+  --bx-success: #0f9d6a;
+  --bx-success-soft: rgba(15, 157, 106, 0.12);
+  --bx-warning: #b97d10;
+  --bx-warning-soft: rgba(185, 125, 16, 0.12);
+  --bx-danger: #d84848;
+  --bx-danger-soft: rgba(216, 72, 72, 0.1);
+  --bx-info: #0993b6;
+  --bx-info-soft: rgba(9, 147, 182, 0.1);
+  --bx-shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 6px 20px rgba(11, 33, 40, 0.08);
+  --bx-shadow-pop: 0 20px 48px -12px rgba(11, 33, 40, 0.22);
+  --bx-shadow-cta: 0 8px 24px -8px rgba(14, 174, 150, 0.45);
+  --bx-hover: rgba(11, 33, 40, 0.045);
+  --bx-active: rgba(14, 174, 150, 0.1);
+  --bx-overlay: rgba(11, 21, 24, 0.4);
+  --bx-scrollbar: rgba(90, 110, 120, 0.4);
+  color-scheme: light;
+}
+
+/* ── Base reset ── */
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: var(--bx-font);
+  background: var(--bx-bg);
+  color: var(--bx-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--bx-brand-bright); text-decoration: none; }
+a:hover { color: var(--bx-cyan); }
+::selection { background: rgba(31, 213, 185, 0.3); color: var(--bx-text); }
+* { scrollbar-width: thin; scrollbar-color: var(--bx-scrollbar) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--bx-scrollbar); border-radius: 999px; }
+*::-webkit-scrollbar-track { background: transparent; }
+:focus-visible { outline: 2px solid var(--bx-brand); outline-offset: 2px; }
+input::placeholder, textarea::placeholder { color: var(--bx-text-dim); }
+
+/* ── Keyframes 库 ── */
+@keyframes bx-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes bx-caret { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+@keyframes bx-ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent); } 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+@keyframes bx-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes bx-borderflow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+@keyframes bx-flow { to { stroke-dashoffset: -24; } }
+@keyframes bx-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes bx-glow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes bx-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bx-scale-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes bx-bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes bx-spin { to { transform: rotate(360deg); } }
+@keyframes bx-node-pulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.4); opacity: 1; } }
+@keyframes bx-aurora { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(5%, 3%) scale(1.12); } }
+@keyframes bx-pan { from { background-position: 0 0; } to { background-position: 0 -560px; } }
+@keyframes bx-scan { 0% { top: 92%; opacity: 0; } 12% { opacity: 0.85; } 70% { opacity: 0.85; } 100% { top: 6%; opacity: 0; } }
+@keyframes bx-travel { 0% { offset-distance: 0%; opacity: 0; } 12% { opacity: 1; } 82% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+@keyframes bx-ring { 0% { transform: scale(0.55); opacity: 0.7; } 100% { transform: scale(1.65); opacity: 0; } }
+@keyframes bx-ribbon-a { from { transform: rotate(-10deg) translateX(-6%); } to { transform: rotate(-10deg) translateX(6%); } }
+@keyframes bx-ribbon-b { from { transform: rotate(7deg) translateX(5%); } to { transform: rotate(7deg) translateX(-5%); } }
+@keyframes bx-hpulse { 0% { transform: scale(0.55); opacity: 0.55; } 100% { transform: scale(1.3); opacity: 0; } }
+@keyframes bx-streak { 0% { opacity: 0; transform: translate(0, 0) rotate(-24deg); } 6% { opacity: 0.9; } 14% { opacity: 0; transform: translate(-380px, 170px) rotate(-24deg); } 100% { opacity: 0; transform: translate(-380px, 170px) rotate(-24deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

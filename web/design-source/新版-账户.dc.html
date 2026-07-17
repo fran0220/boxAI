@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font);">
+  <dc-import name="Header" hint-size="100%,56px"></dc-import>
+
+  <div style="margin-inline: auto; display: flex; width: 100%; max-width: 1200px; gap: 0; padding: 0 24px; box-sizing: border-box;">
+    <!-- Sidebar -->
+    <aside data-screen-label="账户导航" style="flex-shrink: 0; width: 200px; border-right: 1px solid var(--bx-border); padding: 32px 20px 32px 0;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="display: flex; height: 34px; width: 34px; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-grad-cta); font-size: 14px; font-weight: 800; color: var(--bx-ink);">C</div>
+        <div style="min-width: 0;">
+          <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; font-size: 13px; font-weight: 700;">creator</p>
+          <p style="margin: 1px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">creator@you-box.com</p>
+        </div>
+      </div>
+      <sc-for list="{{ navGroups }}" as="g" hint-placeholder-count="4">
+        <div style="margin-top: 24px;">
+          <p style="margin: 0 0 8px; font-family: var(--bx-font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bx-text-dim);">{{ g.label }}</p>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <sc-for list="{{ g.items }}" as="link" hint-placeholder-count="3">
+              <button onClick="{{ link.pick }}" style="{{ link.style }}">{{ link.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </aside>
+
+    <!-- Main -->
+    <main style="min-width: 0; flex: 1; padding: 32px 0 64px 32px;">
+
+      <!-- ══ 概览 ══ -->
+      <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">概览</h1>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>创作台网关密钥已就绪 · creator-gateway</span>
+          </div>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 12px;">
+            <div style="display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--bx-radius-xl); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">账户余额 · 全产品通用</p>
+                <button style="border: none; cursor: pointer; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink);" style-hover="transform: translateY(-1px);">充值</button>
+              </div>
+              <p style="margin: 12px 0 0; font-family: var(--bx-font-mono); font-size: 34px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$128.50</p>
+              <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">本月已消耗 $46.20 · 订阅「专业」生效中</p>
+            </div>
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">今日请求</p>
+              <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums;">1,284</p>
+              <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-success);">▲ 12% vs 昨日</p>
+            </div>
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">今日 Token</p>
+              <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums;">2.4M</p>
+              <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">RPM 42 · TPM 81K</p>
+            </div>
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">活跃密钥</p>
+              <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums;">3<span style="font-size: 15px; color: var(--bx-text-dim);">/4</span></p>
+              <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-warning);">1 个额度用尽</p>
+            </div>
+          </div>
+
+          <!-- 7d usage chart -->
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <p style="margin: 0; font-size: 13.5px; font-weight: 700;">近 14 天用量</p>
+              <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">tokens / day</span>
+            </div>
+            <div style="margin-top: 14px; display: flex; align-items: flex-end; gap: 5px; height: 96px; border-bottom: 1px solid var(--bx-border);">
+              <sc-for list="{{ trend }}" as="bar" hint-placeholder-count="14">
+                <div style="display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%;" title="{{ bar.title }}">
+                  <div style="width: 100%; max-width: 34px; border-radius: 3px 3px 0 0; background: {{ bar.bg }}; height: {{ bar.h }}; transform-origin: bottom; animation: bx-bar-grow 0.8s var(--bx-ease) both {{ bar.delay }}; transition: opacity var(--bx-dur-fast) ease;" style-hover="opacity: 0.8;"></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top: 6px; display: flex; justify-content: space-between; font-family: var(--bx-font-mono); font-size: 9.5px; color: var(--bx-text-dim);"><span>07-04</span><span>07-17</span></div>
+          </div>
+
+          <!-- recent activity -->
+          <div style="margin-top: 12px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 12px;">
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+              <p style="margin: 0; padding: 14px 20px 10px; font-size: 13.5px; font-weight: 700;">最近调用</p>
+              <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: 1fr 90px 80px; gap: 12px; align-items: center; padding: 9px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px;">
+                  <span style="font-family: var(--bx-font-mono); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--bx-text-soft);">{{ r.model }}</span>
+                  <span style="font-family: var(--bx-font-mono); font-size: 11px; text-align: right; color: var(--bx-text-dim);">{{ r.tokens }}</span>
+                  <span style="font-family: var(--bx-font-mono); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums;">{{ r.cost }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 16px 18px; color: inherit; transition: border-color var(--bx-dur-fast) ease;" style-hover="border-color: var(--bx-brand-ring); color: inherit;">
+                <span style="font-size: 13.5px; font-weight: 700;">进入创作台</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+              <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 16px 18px; color: inherit; transition: border-color var(--bx-dur-fast) ease;" style-hover="border-color: var(--bx-brand-ring); color: inherit;">
+                <span style="font-size: 13.5px; font-weight: 700;">管理 API 密钥</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+              <a href="#" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 16px 18px; color: inherit; transition: border-color var(--bx-dur-fast) ease;" style-hover="border-color: var(--bx-brand-ring); color: inherit;">
+                <span style="font-size: 13.5px; font-weight: 700;">下载 Studio 桌面端</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 密钥 ══ -->
+      <sc-if value="{{ isKeys }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">API 密钥</h1>
+            <div style="display: flex; gap: 8px;">
+              <input placeholder="搜索密钥…" style="width: 220px; box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+              <select aria-label="状态筛选" style="border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none;">
+                <option>全部状态</option><option>启用</option><option>停用</option><option>额度用尽</option><option>已过期</option>
+              </select>
+              <button style="display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 7px 16px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                新建密钥
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.3fr 1.2fr 0.8fr 1.2fr 0.9fr 0.7fr 1fr; gap: 14px; padding: 10px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>名称</span><span>密钥</span><span>分组</span><span>额度</span><span>速率限额</span><span>状态</span><span style="text-align: right;">操作</span>
+            </div>
+            <sc-for list="{{ keyRows }}" as="k" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 1.3fr 1.2fr 0.8fr 1.2fr 0.9fr 0.7fr 1fr; gap: 14px; align-items: center; padding: 13px 20px; border-top: 1px solid var(--bx-line); font-size: 13px; transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+                <span>
+                  <span style="display: block; font-weight: 700;">{{ k.name }}</span>
+                  <span style="display: block; margin-top: 1px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">{{ k.lastUsed }}</span>
+                </span>
+                <button style="display: inline-flex; align-items: center; gap: 6px; border: none; background: transparent; cursor: pointer; font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-soft); padding: 0; width: fit-content;" style-hover="color: var(--bx-brand-bright);">
+                  {{ k.masked }}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+                </button>
+                <span style="font-size: 12px; color: var(--bx-text-muted);">{{ k.group }}</span>
+                <span>
+                  <span style="display: block; font-family: var(--bx-font-mono); font-size: 11px; font-variant-numeric: tabular-nums; color: var(--bx-text-soft);">{{ k.quotaText }}</span>
+                  <sc-if value="{{ k.hasQuota }}" hint-placeholder-val="{{ true }}">
+                    <span style="display: block; margin-top: 4px; height: 4px; border-radius: 999px; background: var(--bx-bg-muted); overflow: hidden;"><span style="display: block; height: 100%; border-radius: 999px; width: {{ k.quotaPct }}; background: {{ k.quotaColor }};"></span></span>
+                  </sc-if>
+                </span>
+                <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-muted);">{{ k.rate }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: {{ k.statusColor }};"><span style="width: 6px; height: 6px; border-radius: 999px; background: currentColor;"></span>{{ k.status }}</span>
+                <span style="display: flex; justify-content: flex-end; gap: 4px;">
+                  <button style="cursor: pointer; border-radius: 6px; padding: 5px 10px; font-size: 11.5px; font-weight: 600; font-family: inherit; background: transparent; border: 1px solid var(--bx-border); color: var(--bx-text-soft);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">编辑</button>
+                  <button style="cursor: pointer; border-radius: 6px; padding: 5px 10px; font-size: 11.5px; font-weight: 600; font-family: inherit; background: transparent; border: 1px solid var(--bx-border); color: var(--bx-text-soft);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">{{ k.toggleLabel }}</button>
+                  <button aria-label="删除" style="display: inline-flex; cursor: pointer; border-radius: 6px; padding: 5px 8px; font-family: inherit; background: transparent; border: 1px solid var(--bx-border); color: var(--bx-danger);" style-hover="background: var(--bx-danger-soft); color: var(--bx-danger);">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                  </button>
+                </span>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin: 14px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">4 keys · 第 1 / 1 页</p>
+        </div>
+      </sc-if>
+
+      <!-- ══ 用量 ══ -->
+      <sc-if value="{{ isUsage }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">用量统计</h1>
+            <div style="display: flex; gap: 8px;">
+              <input type="date" value="2026-07-16" style="border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 6px 10px; font-size: 12.5px; font-family: var(--bx-font-mono); outline: none;">
+              <input type="date" value="2026-07-17" style="border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 6px 10px; font-size: 12.5px; font-family: var(--bx-font-mono); outline: none;">
+              <button style="cursor: pointer; border-radius: var(--bx-radius); padding: 6px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">导出 CSV</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <sc-for list="{{ usageStats }}" as="st" hint-placeholder-count="6">
+              <div style="padding: 14px 18px; border-left: {{ st.borderLeft }};">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">{{ st.label }}</p>
+                <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ st.value }}</p>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <p style="margin: 0; font-size: 13.5px; font-weight: 700;">用量趋势</p>
+              <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">granularity: day</span>
+            </div>
+            <div style="margin-top: 14px; display: flex; align-items: flex-end; gap: 5px; height: 110px; border-bottom: 1px solid var(--bx-border);">
+              <sc-for list="{{ trend }}" as="bar" hint-placeholder-count="14">
+                <div style="display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%;" title="{{ bar.title }}">
+                  <div style="width: 100%; max-width: 40px; border-radius: 3px 3px 0 0; background: {{ bar.bg }}; height: {{ bar.h }}; transform-origin: bottom; animation: bx-bar-grow 0.8s var(--bx-ease) both {{ bar.delay }};"></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top: 6px; display: flex; justify-content: space-between; font-family: var(--bx-font-mono); font-size: 9.5px; color: var(--bx-text-dim);"><span>07-04</span><span>07-17</span></div>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; gap: 2px; border-bottom: 1px solid var(--bx-border);">
+            <button style="margin-bottom: -1px; border: none; border-bottom: 2px solid var(--bx-brand); background: transparent; cursor: pointer; padding: 8px 16px; font-size: 13px; font-weight: 700; color: var(--bx-text); font-family: inherit;">明细</button>
+            <button style="margin-bottom: -1px; border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--bx-text-dim); font-family: inherit;" style-hover="color: var(--bx-text-soft);">错误</button>
+            <button style="margin-bottom: -1px; border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--bx-text-dim); font-family: inherit;" style-hover="color: var(--bx-text-soft);">模型</button>
+          </div>
+
+          <div style="margin-top: 14px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.2fr 1.4fr 1fr 0.8fr 0.7fr 0.8fr 0.6fr; gap: 14px; padding: 10px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>时间</span><span>模型</span><span>密钥</span><span style="text-align: right;">Token</span><span style="text-align: right;">费用</span><span style="text-align: right;">耗时</span><span style="text-align: right;">流式</span>
+            </div>
+            <sc-for list="{{ usageLogs }}" as="row" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 1.2fr 1.4fr 1fr 0.8fr 0.7fr 0.8fr 0.6fr; gap: 14px; align-items: center; padding: 10px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px; transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+                <span style="font-family: var(--bx-font-mono); font-size: 11px; white-space: nowrap; color: var(--bx-text-muted);">{{ row.time }}</span>
+                <span style="font-family: var(--bx-font-mono); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--bx-text-soft);">{{ row.model }}</span>
+                <span style="font-size: 12px; color: var(--bx-text-muted);">{{ row.key }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums;">{{ row.tokens }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums;">{{ row.cost }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--bx-text-muted);">{{ row.duration }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11px; color: {{ row.streamColor }};">{{ row.stream }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 订阅 ══ -->
+      <sc-if value="{{ isSubscription }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">订阅</h1>
+            <div style="display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--bx-border); border-radius: 999px; background: var(--bx-bg-elevated);">
+              <button onClick="{{ setMonthly }}" style="{{ cycleMonthlyStyle }}">按月</button>
+              <button onClick="{{ setYearly }}" style="{{ cycleYearlyStyle }}">按年 · 省 20%</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-radius: var(--bx-radius-xl); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; box-shadow: var(--bx-shadow-card); padding: 20px 24px;">
+            <div style="min-width: 0;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">当前订阅</p>
+              <div style="display: flex; align-items: baseline; gap: 10px; margin-top: 6px;">
+                <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">专业 Pro</span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 3px 10px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; background: var(--bx-success-soft); color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>生效中</span>
+              </div>
+              <p style="margin: 8px 0 0; font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-muted);">下次续费 2026-08-17 · 自动续订 · {{ proPriceLabel }}</p>
+            </div>
+            <div style="display: flex; flex-shrink: 0; gap: 8px;">
+              <button style="cursor: pointer; border-radius: var(--bx-radius); padding: 8px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">管理付款方式</button>
+              <button style="cursor: pointer; border-radius: var(--bx-radius); padding: 8px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text-muted);" style-hover="border-color: var(--bx-danger); color: var(--bx-danger);">取消订阅</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <sc-for list="{{ plans }}" as="p" hint-placeholder-count="4">
+              <div style="{{ p.cardStyle }}">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <p style="margin: 0; font-size: 15px; font-weight: 800;">{{ p.name }}</p>
+                  <sc-if value="{{ p.current }}" hint-placeholder-val="{{ false }}"><span style="border-radius: 999px; padding: 2px 8px; font-family: var(--bx-font-mono); font-size: 9.5px; font-weight: 600; background: var(--bx-brand-soft); color: var(--bx-brand-bright);">当前</span></sc-if>
+                </div>
+                <p style="margin: 4px 0 0; font-size: 11.5px; color: var(--bx-text-dim);">{{ p.desc }}</p>
+                <div style="display: flex; align-items: baseline; gap: 3px; margin-top: 14px;">
+                  <span style="font-family: var(--bx-font-mono); font-size: 28px; font-weight: 600; letter-spacing: -0.02em;">{{ p.price }}</span>
+                  <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">{{ p.period }}</span>
+                </div>
+                <div style="margin: 16px 0 0; display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="4">
+                    <div style="display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: var(--bx-text-soft);">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M20 6 9 17l-5-5"></path></svg>
+                      {{ f }}
+                    </div>
+                  </sc-for>
+                </div>
+                <button style="{{ p.ctaStyle }}">{{ p.cta }}</button>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 10px;">
+              <p style="margin: 0; font-size: 13.5px; font-weight: 700;">发票记录</p>
+              <button style="cursor: pointer; border: none; background: transparent; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; color: var(--bx-brand-bright);" style-hover="color: var(--bx-cyan);">全部下载</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1.6fr 0.8fr 0.7fr 0.6fr; gap: 14px; padding: 8px 20px; border-top: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>日期</span><span>说明</span><span style="text-align: right;">金额</span><span>状态</span><span style="text-align: right;">发票</span>
+            </div>
+            <sc-for list="{{ invoices }}" as="iv" hint-placeholder-count="4">
+              <div style="display: grid; grid-template-columns: 1fr 1.6fr 0.8fr 0.7fr 0.6fr; gap: 14px; align-items: center; padding: 11px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px; transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+                <span style="font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-muted);">{{ iv.date }}</span>
+                <span style="color: var(--bx-text-soft);">{{ iv.desc }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums;">{{ iv.amount }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>已支付</span>
+                <span style="text-align: right;"><button aria-label="下载" style="cursor: pointer; border: none; background: transparent; color: var(--bx-text-muted); padding: 0;" style-hover="color: var(--bx-brand-bright);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg></button></span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 订单 ══ -->
+      <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">订单</h1>
+            <div style="display: flex; gap: 8px;">
+              <select aria-label="类型筛选" style="border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none;">
+                <option>全部类型</option><option>充值</option><option>订阅</option><option>退款</option>
+              </select>
+              <button style="cursor: pointer; border-radius: var(--bx-radius); padding: 7px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">导出 CSV</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <sc-for list="{{ orderStats }}" as="st" hint-placeholder-count="4">
+              <div style="padding: 16px 18px; border-left: {{ st.borderLeft }};">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">{{ st.label }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--bx-font-mono); font-size: 21px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ st.color }};">{{ st.value }}</p>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.3fr 0.7fr 1.6fr 0.9fr 0.8fr 0.7fr; gap: 14px; padding: 10px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>订单号</span><span>类型</span><span>说明</span><span style="text-align: right;">金额</span><span>支付方式</span><span>状态</span>
+            </div>
+            <sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 1.3fr 0.7fr 1.6fr 0.9fr 0.8fr 0.7fr; gap: 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px; transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+                <span>
+                  <span style="display: block; font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-soft);">{{ o.id }}</span>
+                  <span style="display: block; margin-top: 2px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">{{ o.date }}</span>
+                </span>
+                <span><span style="border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; background: {{ o.typeBg }}; color: {{ o.typeColor }};">{{ o.type }}</span></span>
+                <span style="color: var(--bx-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ o.desc }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ o.amountColor }};">{{ o.amount }}</span>
+                <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-muted);">{{ o.method }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: {{ o.statusColor }};"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>{{ o.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin: 14px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">6 orders · 第 1 / 3 页</p>
+        </div>
+      </sc-if>
+
+      <!-- ══ 兑换 ══ -->
+      <sc-if value="{{ isRedeem }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">兑换</h1>
+          <p style="margin: 6px 0 0; font-size: 13px; color: var(--bx-text-muted);">输入兑换码为账户充值，或激活订阅权益。</p>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px;">
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 22px 24px;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">兑换码</p>
+              <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <input placeholder="XXXX-XXXX-XXXX-XXXX" style="flex: 1; box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 11px 14px; font-size: 15px; font-family: var(--bx-font-mono); letter-spacing: 0.12em; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+                <button style="border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 0 22px; font-size: 14px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">立即兑换</button>
+              </div>
+              <p style="margin: 14px 0 0; font-size: 12px; line-height: 1.6; color: var(--bx-text-dim);">兑换码通常由 16 位字符组成，区分大小写。每个兑换码仅可使用一次，兑换后金额将实时到账。如遇问题请联系客服。</p>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; border-radius: var(--bx-radius-xl); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; box-shadow: var(--bx-shadow-card); padding: 22px 24px;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">当前余额</p>
+              <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$128.50</p>
+              <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-success);">累计兑换 $85.00 · 3 次</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <p style="margin: 0; padding: 14px 20px 10px; font-size: 13.5px; font-weight: 700;">兑换记录</p>
+            <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.8fr; gap: 14px; padding: 8px 20px; border-top: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>兑换码</span><span>类型</span><span style="text-align: right;">面值</span><span>时间</span>
+            </div>
+            <sc-for list="{{ redeemRows }}" as="r" hint-placeholder-count="3">
+              <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.8fr; gap: 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px;">
+                <span style="font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-soft);">{{ r.code }}</span>
+                <span style="color: var(--bx-text-muted);">{{ r.type }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-weight: 600; color: var(--bx-success);">{{ r.value }}</span>
+                <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ r.time }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 可用渠道 ══ -->
+      <sc-if value="{{ isChannels }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <div>
+              <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">可用渠道</h1>
+              <p style="margin: 6px 0 0; font-size: 13px; color: var(--bx-text-muted);">当前网关支持的模型与实时定价（每百万 token）。</p>
+            </div>
+            <input placeholder="搜索模型…" style="width: 220px; box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+          </div>
+
+          <div style="margin-top: 18px; display: flex; gap: 6px;">
+            <sc-for list="{{ channelFilters }}" as="cf" hint-placeholder-count="4">
+              <button style="{{ cf.style }}">{{ cf.label }}</button>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 14px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.9fr 0.9fr 0.7fr; gap: 14px; padding: 10px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>模型</span><span>提供方</span><span>类型</span><span style="text-align: right;">输入价</span><span style="text-align: right;">输出价</span><span>状态</span>
+            </div>
+            <sc-for list="{{ channelRows }}" as="c" hint-placeholder-count="7">
+              <div style="display: grid; grid-template-columns: 1.6fr 1fr 0.8fr 0.9fr 0.9fr 0.7fr; gap: 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px; transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <span style="display: inline-flex; height: 26px; width: 26px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 7px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 700; background: {{ c.iconBg }}; color: {{ c.iconColor }};">{{ c.initial }}</span>
+                  <span style="font-family: var(--bx-font-mono); font-size: 12px; font-weight: 600; color: var(--bx-text-soft);">{{ c.model }}</span>
+                </span>
+                <span style="color: var(--bx-text-muted);">{{ c.provider }}</span>
+                <span><span style="border-radius: 5px; padding: 2px 8px; font-size: 10.5px; font-weight: 600; background: {{ c.typeBg }}; color: {{ c.typeColor }};">{{ c.type }}</span></span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums;">{{ c.inPrice }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums;">{{ c.outPrice }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: {{ c.statusColor }};"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>{{ c.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 渠道状态 ══ -->
+      <sc-if value="{{ isMonitor }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">渠道状态</h1>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-success);"><span style="width: 6px; height: 6px; border-radius: 999px; background: currentColor; animation: bx-ping 1.8s var(--bx-ease) infinite;"></span>全部系统运行正常 · 自动刷新 30s</span>
+          </div>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <sc-for list="{{ monitorStats }}" as="m" hint-placeholder-count="4">
+              <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 16px 18px;">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">{{ m.label }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--bx-font-mono); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ m.color }};">{{ m.value }}</p>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 1.3fr 2fr 0.8fr 0.8fr 0.8fr; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>渠道</span><span>近 30 次探测</span><span style="text-align: right;">延迟</span><span style="text-align: right;">成功率</span><span>状态</span>
+            </div>
+            <sc-for list="{{ monitorRows }}" as="ch" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 1.3fr 2fr 0.8fr 0.8fr 0.8fr; gap: 16px; align-items: center; padding: 14px 20px; border-top: 1px solid var(--bx-line); transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+                <span>
+                  <span style="display: block; font-size: 13px; font-weight: 700;">{{ ch.name }}</span>
+                  <span style="display: block; margin-top: 1px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">{{ ch.region }}</span>
+                </span>
+                <span style="display: flex; align-items: flex-end; gap: 2px; height: 24px;">
+                  <sc-for list="{{ ch.bars }}" as="b" hint-placeholder-count="30">
+                    <span style="flex: 1; border-radius: 1px; height: {{ b.h }}; background: {{ b.color }};"></span>
+                  </sc-for>
+                </span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--bx-text-soft);">{{ ch.latency }}</span>
+                <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--bx-text-soft);">{{ ch.uptime }}</span>
+                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: {{ ch.statusColor }};"><span style="width: 6px; height: 6px; border-radius: 999px; background: currentColor;"></span>{{ ch.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 批量图像 ══ -->
+      <sc-if value="{{ isBatchImage }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <div>
+              <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">批量图像</h1>
+              <p style="margin: 6px 0 0; font-size: 13px; color: var(--bx-text-muted);">一次提交多条 prompt，批量生成并统一下载。</p>
+            </div>
+            <button style="display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 8px 16px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              新建批次
+            </button>
+          </div>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; align-items: start;">
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+              <p style="margin: 0 0 12px; font-size: 13.5px; font-weight: 700;">快速提交</p>
+              <label style="display: block; margin-bottom: 4px; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">Prompt（每行一条）</label>
+              <textarea rows="4" placeholder="a serene mountain lake at dawn&#10;cyberpunk street market, neon rain&#10;minimalist product shot, studio light" style="width: 100%; box-sizing: border-box; resize: vertical; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 10px 12px; font-size: 12.5px; font-family: var(--bx-font-mono); line-height: 1.6; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);"></textarea>
+              <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="display: flex; flex-direction: column; gap: 4px; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">模型
+                  <select style="border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 7px 10px; font-size: 12.5px; font-family: inherit; outline: none;"><option>flux-1.1-pro</option><option>sdxl-turbo</option><option>ideogram-v2</option></select>
+                </label>
+                <label style="display: flex; flex-direction: column; gap: 4px; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">尺寸
+                  <select style="border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 7px 10px; font-size: 12.5px; font-family: inherit; outline: none;"><option>1024×1024</option><option>1344×768</option><option>768×1344</option></select>
+                </label>
+              </div>
+              <button style="margin-top: 14px; width: 100%; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 10px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">提交批次 · 预计 $0.12</button>
+            </div>
+
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+              <p style="margin: 0; padding: 14px 20px 10px; font-size: 13.5px; font-weight: 700;">近期批次</p>
+              <sc-for list="{{ batchJobs }}" as="j" hint-placeholder-count="3">
+                <div style="padding: 12px 20px; border-top: 1px solid var(--bx-line);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                    <span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--bx-font-mono); font-size: 12px; color: var(--bx-text-soft);">{{ j.prompt }}</span>
+                    <span style="flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: {{ j.statusColor }};"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>{{ j.status }}</span>
+                  </div>
+                  <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
+                    <span style="flex: 1; height: 5px; border-radius: 999px; background: var(--bx-bg-muted); overflow: hidden;"><span style="display: block; height: 100%; border-radius: 999px; width: {{ j.pct }}; background: {{ j.barColor }};"></span></span>
+                    <span style="flex-shrink: 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ j.count }} · {{ j.model }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <p style="margin: 0; font-size: 13.5px; font-weight: 700;">最新产物</p>
+              <button style="cursor: pointer; border: none; background: transparent; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; color: var(--bx-brand-bright);" style-hover="color: var(--bx-cyan);">打包下载 zip</button>
+            </div>
+            <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;">
+              <sc-for list="{{ batchGallery }}" as="g" hint-placeholder-count="6">
+                <div style="position: relative; aspect-ratio: 1; border-radius: var(--bx-radius); overflow: hidden; border: 1px solid var(--bx-border); background-image: repeating-linear-gradient(135deg, var(--bx-bg-muted) 0 8px, var(--bx-bg-deep) 8px 16px);">
+                  <span style="position: absolute; left: 6px; bottom: 5px; font-family: var(--bx-font-mono); font-size: 9px; color: var(--bx-text-dim);">{{ g }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 个人资料 ══ -->
+      <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">个人资料</h1>
+          <p style="margin: 6px 0 0; font-size: 13px; color: var(--bx-text-muted);">更新你的公开信息与偏好设置。</p>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1.8fr; gap: 12px; align-items: start;">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 26px 24px;">
+              <div style="display: flex; height: 76px; width: 76px; align-items: center; justify-content: center; border-radius: 18px; background: var(--bx-grad-cta); font-size: 30px; font-weight: 800; color: var(--bx-ink);">C</div>
+              <p style="margin: 14px 0 0; font-size: 15px; font-weight: 800;">creator</p>
+              <p style="margin: 2px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">creator@you-box.com</p>
+              <button style="margin-top: 16px; cursor: pointer; border-radius: var(--bx-radius); padding: 7px 16px; font-size: 12px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">更换头像</button>
+              <p style="margin: 16px 0 0; padding-top: 16px; border-top: 1px solid var(--bx-line); width: 100%; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">加入于 2025-11-02 · UID 88213</p>
+            </div>
+
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 22px 24px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <sc-for list="{{ profileFields }}" as="pf" hint-placeholder-count="4">
+                  <label style="display: flex; flex-direction: column; gap: 5px; grid-column: {{ pf.span }};">
+                    <span style="font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">{{ pf.label }}</span>
+                    <input value="{{ pf.value }}" style="box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 9px 12px; font-size: 13px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+                  </label>
+                </sc-for>
+                <label style="display: flex; flex-direction: column; gap: 5px; grid-column: 1 / -1;">
+                  <span style="font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">简介</span>
+                  <textarea rows="3" style="box-sizing: border-box; resize: vertical; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 10px 12px; font-size: 13px; font-family: inherit; line-height: 1.6; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">独立创作者，专注 AI 辅助的视觉与内容生产。</textarea>
+                </label>
+              </div>
+              <div style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px;">
+                <button style="cursor: pointer; border-radius: var(--bx-radius); padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text-muted);" style-hover="color: var(--bx-text);">重置</button>
+                <button style="border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 9px 20px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">保存更改</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 安全 ══ -->
+      <sc-if value="{{ isSecurity }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">安全</h1>
+          <p style="margin: 6px 0 0; font-size: 13px; color: var(--bx-text-muted);">保护你的账户，管理登录设备与验证方式。</p>
+
+          <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 20px 22px;">
+              <p style="margin: 0; font-size: 13.5px; font-weight: 700;">修改密码</p>
+              <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+                <input type="password" placeholder="当前密码" style="box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 9px 12px; font-size: 13px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+                <input type="password" placeholder="新密码" style="box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 9px 12px; font-size: 13px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+                <input type="password" placeholder="确认新密码" style="box-sizing: border-box; border-radius: var(--bx-radius); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-muted); color: var(--bx-text); padding: 9px 12px; font-size: 13px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+              </div>
+              <button style="margin-top: 14px; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">更新密码</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 22px;">
+                <div>
+                  <p style="margin: 0; font-size: 13.5px; font-weight: 700;">两步验证 2FA</p>
+                  <p style="margin: 5px 0 0; font-size: 12px; color: var(--bx-text-muted);">已通过验证器 App 绑定</p>
+                </div>
+                <span style="display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 4px 12px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; background: var(--bx-success-soft); color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>已开启</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 22px;">
+                <div>
+                  <p style="margin: 0; font-size: 13.5px; font-weight: 700;">登录提醒邮件</p>
+                  <p style="margin: 5px 0 0; font-size: 12px; color: var(--bx-text-muted);">新设备登录时通知我</p>
+                </div>
+                <span style="position: relative; width: 40px; height: 22px; border-radius: 999px; background: var(--bx-brand); flex-shrink: 0;"><span style="position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 999px; background: var(--bx-text);"></span></span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+            <p style="margin: 0; padding: 14px 20px 10px; font-size: 13.5px; font-weight: 700;">登录设备与会话</p>
+            <div style="display: grid; grid-template-columns: 1.4fr 1.2fr 1fr 0.8fr; gap: 14px; padding: 8px 20px; border-top: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+              <span>设备</span><span>位置</span><span>最近活跃</span><span style="text-align: right;">操作</span>
+            </div>
+            <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="3">
+              <div style="display: grid; grid-template-columns: 1.4fr 1.2fr 1fr 0.8fr; gap: 14px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px;">
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-weight: 700;">{{ s.device }}</span>
+                  <sc-if value="{{ s.current }}" hint-placeholder-val="{{ false }}"><span style="border-radius: 5px; padding: 1px 7px; font-family: var(--bx-font-mono); font-size: 9.5px; font-weight: 600; background: var(--bx-brand-soft); color: var(--bx-brand-bright);">本机</span></sc-if>
+                </span>
+                <span style="color: var(--bx-text-muted);">{{ s.location }}</span>
+                <span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">{{ s.active }}</span>
+                <span style="text-align: right;"><button style="cursor: pointer; border-radius: 6px; padding: 4px 12px; font-size: 11.5px; font-weight: 600; font-family: inherit; background: transparent; border: 1px solid var(--bx-border); color: {{ s.actionColor }};" style-hover="border-color: var(--bx-danger); color: var(--bx-danger);">{{ s.action }}</button></span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--bx-danger-soft); border-radius: var(--bx-radius-xl); background: var(--bx-danger-soft); padding: 18px 22px;">
+            <div>
+              <p style="margin: 0; font-size: 13.5px; font-weight: 700; color: var(--bx-danger);">注销账户</p>
+              <p style="margin: 5px 0 0; font-size: 12px; color: var(--bx-text-muted);">永久删除账户及全部数据，此操作不可撤销。</p>
+            </div>
+            <button style="flex-shrink: 0; cursor: pointer; border-radius: var(--bx-radius); padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-danger); background: transparent; color: var(--bx-danger);" style-hover="background: var(--bx-danger); color: var(--bx-bg);">删除账户</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 推广 ══ -->
+      <sc-if value="{{ isAffiliate }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">推广</h1>
+          <p style="margin: 6px 0 0; font-size: 13px; color: var(--bx-text-muted);">分享你的专属链接，每位付费用户返佣 15%。</p>
+
+          <div style="margin-top: 20px; display: flex; align-items: center; gap: 12px; border-radius: var(--bx-radius-xl); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; box-shadow: var(--bx-shadow-card); padding: 16px 20px;">
+            <div style="min-width: 0; flex: 1;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">我的推广链接</p>
+              <p style="margin: 6px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--bx-font-mono); font-size: 14px; color: var(--bx-brand-bright);">https://you-box.com/r/creator-88213</p>
+            </div>
+            <button style="flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 9px 18px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+              复制链接
+            </button>
+          </div>
+
+          <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <sc-for list="{{ affiliateStats }}" as="a" hint-placeholder-count="4">
+              <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 16px 18px;">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">{{ a.label }}</p>
+                <p style="margin: 8px 0 0; font-family: var(--bx-font-mono); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ a.color }};">{{ a.value }}</p>
+                <p style="margin: 5px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ a.sub }}</p>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top: 12px; display: grid; grid-template-columns: 1.6fr 1fr; gap: 12px; align-items: start;">
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+              <p style="margin: 0; padding: 14px 20px 10px; font-size: 13.5px; font-weight: 700;">推荐用户</p>
+              <div style="display: grid; grid-template-columns: 1.4fr 1fr 0.8fr 0.8fr; gap: 14px; padding: 8px 20px; border-top: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+                <span>用户</span><span>状态</span><span style="text-align: right;">消费</span><span style="text-align: right;">返佣</span>
+              </div>
+              <sc-for list="{{ referrals }}" as="rf" hint-placeholder-count="4">
+                <div style="display: grid; grid-template-columns: 1.4fr 1fr 0.8fr 0.8fr; gap: 14px; align-items: center; padding: 11px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px;">
+                  <span style="font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-soft);">{{ rf.user }}</span>
+                  <span style="font-size: 11.5px; font-weight: 600; color: {{ rf.statusColor }};">{{ rf.status }}</span>
+                  <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--bx-text-muted);">{{ rf.spent }}</span>
+                  <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--bx-success);">{{ rf.commission }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 20px 22px;">
+              <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">可提现余额</p>
+              <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 30px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;">$62.40</p>
+              <button style="margin-top: 16px; width: 100%; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 10px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">申请提现</button>
+              <p style="margin: 12px 0 0; font-size: 11.5px; line-height: 1.6; color: var(--bx-text-dim);">满 $50 可提现，通常 3 个工作日内到账。当前佣金等级：<span style="color: var(--bx-brand-bright); font-weight: 600;">白银 · 15%</span></p>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ══ 公告 ══ -->
+      <sc-if value="{{ isAnnouncements }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.03em;">公告</h1>
+            <button style="cursor: pointer; border-radius: var(--bx-radius); padding: 7px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text-muted);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">全部标记为已读</button>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ announcements }}" as="an" hint-placeholder-count="4">
+              <div style="border: 1px solid {{ an.borderColor }}; border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 22px; transition: border-color var(--bx-dur-fast) ease;" style-hover="border-color: var(--bx-border-strong);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="border-radius: 5px; padding: 3px 10px; font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; background: {{ an.tagBg }}; color: {{ an.tagColor }};">{{ an.tag }}</span>
+                  <sc-if value="{{ an.unread }}" hint-placeholder-val="{{ false }}"><span style="width: 6px; height: 6px; border-radius: 999px; background: var(--bx-brand);"></span></sc-if>
+                  <span style="margin-left: auto; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ an.date }}</span>
+                </div>
+                <p style="margin: 12px 0 0; font-size: 15px; font-weight: 700; letter-spacing: -0.01em;">{{ an.title }}</p>
+                <p style="margin: 7px 0 0; font-size: 13px; line-height: 1.65; color: var(--bx-text-muted); text-wrap: pretty;">{{ an.body }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- other fallback -->
+      <sc-if value="{{ isOther }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; min-height: 260px; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 1px dashed var(--bx-border-strong); border-radius: var(--bx-radius-xl); text-align: center;">
+          <strong style="font-size: 15px; font-weight: 800;">{{ otherTitle }}</strong>
+          <p style="margin: 0; max-width: 360px; font-size: 13px; color: var(--bx-text-muted);">此页面沿用同一套 Precision Teal token（导航结构见左侧分组）。</p>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+
+  <dc-import name="Footer" hint-size="100%,360px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'overview', yearly: false };
+  renderVals() {
+    const tab = this.state.tab;
+    const groups = [
+      { label: 'Workspace', items: [['overview', '概览'], ['keys', 'API 密钥'], ['usage', '用量']] },
+      { label: 'Billing', items: [['subscription', '订阅'], ['orders', '订单'], ['redeem', '兑换']] },
+      { label: 'Platform', items: [['channels', '可用渠道'], ['monitor', '渠道状态'], ['batchImage', '批量图像']] },
+      { label: 'Account', items: [['profile', '个人资料'], ['security', '安全'], ['affiliate', '推广'], ['announcements', '公告']] },
+    ];
+    const base = 'display: block; width: 100%; box-sizing: border-box; white-space: nowrap; border: none; cursor: pointer; text-align: left; border-radius: 6px; padding: 6.5px 10px; font-size: 13px; font-weight: 500; font-family: inherit; transition: color 0.12s, background 0.12s; background: transparent; color: var(--bx-text-muted);';
+    const activeS = 'display: block; width: 100%; box-sizing: border-box; white-space: nowrap; border: none; cursor: pointer; text-align: left; border-radius: 6px; padding: 6.5px 10px; font-size: 13px; font-weight: 700; font-family: inherit; background: var(--bx-active); color: var(--bx-brand-bright);';
+    const known = ['overview', 'keys', 'usage', 'subscription', 'orders', 'redeem', 'channels', 'monitor', 'batchImage', 'profile', 'security', 'affiliate', 'announcements'];
+    const flat = groups.flatMap((g) => g.items);
+    const pill = (on) => 'cursor: pointer; border: none; border-radius: 999px; padding: 6px 16px; font-size: 12px; font-weight: 700; font-family: inherit; transition: all 0.14s;' + (on ? ' background: var(--bx-grad-cta); color: var(--bx-ink);' : ' background: transparent; color: var(--bx-text-muted);');
+    const yearly = this.state.yearly;
+    const cardBase = 'border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 18px 20px;';
+    const cardHi = 'border-radius: var(--bx-radius-xl); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; box-shadow: var(--bx-shadow-card); padding: 18px 20px;';
+    const ctaHi = 'margin-top: 18px; width: 100%; box-sizing: border-box; border: none; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 9px; font-size: 12.5px; font-weight: 700; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);';
+    const ctaGhost = 'margin-top: 18px; width: 100%; box-sizing: border-box; cursor: pointer; border-radius: var(--bx-radius-btn); padding: 9px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);';
+    const ctaCurrent = 'margin-top: 18px; width: 100%; box-sizing: border-box; cursor: default; border-radius: var(--bx-radius-btn); padding: 9px; font-size: 12.5px; font-weight: 700; font-family: inherit; border: 1px solid var(--bx-brand-ring); background: var(--bx-brand-soft); color: var(--bx-brand-bright);';
+    const chFilter = (on) => 'cursor: pointer; border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 600; font-family: inherit; transition: all 0.14s;' + (on ? ' border: 1px solid var(--bx-brand-ring); background: var(--bx-brand-soft); color: var(--bx-brand-bright);' : ' border: 1px solid var(--bx-border); background: transparent; color: var(--bx-text-muted);');
+    const mkBars = (fails) => Array.from({ length: 30 }, (_, i) => {
+      const bad = fails.includes(i);
+      return { h: bad ? '55%' : (60 + ((i * 37) % 40)) + '%', color: bad ? 'var(--bx-danger)' : 'var(--bx-success)' };
+    });
+    return {
+      isOverview: tab === 'overview',
+      isKeys: tab === 'keys',
+      isUsage: tab === 'usage',
+      isSubscription: tab === 'subscription',
+      isOrders: tab === 'orders',
+      isRedeem: tab === 'redeem',
+      isChannels: tab === 'channels',
+      isMonitor: tab === 'monitor',
+      isBatchImage: tab === 'batchImage',
+      isProfile: tab === 'profile',
+      isSecurity: tab === 'security',
+      isAffiliate: tab === 'affiliate',
+      isAnnouncements: tab === 'announcements',
+      isOther: !known.includes(tab),
+      otherTitle: (flat.find((n) => n[0] === tab) || ['', ''])[1],
+      setMonthly: () => this.setState({ yearly: false }),
+      setYearly: () => this.setState({ yearly: true }),
+      cycleMonthlyStyle: pill(!yearly),
+      cycleYearlyStyle: pill(yearly),
+      proPriceLabel: yearly ? '$278/年' : '$29/月',
+      plans: [
+        { name: '免费', desc: '个人体验', price: '$0', period: '/月', current: false, cta: '降级', cardStyle: cardBase, ctaStyle: ctaGhost, features: ['每日 200 次请求', '基础对话模型', '社区支持'] },
+        { name: '专业', desc: '创作者首选', price: yearly ? '$23' : '$29', period: '/月', current: true, cta: '当前方案', cardStyle: cardHi, ctaStyle: ctaCurrent, features: ['无限请求', '全部文本 / 图像模型', '优先推理队列', '邮件支持'] },
+        { name: '团队', desc: '小团队协作', price: yearly ? '$79' : '$99', period: '/月', current: false, cta: '升级', cardStyle: cardBase, ctaStyle: ctaHi, features: ['5 个席位', '团队用量看板', 'SSO 单点登录', '专属客服'] },
+        { name: '企业', desc: '规模化部署', price: '定制', period: '', current: false, cta: '联系销售', cardStyle: cardBase, ctaStyle: ctaGhost, features: ['独享算力池', '私有化部署', 'SLA 保障', '方案架构师'] },
+      ],
+      invoices: [
+        { date: '2026-07-17', desc: '专业订阅 · 月度', amount: '$29.00' },
+        { date: '2026-06-17', desc: '专业订阅 · 月度', amount: '$29.00' },
+        { date: '2026-05-20', desc: '账户充值', amount: '$50.00' },
+        { date: '2026-05-17', desc: '专业订阅 · 月度', amount: '$29.00' },
+      ],
+      orderStats: [
+        { label: '累计充值', value: '$342.00', color: 'var(--bx-text)', borderLeft: 'none' },
+        { label: '本月消费', value: '$46.20', color: 'var(--bx-text)', borderLeft: '1px solid var(--bx-border)' },
+        { label: '订单总数', value: '18', color: 'var(--bx-text)', borderLeft: '1px solid var(--bx-border)' },
+        { label: '退款金额', value: '$5.00', color: 'var(--bx-warning)', borderLeft: '1px solid var(--bx-border)' },
+      ],
+      orderRows: [
+        { id: 'ORD-2026-0718', date: '2026-07-18 09:14', type: '充值', desc: 'Stripe 余额充值 $50', amount: '+$50.00', method: 'Visa ·4421', status: '成功', typeBg: 'var(--bx-success-soft)', typeColor: 'var(--bx-success)', amountColor: 'var(--bx-success)', statusColor: 'var(--bx-success)' },
+        { id: 'ORD-2026-0717', date: '2026-07-17 08:00', type: '订阅', desc: '专业订阅 · 月度续费', amount: '-$29.00', method: 'Visa ·4421', status: '成功', typeBg: 'var(--bx-info-soft)', typeColor: 'var(--bx-info)', amountColor: 'var(--bx-text)', statusColor: 'var(--bx-success)' },
+        { id: 'ORD-2026-0702', date: '2026-07-02 16:41', type: '充值', desc: '支付宝充值 $100', amount: '+$100.00', method: '支付宝', status: '成功', typeBg: 'var(--bx-success-soft)', typeColor: 'var(--bx-success)', amountColor: 'var(--bx-success)', statusColor: 'var(--bx-success)' },
+        { id: 'ORD-2026-0629', date: '2026-06-29 11:20', type: '退款', desc: '重复订单退款', amount: '+$5.00', method: '原路退回', status: '已退款', typeBg: 'var(--bx-warning-soft)', typeColor: 'var(--bx-warning)', amountColor: 'var(--bx-warning)', statusColor: 'var(--bx-warning)' },
+        { id: 'ORD-2026-0617', date: '2026-06-17 08:00', type: '订阅', desc: '专业订阅 · 月度续费', amount: '-$29.00', method: 'Visa ·4421', status: '成功', typeBg: 'var(--bx-info-soft)', typeColor: 'var(--bx-info)', amountColor: 'var(--bx-text)', statusColor: 'var(--bx-success)' },
+        { id: 'ORD-2026-0520', date: '2026-05-20 20:33', type: '充值', desc: '微信支付充值 $50', amount: '+$50.00', method: '微信', status: '成功', typeBg: 'var(--bx-success-soft)', typeColor: 'var(--bx-success)', amountColor: 'var(--bx-success)', statusColor: 'var(--bx-success)' },
+      ],
+      redeemRows: [
+        { code: 'BOXAI-9F2A-7C41-88D3', type: '余额兑换', value: '+$50.00', time: '2026-06-20 14:02' },
+        { code: 'PROMO-2026-SPRING-01', type: '活动赠金', value: '+$20.00', time: '2026-04-11 09:38' },
+        { code: 'WELCOME-NEW-USER-2211', type: '新人礼包', value: '+$15.00', time: '2025-11-02 10:05' },
+      ],
+      channelFilters: [
+        { label: '全部', style: chFilter(true) },
+        { label: '对话', style: chFilter(false) },
+        { label: '图像', style: chFilter(false) },
+        { label: '视频', style: chFilter(false) },
+      ],
+      channelRows: [
+        { initial: 'A', iconBg: 'var(--bx-info-soft)', iconColor: 'var(--bx-info)', model: 'claude-sonnet-4-5', provider: 'Anthropic', type: '对话', typeBg: 'var(--bx-info-soft)', typeColor: 'var(--bx-info)', inPrice: '$3.00', outPrice: '$15.00', status: '可用', statusColor: 'var(--bx-success)' },
+        { initial: 'A', iconBg: 'var(--bx-info-soft)', iconColor: 'var(--bx-info)', model: 'claude-haiku-4', provider: 'Anthropic', type: '对话', typeBg: 'var(--bx-info-soft)', typeColor: 'var(--bx-info)', inPrice: '$0.80', outPrice: '$4.00', status: '可用', statusColor: 'var(--bx-success)' },
+        { initial: 'O', iconBg: 'var(--bx-info-soft)', iconColor: 'var(--bx-info)', model: 'gpt-5', provider: 'OpenAI', type: '对话', typeBg: 'var(--bx-info-soft)', typeColor: 'var(--bx-info)', inPrice: '$2.50', outPrice: '$10.00', status: '可用', statusColor: 'var(--bx-success)' },
+        { initial: 'G', iconBg: 'var(--bx-info-soft)', iconColor: 'var(--bx-info)', model: 'gemini-3-pro', provider: 'Google', type: '对话', typeBg: 'var(--bx-info-soft)', typeColor: 'var(--bx-info)', inPrice: '$1.25', outPrice: '$5.00', status: '可用', statusColor: 'var(--bx-success)' },
+        { initial: 'F', iconBg: 'var(--bx-warning-soft)', iconColor: 'var(--bx-warning)', model: 'flux-1.1-pro', provider: 'Black Forest', type: '图像', typeBg: 'var(--bx-warning-soft)', typeColor: 'var(--bx-warning)', inPrice: '—', outPrice: '$0.04/张', status: '可用', statusColor: 'var(--bx-success)' },
+        { initial: 'I', iconBg: 'var(--bx-warning-soft)', iconColor: 'var(--bx-warning)', model: 'ideogram-v2', provider: 'Ideogram', type: '图像', typeBg: 'var(--bx-warning-soft)', typeColor: 'var(--bx-warning)', inPrice: '—', outPrice: '$0.06/张', status: '排队中', statusColor: 'var(--bx-warning)' },
+        { initial: 'K', iconBg: 'var(--bx-danger-soft)', iconColor: 'var(--bx-danger)', model: 'kling-2.5-video', provider: 'Kuaishou', type: '视频', typeBg: 'var(--bx-danger-soft)', typeColor: 'var(--bx-danger)', inPrice: '—', outPrice: '$0.28/10s', status: '可用', statusColor: 'var(--bx-success)' },
+      ],
+      monitorStats: [
+        { label: '整体可用率', value: '99.98%', color: 'var(--bx-success)' },
+        { label: '平均延迟', value: '412ms', color: 'var(--bx-text)' },
+        { label: '活跃渠道', value: '7/7', color: 'var(--bx-text)' },
+        { label: '24h 事件', value: '1', color: 'var(--bx-warning)' },
+      ],
+      monitorRows: [
+        { name: 'Anthropic 专线', region: 'us-east · 主', latency: '388ms', uptime: '99.99%', status: '正常', statusColor: 'var(--bx-success)', bars: mkBars([]) },
+        { name: 'OpenAI 专线', region: 'us-west · 主', latency: '441ms', uptime: '99.97%', status: '正常', statusColor: 'var(--bx-success)', bars: mkBars([]) },
+        { name: 'Google 专线', region: 'asia · 备', latency: '520ms', uptime: '99.82%', status: '波动', statusColor: 'var(--bx-warning)', bars: mkBars([22, 23]) },
+        { name: '图像渠道池', region: 'eu-central', latency: '2.1s', uptime: '99.90%', status: '正常', statusColor: 'var(--bx-success)', bars: mkBars([]) },
+        { name: '视频渠道池', region: 'ap-east', latency: '3.4s', uptime: '99.60%', status: '正常', statusColor: 'var(--bx-success)', bars: mkBars([14]) },
+      ],
+      batchJobs: [
+        { prompt: 'serene mountain lake at dawn · +3', status: '生成中', statusColor: 'var(--bx-brand-bright)', pct: '68%', barColor: 'var(--bx-grad-cta)', count: '4 张', model: 'flux-1.1-pro' },
+        { prompt: 'cyberpunk street market, neon rain', status: '完成', statusColor: 'var(--bx-success)', pct: '100%', barColor: 'var(--bx-success)', count: '6 张', model: 'flux-1.1-pro' },
+        { prompt: 'minimalist product shot, studio', status: '完成', statusColor: 'var(--bx-success)', pct: '100%', barColor: 'var(--bx-success)', count: '8 张', model: 'sdxl-turbo' },
+      ],
+      batchGallery: ['lake_01', 'lake_02', 'lake_03', 'market_01', 'market_02', 'product_01'],
+      profileFields: [
+        { label: '用户名', value: 'creator', span: 'auto' },
+        { label: '显示名称', value: 'Creator', span: 'auto' },
+        { label: '邮箱', value: 'creator@you-box.com', span: 'auto' },
+        { label: '所在地区', value: 'Shanghai, CN', span: 'auto' },
+      ],
+      sessions: [
+        { device: 'MacBook Pro · Chrome', location: 'Shanghai, CN', active: '刚刚', current: true, action: '当前', actionColor: 'var(--bx-text-dim)' },
+        { device: 'iPhone 17 · Safari', location: 'Shanghai, CN', active: '2 小时前', current: false, action: '注销', actionColor: 'var(--bx-text-muted)' },
+        { device: 'Windows · Edge', location: 'Beijing, CN', active: '3 天前', current: false, action: '注销', actionColor: 'var(--bx-text-muted)' },
+      ],
+      affiliateStats: [
+        { label: '累计推荐', value: '24', color: 'var(--bx-text)', sub: '本月 +5' },
+        { label: '付费转化', value: '11', color: 'var(--bx-brand-bright)', sub: '转化率 45.8%' },
+        { label: '累计返佣', value: '$186.20', color: 'var(--bx-success)', sub: '已结算 $123.80' },
+        { label: '点击量', value: '1,042', color: 'var(--bx-text)', sub: '近 30 天' },
+      ],
+      referrals: [
+        { user: 'user_4f2a@…', status: '已付费', statusColor: 'var(--bx-success)', spent: '$58.00', commission: '$8.70' },
+        { user: 'dev_kong@…', status: '已付费', statusColor: 'var(--bx-success)', spent: '$29.00', commission: '$4.35' },
+        { user: 'lily_z@…', status: '试用中', statusColor: 'var(--bx-warning)', spent: '$0.00', commission: '$0.00' },
+        { user: 'studio_he@…', status: '已付费', statusColor: 'var(--bx-success)', spent: '$120.00', commission: '$18.00' },
+      ],
+      announcements: [
+        { tag: '新功能', tagBg: 'var(--bx-brand-soft)', tagColor: 'var(--bx-brand-bright)', borderColor: 'var(--bx-brand-ring)', unread: true, date: '2026-07-16', title: '批量图像生成正式上线', body: '现在你可以在「批量图像」中一次提交多条 prompt，系统会并行生成并支持打包下载，适合素材批量生产场景。' },
+        { tag: '模型更新', tagBg: 'var(--bx-info-soft)', tagColor: 'var(--bx-info)', borderColor: 'var(--bx-border)', unread: true, date: '2026-07-10', title: '新增 gemini-3-pro 渠道', body: 'Google Gemini 3 Pro 已接入网关，输入 $1.25 / 输出 $5.00 每百万 token，即刻可在创作台与 API 中选用。' },
+        { tag: '维护', tagBg: 'var(--bx-warning-soft)', tagColor: 'var(--bx-warning)', borderColor: 'var(--bx-border)', unread: false, date: '2026-07-03', title: '亚太备用渠道计划维护', body: '7 月 5 日 02:00–03:00（UTC+8）将对亚太备用渠道进行维护，期间请求会自动切换至主渠道，预计无感知。' },
+        { tag: '公告', tagBg: 'var(--bx-bg-muted)', tagColor: 'var(--bx-text-muted)', borderColor: 'var(--bx-border)', unread: false, date: '2026-06-28', title: '推广返佣比例上调至 15%', body: '为回馈社区，所有推广者的返佣比例由 12% 上调至 15%，即日起对新产生的付费订单生效。' },
+      ],
+      navGroups: groups.map((g) => ({
+        label: g.label,
+        items: g.items.map(([key, label]) => ({
+          label: label,
+          style: key === tab ? activeS : base,
+          pick: () => this.setState({ tab: key }),
+        })),
+      })),
+      trend: [62, 45, 78, 52, 88, 95, 70, 40, 66, 82, 58, 91, 74, 100].map((v, i) => ({
+        h: Math.max(3, v) + '%',
+        bg: i === 13 ? 'var(--bx-brand)' : 'color-mix(in srgb, var(--bx-brand) 45%, transparent)',
+        delay: (i * 0.04).toFixed(2) + 's',
+        title: '07-' + String(4 + i).padStart(2, '0') + ': ' + (v * 24).toLocaleString() + 'K tokens',
+      })),
+      recent: [
+        { model: 'claude-sonnet-4-5', tokens: '12,408 tok', cost: '$0.0312' },
+        { model: 'gpt-5', tokens: '8,022 tok', cost: '$0.0184' },
+        { model: 'flux-1.1-pro', tokens: '1 img', cost: '$0.0400' },
+        { model: 'kling-2.5-video', tokens: '10s', cost: '$0.2800' },
+      ],
+      keyRows: [
+        { name: 'creator-gateway', lastUsed: 'used 2m ago', masked: 'sk-cre…9f2a', group: '默认', hasQuota: false, quotaText: '不限', quotaPct: '0%', quotaColor: 'var(--bx-brand)', rate: '5h $1.2/5', status: '启用', statusColor: 'var(--bx-success)', toggleLabel: '停用' },
+        { name: 'prod-api', lastUsed: 'used 3h ago', masked: 'sk-prd…c41e', group: 'Claude 专线', hasQuota: true, quotaText: '$38.20 / $50.00', quotaPct: '76%', quotaColor: 'var(--bx-brand)', rate: '1d $9.8/20', status: '启用', statusColor: 'var(--bx-success)', toggleLabel: '停用' },
+        { name: 'ci-pipeline', lastUsed: 'used 1d ago', masked: 'sk-cip…88d3', group: '默认', hasQuota: true, quotaText: '$4.05 / $20.00', quotaPct: '20%', quotaColor: 'var(--bx-brand)', rate: '—', status: '启用', statusColor: 'var(--bx-success)', toggleLabel: '停用' },
+        { name: 'test-key', lastUsed: 'used 18d ago', masked: 'sk-tst…77b0', group: '默认', hasQuota: true, quotaText: '$10.00 / $10.00', quotaPct: '100%', quotaColor: 'var(--bx-danger)', rate: '—', status: '额度用尽', statusColor: 'var(--bx-warning)', toggleLabel: '启用' },
+      ],
+      usageStats: [
+        { label: '今日请求', value: '1,284' },
+        { label: '今日 Token', value: '2.4M' },
+        { label: '今日费用', value: '$4.21' },
+        { label: '累计费用', value: '$342.18' },
+        { label: '总请求', value: '89.3K' },
+        { label: '总 Token', value: '161.8M' },
+      ].map((s, i) => ({ ...s, borderLeft: i === 0 ? 'none' : '1px solid var(--bx-border)' })),
+      usageLogs: [
+        { time: '21:40:12', model: 'claude-sonnet-4-5', key: 'creator-gateway', tokens: '12,408', cost: '$0.0312', duration: '2.41s', stream: 'SSE', streamColor: 'var(--bx-brand)' },
+        { time: '21:38:55', model: 'gpt-5', key: 'prod-api', tokens: '8,022', cost: '$0.0184', duration: '1.87s', stream: 'SSE', streamColor: 'var(--bx-brand)' },
+        { time: '21:35:20', model: 'gemini-3-pro', key: 'creator-gateway', tokens: '20,175', cost: '$0.0404', duration: '3.02s', stream: '—', streamColor: 'var(--bx-text-dim)' },
+        { time: '21:31:07', model: 'flux-1.1-pro', key: 'creator-gateway', tokens: '—', cost: '$0.0400', duration: '8.63s', stream: '—', streamColor: 'var(--bx-text-dim)' },
+        { time: '21:28:44', model: 'claude-haiku-4', key: 'prod-api', tokens: '3,911', cost: '$0.0031', duration: '840ms', stream: 'SSE', streamColor: 'var(--bx-brand)' },
+        { time: '21:22:19', model: 'kling-2.5-video', key: 'creator-gateway', tokens: '—', cost: '$0.2800', duration: '42.1s', stream: '—', streamColor: 'var(--bx-text-dim)' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -119,14 +119,14 @@ export function Login() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center px-4 py-14 sm:px-6">
+    <div className="bx-account-auth-shell px-4 sm:px-6">
       <div className="mb-8 text-center">
         <img src={BRAND_LOGO_SVG} alt="" className="mx-auto h-10 w-10" />
-        <h1 className="bx-display mt-4 text-2xl font-bold">{d.auth.loginTitle}</h1>
-        <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.loginSubtitle}</p>
+        <h1 className="bx-account-page-title mt-4 text-center">{d.auth.loginTitle}</h1>
+        <p className="bx-account-page-sub text-center">{t.loginSubtitle}</p>
       </div>
 
-      <form onSubmit={onSubmit} className="bx-card space-y-4 p-6">
+      <form onSubmit={onSubmit} className="bx-account-auth-card space-y-4">
         {tempToken ? (
           <label className="block text-sm">
             <span className="text-[var(--bx-text-muted)]">{t.totp}</span>

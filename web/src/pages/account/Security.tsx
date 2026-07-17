@@ -170,17 +170,24 @@ export function AccountSecurity() {
   }
 
   return (
-    <div className="max-w-lg">
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-      <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+    <div className="max-w-xl">
+      <h1 className="bx-account-page-title">{t.title}</h1>
+      <p className="bx-account-page-sub">{t.subtitle}</p>
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
       {message ? <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
 
-      <div className="bx-card mt-6 space-y-3 p-5">
-        <h3 className="font-semibold">{t.twoFactor}</h3>
-        <p className="text-sm text-[var(--bx-text-muted)]">
-          {totpEnabled === null ? t.twoFactorUnknown : totpEnabled ? t.twoFactorOn : t.twoFactorOff}
-        </p>
+      <div className="bx-account-panel bx-account-panel-pad mt-5 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="m-0 font-semibold">{t.twoFactor}</h3>
+          {totpEnabled ? (
+            <span className="bx-account-status bx-account-status--ok">{t.twoFactorOn}</span>
+          ) : totpEnabled === false ? (
+            <span className="bx-account-status bx-account-status--muted">{t.twoFactorOff}</span>
+          ) : (
+            <span className="bx-account-status bx-account-status--muted">{t.twoFactorUnknown}</span>
+          )}
+        </div>
+        <p className="m-0 text-sm text-[var(--bx-text-muted)]">{t.twoFactorHint}</p>
         {!featureEnabled ? (
           <p className="text-xs text-[var(--bx-text-dim)]">{t.featureOff}</p>
         ) : phase === 'idle' ? (
@@ -242,9 +249,9 @@ export function AccountSecurity() {
         ) : null}
       </div>
 
-      <div className="bx-card mt-4 space-y-3 p-5">
-        <h3 className="font-semibold">{t.sessions}</h3>
-        <p className="text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
+      <div className="bx-account-panel bx-account-panel-pad mt-3 space-y-3">
+        <h3 className="m-0 font-semibold">{t.sessions}</h3>
+        <p className="m-0 text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
         <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" disabled={busy} onClick={() => void onRevoke()}>
           {t.revokeAll}
         </button>

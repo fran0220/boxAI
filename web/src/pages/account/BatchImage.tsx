@@ -303,8 +303,8 @@ export function AccountBatchImage() {
 
   return (
     <div className="max-w-5xl">
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-      <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+      <h1 className="bx-account-page-title">{t.title}</h1>
+      <p className="bx-account-page-sub">{t.subtitle}</p>
 
       {/* API guide */}
       <section className="bx-card mt-6 p-5">

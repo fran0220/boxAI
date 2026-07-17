@@ -69,15 +69,15 @@ export function Signup() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center px-4 py-14 sm:px-6">
+    <div className="bx-account-auth-shell px-4 sm:px-6">
       <div className="mb-8 text-center">
         <img src={BRAND_LOGO_SVG} alt="" className="mx-auto h-10 w-10" />
-        <h1 className="bx-display mt-4 text-2xl font-bold">{d.auth.signupTitle}</h1>
-        <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.signupSubtitle}</p>
+        <h1 className="bx-account-page-title mt-4 text-center">{d.auth.signupTitle}</h1>
+        <p className="bx-account-page-sub text-center">{t.signupSubtitle}</p>
       </div>
 
       {!txId ? (
-        <form onSubmit={onPrepare} className="bx-card space-y-4 p-6">
+        <form onSubmit={onPrepare} className="bx-account-auth-card space-y-4">
           <label className="block text-sm">
             <span className="text-[var(--bx-text-muted)]">{t.email}</span>
             <input
@@ -107,7 +107,7 @@ export function Signup() {
           </button>
         </form>
       ) : (
-        <form onSubmit={onComplete} className="bx-card space-y-4 p-6">
+        <form onSubmit={onComplete} className="bx-account-auth-card space-y-4">
           <p className="text-sm text-[var(--bx-text-muted)]">{t.codeSent.replace('{email}', email)}</p>
           <label className="block text-sm">
             <span className="text-[var(--bx-text-muted)]">{t.verifyCode}</span>

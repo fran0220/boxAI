@@ -100,20 +100,31 @@ export function AccountCustomPage() {
 
   if (error) {
     return (
-      <div className="max-w-2xl">
-        <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-        <p className="bx-text-danger mt-4 text-sm">{error}</p>
-        <Link to="/account" className="bx-btn bx-btn-ghost bx-btn-sm mt-6">
-          {t.back}
-        </Link>
+      <div>
+        <h1 className="bx-account-page-title">{t.title}</h1>
+        <div className="bx-account-panel bx-account-panel-pad mt-4">
+          <p className="bx-text-danger m-0 text-sm">{error}</p>
+          <Link to="/account" className="bx-btn bx-btn-ghost bx-btn-sm mt-4">
+            {t.back}
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (!rewritten.trim()) {
+    return (
+      <div>
+        <h1 className="bx-account-page-title">{label || t.title}</h1>
+        <p className="bx-account-empty mt-6">{t.notFound}</p>
       </div>
     )
   }
 
   return (
-    <div className="max-w-3xl">
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{label}</h2>
-      <article className="bx-prose mt-6 text-sm leading-relaxed text-[var(--bx-text-soft)] [&_a]:text-[var(--bx-brand-bright)] [&_code]:rounded [&_code]:bg-[var(--bx-bg-muted)] [&_code]:px-1 [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-xl [&_h1]:font-bold [&_h2]:mb-2 [&_h2]:mt-5 [&_h2]:text-lg [&_h2]:font-semibold [&_img]:my-3 [&_img]:max-w-full [&_img]:rounded-lg [&_li]:my-1 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-2 [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-[var(--bx-bg-muted)] [&_pre]:p-3 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5">
+    <div>
+      <h1 className="bx-account-page-title">{label}</h1>
+      <article className="bx-account-panel bx-account-panel-pad bx-prose mt-5 text-sm leading-relaxed text-[var(--bx-text-soft)] [&_a]:text-[var(--bx-brand-bright)] [&_code]:rounded [&_code]:bg-[var(--bx-bg-muted)] [&_code]:px-1 [&_h1]:mb-3 [&_h1]:mt-6 [&_h1]:text-xl [&_h1]:font-bold [&_h2]:mb-2 [&_h2]:mt-5 [&_h2]:text-lg [&_h2]:font-semibold [&_img]:my-3 [&_img]:max-w-full [&_img]:rounded-lg [&_li]:my-1 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-2 [&_pre]:my-3 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-[var(--bx-bg-muted)] [&_pre]:p-3 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5">
         <ReactMarkdown>{rewritten}</ReactMarkdown>
       </article>
     </div>

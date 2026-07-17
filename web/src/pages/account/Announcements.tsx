@@ -13,6 +13,7 @@ export function AccountAnnouncements() {
   const [items, setItems] = useState<UserAnnouncement[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -35,10 +36,25 @@ export function AccountAnnouncements() {
     if (!item.read_at) {
       try {
         await markAnnouncementRead(item.id)
-        setItems((prev) => prev.map((x) => (x.id === item.id ? { ...x, read_at: new Date().toISOString() } : x)))
+        setItems((prev) =>
+          prev.map((x) => (x.id === item.id ? { ...x, read_at: new Date().toISOString() } : x)),
+        )
       } catch {
         // ignore
       }
+    }
+  }
+
+  async function markAllRead() {
+    setBusy(true)
+    try {
+      const unread = items.filter((x) => !x.read_at)
+      await Promise.all(unread.map((x) => markAnnouncementRead(x.id).catch(() => null)))
+      setItems((prev) =>
+        prev.map((x) => (x.read_at ? x : { ...x, read_at: new Date().toISOString() })),
+      )
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -50,24 +66,58 @@ export function AccountAnnouncements() {
     )
   }
 
+  const unreadCount = items.filter((x) => !x.read_at).length
+
   return (
     <div>
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-      <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="bx-account-page-title">{t.title}</h1>
+          <p className="bx-account-page-sub">{t.subtitle}</p>
+        </div>
+        {unreadCount > 0 ? (
+          <button
+            type="button"
+            className="bx-btn bx-btn-ghost bx-btn-sm"
+            disabled={busy}
+            onClick={() => void markAllRead()}
+          >
+            {t.markAllRead}
+          </button>
+        ) : null}
+      </div>
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
       {items.length === 0 ? (
-        <p className="mt-10 text-center text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
+        <div className="bx-account-panel mt-5">
+          <p className="bx-account-empty">{t.empty}</p>
+        </div>
       ) : (
-        <ul className="mt-6 space-y-3">
+        <ul className="mt-5 space-y-2">
           {items.map((item) => (
             <li key={item.id}>
-              <details className="bx-card p-4" onToggle={(e) => e.currentTarget.open && void onOpen(item)}>
-                <summary className="cursor-pointer font-medium">
-                  {!item.read_at ? <span className="mr-2 text-[var(--bx-brand-bright)]">●</span> : null}
-                  {item.title}
+              <details
+                className="bx-account-panel group"
+                onToggle={(e) => e.currentTarget.open && void onOpen(item)}
+              >
+                <summary className="flex cursor-pointer list-none items-center gap-2.5 px-5 py-3.5 font-medium marker:content-none [&::-webkit-details-marker]:hidden">
+                  <span
+                    className={
+                      item.read_at
+                        ? 'h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bx-text-dim)]'
+                        : 'h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bx-brand-bright)]'
+                    }
+                  />
+                  <span className="min-w-0 flex-1 truncate">{item.title}</span>
+                  {item.created_at ? (
+                    <span className="shrink-0 font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </span>
+                  ) : null}
                 </summary>
-                <div className="mt-3 whitespace-pre-wrap text-sm text-[var(--bx-text-muted)]">{item.content}</div>
+                <div className="border-t border-[var(--bx-line)] px-5 py-4 whitespace-pre-wrap text-sm text-[var(--bx-text-muted)]">
+                  {item.content}
+                </div>
               </details>
             </li>
           ))}
