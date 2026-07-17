@@ -13,6 +13,14 @@ import { useRoutePrefetch } from '@/composables/useRoutePrefetch'
 import { getSetupStatus } from '@/api/setup'
 import { resolveCompletedSetupRedirectPath } from './setupRedirect'
 import { resolveRouteDocumentTitle } from './title'
+// BOXAI: redirect ordinary customer routes to apex React shell
+import {
+  apexOrigin,
+  customerShellRedirectEnabled,
+  isConsoleAdminPath,
+  isConsolePublicPath,
+  mapConsolePathToApex,
+} from '@/utils/apexOrigin'
 
 /**
  * Route definitions with lazy loading
@@ -793,6 +801,18 @@ router.beforeEach(async (to, _from, next) => {
     // BOXAI: protected-route decisions wait for cookie bootstrap/adoption.
     await authStore.checkAuth()
     authInitialized = true
+  }
+
+  // BOXAI: customer shell unification — console is admin-first.
+  // Non-admins are sent to apex for all customer UI; public auth/SSO/legal stay for bridge.
+  // Admins keep admin routes + optional legacy personal pages under "My Account".
+  if (customerShellRedirectEnabled() && !authStore.isAdmin) {
+    if (!isConsolePublicPath(to.path) && !isConsoleAdminPath(to.path)) {
+      const q = to.fullPath.includes('?') ? to.fullPath.slice(to.fullPath.indexOf('?')) : ''
+      const mapped = mapConsolePathToApex(to.path, q) || `${apexOrigin()}/account`
+      window.location.replace(mapped)
+      return
+    }
   }
 
   // Set page title

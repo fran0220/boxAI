@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, BadgeCheck, Check } from 'lucide-react'
-import { consoleOrigin } from '@/lib/brand'
 import { usePageMeta } from '@/lib/meta'
 import { useAuth } from '@/lib/use-auth'
 import { useI18n } from '@/i18n'
@@ -15,11 +14,9 @@ export function Pricing() {
   usePageMeta(d.pricing.metaTitle, d.pricing.subtitle)
   const { authed } = useAuth()
 
-  const purchaseUrl = `${consoleOrigin()}/boxai/sso/start?return_to=${encodeURIComponent('/purchase')}`
-
   function planCta(index: number): { to?: string; href?: string } {
-    if (index === 0) return authed ? { to: '/create' } : { to: '/signup' }
-    return { href: purchaseUrl }
+    if (index === 0) return authed ? { to: '/create' } : { to: '/signup?return_to=/create' }
+    return authed ? { to: '/checkout?type=subscription' } : { to: '/login?return_to=/checkout?type=subscription' }
   }
 
   return (
@@ -159,10 +156,13 @@ export function Pricing() {
           <div className="mt-10">
             <GradientRing>
               <div className="px-6 py-10 text-center">
-                <a href={purchaseUrl} className="bx-btn bx-btn-primary bx-btn-lg">
+                <Link
+                  to={authed ? '/checkout?type=subscription' : '/login?return_to=/checkout?type=subscription'}
+                  className="bx-btn bx-btn-primary bx-btn-lg"
+                >
                   {d.pricing.consoleCta}
                   <ArrowRight size={17} />
-                </a>
+                </Link>
               </div>
             </GradientRing>
           </div>

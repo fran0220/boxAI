@@ -1,14 +1,16 @@
 # BoxAI Web Platform
 
-Canonical product architecture for **you-box.com**: dual frontend, shared gateway, PKCE SSO.
+Canonical product architecture for **you-box.com**: **customer shell on apex React**, admin console on Vue, shared Go gateway.
+
+> **Migration:** See [CUSTOMER_SHELL_UNIFICATION.md](./CUSTOMER_SHELL_UNIFICATION.md). Target: one customer domain/session; console is admin-only; Web SSO is a transitional bridge only.
 
 ## Hosts
 
 | Host | Serves | Origin of content |
 |------|--------|-------------------|
-| `you-box.com` | Marketing, Studio product + download (`/studio`), Creator (`/create/*`), Web SSO | React static (`web/dist` → `/var/www/you-box.com`); edge allowlists browser APIs and proxies `/v1/*`, `/health` |
+| `you-box.com` | Marketing, Studio, Creator, **customer account/auth/checkout**, (legacy Web SSO pages) | React static (`web/dist` → `/var/www/you-box.com`); edge allowlists browser APIs and proxies `/v1/*`, `/health` |
 | `www.you-box.com` | Permanent redirect | → `https://you-box.com` |
-| `console.you-box.com` | User dashboard, admin, billing, keys, Desktop browser login | Go binary embeds Vue (`frontend/` build) |
+| `console.you-box.com` | **Admin** (+ transitional customer pages / SSO until cutover); Desktop browser login (legacy URL) | Go binary embeds Vue (`frontend/` build) |
 | `api.you-box.com` | Public model API + token exchange | Same Go process; **edge-filtered** paths only |
 
 One Docker image (`ghcr.io/fran0220/boxai:<pin>`) runs the Go server (Vue embed + API). React is **never** embedded in that binary.
@@ -45,14 +47,12 @@ email address, safe return path, and resend countdown in `sessionStorage`.
 Plaintext passwords and Turnstile responses never leave the registration page;
 Redis retains only the bcrypt password hash and registration business fields.
 
-**The console is the identity host.** All credential forms (login, register, 2FA,
-OAuth, Turnstile, email verification) live only in the Vue console. The apex React
-app has no credential forms: `you-box.com/login` and `/signup` mint a PKCE pair and
-hand off to the console. Login opens `console.you-box.com/boxai/sso/authorize`
-directly; signup opens console `/register?redirect=<authorize path>` so the user
-lands on the register form and returns to the authorize handoff afterwards.
+**Apex is the customer identity UI (target).** Password login/register/forgot/reset
+and account center live on `you-box.com`. Console remains the admin host and still
+hosts full credential forms during transition. Web SSO remains available as a
+rollback bridge until customer cutover is complete.
 
-**Web SSO (PKCE)** links sessions between apex and console:
+**Web SSO (PKCE)** (transitional) links sessions between apex and console:
 
 | Step | Endpoint |
 |------|----------|
@@ -148,10 +148,10 @@ JWT is translated to the user’s API key by `BOXAI_DESKTOP_JWT_GATEWAY` (shared
 - `/api/v1/settings/public`
 - `/health`
 
-The apex allowlist is limited to public settings, browser session
-bootstrap (`/auth/session`)/adopt/logout, auth me/logout/revoke-all, Web SSO authorize/token, and
-Creator ensure-key. All other `/api/*` returns edge 404. Console continues to
-proxy the complete backend surface.
+The apex allowlist is deny-by-default for `/api/*` with **admin/setup hard-denied**,
+then explicit customer paths: session bootstrap, credential login/register,
+customer keys/usage/user/payment/subscriptions/redeem, Web SSO (transitional), and
+Creator ensure-key. Console continues to proxy the complete backend surface.
 
 ## Code map
 

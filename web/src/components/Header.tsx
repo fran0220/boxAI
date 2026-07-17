@@ -5,13 +5,12 @@ import {
   LogOut,
   Menu,
   Moon,
-  PanelsTopLeft,
   Sparkles,
   Sun,
   User,
   X,
 } from 'lucide-react'
-import { BRAND_LOGO_SVG, BRAND_NAME, consoleOrigin } from '@/lib/brand'
+import { BRAND_LOGO_SVG, BRAND_NAME } from '@/lib/brand'
 import { logout } from '@/lib/api'
 import { useAuth } from '@/lib/use-auth'
 import { useTheme } from '@/lib/theme'
@@ -44,6 +43,7 @@ export function Header() {
     { to: '/create', label: d.nav.creator, match: (p: string) => p.startsWith('/create') },
     { to: '/studio', label: d.nav.studio, match: (p: string) => p.startsWith('/studio') },
     { to: '/pricing', label: d.nav.pricing, match: (p: string) => p.startsWith('/pricing') },
+    { to: '/status', label: d.nav.status, match: (p: string) => p.startsWith('/status') },
   ]
 
   const email = (user?.email as string) || (user?.username as string) || ''
@@ -104,13 +104,6 @@ export function Header() {
                 <span className="bx-nav-avatar">{(email || 'U').charAt(0).toUpperCase()}</span>
                 <span className="max-w-[120px] truncate text-sm">{email || d.nav.account}</span>
               </Link>
-              <a
-                href={`${consoleOrigin()}/boxai/sso/start`}
-                className="bx-btn bx-btn-ghost bx-btn-sm"
-              >
-                <PanelsTopLeft size={14} />
-                {d.nav.console}
-              </a>
               <button
                 type="button"
                 onClick={onLogout}
@@ -191,13 +184,9 @@ export function Header() {
                       <User size={16} />
                       {email || d.nav.account}
                     </Link>
-                    <a
-                      href={`${consoleOrigin()}/boxai/sso/start`}
-                      className="bx-nav-sheet-link"
-                    >
-                      <PanelsTopLeft size={16} />
-                      {d.nav.console}
-                    </a>
+                    <Link to="/account/keys" className="bx-nav-sheet-link">
+                      {d.footer.apiKeys}
+                    </Link>
                     <button
                       type="button"
                       onClick={onLogout}

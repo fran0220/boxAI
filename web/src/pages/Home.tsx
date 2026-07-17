@@ -11,7 +11,7 @@ import {
   Play,
   Sparkles,
 } from 'lucide-react'
-import { BRAND_NAME, consoleOrigin } from '@/lib/brand'
+import { BRAND_NAME } from '@/lib/brand'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import { MODEL_MARQUEE } from '@/content/models'
@@ -21,6 +21,7 @@ import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
 import { AnimatedNumber } from '@/components/motion/AnimatedNumber'
 import { CubeMark } from '@/components/brand/CubeMark'
 import { GradientRing } from '@/components/brand/GradientRing'
+import { HomeStatusSummary } from '@/components/status/HomeStatusSummary'
 
 function TypeText({ text, startDelay = 0 }: { text: string; startDelay?: number }) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -141,14 +142,13 @@ function ShowcaseVisual({ kind }: { kind: 'image' | 'video' | 'assets' }) {
 export function Home() {
   const { d } = useI18n()
   usePageMeta(d.home.metaTitle, d.home.hero.subtitle)
-  const console_ = consoleOrigin()
 
   const featureIcons = [Sparkles, Monitor, LayoutDashboard, Code2]
   const featureLinks: Array<{ to?: string; href?: string }> = [
     { to: '/create' },
     { to: '/studio' },
-    { href: `${console_}/boxai/sso/start` },
-    { href: `${console_}/boxai/sso/start?return_to=${encodeURIComponent('/keys')}` },
+    { to: '/account' },
+    { to: '/account/keys' },
   ]
   const showcaseIcons = { image: ImageIcon, video: Play, assets: FolderOpen }
 
@@ -204,8 +204,11 @@ export function Home() {
         </div>
       </section>
 
+      {/* Live system status (public monitors) */}
+      <HomeStatusSummary />
+
       {/* Stats */}
-      <section className="mt-16 border-y border-[var(--bx-border)] bg-[var(--bx-bg-muted)]/60 backdrop-blur-sm sm:mt-20">
+      <section className="mt-4 border-y border-[var(--bx-border)] bg-[var(--bx-bg-muted)]/60 backdrop-blur-sm sm:mt-8">
         <Stagger className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-10 sm:grid-cols-4 sm:px-6 sm:py-12">
           {d.home.stats.map((stat) => (
             <StaggerItem key={stat.label} className="text-center">
