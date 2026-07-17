@@ -92,21 +92,45 @@ full pending machine. Do not enable `BOXAI_AUTH_TX` for customers yet.
 
 **Console is admin-first.** Non-admin navigations to customer UI hard-redirect to
 apex (`VITE_CUSTOMER_SHELL_REDIRECT`, default on for `console.you-box.com`). Admin
-login remains on console. **Exception:** WeChat in-WeChat MP payment may still use
-console `/purchase` + `/payment/*` (registered callback domain); Checkout on apex
-sends WeChat in-app browsers to
+login remains on console. **Exception (permanent product decision):** WeChat
+in-WeChat MP payment may still use console `/purchase` + `/payment/*` (registered
+callback domain). Checkout on apex sends WeChat in-app browsers to
 `console…/login?redirect=/purchase` (no SSO) so they re-login once on console.
+Do **not** set `BOXAI_CONSOLE_ADMIN_SESSION_ONLY=1` while this exception remains.
+Never delete Vue payment paths solely as “migration cleanup.”
 
-Flags: `BOXAI_BROWSER_SESSION=true`; `BOXAI_LEGACY_BROWSER_ADOPTION` is **false** in
-compose / `.env.example` defaults (set `true` only while legacy localStorage refresh
-tokens still need one-time adopt). The Go process still treats **unset** env as on
-(`envDefaultOn`) until flipped in code — always set the var explicitly in deploy
-env files. **`BOXAI_WEB_SSO` is retired and ignored.**
+Flags: `BOXAI_BROWSER_SESSION=true`; `BOXAI_LEGACY_BROWSER_ADOPTION` defaults
+**false** in compose / `.env.example` **and** in the Go process when the env is
+unset (`envDefaultOff`). Set `true` only while legacy localStorage refresh tokens
+still need one-time adopt. **`BOXAI_WEB_SSO` is retired and ignored.**
+
+### Customer OAuth (prod)
+
+Public flags: `GET /api/v1/settings/public` (console or apex after edge allowlist).
+Apex Login only renders buttons for enabled providers (see `parseOAuthLoginFlags`).
+
+| Provider | Typical prod flag | Notes |
+|----------|-------------------|-------|
+| Google | `google_oauth_enabled` | Customer login when true |
+| GitHub / LinuxDo / OIDC / DingTalk / WeChat | off unless enabled in admin settings | Hidden in UI when off |
+
+**Provider `redirect_uri` (backend callback)** must be registered with the IdP.
+Relative `*_oauth_frontend_redirect_url` (e.g. `/auth/oauth/callback`) resolves on
+the **callback request host**. For apex browser sessions, prefer dual-registering
+IdP callbacks for both:
+
+- `https://you-box.com/api/v1/auth/oauth/<provider>/callback`
+- `https://console.you-box.com/api/v1/auth/oauth/<provider>/callback`
+
+and setting the active `*_oauth_redirect_url` (or start from the host you intend
+to mint the cookie on). Edge must allowlist apex `auth/oauth/*` (see
+`deploy/nginx-you-box.com.conf`).
 
 **Desktop login** uses a separate PKCE pair:
 
 - `POST /api/v1/auth/boxai/desktop/authorize` · `POST /api/v1/auth/boxai/desktop/token`
-- Preferred browser page: `you-box.com/desktop-auth` (console `/desktop-auth` still works)
+- Preferred browser page: `https://you-box.com/desktop-auth` (console
+  `/desktop-auth` remains for old clients; Desktop remaps api/console hosts → apex)
 
 ## Apex pages
 

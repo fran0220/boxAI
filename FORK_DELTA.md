@@ -28,8 +28,8 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/internal/handler/boxai_desktop_auth_test.go` | Unit tests for the desktop OAuth PKCE helpers |
 | `backend/internal/handler/boxai_code_store.go` | BoxAICodeStore interface (depguard-safe code store) |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis adapter for BoxAICodeStore |
-| `backend/internal/handler/boxai_browser_session.go` | Host-only HttpOnly browser-session boundary, CSRF/origin enforcement, and OAuth browser response adapter (relative FrontendRedirectURL works on apex + console) |
-| `backend/internal/handler/boxai_browser_session_test.go` | Cookie, host/origin, browser OAuth response, apex relative-callback session, and credential-leak regression tests |
+| `backend/internal/handler/boxai_browser_session.go` | Host-only HttpOnly browser-session boundary, CSRF/origin enforcement, OAuth browser response adapter (relative FrontendRedirectURL works on apex + console); `LegacyBrowserAdoptionEnabled` defaults **off** when env unset |
+| `backend/internal/handler/boxai_browser_session_test.go` | Cookie, host/origin, browser OAuth response, apex relative-callback session, credential-leak, and legacy-adoption default-off tests |
 | `backend/internal/handler/boxai_registration.go` | Console-only opaque email-registration prepare/complete transaction handlers |
 | `backend/internal/handler/boxai_registration_test.go` | Registration transaction validation, retry, consumption, and response tests |
 | `backend/internal/handler/boxai_creator_key.go` | Idempotent `boxai-creator` API key ensure endpoint |

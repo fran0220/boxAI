@@ -7,7 +7,7 @@ Tauri desktop client (React WebView + Rust) with optional self-hosted remote gat
 | Component | URL / location |
 |-----------|----------------|
 | Download & marketing | https://you-box.com/download · https://you-box.com/studio (`web/`) |
-| Browser login handshake | https://console.you-box.com/desktop-auth (Vue embed) |
+| Browser login handshake | https://you-box.com/desktop-auth (preferred; console `/desktop-auth` for old clients) |
 | Model / chat API | https://api.you-box.com/v1 (or console host) |
 | Auth bridge | `BOXAI_DESKTOP_JWT_GATEWAY` on `/v1/*` (same bridge as Creator) |
 
@@ -29,7 +29,9 @@ Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/create
 3. Inference goes through BoxAI `/v1/*` with user JWT (bridged to API key).
 4. Model list from `GET /v1/models` with local cache.
 5. Token refresh via `POST /api/v1/auth/refresh`.
-6. Server URL is user-configured (production: `https://api.you-box.com` or `https://console.you-box.com`).
+6. Server URL is user-configured (production default: `https://api.you-box.com`).
+   Browser authorize page for known BoxAI hosts is always apex
+   `https://you-box.com/desktop-auth`; API calls stay on the configured server.
 
 ## Non-goals
 
@@ -38,10 +40,11 @@ Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/create
 
 ## Login flow
 
-1. User enters server base URL and clicks Sign in.
-2. Desktop opens `https://<server>/desktop-auth?state&code_challenge&redirect_uri=boxai-desktop://…`.
-3. After web login, console mints a one-time code and redirects to the desktop scheme.
-4. Desktop exchanges code at `/api/v1/auth/boxai/desktop/token`.
+1. User enters server base URL (API gateway) and clicks Sign in.
+2. Desktop opens `https://you-box.com/desktop-auth?state&code_challenge&redirect_uri=boxai-desktop://…`
+   when server is api/console/apex production host; otherwise `{server}/desktop-auth`.
+3. After web login, the customer shell mints a one-time code and redirects to the desktop scheme.
+4. Desktop exchanges code at `{server}/api/v1/auth/boxai/desktop/token`.
 5. Subsequent chat uses Bearer JWT on `/v1/messages` or `/v1/chat/completions`.
 
 ## Backend API

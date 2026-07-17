@@ -35,7 +35,7 @@ Local SSO callbacks are an explicit backend opt-in (comma-separated):
 | Env | Default | Meaning |
 |-----|---------|---------|
 | `BOXAI_BROWSER_SESSION` | on | Host-only browser cookie and bootstrap/logout endpoints |
-| `BOXAI_LEGACY_BROWSER_ADOPTION` | off in compose | One-time legacy localStorage refresh-token adoption; enable only while draining old tokens. Go treats **unset** as on — set explicitly in env. |
+| `BOXAI_LEGACY_BROWSER_ADOPTION` | off (compose + Go unset) | One-time legacy localStorage refresh-token adoption; set `true` only while draining old tokens. |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | In-memory browser access JWT lifetime |
 | `BOXAI_DESKTOP_JWT_GATEWAY` | on | JWT→API key on `/v1/*` |
 
@@ -81,7 +81,10 @@ cd web && pnpm typecheck && pnpm test:run
 
 1. Log in at http://localhost:5173/login  
 2. Open Creator http://localhost:5173/create/image  
-3. Console handoff: http://localhost:5173/sso?target=console  
-4. Desktop: set server to `http://localhost:8080`, browser login via console `/desktop-auth`
+3. Account center http://localhost:5173/account (no Web SSO / no console customer shell)  
+4. Desktop: default production server `https://api.you-box.com`; browser login opens
+   apex `/desktop-auth` (local: set server to `http://localhost:8080` and host
+   `/desktop-auth` on that origin or map via web `:5173` as needed). Console
+   `/desktop-auth` still works for old clients.
 
 Architecture: [WEB_PLATFORM.md](./WEB_PLATFORM.md).

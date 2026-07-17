@@ -2,6 +2,17 @@
 
 Sub2API has a built-in payment system that enables user self-service top-up without deploying a separate payment service.
 
+<!-- BOXAI -->
+## BoxAI host topology (product)
+
+| Surface | Role |
+|---------|------|
+| `you-box.com` Checkout | Primary customer purchase (Stripe / QR / Airwallex) |
+| `console.you-box.com` | **WeChat MP in-WeChat payment exception only** — keep Vue `/purchase` + `/payment/*` and do not enable `BOXAI_CONSOLE_ADMIN_SESSION_ONLY` while this exception exists |
+
+Decision (2026-07-17): **KEEP** the WeChat MP console exception permanently unless product later proves zero need and removes the detour deliberately. See [WEB_PLATFORM.md](./WEB_PLATFORM.md) and [next-actions.md](./agents/next-actions.md).
+<!-- /BOXAI -->
+
 ---
 
 ## Table of Contents

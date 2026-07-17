@@ -30,8 +30,25 @@ func envDefaultOn(name string) bool {
 	}
 }
 
-func BrowserSessionEnabled() bool        { return envDefaultOn("BOXAI_BROWSER_SESSION") }
-func LegacyBrowserAdoptionEnabled() bool { return envDefaultOn("BOXAI_LEGACY_BROWSER_ADOPTION") }
+// envDefaultOff is true only when the env is explicitly on. Unset / empty → off.
+// BOXAI: used for one-time migration flags that must not stay on by accident.
+func envDefaultOff(name string) bool {
+	switch strings.ToLower(strings.TrimSpace(os.Getenv(name))) {
+	case "1", "true", "yes", "on":
+		return true
+	default:
+		return false
+	}
+}
+
+func BrowserSessionEnabled() bool { return envDefaultOn("BOXAI_BROWSER_SESSION") }
+
+// LegacyBrowserAdoptionEnabled: one-time localStorage refresh-token adopt.
+// Compose / .env.example default false; process default is now off when unset
+// (was envDefaultOn). Set BOXAI_LEGACY_BROWSER_ADOPTION=true only while draining.
+func LegacyBrowserAdoptionEnabled() bool {
+	return envDefaultOff("BOXAI_LEGACY_BROWSER_ADOPTION")
+}
 
 func browserSurface(c *gin.Context) (string, string, bool) {
 	host := strings.ToLower(strings.TrimSpace(c.Request.Host))
