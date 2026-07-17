@@ -5,8 +5,8 @@ import {
   changePassword,
   getMyPlatformQuotas,
   getProfile,
+  emailOAuthEnabledForHost,
   getPublicSettings,
-  oauthRedirectCompatibleWithHost,
   removeNotifyEmail,
   sendEmailBindingCode,
   sendNotifyEmailCode,
@@ -268,13 +268,13 @@ export function AccountProfile() {
     const oidcName = settings.oidc_oauth_provider_name
     const host =
       typeof window !== 'undefined' && window.location?.hostname ? window.location.hostname : ''
-    // Hide google/github bind when IdP callback host ≠ this host (state cookies).
+    // Same host-gate as Login (fail closed on product apex when redirect_url missing/empty).
     const githubOk =
       settings.github_oauth_enabled &&
-      oauthRedirectCompatibleWithHost(settings.github_oauth_redirect_url, host)
+      emailOAuthEnabledForHost(settings.github_oauth_redirect_url, host)
     const googleOk =
       settings.google_oauth_enabled &&
-      oauthRedirectCompatibleWithHost(settings.google_oauth_redirect_url, host)
+      emailOAuthEnabledForHost(settings.google_oauth_redirect_url, host)
     const enabled: Record<BindableOAuthProvider, boolean> = {
       linuxdo: settings.linuxdo_oauth_enabled,
       dingtalk: settings.dingtalk_oauth_enabled,

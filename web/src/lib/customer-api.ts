@@ -492,14 +492,19 @@ function currentBrowserHost(): string {
 }
 
 /** Product multi-host apex: hide email-OAuth until callback host is known + matching. */
-function isProductApexHost(host: string): boolean {
+export function isProductApexHost(host: string): boolean {
   const h = host.toLowerCase()
   return h === 'you-box.com' || h === 'www.you-box.com'
 }
 
-function emailOAuthEnabledForHost(redirectUrl: unknown, host: string): boolean {
-  if (typeof redirectUrl !== 'string') {
-    // Field missing from public settings (pre-gate backend): fail closed on product apex only.
+/**
+ * Whether an email-OAuth provider may be offered on this page host.
+ * Missing/empty public redirect_url → fail closed on product apex; elsewhere allow.
+ * Absolute redirect must match current host (state cookies are host-bound).
+ */
+export function emailOAuthEnabledForHost(redirectUrl: unknown, host: string): boolean {
+  if (typeof redirectUrl !== 'string' || !redirectUrl.trim()) {
+    // Missing, null, or empty (e.g. Profile asString default): fail closed on apex only.
     return !isProductApexHost(host)
   }
   return oauthRedirectCompatibleWithHost(redirectUrl, host)

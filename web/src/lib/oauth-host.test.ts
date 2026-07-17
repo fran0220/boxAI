@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  emailOAuthEnabledForHost,
   oauthRedirectCompatibleWithHost,
   parseOAuthLoginFlags,
 } from './customer-api'
@@ -85,5 +86,33 @@ describe('parseOAuthLoginFlags host gate', () => {
       { host: 'boxai.example.com' },
     )
     expect(flags.google).toBe(true)
+  })
+})
+
+describe('emailOAuthEnabledForHost (Login + Profile parity)', () => {
+  it('fail-closes product apex when redirect is missing or empty string', () => {
+    expect(emailOAuthEnabledForHost(undefined, 'you-box.com')).toBe(false)
+    expect(emailOAuthEnabledForHost('', 'you-box.com')).toBe(false)
+    expect(emailOAuthEnabledForHost('   ', 'www.you-box.com')).toBe(false)
+  })
+
+  it('allows self-host when redirect missing/empty', () => {
+    expect(emailOAuthEnabledForHost(undefined, 'boxai.example.com')).toBe(true)
+    expect(emailOAuthEnabledForHost('', 'boxai.example.com')).toBe(true)
+  })
+
+  it('requires absolute callback host match when published', () => {
+    expect(
+      emailOAuthEnabledForHost(
+        'https://console.you-box.com/api/v1/auth/oauth/google/callback',
+        'you-box.com',
+      ),
+    ).toBe(false)
+    expect(
+      emailOAuthEnabledForHost(
+        'https://you-box.com/api/v1/auth/oauth/google/callback',
+        'you-box.com',
+      ),
+    ).toBe(true)
   })
 })
