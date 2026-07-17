@@ -11,7 +11,7 @@ export const BRAND_LOGO_SVG = '/logo.svg'
 export const BRAND_LOGO_PNG = '/logo.png'
 export const BRAND_LOGO_MONO_SVG = '/logo-mono.svg'
 
-/** Console origin for SSO / billing deep-links */
+/** Console origin for WeChat MP payment exception / rare deep-links (not SSO) */
 export function consoleOrigin(): string {
   const fromEnv = (import.meta.env.VITE_CONSOLE_ORIGIN as string | undefined)?.trim()
   if (fromEnv) return fromEnv.replace(/\/+$/, '')

@@ -1,10 +1,10 @@
 # 设计语言统一台账
 
-**目标：** `you-box.com`（React 产品面）与 `console.you-box.com`（Vue 控制台）共用同一套 **teal→cyan** `--bx-*` token 与深色优先。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)、[BRAND.md](./BRAND.md)。  
+**目标：** `you-box.com`（React **客户壳**）与 `console.you-box.com`（Vue **管理台**）共用同一套 **teal→cyan** `--bx-*` token 与深色优先。见 [WEB_PLATFORM.md](./WEB_PLATFORM.md)、[BRAND.md](./BRAND.md)。  
 **默认主题：** 深色（`#080a0d`）。浅色为用户显式切换（控制台）。  
-**状态：** `pending` → `done` · 审查时更新本表。
+**状态：** `pending` → `done` · 审查时更新本表。产品边界见 [agents/next-actions.md](./agents/next-actions.md)。
 
-## F. React 营销 + 创作台（web/）
+## F. React 客户壳（web/：营销 + 创作 + 账户）
 
 | ID | 项 | 路径 | 状态 |
 |----|-----|------|------|

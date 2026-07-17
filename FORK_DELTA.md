@@ -40,7 +40,7 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `docs/status-surface.md` | Shared status surface design conventions (check-cx language, teal brand) |
 | `web/` | React marketing + Creator + **customer shell** SPA (Vite + TS + Tailwind); static dist on apex (not Go-embed) |
 | `docs/WEB_PLATFORM.md` | Host topology, customer shell, admin console, env flags |
-| `docs/CUSTOMER_SHELL_UNIFICATION.md` | Target architecture + PR plan (apex customer, console admin-only) |
+| `docs/CUSTOMER_SHELL_UNIFICATION.md` | Customer shell **shipped** ledger; residual → `docs/agents/next-actions.md` |
 | `web/src/lib/customer-api.ts` | Apex customer-center JSON API client |
 | `web/src/pages/account/*` | Customer account center (keys, usage, profile, security/2FA, orders, channels, monitor, batch-image, announcements, …) |
 | `frontend/src/views/public/ApexCustomerRedirect.vue` | Console stub for removed customer pages → apex |

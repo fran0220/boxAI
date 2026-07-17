@@ -85,4 +85,5 @@ curl -fsS https://api.you-box.com/health
 1. `main` green (CI + Fork Gates).  
 2. Compliance + migration lint.  
 3. Image release.  
-4. If `web/` changed: `deploy-web-static.sh` + `verify-topology.sh`.  
+4. If `web/` or edge allowlist changed: apply nginx/Caddy if needed → `deploy-web-static.sh` → `verify-topology.sh`.  
+5. If customer OAuth enabled: confirm provider `redirect_uri` includes apex host (see [next-actions.md](./next-actions.md) P0-1).

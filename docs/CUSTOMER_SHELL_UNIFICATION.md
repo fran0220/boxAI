@@ -55,7 +55,7 @@ Invariants:
 | `/account/redeem` · `/affiliate` | same |
 | `/account/channels` · `/monitor` | `/available-channels` · `/monitor` |
 | `/checkout` · `/payment/result` | `/purchase` · payment result |
-| `/login` · `/signup` · OAuth callbacks | console identity host |
+| `/login` · `/signup` · OAuth callbacks | (was console identity host; now apex) |
 | `/desktop-auth` | console desktop-auth |
 
 ## Exception (intentional)

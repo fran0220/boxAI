@@ -87,22 +87,22 @@ cd backend && golangci-lint run ./...
 cd frontend && pnpm install --frozen-lockfile
 cd frontend && pnpm run lint:check && pnpm run typecheck
 
-# 产品面 React（营销 / Creator）
+# 客户壳 React（营销 / Creator / 账户 / 结账）
 cd web && pnpm install --frozen-lockfile
 cd web && pnpm typecheck && pnpm test:run
 ```
 
-### 本地双前端（摘要）
+### 本地三进程（摘要）
 
-完整说明见 [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md)。
+完整说明见 [docs/LOCAL_DEV.md](./docs/LOCAL_DEV.md)。客户壳与管理台是**不同产品面**，无 Web SSO。
 
 | 进程 | 端口 | 目录 | 命令 |
 |------|------|------|------|
 | 后端 | 8080 | `backend/` | `go run ./cmd/server` |
-| 控制台 | 3000 | `frontend/` | `pnpm dev:local-api` |
-| 营销+Creator | 5173 | `web/` | `pnpm dev` |
+| 管理台 Vue | 3000 | `frontend/` | `pnpm dev:local-api` |
+| 客户壳 React | 5173 | `web/` | `pnpm dev` |
 
-生产 URL 对照：`5173` → `you-box.com`，`3000` → `console.you-box.com`，API 过滤面 → `api.you-box.com`。
+生产 URL 对照：`5173` → `you-box.com`（客户壳），`3000` → `console.you-box.com`（管理台），API 过滤面 → `api.you-box.com`。
 
 ## 四、上游同步（摘要）
 

@@ -71,16 +71,16 @@ Gradients: `--bx-grad-cta` / `--bx-grad-hero` (`#2dd4bf → #22d3ee` / hero mult
 - Code / terminal demos: `ui-monospace` stack
 - Marketing H1: extrabold, tracking-tight, optional gradient text on the product name
 
-## Marketing + Creator surface
+## Customer shell surface (`web/`)
 
-Public marketing and Creator UI: React app on **`you-box.com`** (`web/`).
+All normal-user UX on **`you-box.com`**: marketing, Creator, auth, account, checkout, status.
 
-- Routes: `/`, `/studio`, `/pricing`, `/status`, `/create/*` (image · video · assets), `/login`, `/account`
+- Routes: `/`, `/studio`, `/pricing`, `/status`, `/create/*`, `/login` · `/signup`, `/account/*`, `/checkout`, `/desktop-auth`
 - Tokens: `--bx-*` in `web/src/index.css` (aligned with console)
 - Creator shell: `CreateLayout` + workspace primitives (`.bx-create-*`)
 - Image workbench: vendored playground under `web/src/image-playground` (teal primary HSL)
 - Constants: `web/src/lib/brand.ts` (same names as `frontend/src/constants/brand.ts`)
 
-Console shell on **`console.you-box.com`**: `AppLayout` / `AuthLayout` use `bx-page` + `bx-ambient-mesh`. See `docs/design-unification-ledger.md`.
+**Admin console** on **`console.you-box.com`**: `AppLayout` / `AuthLayout` use `bx-page` + `bx-ambient-mesh`. Customer account is **not** rebuilt here. See `docs/design-unification-ledger.md`.
 
-Topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md).
+Topology: [WEB_PLATFORM.md](./WEB_PLATFORM.md) · Next work: [agents/next-actions.md](./agents/next-actions.md).

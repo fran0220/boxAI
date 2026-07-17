@@ -13,10 +13,10 @@
 ```
 Internet
    │
-   ├─ you-box.com      React 静态 + 浏览器 API 白名单 + /v1 /health → :8080
+   ├─ you-box.com      React 客户壳静态 + 浏览器 API 白名单 + /v1 /health → :8080
    ├─ www.you-box.com  301 → you-box.com
-   ├─ console.you-box.com  反代全部 → :8080（Go 内嵌 Vue 控制台）
-   └─ api.you-box.com  仅 /v1/*、SSO/desktop token、refresh、public settings、/health
+   ├─ console.you-box.com  反代全部 → :8080（Go 内嵌 Vue **管理台**）
+   └─ api.you-box.com  仅 /v1/*、desktop token、refresh、public settings、/health（无浏览器 session）
           │
           ▼
    127.0.0.1:8080  Docker sub2api (ghcr.io/fran0220/boxai:<pin>)
@@ -27,8 +27,8 @@ Internet
 | 项 | 值 |
 |----|-----|
 | SSH | `ssh youbox` → `root@160.187.1.155` |
-| 产品面 | `https://you-box.com`（营销 / Creator） |
-| 控制台 | `https://console.you-box.com`（用户台 + 管理台） |
+| 客户壳 | `https://you-box.com`（营销 / Creator / 登录注册 / 账户 / 结账） |
+| 管理台 | `https://console.you-box.com`（Admin + WeChat MP 支付例外路径） |
 | 开发者 API | `https://api.you-box.com/v1` |
 | 应用目录 | `/opt/boxAI` |
 | React 静态 | `/var/www/you-box.com`（`web/dist`） |
@@ -252,9 +252,10 @@ http {
 - [ ] `curl https://console.you-box.com/health` → ok  
 - [ ] `curl https://api.you-box.com/health` → ok  
 - [ ] `you-box.com/` 为 React（含 `id="root"`）  
-- [ ] `console.you-box.com` 可登录管理/用户台  
+- [ ] `console.you-box.com` 管理员可登录；非管理员被重定向到 apex 客户壳  
+- [ ] `you-box.com/login` 与账户中心可用（客户会话）  
 - [ ] `./deploy/scripts/verify-topology.sh` 通过  
-- [ ] apex 登录/注册/admin API 为边缘 `404`；API host browser-session 为 `404`
+- [ ] apex 上 admin API / setup 为边缘 `404`；API host browser-session 为 `404`
 - [ ] 三个 HTTPS host 均返回 HSTS、nosniff、frame deny、referrer、Permissions-Policy、CSP
 - [ ] 磁盘：`df -h` 有余量；数据目录在 `/opt/boxAI/{data,postgres_data,redis_data}`
 

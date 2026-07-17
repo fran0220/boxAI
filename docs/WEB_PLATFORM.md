@@ -41,12 +41,13 @@ and (when supplied by the browser) a non-cross-site `Sec-Fetch-Site`. Never infe
 the edge preserves the exact request `Host` and strips forwarded-host input.
 
 Password-reset email links place the email and one-time reset token in the URL
-fragment. The Vue reset page captures and removes it before making requests;
-legacy query-string links remain readable only for migration compatibility.
-During email registration, the browser persists only the opaque transaction ID,
-email address, safe return path, and resend countdown in `sessionStorage`.
-Plaintext passwords and Turnstile responses never leave the registration page;
-Redis retains only the bcrypt password hash and registration business fields.
+fragment. The **apex** React reset page (`/reset-password`) captures and removes it
+before making requests; legacy query-string links remain readable only for migration
+compatibility. During email registration, the browser persists only the opaque
+transaction ID, email address, safe return path, and resend countdown in
+`sessionStorage`. Plaintext passwords and Turnstile responses never leave the
+registration page; Redis retains only the bcrypt password hash and registration
+business fields.
 
 **Apex is the customer identity UI.** Password login/register/forgot/reset, OAuth
 login for existing accounts, and the account center live on `you-box.com`. There is
