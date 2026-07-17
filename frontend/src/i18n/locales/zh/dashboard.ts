@@ -429,6 +429,7 @@ export default {
 
   // Channel Status (user-facing read-only view)
   channelStatus: {
+    eyebrow: '系统状态',
     title: '渠道状态',
     description: '查看渠道可用性、延迟和近期状态',
     searchPlaceholder: '搜索渠道...',

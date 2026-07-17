@@ -1,9 +1,14 @@
 <template>
   <button
     type="button"
-    class="group text-left p-5 rounded-2xl min-h-[280px] w-full bg-[color:var(--bx-bg-elevated)] backdrop-blur-xl border border-[color:var(--bx-border)] shadow-card  /70 hover:-translate-y-1 hover:shadow-card-hover dark:hover:border-primary-500/30 hover:border-gray-300 transition-all duration-300 ease-out flex flex-col"
+    class="bx-status-card group text-left p-5"
     @click="emit('click')"
   >
+    <span class="bx-status-corner bx-status-corner--tl" aria-hidden="true" />
+    <span class="bx-status-corner bx-status-corner--tr" aria-hidden="true" />
+    <span class="bx-status-corner bx-status-corner--bl" aria-hidden="true" />
+    <span class="bx-status-corner bx-status-corner--br" aria-hidden="true" />
+
     <!-- Header: icon + name/model + status chip -->
     <div class="flex items-start gap-3">
       <span
@@ -28,7 +33,7 @@
           </span>
           <span
             v-if="item.group_name"
-            class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)]   flex-shrink-0"
+            class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[color:var(--bx-bg-muted)] text-[color:var(--bx-text-muted)] flex-shrink-0"
           >
             {{ item.group_name }}
           </span>

@@ -483,6 +483,7 @@ export default {
       updateSuccess: '监控更新成功',
       deleteSuccess: '监控删除成功',
       loadError: '加载监控列表失败',
+      publicVisibleLoadError: '加载公开状态标记失败，请刷新后重试',
       deleteConfirm: '确定要删除监控「{name}」吗？此操作不可撤销。',
       nameRequired: '请输入监控名称',
       primaryModelRequired: '请输入主模型',
@@ -493,6 +494,7 @@ export default {
         availability7d: '7 天可用率',
         latency: '延迟 (ms)',
         enabled: '启用',
+        publicVisible: '公开状态页',
         actions: '操作'
       },
       form: {

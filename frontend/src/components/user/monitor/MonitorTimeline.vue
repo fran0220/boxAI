@@ -9,15 +9,15 @@
 
     <div
       v-if="maintenance"
-      class="flex h-5 w-full items-center justify-center rounded border border-dashed border-[color:var(--bx-border-strong)] text-[10px] uppercase tracking-widest text-gray-400"
+      class="flex h-5 w-full items-center justify-center rounded border border-dashed border-[color:var(--bx-border-strong)] text-[10px] uppercase tracking-widest text-sky-400"
     >
       {{ t('monitorCommon.maintenancePaused') }}
     </div>
-    <div v-else class="flex items-end gap-[2px] h-5 w-full">
+    <div v-else class="bx-status-timeline">
       <div
         v-for="(bar, idx) in displayBars"
         :key="idx"
-        class="flex-1 min-w-[3px] rounded-sm"
+        class="bx-status-timeline__seg"
         :class="bar.colorClass"
         :style="{ height: bar.heightPct + '%' }"
         :title="bar.title"
@@ -59,8 +59,7 @@ interface Bar {
   title: string
 }
 
-// 4 级高度 + 颜色双重编码：高=好+绿，短=坏+红，灰=未测试。
-// 长绿(正常) > 中黄(降级) > 短红(失败/系统错误) > 很短灰(未测试)。
+// Height + semantic color (check-cx style, teal brand unchanged).
 const STATUS_HEIGHT: Record<string, number> = {
   operational: 100,
   degraded: 65,
@@ -70,17 +69,14 @@ const STATUS_HEIGHT: Record<string, number> = {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  operational: 'bg-emerald-500',
-  degraded: 'bg-amber-500',
-  failed: 'bg-red-500',
-  error: 'bg-red-500',
-  empty: 'bg-gray-300 dark:bg-dark-600',
+  operational: 'bx-status-timeline__seg--operational',
+  degraded: 'bx-status-timeline__seg--degraded',
+  failed: 'bx-status-timeline__seg--failed',
+  error: 'bx-status-timeline__seg--error',
+  empty: 'bx-status-timeline__seg--empty',
 }
 
 const displayBars = computed<Bar[]>(() => {
-  // Real points come newest-first; convert to oldest-first so the rightmost
-  // bar represents "now". Pad the left with empty placeholders to keep the
-  // bar count stable at `length`.
   const real = [...(props.buckets ?? [])]
     .slice(0, props.length)
     .reverse()

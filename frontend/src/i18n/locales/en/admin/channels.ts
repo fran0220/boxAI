@@ -483,6 +483,7 @@ export default {
       updateSuccess: 'Monitor updated',
       deleteSuccess: 'Monitor deleted',
       loadError: 'Failed to load monitors',
+      publicVisibleLoadError: 'Failed to load public visibility flags; refresh and try again',
       deleteConfirm: 'Are you sure you want to delete monitor "{name}"? This action cannot be undone.',
       nameRequired: 'Please enter a monitor name',
       primaryModelRequired: 'Please enter a primary model',
@@ -493,6 +494,7 @@ export default {
         availability7d: '7d Availability',
         latency: 'Latency (ms)',
         enabled: 'Enabled',
+        publicVisible: 'Public status',
         actions: 'Actions'
       },
       form: {

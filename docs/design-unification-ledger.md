@@ -21,6 +21,8 @@
 | F11 | 语义色 danger/success/warning + icon-btn | `web/src/index.css` | done |
 | F12 | Creator 左抽屉 + 自研页 token 收干净 | `create/*` | done |
 | F13 | Playground 品牌皮肤（teal/rect/focus） | `image-playground` | done |
+| F14 | Public System Status `/status` + homepage summary | `web/src/pages/Status.tsx`, `HomeStatusSummary` | done |
+| F15 | Status surface CSS (grid/card/timeline/pills) | `web/src/index.css` `.bx-status-*` | done |
 
 ## A. 设计源与全局
 

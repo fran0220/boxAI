@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"database/sql"
+
 	"github.com/Wei-Shaw/sub2api/internal/handler/admin"
 	"github.com/Wei-Shaw/sub2api/internal/service"
 
@@ -107,6 +109,7 @@ func ProvideHandlers(
 	subscriptionHandler *SubscriptionHandler,
 	announcementHandler *AnnouncementHandler,
 	channelMonitorUserHandler *ChannelMonitorUserHandler,
+	publicStatusHandler *BoxAIPublicStatusHandler, // BOXAI
 	adminHandlers *AdminHandlers,
 	gatewayHandler *GatewayHandler,
 	openaiGatewayHandler *OpenAIGatewayHandler,
@@ -128,6 +131,7 @@ func ProvideHandlers(
 		Subscription:     subscriptionHandler,
 		Announcement:     announcementHandler,
 		ChannelMonitor:   channelMonitorUserHandler,
+		PublicStatus:     publicStatusHandler, // BOXAI
 		Admin:            adminHandlers,
 		Gateway:          gatewayHandler,
 		OpenAIGateway:    openaiGatewayHandler,
@@ -138,6 +142,16 @@ func ProvideHandlers(
 		AvailableChannel: availableChannelHandler,
 		BatchImage:       batchImageHandler,
 	}
+}
+
+// ProvideBoxAIPublicStatusHandler wires the public marketing status handler.
+// BOXAI product-first.
+func ProvideBoxAIPublicStatusHandler(
+	monitorService *service.ChannelMonitorService,
+	settingService *service.SettingService,
+	db *sql.DB,
+) *BoxAIPublicStatusHandler {
+	return NewBoxAIPublicStatusHandler(monitorService, settingService, db)
 }
 
 // ProviderSet is the Wire provider set for all handlers
@@ -151,6 +165,7 @@ var ProviderSet = wire.NewSet(
 	NewSubscriptionHandler,
 	NewAnnouncementHandler,
 	NewChannelMonitorUserHandler,
+	ProvideBoxAIPublicStatusHandler, // BOXAI
 	NewGatewayHandler,
 	NewOpenAIGatewayHandler,
 	NewTotpHandler,

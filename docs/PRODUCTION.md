@@ -39,6 +39,24 @@ Internet
 | 健康检查 | `GET /health` → `{"status":"ok"}`（apex / console / api 均应可达） |
 | Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;` |
 | 管理员 | `.env` 的 `ADMIN_EMAIL`；初始密码见 `/root/.boxai-admin-password` |
+| **管理 API** | **仅** `https://console.you-box.com/api/v1/admin/*`（apex `you-box.com` 会 404 管理接口） |
+| 运维密钥文件 | 服务器 `/root/.boxai/admin-api.env`（`chmod 600`；本机 `~/.config/boxai/admin.env`；**勿提交 Git**） |
+
+**系统配置变更（SMTP、邮件验证、站点开关等）优先用管理 API**（`x-api-key`），不要手改 DB / 容器内文件：
+
+```bash
+# 服务器
+set -a && source /root/.boxai/admin-api.env && set +a
+# 本机
+# set -a && source ~/.config/boxai/admin.env && set +a
+
+curl -sS "$SUB2API_BASE_URL/api/v1/admin/settings" -H "x-api-key: $SUB2API_ADMIN_API_KEY"
+# 写配置：先 GET 全量 → 改字段 → PUT 回写（避免部分字段把其它设置清零）
+# SMTP 测试：POST /api/v1/admin/settings/test-smtp
+# 测试邮件：POST /api/v1/admin/settings/send-test-email  body.email=...
+```
+
+邮件发信：Cloudflare Email Sending（域名 `you-box.com`）。SMTP 见后台 settings（`smtp.mx.cloudflare.net:465`，用户名字面量 `api_token`，密码为 `CLOUDFLARE_API_TOKEN`）。
 
 ### 1.0 发布与验证
 

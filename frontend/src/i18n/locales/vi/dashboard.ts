@@ -424,6 +424,7 @@ export default {
 
   // Channel Status (user-facing read-only view)
   channelStatus: {
+    eyebrow: 'Trạng thái hệ thống',
     title: 'Trạng thái kênh',
     description: 'Kiểm tra khả dụng, độ trễ và trạng thái gần đây của kênh',
     searchPlaceholder: 'Tìm kênh...',

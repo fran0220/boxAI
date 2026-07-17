@@ -27,6 +27,8 @@ export interface ChannelMonitor {
   extra_models: string[]
   group_name: string
   enabled: boolean
+  /** BOXAI: show on public marketing status page when enabled */
+  public_visible?: boolean
   interval_seconds: number
   /** 每次调度在 interval 基础上 ± [0, jitter] 的随机偏移（秒），0 = 固定间隔 */
   jitter_seconds: number
@@ -173,6 +175,34 @@ export async function del(id: number): Promise<void> {
 }
 
 /**
+ * BOXAI: toggle public marketing visibility (public_visible column).
+ */
+export async function setPublicVisible(
+  id: number,
+  public_visible: boolean,
+): Promise<{ id: number; public_visible: boolean }> {
+  const { data } = await apiClient.put<{ id: number; public_visible: boolean }>(
+    `/admin/channel-monitors/${id}/public-visible`,
+    { public_visible },
+  )
+  return data
+}
+
+/**
+ * BOXAI: batch-fetch public_visible flags for admin list rows.
+ */
+export async function batchPublicVisible(
+  ids: number[],
+): Promise<Record<string, boolean>> {
+  if (ids.length === 0) return {}
+  const { data } = await apiClient.get<{ items: Record<string, boolean> }>(
+    '/admin/channel-monitors/public-visible',
+    { params: { ids: ids.join(',') } },
+  )
+  return data?.items || {}
+}
+
+/**
  * Trigger an immediate manual check for a channel monitor.
  * Returns the latest check results for primary + extra models.
  */
@@ -203,6 +233,8 @@ export const channelMonitorAPI = {
   del,
   runNow,
   listHistory,
+  setPublicVisible,
+  batchPublicVisible,
 }
 
 export default channelMonitorAPI

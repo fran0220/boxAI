@@ -9,7 +9,7 @@
         <Icon :name="primaryIcon" size="xs" />
         <span>{{ primaryLabel }}</span>
       </div>
-      <div class="mt-1.5 text-lg font-bold font-mono tabular-nums text-[color:var(--bx-text)]">
+      <div class="bx-status-metric-value mt-1.5 text-lg text-[color:var(--bx-text)]">
         {{ primaryValue }}<span class="text-xs font-normal text-gray-400 ml-0.5">{{ primaryUnit }}</span>
       </div>
     </div>
@@ -22,7 +22,7 @@
         <Icon :name="secondaryIcon" size="xs" />
         <span>{{ secondaryLabel }}</span>
       </div>
-      <div class="mt-1.5 text-lg font-bold font-mono tabular-nums text-[color:var(--bx-text)]">
+      <div class="bx-status-metric-value mt-1.5 text-lg text-[color:var(--bx-text)]">
         {{ secondaryValue }}<span class="text-xs font-normal text-gray-400 ml-0.5">{{ secondaryUnit }}</span>
       </div>
     </div>
