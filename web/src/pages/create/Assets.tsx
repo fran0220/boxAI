@@ -81,74 +81,70 @@ export function Assets() {
   ]
 
   return (
-    <div className="bx-create-scroll flex-1">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="bx-create-scroll">
+      <div className="bx-create-page">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="bx-create-panel-title">
-              <span className="bx-icon-box !h-9 !w-9">
-                <FolderOpen size={16} />
-              </span>
+            <h1 className="bx-create-panel-title bx-create-panel-title--lg">
               {d.create.assets.title}
             </h1>
-            <p className="mt-1.5 text-xs text-[var(--bx-text-dim)]">{d.create.assets.subtitle}</p>
+            <p className="mt-1 text-[12.5px] text-[var(--bx-text-muted)]">
+              {d.create.assets.subtitle}
+            </p>
           </div>
-          <div className="relative w-full sm:w-72">
-            <Search
-              size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--bx-text-dim)]"
-            />
-            <input
-              className="bx-input !py-2 !pl-9 text-sm"
-              placeholder={d.create.assets.searchPlaceholder}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
+          <div className="bx-create-filter-row">
+            {filters.map((f) => (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => setFilter(f.key)}
+                data-active={filter === f.key}
+                className="bx-create-filter-chip"
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-1.5">
-          {filters.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFilter(f.key)}
-              data-active={filter === f.key}
-              className="bx-filter-chip"
-            >
-              {f.label}
-            </button>
-          ))}
+        <div className="relative mt-4 max-w-sm">
+          <Search
+            size={13}
+            className="absolute left-[11px] top-1/2 -translate-y-1/2 text-[var(--bx-text-dim)]"
+          />
+          <input
+            className="bx-input !rounded-[7px] !py-[6.5px] !pl-8 text-[12.5px]"
+            placeholder={d.create.assets.searchPlaceholder}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
 
         {items.length === 0 ? (
-          <div className="bx-empty-state mt-6">
+          <div className="bx-empty-state mt-[18px]">
             <span className="bx-icon-box">
               <FolderOpen size={20} />
             </span>
             <strong>{d.create.assets.empty}</strong>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="bx-create-assets-grid mt-[18px]">
             {items.map((asset) => (
-              <div
-                key={asset.id}
-                className="bx-create-panel bx-card-hover group relative overflow-hidden"
-              >
+              <div key={asset.id} className="bx-create-asset-tile group">
                 <button
                   type="button"
-                  className="block w-full text-left"
+                  className="absolute inset-0 block w-full text-left"
                   onClick={() => setFocus(asset)}
                 >
                   {asset.kind === 'image' ? (
                     <img
                       src={asset.payload}
                       alt=""
-                      className="aspect-square w-full object-cover"
+                      className="h-full w-full object-cover"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="relative flex aspect-square w-full items-center justify-center bg-[var(--bx-bg-muted)]">
+                    <div className="relative flex h-full w-full items-center justify-center bg-[var(--bx-bg-muted)]">
                       <video
                         src={asset.payload}
                         preload="metadata"
@@ -160,40 +156,40 @@ export function Assets() {
                       </span>
                     </div>
                   )}
-                  <div className="p-3">
-                    <p className="truncate text-sm font-medium" title={asset.title}>
-                      {asset.title}
-                    </p>
-                    <p className="mt-0.5 truncate text-[11px] text-[var(--bx-text-dim)]">
-                      {new Date(asset.createdAt).toLocaleString()}
-                      {asset.model ? ` · ${asset.model}` : ''}
-                    </p>
-                  </div>
                 </button>
-                <div className="absolute right-2 top-2 flex gap-1">
-                  <button
-                    type="button"
-                    className={cx(
-                      'rounded-[var(--bx-radius-sm)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)]/90 p-1.5 backdrop-blur transition-opacity',
-                      asset.favorite
-                        ? 'text-[var(--bx-brand-bright)]'
-                        : 'text-[var(--bx-text-dim)] opacity-0 hover:text-[var(--bx-brand-bright)] group-hover:opacity-100',
-                    )}
-                    onClick={() => void toggleFavorite(asset)}
-                    aria-label={
-                      asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite
-                    }
-                  >
-                    <Star size={13} className={asset.favorite ? 'fill-current' : undefined} />
-                  </button>
-                  <button
-                    type="button"
-                    className="bx-icon-btn bx-icon-btn--danger border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)]/90 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
-                    onClick={() => void onDelete(asset)}
-                    aria-label={d.common.delete}
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-1.5 bg-gradient-to-t from-[rgba(2,4,5,0.75)] to-transparent px-2.5 py-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="min-w-0 truncate font-mono text-[9.5px] text-white/85">
+                    {asset.model || asset.title}
+                  </span>
+                  <span className="pointer-events-auto flex gap-1 text-white/90">
+                    <button
+                      type="button"
+                      className={cx(
+                        'rounded p-0.5',
+                        asset.favorite ? 'text-[var(--bx-brand-bright)]' : '',
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        void toggleFavorite(asset)
+                      }}
+                      aria-label={
+                        asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite
+                      }
+                    >
+                      <Star size={12} className={asset.favorite ? 'fill-current' : undefined} />
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded p-0.5 text-white/70 hover:text-white"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        void onDelete(asset)
+                      }}
+                      aria-label={d.common.delete}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </span>
                 </div>
               </div>
             ))}

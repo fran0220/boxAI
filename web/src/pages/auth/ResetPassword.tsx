@@ -4,7 +4,7 @@ import { resetPassword } from '@/lib/customer-api'
 import { ApiError } from '@/lib/api'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
-import { BRAND_LOGO_SVG } from '@/lib/brand'
+import { AuthSplitLayout } from './AuthSplitLayout'
 
 /**
  * Password-reset links put email + token in the URL fragment (preferred)
@@ -51,49 +51,51 @@ export function ResetPassword() {
   }
 
   return (
-    <div className="bx-account-auth-shell px-4 sm:px-6">
-      <div className="mb-8 text-center">
-        <img src={BRAND_LOGO_SVG} alt="" className="mx-auto h-10 w-10" />
-        <h1 className="bx-account-page-title mt-4 text-center">{t.resetTitle}</h1>
-      </div>
-      <form onSubmit={onSubmit} className="bx-account-auth-card space-y-4">
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.email}</span>
+    <AuthSplitLayout title={t.resetTitle} subtitle={t.resetSubtitle}>
+      <form onSubmit={onSubmit} className="bx-auth-fields">
+        <label className="bx-auth-label">
+          <span className="bx-auth-label-text">{t.email}</span>
           <input
             type="email"
-            className="bx-input mt-1 w-full"
+            className="bx-auth-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
+            placeholder="you@example.com"
           />
         </label>
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.resetToken}</span>
-          <input className="bx-input mt-1 w-full" value={token} onChange={(e) => setToken(e.target.value)} required />
+        <label className="bx-auth-label">
+          <span className="bx-auth-label-text">{t.resetToken}</span>
+          <input
+            className="bx-auth-input"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            required
+          />
         </label>
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.newPassword}</span>
+        <label className="bx-auth-label">
+          <span className="bx-auth-label-text">{t.newPassword}</span>
           <input
             type="password"
-            className="bx-input mt-1 w-full"
+            className="bx-auth-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={8}
             autoComplete="new-password"
+            placeholder="••••••••"
           />
         </label>
-        {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
-        {message ? <p className="text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
-        <button type="submit" className="bx-btn bx-btn-primary w-full" disabled={busy}>
+        {error ? <p className="bx-auth-error">{error}</p> : null}
+        {message ? <p className="bx-auth-msg">{message}</p> : null}
+        <button type="submit" className="bx-auth-cta" disabled={busy}>
           {busy ? d.common.loading : t.resetSubmit}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm">
-        <Link to="/login" className="text-[var(--bx-text-muted)] transition-colors hover:text-[var(--bx-brand-bright)]">
-          {t.toLogin}
-        </Link>
+      <p className="bx-auth-switch">
+        <Link to="/login">{t.switchDirectLogin}</Link>
       </p>
-    </div>
+    </AuthSplitLayout>
   )
 }

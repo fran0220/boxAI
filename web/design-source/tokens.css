@@ -1,7 +1,7 @@
 /**
- * BoxAI Design Tokens — Precision Teal
+ * BoxAI Design Tokens · Precision Teal — “Precision Teal”
  * 演进方向：青色品牌延续 · Nebius 式工具感 · 高信息密度 · 双主题并重
- * 用法：--bx-* 变量；产品真相源为 web/src/index.css，本文件为设计源参考。
+ * 用法：变量名与 v1 保持兼容（--bx-*），可直接替换 web/src/index.css 的 token 层。
  */
 
 :root {

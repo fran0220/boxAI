@@ -6,8 +6,8 @@ import {
 } from '@/lib/oauth-pending'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
-import { BRAND_LOGO_SVG } from '@/lib/brand'
 import { Spinner } from '@/components/ui/Spinner'
+import { AuthSplitLayout } from './AuthSplitLayout'
 
 /**
  * Apex OAuth completion page.
@@ -72,57 +72,32 @@ export function OAuthCallback() {
   }, [navigate, t.oauthFailed, t.oauthPendingUnsupported])
 
   return (
-    <div className="bx-account-auth-shell px-4 sm:px-6">
-      <div className="mb-8 text-center">
-        <img src={BRAND_LOGO_SVG} alt="" className="mx-auto h-10 w-10" />
-        <p className="mt-4 m-0 inline-flex items-center justify-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
-          <span className="h-px w-5 bg-[var(--bx-brand)]" />
-          {t.oauthEyebrow}
-        </p>
-        {phase === 'error' ? (
-          <>
-            <h1 className="bx-account-page-title mt-3.5 text-center">{t.oauthFailedTitle}</h1>
-            <p className="bx-text-danger mt-2 text-sm">{error || t.oauthFailed}</p>
-          </>
-        ) : (
-          <>
-            <h1 className="bx-account-page-title mt-3.5 text-center">{t.oauthCallbackTitle}</h1>
-            <p className="bx-account-page-sub text-center">{t.oauthCallbackHint}</p>
-          </>
-        )}
-      </div>
-
+    <AuthSplitLayout
+      title={phase === 'error' ? t.oauthFailedTitle : t.oauthCallbackTitle}
+      subtitle={phase === 'error' ? undefined : t.oauthCallbackHint}
+    >
       {phase === 'error' ? (
-        <div className="bx-account-auth-card space-y-4 text-center">
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link to="/login" className="bx-btn bx-btn-primary">
-              {d.auth.backToLogin}
-            </Link>
-            <Link to="/signup" className="bx-btn bx-btn-ghost">
-              {d.auth.signupTitle}
-            </Link>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4 pt-2 text-sm text-[var(--bx-text-muted)]">
-            <Link
-              to="/login"
-              className="transition-colors hover:text-[var(--bx-brand-bright)]"
-            >
-              {t.toLogin}
-            </Link>
-            <Link
-              to="/signup"
-              className="transition-colors hover:text-[var(--bx-brand-bright)]"
-            >
-              {t.toSignup}
-            </Link>
-          </div>
+        <div className="bx-auth-fields">
+          <p className="bx-auth-error">{error || t.oauthFailed}</p>
+          <Link to="/login" className="bx-auth-cta">
+            {d.auth.backToLogin}
+          </Link>
+          <Link to="/signup" className="bx-auth-oauth-btn w-full">
+            {d.auth.signupTitle}
+          </Link>
         </div>
       ) : (
-        <div className="bx-account-auth-card flex flex-col items-center gap-4 py-10 text-center">
+        <div className="bx-auth-fields items-center py-6 text-center">
           <Spinner />
-          <p className="m-0 text-sm text-[var(--bx-text-muted)]">{t.oauthCallbackHint}</p>
+          <p className="bx-auth-hint">{t.oauthCallbackHint}</p>
         </div>
       )}
-    </div>
+
+      {phase === 'error' ? (
+        <p className="bx-auth-switch">
+          {t.switchNoAccount} <Link to="/signup">{t.switchFreeSignup}</Link>
+        </p>
+      ) : null}
+    </AuthSplitLayout>
   )
 }

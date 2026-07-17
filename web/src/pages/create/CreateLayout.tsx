@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { FolderOpen, Image as ImageIcon, Menu, Play, X } from 'lucide-react'
 import { ensureCreatorKey } from '@/lib/api'
+import { getProfile, getUsageDashboardTrend } from '@/lib/customer-api'
+import { listAssets } from '@/lib/assets-db'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
@@ -15,9 +17,21 @@ export interface CreateOutletContext {
 
 const DESKTOP_MQ = '(min-width: 1024px)'
 
+function monthRange() {
+  const end = new Date()
+  const start = new Date(end.getFullYear(), end.getMonth(), 1)
+  const fmt = (d: Date) => d.toISOString().slice(0, 10)
+  return { start_date: fmt(start), end_date: fmt(end) }
+}
+
+function formatUsd(n: number | null | undefined): string {
+  if (typeof n !== 'number' || Number.isNaN(n)) return '—'
+  return `$${n.toFixed(2)}`
+}
+
 /**
  * Creator workspace under site Layout.
- * Left responsive drawer switches image / video / assets — not a top tab strip.
+ * Left 208px rail: mono workspace label, icon+label+count nav, balance card.
  */
 export function CreateLayout() {
   const { d } = useI18n()
@@ -30,6 +44,13 @@ export function CreateLayout() {
   const [desktop, setDesktop] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(DESKTOP_MQ).matches : true,
   )
+  const [balance, setBalance] = useState<number | null>(null)
+  const [monthSpend, setMonthSpend] = useState<number | null>(null)
+  const [counts, setCounts] = useState<{ image: number; video: number; assets: number }>({
+    image: 0,
+    video: 0,
+    assets: 0,
+  })
 
   useEffect(() => {
     let cancelled = false
@@ -49,6 +70,57 @@ export function CreateLayout() {
     }
   }, [])
 
+  // Balance + month spend for sidebar card (best-effort; show — when unavailable)
+  useEffect(() => {
+    let cancelled = false
+    const range = monthRange()
+    ;(async () => {
+      try {
+        const [p, tr] = await Promise.all([
+          getProfile().catch(() => null),
+          getUsageDashboardTrend({
+            start_date: range.start_date,
+            end_date: range.end_date,
+            granularity: 'day',
+          }).catch(() => null),
+        ])
+        if (cancelled) return
+        if (p && typeof p.balance === 'number') setBalance(p.balance)
+        if (tr?.trend?.length) {
+          const sum = tr.trend.reduce(
+            (acc, point) => acc + Number(point.actual_cost ?? point.cost ?? 0),
+            0,
+          )
+          setMonthSpend(sum)
+        }
+      } catch {
+        /* optional chrome */
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // Local asset counts for nav mono badges
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const all = await listAssets()
+        if (cancelled) return
+        const image = all.filter((a) => a.kind === 'image').length
+        const video = all.filter((a) => a.kind === 'video').length
+        setCounts({ image, video, assets: all.length })
+      } catch {
+        /* ignore */
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [location.pathname])
+
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_MQ)
     const onChange = () => {
@@ -60,12 +132,10 @@ export function CreateLayout() {
     return () => mq.removeEventListener('change', onChange)
   }, [])
 
-  // Close mobile drawer on route change
   useEffect(() => {
     setDrawerOpen(false)
   }, [location.pathname])
 
-  // Lock body scroll when mobile drawer open
   useEffect(() => {
     if (desktop || !drawerOpen) return
     const prev = document.body.style.overflow
@@ -75,26 +145,29 @@ export function CreateLayout() {
     }
   }, [desktop, drawerOpen])
 
-  const panels = [
-    {
-      to: '/create/image',
-      label: d.create.nav.image,
-      desc: d.create.nav.imageDesc,
-      icon: ImageIcon,
-    },
-    {
-      to: '/create/video',
-      label: d.create.nav.video,
-      desc: d.create.nav.videoDesc,
-      icon: Play,
-    },
-    {
-      to: '/create/assets',
-      label: d.create.nav.assets,
-      desc: d.create.nav.assetsDesc,
-      icon: FolderOpen,
-    },
-  ]
+  const panels = useMemo(
+    () => [
+      {
+        to: '/create/image',
+        label: d.create.nav.image,
+        icon: ImageIcon,
+        count: counts.image,
+      },
+      {
+        to: '/create/video',
+        label: d.create.nav.video,
+        icon: Play,
+        count: counts.video,
+      },
+      {
+        to: '/create/assets',
+        label: d.create.nav.assets,
+        icon: FolderOpen,
+        count: counts.assets,
+      },
+    ],
+    [d.create.nav, counts],
+  )
 
   const activePanel =
     panels.find((p) => location.pathname.startsWith(p.to)) ??
@@ -106,23 +179,26 @@ export function CreateLayout() {
     return false
   }
 
+  // Progress: month spend vs spend+remaining balance (visual only)
+  const usagePct = useMemo(() => {
+    if (monthSpend == null || balance == null) return null
+    const total = monthSpend + Math.max(0, balance)
+    if (total <= 0) return 0
+    return Math.min(100, Math.round((monthSpend / total) * 100))
+  }, [monthSpend, balance])
+
   const sidebar = (
     <aside className="bx-create-sidebar" aria-label={d.create.title}>
       <div className="bx-create-sidebar-head">
-        <div className="min-w-0">
-          <p className="bx-display text-sm font-semibold tracking-tight">{d.create.title}</p>
-          <p className="mt-0.5 text-[11px] leading-snug text-[var(--bx-text-dim)]">
-            {d.create.workspaceHint}
-          </p>
-        </div>
+        <p className="bx-create-workspace-label">{d.create.workspaceLabel}</p>
         {!desktop ? (
           <button
             type="button"
-            className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+            className="bx-create-drawer-close"
             onClick={() => setDrawerOpen(false)}
             aria-label={d.common.close}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         ) : null}
       </div>
@@ -138,25 +214,45 @@ export function CreateLayout() {
               className={cx('bx-create-side-link', active && 'is-active')}
               aria-current={active ? 'page' : undefined}
             >
-              <span className="bx-create-side-icon">
-                <Icon size={17} />
+              <span className="bx-create-side-icon" aria-hidden="true">
+                <Icon size={15} strokeWidth={2} />
               </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-medium tracking-tight">{panel.label}</span>
-                <span className="mt-0.5 block text-[11px] leading-snug text-[var(--bx-text-dim)]">
-                  {panel.desc}
-                </span>
-              </span>
+              <span className="bx-create-side-label">{panel.label}</span>
+              <span className="bx-create-side-count">{panel.count}</span>
             </NavLink>
           )
         })}
       </nav>
+
+      <div className="bx-create-balance-wrap">
+        <div className="bx-create-balance-card">
+          <div className="bx-create-balance-row">
+            <span className="bx-create-balance-label">{d.create.balanceLabel}</span>
+            <span className="bx-create-balance-amount">{formatUsd(balance)}</span>
+          </div>
+          <div className="bx-create-balance-bar" aria-hidden="true">
+            <div
+              className="bx-create-balance-bar-fill"
+              style={{ width: usagePct != null ? `${usagePct}%` : '0%' }}
+            />
+          </div>
+          <p className="bx-create-balance-meta">
+            {d.create.monthUsed.replace(
+              '{amount}',
+              monthSpend != null ? formatUsd(monthSpend) : '—',
+            )}
+            {' · '}
+            <Link to="/checkout" className="bx-create-balance-topup">
+              {d.create.topUp}
+            </Link>
+          </p>
+        </div>
+      </div>
     </aside>
   )
 
   return (
     <div className="bx-create-workspace">
-      {/* Mobile top bar: open drawer + current panel */}
       <div className="bx-create-mobile-bar lg:hidden">
         <button
           type="button"
@@ -185,10 +281,8 @@ export function CreateLayout() {
       ) : null}
 
       <div className="bx-create-shell-row">
-        {/* Desktop: fixed left rail */}
         <div className="bx-create-sidebar-rail hidden lg:flex">{sidebar}</div>
 
-        {/* Mobile: overlay drawer */}
         <AnimatePresence>
           {!desktop && drawerOpen ? (
             <>

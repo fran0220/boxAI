@@ -471,7 +471,7 @@ export function AccountUsage() {
         <div className="bx-account-toolbar">
           <input
             type="date"
-            className="bx-account-input-sm font-mono text-[12.5px]"
+            className="bx-account-input-date"
             value={logFilters.start_date}
             onChange={(e) => {
               const next = { ...logFilters, start_date: e.target.value }
@@ -483,7 +483,7 @@ export function AccountUsage() {
           />
           <input
             type="date"
-            className="bx-account-input-sm font-mono text-[12.5px]"
+            className="bx-account-input-date"
             value={logFilters.end_date}
             onChange={(e) => {
               const next = { ...logFilters, end_date: e.target.value }

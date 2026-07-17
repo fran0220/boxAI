@@ -46,10 +46,36 @@ function formatLatency(ms: number | null | undefined): string {
 
 type SparkBar = { h: number; tone: 'ok' | 'bad' | 'warn' | 'empty'; title: string }
 
+/** Map real probe latency (ms) into a bar height. No invented variance. */
+function latencyHeight(ms: number | null | undefined): number | null {
+  if (ms == null || Number.isNaN(ms) || ms < 0) return null
+  // 0ms → ~28%, 500ms → ~64%, 2000ms+ → 100%
+  const h = 28 + Math.min(72, (ms / 2000) * 72)
+  return Math.min(100, Math.max(12, Math.round(h)))
+}
+
+function statusToneHeight(status: string | undefined): number {
+  if (isOk(status)) return 72
+  if (isBad(status)) return 36
+  if (isWarn(status)) return 52
+  if (status) return 48
+  return 15
+}
+
 function buildSpark(item: UserMonitorView): SparkBar[] {
   const timeline = Array.isArray(item.timeline) ? item.timeline : []
   // API returns newest first typically; reverse for left=old, right=new
   const points = [...timeline].slice(0, SPARK_LEN).reverse()
+
+  // No timeline → empty sparkline slots only (never fake uptime bars)
+  if (points.length === 0) {
+    return Array.from({ length: SPARK_LEN }, () => ({
+      h: 15,
+      tone: 'empty' as const,
+      title: '',
+    }))
+  }
+
   const bars: SparkBar[] = []
   const pad = Math.max(0, SPARK_LEN - points.length)
   for (let i = 0; i < pad; i += 1) {
@@ -57,41 +83,25 @@ function buildSpark(item: UserMonitorView): SparkBar[] {
   }
   for (const p of points) {
     let tone: SparkBar['tone'] = 'empty'
-    let h = 15
-    if (isOk(p.status)) {
-      tone = 'ok'
-      h = 70 + ((p.latency_ms ?? 0) % 30)
-    } else if (isBad(p.status)) {
-      tone = 'bad'
-      h = 40
-    } else if (isWarn(p.status)) {
-      tone = 'warn'
-      h = 55
-    } else if (p.status) {
-      tone = 'warn'
-      h = 50
-    }
+    if (isOk(p.status)) tone = 'ok'
+    else if (isBad(p.status)) tone = 'bad'
+    else if (isWarn(p.status)) tone = 'warn'
+    else if (p.status) tone = 'warn'
+
+    const fromLatency = latencyHeight(p.latency_ms)
+    const h =
+      fromLatency != null
+        ? fromLatency
+        : tone === 'empty'
+          ? 15
+          : statusToneHeight(p.status)
+
     const lat = p.latency_ms != null ? `${Math.round(p.latency_ms)}ms` : '—'
     bars.push({
-      h: Math.min(100, Math.max(12, h)),
+      h,
       tone,
       title: `${p.checked_at || ''} · ${p.status || '—'} · ${lat}`,
     })
-  }
-  // If no timeline, show a single status-colored stub so chrome is visible
-  if (points.length === 0) {
-    const stubTone: SparkBar['tone'] = isOk(item.primary_status)
-      ? 'ok'
-      : isBad(item.primary_status)
-        ? 'bad'
-        : isWarn(item.primary_status)
-          ? 'warn'
-          : 'empty'
-    return Array.from({ length: SPARK_LEN }, (_, i) => ({
-      h: stubTone === 'empty' ? 15 : 45 + ((i * 17) % 40),
-      tone: stubTone,
-      title: item.primary_status || '',
-    }))
   }
   return bars
 }

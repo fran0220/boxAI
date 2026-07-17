@@ -1,11 +1,49 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BRAND_LOGO_SVG, BRAND_NAME, consoleOrigin } from '@/lib/brand'
+import { fetchPublicStatus, type OverallStatus } from '@/lib/public-status'
 import { RELEASES_PAGE_URL } from '@/lib/releases'
 import { useI18n } from '@/i18n'
+import { cx } from '@/lib/cx'
+
+type FooterStatus = OverallStatus | 'unknown'
 
 export function Footer() {
   const { d } = useI18n()
   const console_ = consoleOrigin()
+  const [liveStatus, setLiveStatus] = useState<FooterStatus>('unknown')
+
+  useEffect(() => {
+    const ctrl = new AbortController()
+    fetchPublicStatus('7d', ctrl.signal)
+      .then((data) => {
+        if (ctrl.signal.aborted) return
+        // Empty or missing payload: never claim "all systems operational".
+        if (!data?.items?.length) {
+          setLiveStatus('unknown')
+          return
+        }
+        setLiveStatus(data.overall === 'degraded' ? 'degraded' : 'operational')
+      })
+      .catch(() => {
+        if (!ctrl.signal.aborted) setLiveStatus('unknown')
+      })
+    return () => ctrl.abort()
+  }, [])
+
+  const statusCopy =
+    liveStatus === 'operational'
+      ? d.footer.systemsOk
+      : liveStatus === 'degraded'
+        ? d.footer.systemsDegraded
+        : d.footer.systemsUnknown
+
+  const statusTone =
+    liveStatus === 'operational'
+      ? 'text-[var(--bx-success)]'
+      : liveStatus === 'degraded'
+        ? 'text-[var(--bx-warning)]'
+        : 'text-[var(--bx-text-dim)]'
 
   const columns: Array<{
     title: string
@@ -46,27 +84,35 @@ export function Footer() {
     },
   ]
 
+  // Layout/copy match design-source/Footer.dc.html
   return (
-    <footer className="relative z-10 border-t border-[var(--bx-border)] bg-[var(--bx-bg)]">
+    <footer className="relative z-10 border-t border-[var(--bx-border)] bg-[var(--bx-bg)] text-[var(--bx-text)]">
       <div className="mx-auto max-w-[1200px] px-6 pt-12 pb-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-2.5 text-[15px] font-extrabold tracking-tight">
+            <div className="flex items-center gap-[9px] text-[15px] font-extrabold tracking-[-0.02em]">
               <img src={BRAND_LOGO_SVG} alt="" className="h-[26px] w-[26px]" />
               <span>{BRAND_NAME}</span>
             </div>
-            <p className="mt-3 max-w-[300px] text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
+            <p className="mt-3 max-w-[300px] text-[13px] leading-[1.6] text-[var(--bx-text-muted)]">
               {d.footer.tagline}
             </p>
             <Link
               to="/status"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--bx-border)] px-2.5 py-1 font-mono text-[11px] text-[var(--bx-success)] transition-colors hover:border-[var(--bx-border-strong)]"
+              className={cx(
+                'mt-4 inline-flex items-center gap-[7px] rounded-[6px] border border-[var(--bx-border)] px-2.5 py-[5px] font-mono text-[11px] transition-colors hover:border-[var(--bx-border-strong)]',
+                statusTone,
+              )}
             >
               <span
                 className="h-1.5 w-1.5 rounded-full bg-current"
-                style={{ animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }}
+                style={
+                  liveStatus === 'unknown'
+                    ? undefined
+                    : { animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }
+                }
               />
-              {d.footer.systemsOk}
+              {statusCopy}
             </Link>
           </div>
           {columns.map((col) => (
@@ -74,7 +120,7 @@ export function Footer() {
               <h3 className="m-0 font-mono text-[10.5px] font-semibold tracking-[0.14em] text-[var(--bx-text-dim)] uppercase">
                 {col.title}
               </h3>
-              <ul className="mt-3.5 flex list-none flex-col gap-2.5 p-0">
+              <ul className="mt-3.5 flex list-none flex-col gap-[9px] p-0">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     {link.to ? (

@@ -1,21 +1,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import {
   fetchPublicStatus,
+  formatAvailability,
+  formatLatency,
   type OverallStatus,
   type PublicStatusItem,
   type StatusPeriod,
 } from '@/lib/public-status'
 import {
   GroupPanel,
-  MonitorStatusCard,
+  MonitorStatusRow,
   OverallChip,
   PeriodPills,
   StatusEmpty,
   StatusError,
+  StatusKpiStrip,
   StatusSkeleton,
 } from '@/components/status/StatusParts'
 import { cx } from '@/lib/cx'
@@ -44,7 +46,6 @@ export function Status() {
       try {
         const data = await fetchPublicStatus(requested, signal)
         if (signal?.aborted) return
-        // Stamp: ignore stale responses after period switch (abort may lag).
         if (requested !== periodRef.current) return
         setItems(data.items || [])
         setOverall(data.overall === 'degraded' ? 'degraded' : 'operational')
@@ -55,7 +56,6 @@ export function Status() {
         if (signal?.aborted) return
         if (requested !== periodRef.current) return
         setError(e instanceof Error ? e.message : s.loadError)
-        // Silent poll keeps prior data on error; non-silent may still be empty.
         if (!silent) setReady(true)
       } finally {
         if (!silent && !signal?.aborted) setLoading(false)
@@ -64,7 +64,6 @@ export function Status() {
     [s.loadError],
   )
 
-  // Period change: clear data so skeleton and stale cards never dual-render.
   useEffect(() => {
     const ctrl = new AbortController()
     setReady(false)
@@ -75,7 +74,6 @@ export function Status() {
     return () => ctrl.abort()
   }, [period, load])
 
-  // Silent refresh: abort in-flight polls when period changes or unmount.
   useEffect(() => {
     const ctrl = new AbortController()
     const t = window.setInterval(() => {
@@ -104,17 +102,16 @@ export function Status() {
     [s.statusLabel],
   )
 
-  const cardLabels = useMemo(
+  const rowLabels = useMemo(
     () => ({
       latency: s.latency,
       ping: s.ping,
-      availability: `${s.availability} · ${s.period[period]}`,
+      availability: s.availability,
       past: s.past,
       now: s.now,
       status: statusLabel,
-      extraModels: (n: number) => s.extraModels.replace('{n}', String(n)),
     }),
-    [s, period, statusLabel],
+    [s, statusLabel],
   )
 
   const grouped = useMemo(() => {
@@ -133,45 +130,123 @@ export function Status() {
     return { map, ungrouped }
   }, [items])
 
+  const kpis = useMemo(() => {
+    const n = items.length
+    let availSum = 0
+    let availN = 0
+    let latSum = 0
+    let latN = 0
+    // Prefer true last-24h counts when timeline timestamps exist; else
+    // count monitors currently not operational (never invent "24h" events).
+    const now = Date.now()
+    const dayMs = 24 * 60 * 60 * 1000
+    let last24hEvents = 0
+    let hasUsableTimestamps = false
+    let currentlyDegraded = 0
+    for (const it of items) {
+      if (it.availability != null && !Number.isNaN(it.availability)) {
+        availSum += it.availability
+        availN++
+      }
+      if (it.latency_ms != null && !Number.isNaN(it.latency_ms)) {
+        latSum += it.latency_ms
+        latN++
+      }
+      const st = it.status
+      if (st === 'degraded' || st === 'failed' || st === 'error') {
+        currentlyDegraded++
+      }
+      for (const p of it.timeline || []) {
+        if (!p.checked_at) continue
+        const t = Date.parse(p.checked_at)
+        if (Number.isNaN(t)) continue
+        hasUsableTimestamps = true
+        if (now - t > dayMs || t > now + 60_000) continue
+        if (p.status === 'degraded' || p.status === 'failed' || p.status === 'error') {
+          last24hEvents++
+        }
+      }
+    }
+    const degradedCount = hasUsableTimestamps ? last24hEvents : currentlyDegraded
+    const degradedLabel = hasUsableTimestamps
+      ? s.kpi.degradedEvents24h
+      : s.kpi.currentlyDegraded
+    const avgAvail = availN ? availSum / availN : null
+    const avgLat = latN ? latSum / latN : null
+    return [
+      {
+        label: s.kpi.channels,
+        value: String(n),
+      },
+      {
+        label: s.kpi.avgAvailability.replace('{period}', s.period[period]),
+        value: avgAvail != null ? formatAvailability(avgAvail) : '—',
+        unit: avgAvail != null ? '%' : undefined,
+        valueClass:
+          avgAvail != null && avgAvail >= 99
+            ? 'text-[var(--bx-success)]'
+            : avgAvail != null && avgAvail >= 97
+              ? 'text-[var(--bx-warning)]'
+              : undefined,
+      },
+      {
+        label: s.kpi.avgLatency,
+        value: avgLat != null ? formatLatency(avgLat) : '—',
+        unit: avgLat != null ? ' ms' : undefined,
+      },
+      {
+        label: degradedLabel,
+        value: String(degradedCount),
+        valueClass:
+          degradedCount > 0 ? 'text-[var(--bx-warning)]' : 'text-[var(--bx-text)]',
+      },
+    ]
+  }, [items, period, s.kpi, s.period])
+
   const overallLabel = overall === 'operational' ? s.overall.operational : s.overall.degraded
-  // One source of truth: never show data while !ready (period switch clears items too).
   const showSkeleton = !ready || (loading && items.length === 0)
   const showError = ready && !loading && Boolean(error) && items.length === 0
   const showEmpty = ready && !loading && !error && items.length === 0
   const showData = ready && items.length > 0
 
+  const updatedLine = updatedAt
+    ? s.updatedInline
+        .replace('{time}', new Date(updatedAt).toLocaleTimeString())
+        .replace('{refresh}', s.autoRefresh)
+    : s.autoRefresh
+
   return (
-    <div className="bx-status-grid min-h-[70vh]">
-      <div className="mx-auto max-w-[1200px] px-6 py-12 sm:py-16">
-        <header className="mb-8 flex flex-col gap-5 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <div className="mx-auto max-w-[1200px] px-6 pb-24 pt-14 sm:pb-[96px] sm:pt-14">
+        {/* Header — design: title left, period + overall + refresh right */}
+        <header
+          data-screen-label="状态头部"
+          className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end"
+        >
           <div>
             <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
               <span className="h-px w-5 bg-[var(--bx-brand)]" />
               {s.eyebrow}
             </p>
-            <h1 className="mt-3.5 text-[32px] font-extrabold tracking-tight sm:text-[40px]">
+            <h1 className="mt-3.5 text-[32px] font-extrabold tracking-[-0.035em] sm:text-[38px]">
               {s.title}
             </h1>
-            <p className="mt-2.5 max-w-xl text-[14.5px] text-[var(--bx-text-muted)] sm:text-[15px]">
-              {s.subtitle}
+            <p className="mt-2.5 text-sm text-[var(--bx-text-muted)]">
+              {s.subtitle}{' '}
+              <span className="font-mono text-xs text-[var(--bx-text-dim)]">{updatedLine}</span>
             </p>
-            {updatedAt ? (
-              <p className="mt-2 font-mono text-[11px] text-[var(--bx-text-dim)]">
-                {s.updatedAt.replace('{time}', new Date(updatedAt).toLocaleString())}
-              </p>
-            ) : null}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             <PeriodPills period={period} options={periodOptions} onChange={setPeriod} />
             {ready ? <OverallChip overall={overall} label={overallLabel} /> : null}
             <button
               type="button"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[var(--bx-text-dim)] transition hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)] disabled:opacity-50"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[var(--bx-border)] bg-transparent text-[var(--bx-text-dim)] transition hover:border-[var(--bx-border-strong)] hover:text-[var(--bx-brand-bright)] disabled:opacity-50"
               disabled={loading}
               title={s.refresh}
               onClick={() => void load(false, undefined, period)}
             >
-              <RefreshCw size={16} className={cx(loading && 'animate-spin')} />
+              <RefreshCw size={14} className={cx(loading && 'animate-spin')} />
             </button>
           </div>
         </header>
@@ -187,42 +262,43 @@ export function Status() {
         {showEmpty ? <StatusEmpty title={s.emptyTitle} description={s.emptyBody} /> : null}
 
         {showData ? (
-          <div className="space-y-2">
+          <>
+            <StatusKpiStrip items={kpis} />
+
             {grouped.ungrouped.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <GroupPanel
+                name={s.ungrouped}
+                count={s.monitorsCount.replace('{n}', String(grouped.ungrouped.length))}
+              >
                 {grouped.ungrouped.map((item) => (
-                  <MonitorStatusCard key={item.id} item={item} labels={cardLabels} />
+                  <MonitorStatusRow key={item.id} item={item} labels={rowLabels} />
                 ))}
-              </div>
+              </GroupPanel>
             ) : null}
+
             {[...grouped.map.entries()].map(([name, list]) => (
-              <GroupPanel key={name} name={name}>
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {list.map((item) => (
-                    <MonitorStatusCard key={item.id} item={item} labels={cardLabels} />
-                  ))}
-                </div>
+              <GroupPanel
+                key={name}
+                name={name}
+                count={s.monitorsCount.replace('{n}', String(list.length))}
+              >
+                {list.map((item) => (
+                  <MonitorStatusRow key={item.id} item={item} labels={rowLabels} />
+                ))}
               </GroupPanel>
             ))}
-          </div>
-        ) : null}
 
-        {/* Thin bottom CTA — Home language, non-blocking */}
-        <div className="mt-14 flex flex-col items-start justify-between gap-4 rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] px-5 py-4 shadow-[var(--bx-shadow-card)] sm:flex-row sm:items-center sm:px-6">
-          <div>
-            <p className="m-0 text-sm font-semibold tracking-tight text-[var(--bx-text)]">
-              {s.ctaTitle}
+            <p className="mt-8 font-mono text-xs text-[var(--bx-text-dim)]">
+              {s.legend.prefix}
+              <span className="text-[var(--bx-success)]">{s.legend.ok}</span>
+              {' · '}
+              <span className="text-[var(--bx-warning)]">{s.legend.degraded}</span>
+              {' · '}
+              <span className="text-[var(--bx-danger)]">{s.legend.failed}</span>
+              {s.legend.suffix.replace('{period}', s.period[period])}
             </p>
-            <p className="mt-1 text-[13px] text-[var(--bx-text-muted)]">{s.ctaBody}</p>
-          </div>
-          <Link
-            to="/pricing"
-            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[var(--bx-brand-bright)] transition-colors hover:text-[var(--bx-brand)]"
-          >
-            {s.ctaPrimary}
-            <ArrowRight size={14} />
-          </Link>
-        </div>
+          </>
+        ) : null}
       </div>
     </div>
   )

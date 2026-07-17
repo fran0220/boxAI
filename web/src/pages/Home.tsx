@@ -175,6 +175,7 @@ const CODE_TABS = [
 
 type CodeTabKey = (typeof CODE_TABS)[number]['key']
 
+/** Decorative bar chrome only — no numeric labels (not live usage). */
 const MINI_BARS = [42, 58, 35, 70, 52, 88, 64, 45, 76, 58, 92, 68, 50, 80, 62, 95, 74, 100]
 
 const CONNECTORS_LEFT = [21, 75, 129, 184, 238, 292].map(
@@ -196,8 +197,10 @@ const VALUE_KEYS = ['creator', 'studio', 'gateway', 'account'] as const
 
 const PRODUCT_ICONS = [ImageIcon, Monitor, LayoutDashboard, Code2] as const
 
-/** Design marketing targets for the stats band (parity with 新版-首页). */
-const STAT_TARGETS = { models: 100, modes: 3, availability: 99.9, accounts: 1 } as const
+/** Static product facts (capabilities), not live telemetry. */
+const STAT_MODES = 3
+const STAT_ACCOUNTS = 1
+const STAT_MODELS = MODEL_MARQUEE.length
 
 function buildCodeSamples(hello: string, claudeComment: string, claudeFooter: string): Record<CodeTabKey, string> {
   return {
@@ -272,8 +275,15 @@ export function Home() {
     fetchPublicStatus('7d', ctrl.signal)
       .then((data) => {
         if (ctrl.signal.aborted) return
-        setOverall(data.overall === 'degraded' ? 'degraded' : 'operational')
-        setStatusItems((data.items || []).slice(0, 4))
+        const items = data.items || []
+        // Empty monitors: do not invent operational rows or a green overall chip.
+        if (items.length === 0) {
+          setOverall(null)
+          setStatusItems([])
+        } else {
+          setOverall(data.overall === 'degraded' ? 'degraded' : 'operational')
+          setStatusItems(items.slice(0, 4))
+        }
         setStatusReady(true)
       })
       .catch(() => {
@@ -288,10 +298,22 @@ export function Home() {
 
   const marquee = useMemo(() => [...MODEL_MARQUEE, ...MODEL_MARQUEE], [])
 
-  // Design parity: always count up to marketing targets (100 / 3 / 99.9 / 1)
-  const statModels = useCountUp(STAT_TARGETS.models)
-  const statModes = useCountUp(STAT_TARGETS.modes)
-  const statAvail = useCountUp(STAT_TARGETS.availability)
+  // Mean 7d availability from public status when probes exist; else —
+  const meanAvailability = useMemo(() => {
+    if (!statusReady || statusItems.length === 0) return null
+    const vals = statusItems
+      .map((row) => {
+        const v = row.availability_7d ?? row.availability
+        return typeof v === 'number' && !Number.isNaN(v) ? v : null
+      })
+      .filter((v): v is number => v != null)
+    if (vals.length === 0) return null
+    return vals.reduce((a, b) => a + b, 0) / vals.length
+  }, [statusReady, statusItems])
+
+  const statModels = useCountUp(STAT_MODELS)
+  const statModes = useCountUp(STAT_MODES)
+  const statAvail = useCountUp(meanAvailability)
 
   const codeSamples = useMemo(
     () =>
@@ -387,12 +409,12 @@ export function Home() {
         </div>
       </section>
 
-      {/* Stats — design marketing targets 100 / 3 / 99.9 / 1 */}
+      {/* Stats — models from marquee list; availability from public status mean; modes/accounts are product facts */}
       <section data-screen-label="Stats" className="border-b border-[var(--bx-border)] bg-[var(--bx-bg)]">
         <div className="mx-auto grid max-w-[1200px] grid-cols-2 px-6 md:grid-cols-4">
           <div className="py-9 pr-6">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
-              {statModels != null ? Math.round(statModels) : STAT_TARGETS.models}+
+              {statModels != null ? Math.round(statModels) : STAT_MODELS}+
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[0].label}
@@ -400,7 +422,7 @@ export function Home() {
           </div>
           <div className="border-l border-[var(--bx-border)] px-6 py-9">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
-              {statModes != null ? Math.round(statModes) : STAT_TARGETS.modes}
+              {statModes != null ? Math.round(statModes) : STAT_MODES}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[1].label}
@@ -408,7 +430,11 @@ export function Home() {
           </div>
           <div className="border-l border-[var(--bx-border)] px-6 py-9">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
-              {statAvail != null ? `${statAvail.toFixed(1)}%` : `${STAT_TARGETS.availability}%`}
+              {statAvail != null
+                ? `${statAvail.toFixed(1)}%`
+                : statusReady
+                  ? '—'
+                  : '…'}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[2].label}
@@ -416,7 +442,7 @@ export function Home() {
           </div>
           <div className="border-l border-[var(--bx-border)] py-9 pl-6">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-brand)]">
-              {STAT_TARGETS.accounts}
+              {STAT_ACCOUNTS}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[3].label}
@@ -741,13 +767,13 @@ export function Home() {
                 className="mx-5 mt-4 mb-5 flex-1 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-deep)] px-3.5 py-3 font-mono text-[11.5px] leading-[1.8]"
               >
                 <span className="text-[var(--bx-text-dim)]">$</span>{' '}
-                <span className="text-[var(--bx-text-soft)]">boxai agent run</span>
+                <span className="text-[var(--bx-text-soft)]">{d.home.bento.studio.demoCmd}</span>
                 <br />
                 <span className="text-[var(--bx-success)]">✓</span>{' '}
-                <span className="text-[var(--bx-text-muted)]">signed in · gateway ready</span>
+                <span className="text-[var(--bx-text-muted)]">{d.home.bento.studio.demoReady}</span>
                 <br />
                 <span className="text-[var(--bx-brand)]">→</span>{' '}
-                <span className="text-[var(--bx-text-muted)]">skills: 12 · mcp: 3 · memory: on</span>
+                <span className="text-[var(--bx-text-muted)]">{d.home.bento.studio.demoStack}</span>
                 <span
                   className="ml-1 inline-block h-[1em] w-1.5 align-text-bottom bg-[var(--bx-brand)]"
                   style={{ animation: 'bx-blink 1s ease infinite' }}
@@ -778,8 +804,8 @@ export function Home() {
               <div className="mx-5 mt-4 mb-5 flex-1 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] p-3.5">
                 <div className="flex justify-between font-mono text-[10.5px] text-[var(--bx-text-dim)]">
                   <span>{d.home.bento.account.todayTokens}</span>
-                  {/* Decorative design sample — not live usage money */}
-                  <span className="text-[var(--bx-brand)]">{d.home.bento.account.tokenSample}</span>
+                  {/* No live usage on marketing shell — wait until account page */}
+                  <span className="text-[var(--bx-brand)]">—</span>
                 </div>
                 <div aria-hidden className="mt-2.5 flex h-[52px] items-end gap-[3px]">
                   {MINI_BARS.map((h, i) => (
@@ -840,6 +866,7 @@ export function Home() {
 
       {/* Developers */}
       <section
+        id="developers"
         data-screen-label="Developers"
         className="border-t border-[var(--bx-border)] bg-[color-mix(in_srgb,var(--bx-bg-elevated)_55%,transparent)]"
       >
@@ -928,7 +955,7 @@ export function Home() {
               <span
                 className={cx(
                   'inline-flex items-center gap-1.5 rounded-[6px] border px-3 py-1 font-mono text-[11px] font-semibold tracking-wider',
-                  !statusReady
+                  !statusReady || overall == null
                     ? 'border-[var(--bx-border)] text-[var(--bx-text-dim)]'
                     : overall === 'degraded'
                       ? 'border-[color-mix(in_srgb,var(--bx-warning)_35%,transparent)] text-[var(--bx-warning)]'
@@ -937,13 +964,19 @@ export function Home() {
               >
                 <span
                   className="h-1.5 w-1.5 rounded-full bg-current"
-                  style={{ animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }}
+                  style={
+                    statusReady && overall != null
+                      ? { animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }
+                      : undefined
+                  }
                 />
                 {!statusReady
                   ? '…'
                   : overall === 'degraded'
                     ? d.status.overall.degraded
-                    : d.status.overall.operational}
+                    : overall === 'operational'
+                      ? d.status.overall.operational
+                      : d.status.overall.unknown}
               </span>
               <Link
                 to="/status"

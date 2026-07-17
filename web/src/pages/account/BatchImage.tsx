@@ -616,21 +616,17 @@ export function AccountBatchImage() {
             {t.packZip}
           </button>
         </div>
-        <div className="bx-account-gallery mt-3.5">
-          {(galleryLabels.length
-            ? galleryLabels
-            : Array.from({ length: 6 }, (_, i) => `slot_${String(i + 1).padStart(2, '0')}`)
-          )
-            .slice(0, 6)
-            .map((label) => (
+        {galleryLabels.length === 0 ? (
+          <p className="bx-account-empty mt-3.5">{t.galleryHint}</p>
+        ) : (
+          <div className="bx-account-gallery mt-3.5">
+            {galleryLabels.slice(0, 6).map((label) => (
               <div key={label} className="bx-account-gallery-tile">
                 <span>{label}</span>
               </div>
             ))}
-        </div>
-        {galleryLabels.length === 0 ? (
-          <p className="bx-account-stat-hint mt-2">{t.galleryHint}</p>
-        ) : null}
+          </div>
+        )}
       </div>
 
       {/* Items modal */}

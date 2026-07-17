@@ -16,7 +16,7 @@
 </helmet>
 
 <div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font);">
-  <dc-import name="Header" hint-size="100%,56px"></dc-import>
+  <dc-import name="HeaderV2" hint-size="100%,56px"></dc-import>
 
   <div style="margin-inline: auto; display: flex; width: 100%; max-width: 1200px; gap: 0; padding: 0 24px; box-sizing: border-box;">
     <!-- Sidebar -->
@@ -716,13 +716,13 @@
       <sc-if value="{{ isOther }}" hint-placeholder-val="{{ false }}">
         <div style="display: flex; min-height: 260px; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 1px dashed var(--bx-border-strong); border-radius: var(--bx-radius-xl); text-align: center;">
           <strong style="font-size: 15px; font-weight: 800;">{{ otherTitle }}</strong>
-          <p style="margin: 0; max-width: 360px; font-size: 13px; color: var(--bx-text-muted);">此页面沿用同一套 Precision Teal token（导航结构见左侧分组）。</p>
+          <p style="margin: 0; max-width: 360px; font-size: 13px; color: var(--bx-text-muted);">此页面沿用同一套 v2 token（导航结构见左侧分组）。</p>
         </div>
       </sc-if>
     </main>
   </div>
 
-  <dc-import name="Footer" hint-size="100%,360px"></dc-import>
+  <dc-import name="FooterV2" hint-size="100%,360px"></dc-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>

@@ -291,7 +291,6 @@ export function AccountKeys() {
           </button>
         </div>
       </div>
-      <p className="bx-account-page-sub">{t.subtitle}</p>
 
       {createdSecret ? (
         <div className="bx-account-panel bx-account-panel-pad mt-4 border-[var(--bx-brand)]/30 text-sm">

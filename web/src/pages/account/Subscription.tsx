@@ -154,7 +154,7 @@ export function AccountSubscription() {
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
       {/* Current plan hero */}
-      <div className="bx-account-panel-grad mt-5 flex flex-wrap items-center justify-between gap-4 !py-5 !px-6">
+      <div className="bx-account-panel-grad mt-5 flex flex-wrap items-center justify-between gap-4 !px-6 !py-5">
         <div className="min-w-0">
           <p className="bx-account-mono-label">{t.currentPlan}</p>
           {currentName ? (

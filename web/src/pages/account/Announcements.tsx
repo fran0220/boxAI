@@ -6,22 +6,37 @@ import { usePageMeta } from '@/lib/meta'
 import { Spinner } from '@/components/ui/Spinner'
 import { cx } from '@/lib/cx'
 
-function tagFromTitle(title: string): { label: string; cls: string } {
-  const t = title.toLowerCase()
-  if (/维护|maintenance|downtime/.test(t)) {
-    return { label: '维护', cls: 'bx-account-ann-tag--warn' }
+/**
+ * Prefer API type/category/tag when present. Otherwise only apply a conservative
+ * maintenance keyword match — never invent "model/new feature" labels from titles.
+ */
+function resolveAnnouncementTag(
+  item: UserAnnouncement,
+  labels: { notice: string; maintenance: string },
+): { label: string; cls: string } {
+  const apiRaw = (item.tag || item.type || item.category || '').trim()
+  if (apiRaw) {
+    const lower = apiRaw.toLowerCase()
+    if (/维护|maintenance|downtime|outage|warn/.test(lower)) {
+      return { label: apiRaw, cls: 'bx-account-ann-tag--warn' }
+    }
+    if (/模型|model|update|info/.test(lower)) {
+      return { label: apiRaw, cls: 'bx-account-ann-tag--info' }
+    }
+    if (/新|new|feature|launch/.test(lower)) {
+      return { label: apiRaw, cls: '' }
+    }
+    return { label: apiRaw, cls: 'bx-account-ann-tag--muted' }
   }
-  if (/模型|model|gemini|claude|gpt|渠道/.test(t)) {
-    return { label: '模型', cls: 'bx-account-ann-tag--info' }
+
+  if (/维护|maintenance|downtime|planned\s*outage/i.test(item.title || '')) {
+    return { label: labels.maintenance, cls: 'bx-account-ann-tag--warn' }
   }
-  if (/新|new|上线|launch|feature/.test(t)) {
-    return { label: '新功能', cls: '' }
-  }
-  return { label: '公告', cls: 'bx-account-ann-tag--muted' }
+  return { label: labels.notice, cls: 'bx-account-ann-tag--muted' }
 }
 
 export function AccountAnnouncements() {
-  const { d, lang } = useI18n()
+  const { d } = useI18n()
   const t = d.accountAnnouncements
   usePageMeta(t.metaTitle)
 
@@ -81,21 +96,10 @@ export function AccountAnnouncements() {
   const unreadCount = items.filter((x) => !x.read_at).length
 
   function resolveTag(item: UserAnnouncement) {
-    const raw = tagFromTitle(item.title)
-    // Localized tag labels
-    if (lang === 'en') {
-      if (raw.cls.includes('warn')) return { ...raw, label: 'Maintenance' }
-      if (raw.cls.includes('info')) return { ...raw, label: 'Model' }
-      if (!raw.cls) return { ...raw, label: 'New' }
-      return { ...raw, label: 'Notice' }
-    }
-    if (lang === 'vi') {
-      if (raw.cls.includes('warn')) return { ...raw, label: 'Bảo trì' }
-      if (raw.cls.includes('info')) return { ...raw, label: 'Model' }
-      if (!raw.cls) return { ...raw, label: 'Mới' }
-      return { ...raw, label: 'Thông báo' }
-    }
-    return raw
+    return resolveAnnouncementTag(item, {
+      notice: t.tagNotice,
+      maintenance: t.tagMaintenance,
+    })
   }
 
   return (

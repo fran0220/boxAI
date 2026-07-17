@@ -94,7 +94,7 @@ export function Header() {
     resources: {
       links: [
         { t: megaCopy.resources.status.t, d: megaCopy.resources.status.d, to: '/status' },
-        // No public docs route — closest real surface for first API call.
+        // No public docs route — label matches destination (API keys), not "docs".
         { t: megaCopy.resources.docs.t, d: megaCopy.resources.docs.d, to: '/account/keys' },
         {
           t: megaCopy.resources.changelog.t,
@@ -121,9 +121,10 @@ export function Header() {
     window.location.href = '/'
   }
 
+  // Spacing/type match design-source/Header.dc.html (Nebius-style mega).
   const navBtn = (active: boolean, open: boolean) =>
     cx(
-      'relative inline-flex items-center gap-1 rounded-[6px] px-[11px] py-1.5 text-[13.5px] font-semibold tracking-tight transition-colors',
+      'relative inline-flex items-center gap-[5px] rounded-[6px] px-[11px] py-1.5 text-[13.5px] font-semibold tracking-[-0.01em] transition-colors',
       active || open
         ? 'text-[var(--bx-text)]'
         : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
@@ -132,17 +133,17 @@ export function Header() {
   function MegaLinkItem({ l }: { l: MegaLink }) {
     const body = (
       <>
-        <span className="inline-flex items-center gap-1.5 text-sm font-bold tracking-tight">
+        <span className="inline-flex items-center gap-[7px] text-sm font-bold tracking-[-0.01em]">
           {l.t}
           <ArrowRight size={12} className="text-[var(--bx-brand)]" strokeWidth={2.5} />
         </span>
-        <span className="line-clamp-2 text-[12.5px] leading-snug text-[var(--bx-text-muted)]">
+        <span className="line-clamp-2 text-[12.5px] leading-[1.55] text-[var(--bx-text-muted)]">
           {l.d}
         </span>
       </>
     )
     const className =
-      'flex flex-col gap-0.5 rounded-[10px] px-3.5 py-3 text-[var(--bx-text)] transition-colors hover:bg-[var(--bx-hover)]'
+      'flex flex-col gap-[3px] rounded-[10px] px-3.5 py-3 text-[var(--bx-text)] transition-colors hover:bg-[var(--bx-hover)]'
     if (l.href) {
       return (
         <a
@@ -169,9 +170,9 @@ export function Header() {
       onMouseLeave={() => setMega('')}
     >
       <div className="mx-auto flex h-[var(--bx-nav-h)] max-w-[1200px] items-center gap-5 px-6">
-        <Link to="/" className="flex shrink-0 items-center gap-2.5 text-[var(--bx-text)]">
+        <Link to="/" className="flex shrink-0 items-center gap-[9px] text-[var(--bx-text)]">
           <img src={BRAND_LOGO_SVG} alt="" className="h-[26px] w-[26px]" />
-          <span className="text-[15px] font-extrabold tracking-tight">{BRAND_NAME}</span>
+          <span className="text-[15px] font-extrabold tracking-[-0.02em]">{BRAND_NAME}</span>
         </Link>
 
         <nav aria-label="Primary" className="hidden flex-1 items-center gap-0.5 md:flex">
@@ -244,7 +245,7 @@ export function Header() {
             <div className="hidden items-center gap-1.5 md:flex">
               <Link
                 to="/account"
-                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-tight text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_color-mix(in_srgb,var(--bx-brand)_70%,transparent)]"
+                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-[-0.01em] whitespace-nowrap text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_rgba(31,213,185,0.7)]"
               >
                 {d.nav.console}
                 <ArrowRight size={13} strokeWidth={2.5} />
@@ -269,9 +270,9 @@ export function Header() {
               </Link>
               <Link
                 to="/signup"
-                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-tight text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_color-mix(in_srgb,var(--bx-brand)_70%,transparent)]"
+                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-[-0.01em] whitespace-nowrap text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_rgba(31,213,185,0.7)]"
               >
-                {d.nav.console}
+                {d.nav.signup}
                 <ArrowRight size={13} strokeWidth={2.5} />
               </Link>
             </div>
@@ -289,10 +290,10 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mega menu */}
+      {/* Mega menu — layout/copy from design-source/Header.dc.html */}
       <div
         className={cx(
-          'absolute inset-x-0 top-full border-b border-[var(--bx-border)] bg-[color-mix(in_srgb,var(--bx-bg)_94%,transparent)] shadow-[0_36px_70px_-28px_rgba(0,0,0,0.55)] backdrop-blur-[20px] transition-[opacity,transform,visibility] duration-240',
+          'absolute inset-x-0 top-full border-b border-[var(--bx-border)] bg-[color-mix(in_srgb,var(--bx-bg)_94%,transparent)] shadow-[0_36px_70px_-28px_rgba(0,0,0,0.55)] backdrop-blur-[20px] backdrop-saturate-[1.2] transition-[opacity,transform,visibility] duration-[240ms]',
           openMenu
             ? 'pointer-events-auto visible translate-y-0 opacity-100'
             : 'pointer-events-none invisible -translate-y-2.5 opacity-0',
@@ -322,8 +323,8 @@ export function Header() {
               <span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[var(--bx-brand)] uppercase">
                 {openMenu.feat.k}
               </span>
-              <span className="text-[15px] font-extrabold tracking-tight">{openMenu.feat.t}</span>
-              <span className="text-xs leading-snug text-[var(--bx-text-muted)]">{openMenu.feat.d}</span>
+              <span className="text-[15px] font-extrabold tracking-[-0.015em]">{openMenu.feat.t}</span>
+              <span className="text-xs leading-[1.55] text-[var(--bx-text-muted)]">{openMenu.feat.d}</span>
             </Link>
           </div>
         ) : null}

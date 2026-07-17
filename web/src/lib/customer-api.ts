@@ -1113,8 +1113,17 @@ export interface UserAnnouncement {
   id: number
   title: string
   content: string
-  read_at?: string
+  /** silent | popup — presentation mode, not a content category */
+  notify_mode?: string
+  /** Optional category when backend provides one (not currently required). */
+  type?: string
+  category?: string
+  tag?: string
+  read_at?: string | null
   created_at?: string
+  starts_at?: string
+  ends_at?: string
+  updated_at?: string
 }
 
 export async function listAnnouncements(unreadOnly = false): Promise<UserAnnouncement[]> {

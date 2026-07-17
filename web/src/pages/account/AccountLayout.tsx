@@ -100,14 +100,6 @@ export function AccountLayout() {
     }
   }, [])
 
-  const linkClass = ({ isActive }: { isActive: boolean }) =>
-    cx(
-      'w-full rounded-[6px] px-2.5 py-1.5 text-left text-[13px] font-medium transition-colors',
-      isActive
-        ? 'bg-[var(--bx-active)] font-semibold text-[var(--bx-brand-bright)]'
-        : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
-    )
-
   // Design mono group headers stay English (Workspace / Billing / Platform / Account)
   const groupLabel: Record<GroupKey, string> = {
     workspace: nav.groupWorkspace,
@@ -116,71 +108,73 @@ export function AccountLayout() {
     account: nav.groupAccount,
   }
 
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    cx('bx-account-nav-link', isActive && 'is-active')
+
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-0 px-6 lg:flex-row">
-      <aside
-        data-screen-label="AccountNav"
-        className="shrink-0 border-[var(--bx-border)] py-8 lg:w-[200px] lg:border-r lg:pr-5"
-      >
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-[34px] w-[34px] items-center justify-center rounded-lg bg-[var(--bx-grad-cta)] text-sm font-extrabold text-[var(--bx-ink)]">
+    <div className="bx-account-shell">
+      <aside data-screen-label="AccountNav" className="bx-account-aside">
+        <div className="bx-account-user">
+          <div className="bx-account-avatar" aria-hidden>
             {initial}
           </div>
           <div className="min-w-0">
-            <p className="m-0 truncate text-[13px] font-bold">{username}</p>
-            {email ? (
-              <p className="mt-px m-0 truncate font-mono text-[10.5px] text-[var(--bx-text-dim)]">
-                {email}
-              </p>
-            ) : null}
+            <p className="bx-account-username">{username}</p>
+            {email ? <p className="bx-account-email">{email}</p> : null}
           </div>
         </div>
 
-        <nav className="mt-6 flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0" aria-label={nav.title}>
+        <nav className="bx-account-nav" aria-label={nav.title}>
           {groups.map((group) => (
-            <div key={group.group} className="flex gap-1 lg:mt-6 lg:flex-col lg:gap-0.5">
-              <p className="bx-account-nav-group-label hidden lg:block">{groupLabel[group.group]}</p>
-              {group.items.map((link) => (
-                <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
-                  {nav[link.key]}
-                </NavLink>
-              ))}
+            <div key={group.group} className="bx-account-nav-group">
+              <p className="bx-account-nav-group-label">{groupLabel[group.group]}</p>
+              <div className="bx-account-nav-items">
+                {group.items.map((link) => (
+                  <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
+                    {nav[link.key]}
+                  </NavLink>
+                ))}
+              </div>
             </div>
           ))}
           {customItems.length > 0 ? (
-            <div className="flex gap-1 lg:mt-6 lg:flex-col lg:gap-0.5">
-              <p className="bx-account-nav-group-label hidden lg:block">{nav.groupMore}</p>
-              {customItems.map((item) => {
-                const slug = item.page_slug || item.id
-                const isExternal = Boolean(item.url && /^https?:\/\//i.test(item.url) && !item.page_slug)
-                if (isExternal) {
+            <div className="bx-account-nav-group">
+              <p className="bx-account-nav-group-label">{nav.groupMore}</p>
+              <div className="bx-account-nav-items">
+                {customItems.map((item) => {
+                  const slug = item.page_slug || item.id
+                  const isExternal = Boolean(
+                    item.url && /^https?:\/\//i.test(item.url) && !item.page_slug,
+                  )
+                  if (isExternal) {
+                    return (
+                      <a
+                        key={item.id}
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bx-account-nav-link"
+                      >
+                        {item.label}
+                      </a>
+                    )
+                  }
                   return (
-                    <a
+                    <NavLink
                       key={item.id}
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full rounded-[6px] px-2.5 py-1.5 text-left text-[13px] font-medium text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+                      to={`/account/pages/${encodeURIComponent(slug)}`}
+                      className={linkClass}
                     >
                       {item.label}
-                    </a>
+                    </NavLink>
                   )
-                }
-                return (
-                  <NavLink
-                    key={item.id}
-                    to={`/account/pages/${encodeURIComponent(slug)}`}
-                    className={linkClass}
-                  >
-                    {item.label}
-                  </NavLink>
-                )
-              })}
+                })}
+              </div>
             </div>
           ) : null}
         </nav>
       </aside>
-      <main className="min-w-0 flex-1 py-8 pb-16 lg:pl-8">
+      <main className="bx-account-main">
         <Outlet />
       </main>
     </div>

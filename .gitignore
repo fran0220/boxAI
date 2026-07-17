@@ -165,3 +165,7 @@ docs/*
 frontend/coverage/
 aicodex
 output/
+
+# Design pack junk
+**/.thumbnail
+web/design-source/react-pack/

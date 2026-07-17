@@ -406,7 +406,7 @@ export function AccountSecurity() {
         </div>
       </div>
 
-      {/* Sessions chrome — API only exposes revoke-all */}
+      {/* Sessions — multi-device list API unavailable; only current session + revoke-all */}
       <div className="bx-account-table-wrap mt-3">
         <p className="m-0 px-5 pb-2.5 pt-3.5 text-[13.5px] font-bold">{t.sessions}</p>
         <div className="overflow-x-auto">
@@ -414,7 +414,6 @@ export function AccountSecurity() {
             <thead>
               <tr>
                 <th>{t.colDevice}</th>
-                <th>{t.colLocation}</th>
                 <th>{t.colLastActive}</th>
                 <th className="text-right">{t.colActions}</th>
               </tr>
@@ -425,7 +424,6 @@ export function AccountSecurity() {
                   <span className="font-bold text-[var(--bx-text)]">{t.currentSession}</span>
                   <span className="bx-account-pill-brand ml-2">{t.thisDevice}</span>
                 </td>
-                <td className="text-[var(--bx-text-muted)]">—</td>
                 <td className="font-mono text-[11px] text-[var(--bx-text-dim)]">{t.now}</td>
                 <td className="text-right text-[var(--bx-text-dim)]">—</td>
               </tr>
@@ -433,7 +431,8 @@ export function AccountSecurity() {
           </table>
         </div>
         <div className="border-t border-[var(--bx-line)] px-5 py-4">
-          <p className="m-0 mb-3 text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
+          <p className="m-0 mb-1 text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
+          <p className="m-0 mb-3 text-xs text-[var(--bx-text-dim)]">{t.deviceListUnavailable}</p>
           <button
             type="button"
             className="bx-btn bx-btn-ghost bx-btn-sm"

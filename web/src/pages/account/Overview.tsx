@@ -144,22 +144,14 @@ export function AccountOverview() {
     return sum
   }, [trend])
 
-  // Δ% day-over-day from last two trend request points when present
+  // Δ% day-over-day only when last two trend points both have real request counts
   const reqDelta = useMemo(() => {
     if (trend.length < 2) return null
-    const a = Number(trend[trend.length - 2]?.requests ?? 0)
-    const b = Number(trend[trend.length - 1]?.requests ?? 0)
-    if (a <= 0) return b > 0 ? 100 : 0
+    const a = Number(trend[trend.length - 2]?.requests)
+    const b = Number(trend[trend.length - 1]?.requests)
+    if (!Number.isFinite(a) || !Number.isFinite(b) || a <= 0) return null
     return Math.round(((b - a) / a) * 100)
   }, [trend])
-
-  // Rough RPM/TPM from today's stats (over 24h)
-  const rpmTpm = useMemo(() => {
-    if (!stats) return null
-    const rpm = Math.round((stats.today_requests || 0) / 24)
-    const tpm = Math.round((stats.today_tokens || 0) / 24)
-    return { rpm, tpm }
-  }, [stats])
 
   const quotaExhausted = useMemo(
     () => keys.filter((k) => k.status === 'quota_exhausted').length,
@@ -237,11 +229,9 @@ export function AccountOverview() {
           <p className="bx-account-mono-label">{t.statTodayTokens}</p>
           <p className="bx-account-stat-value">{stats ? formatNum(stats.today_tokens) : '—'}</p>
           <p className="bx-account-stat-hint">
-            {rpmTpm
-              ? `RPM ${formatNum(rpmTpm.rpm)} · TPM ${formatNum(rpmTpm.tpm)}`
-              : stats
-                ? t.statTotalTokensHint.replace('{n}', formatNum(stats.total_tokens))
-                : '—'}
+            {stats
+              ? t.statTotalTokensHint.replace('{n}', formatNum(stats.total_tokens))
+              : '—'}
           </p>
         </div>
 

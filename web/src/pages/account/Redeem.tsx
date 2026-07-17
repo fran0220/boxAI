@@ -76,22 +76,22 @@ export function AccountRedeem() {
           <p className="bx-account-mono-label">{t.codeLabel}</p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <input
-              className="bx-account-input-muted flex-1 font-mono text-[15px] tracking-widest"
+              className="bx-account-input-muted flex-1 font-mono text-[15px] tracking-[0.12em]"
               placeholder={t.placeholder}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               required
             />
-            <button type="submit" className="bx-btn bx-btn-primary px-[22px]" disabled={busy}>
+            <button type="submit" className="bx-btn bx-btn-primary px-[22px] text-[14px]" disabled={busy}>
               {busy ? d.common.loading : t.submit}
             </button>
           </div>
           <p className="mt-3.5 mb-0 text-xs leading-relaxed text-[var(--bx-text-dim)]">{t.helpText}</p>
         </form>
 
-        <div className="bx-account-panel-grad flex flex-col justify-center">
+        <div className="bx-account-panel-grad flex flex-col justify-center !px-6 !py-[22px]">
           <p className="bx-account-mono-label">{t.currentBalance}</p>
-          <p className="bx-account-stat-value bx-account-stat-value--lg">
+          <p className="mt-2.5 font-mono text-[32px] font-semibold tabular-nums tracking-tight">
             {balance != null ? `$${balance.toFixed(2)}` : '—'}
           </p>
           <p className="bx-account-stat-hint" style={{ color: 'var(--bx-success)' }}>

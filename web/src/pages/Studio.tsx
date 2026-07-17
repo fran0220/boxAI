@@ -6,7 +6,6 @@ import {
   Download as DownloadIcon,
   Globe,
   KeyRound,
-  Monitor,
   Puzzle,
   Terminal,
 } from 'lucide-react'
@@ -20,13 +19,16 @@ import {
   type PlatformName,
 } from '@/lib/releases'
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
-import { CtaBand, FaqList, SectionHead } from '@/components/marketing'
+import { FaqList } from '@/components/marketing'
+import { cx } from '@/lib/cx'
 
 const PLATFORM_ICONS: Record<PlatformName, typeof Apple> = {
   macOS: Apple,
   Windows: AppWindow,
   Linux: Terminal,
 }
+
+const FEATURE_ICONS = [Cpu, Puzzle, KeyRound, Globe]
 
 export function Studio() {
   const { d } = useI18n()
@@ -57,356 +59,334 @@ export function Studio() {
 
   const recommendedSection = release?.sections.find((s) => s.title === platform)
   const primaryDownload = recommendedSection?.items[0]
-  const featureIcons = [Cpu, Puzzle, KeyRound, Globe]
   const chrome = d.studio.chrome
+  const flatDownloads =
+    release?.sections.flatMap((section) =>
+      section.items.map((item) => ({
+        os: section.title as PlatformName,
+        label: item.label,
+        url: item.url,
+      })),
+    ) ?? []
 
   function scrollTo(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <div>
-      {/* Hero */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-14 pt-16 sm:pt-24">
-        <Reveal>
-          <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
-            <span className="h-px w-5 bg-[var(--bx-brand)]" />
-            <Monitor size={12} />
-            {d.studio.badge}
-          </p>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <h1 className="mt-3.5 max-w-3xl text-[36px] font-extrabold leading-[1.12] tracking-tight sm:text-[52px]">
-            {d.studio.title1}
-            <br />
-            <span className="bg-[var(--bx-grad-hero)] bg-clip-text text-transparent">
-              {d.studio.title2}
-            </span>
-          </h1>
-        </Reveal>
-        <Reveal delay={0.16}>
-          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-[var(--bx-text-muted)] sm:text-base">
-            {d.studio.subtitle}
-          </p>
-        </Reveal>
-        <Reveal delay={0.24}>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => scrollTo('download')}
-              className="bx-btn bx-btn-primary bx-btn-lg"
-            >
-              <DownloadIcon size={17} />
-              {d.studio.ctaDownload}
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollTo('browser')}
-              className="bx-btn bx-btn-ghost bx-btn-lg"
-            >
-              <Globe size={16} />
-              {d.studio.ctaBrowser}
-              <span className="rounded-[var(--bx-radius-sm)] bg-[var(--bx-active)] px-2 py-0.5 text-[10px] font-medium text-[var(--bx-brand-bright)]">
-                {d.common.comingSoon}
-              </span>
-            </button>
-          </div>
-          {status === 'ready' && release ? (
-            <p className="mt-4 font-mono text-[11px] text-[var(--bx-text-dim)]">
-              {d.studio.download.version}: {release.version}
-            </p>
-          ) : null}
-        </Reveal>
-
-        {/* Decorative terminal (no metrics / keys) */}
-        <Reveal delay={0.34} y={40}>
-          <div
-            className="mt-14 max-w-2xl overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] text-left shadow-[var(--bx-shadow-card)]"
-            aria-hidden
-          >
-            <div className="flex items-center gap-2 border-b border-[var(--bx-border)] px-4 py-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-[var(--bx-text-dim)]" />
-              <span className="font-mono text-[11px] tracking-tight text-[var(--bx-text-dim)]">
-                {chrome.terminalTitle}
-              </span>
-            </div>
-            <div className="bg-[var(--bx-bg-deep)] p-5 font-mono text-[12px] leading-relaxed">
-              <span className="text-[var(--bx-text-dim)]">$</span>{' '}
-              <span className="text-[var(--bx-text-soft)]">{chrome.cmd}</span>
-              <br />
-              <span className="text-[var(--bx-success)]">✓</span>{' '}
-              <span className="text-[var(--bx-text-muted)]">{chrome.signedIn}</span>
-              <br />
-              <span className="text-[var(--bx-brand)]">→</span>{' '}
-              <span className="text-[var(--bx-text-muted)]">{chrome.skills}</span>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
-      {/* Features */}
-      <section className="mx-auto max-w-[1200px] px-6 py-[88px]">
-        <SectionHead
-          eyebrow={d.studio.features.eyebrow}
-          title={d.studio.features.title}
-          subtitle={d.studio.features.subtitle}
-          className="mb-10"
+    <div className="overflow-x-hidden">
+      {/* Hero — design: dual column + grid mask + terminal visual */}
+      <section
+        data-screen-label="Studio Hero"
+        className="relative border-b border-[var(--bx-border)]"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              'linear-gradient(var(--bx-line) 1px, transparent 1px), linear-gradient(90deg, var(--bx-line) 1px, transparent 1px)',
+            backgroundSize: '56px 56px',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 80% 90% at 50% 10%, #000 25%, transparent 90%)',
+            maskImage:
+              'radial-gradient(ellipse 80% 90% at 50% 10%, #000 25%, transparent 90%)',
+          }}
         />
-        <Stagger className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-          {d.studio.features.items.map((item, i) => {
-            const Icon = featureIcons[i] ?? Monitor
-            return (
-              <StaggerItem
-                key={item.title}
-                className="h-full overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
-              >
-                <div className="bx-icon-box">
-                  <Icon size={19} />
-                </div>
-                <h3 className="mt-4 text-[15px] font-bold tracking-tight">{item.title}</h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
-                  {item.body}
-                </p>
-              </StaggerItem>
-            )
-          })}
-        </Stagger>
-      </section>
-
-      {/* Browser (WebUI) */}
-      <div id="browser" className="scroll-mt-16">
-        <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
-          <SectionHead
-            eyebrow={d.studio.browser.eyebrow}
-            title={d.studio.browser.title}
-            className="mb-8"
-          />
-          <Reveal>
-            <div
-              className="grid items-center gap-8 rounded-[var(--bx-radius-xl)] p-7 shadow-[var(--bx-shadow-card)] sm:p-10 lg:grid-cols-2"
-              style={{
-                background:
-                  'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box',
-                border: '1px solid transparent',
-              }}
-            >
-              <div>
-                <p className="text-[14px] leading-relaxed text-[var(--bx-text-muted)]">
-                  {d.studio.browser.body}
-                </p>
-                <ul className="mt-5 space-y-2.5">
-                  {d.studio.browser.points.map((point) => (
-                    <li key={point} className="flex items-start gap-2.5 text-[13.5px]">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bx-brand-bright)] shadow-[0_0_8px_var(--bx-brand-ring)]" />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-5 inline-flex items-center gap-2 rounded-[var(--bx-radius-md)] border border-[var(--bx-border-strong)] px-3.5 py-2 text-xs text-[var(--bx-text-dim)]">
-                  <Globe size={13} className="text-[var(--bx-brand-bright)]" />
-                  {d.studio.browser.status}
-                </p>
+        <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 px-6 pb-16 pt-[72px] lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
+          <div>
+            <Reveal>
+              <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
+                <span className="h-px w-5 bg-[var(--bx-brand)]" />
+                {d.studio.badge}
+              </p>
+            </Reveal>
+            <Reveal delay={0.06}>
+              <h1 className="mt-[18px] text-[clamp(38px,4.2vw,56px)] font-extrabold leading-[1.08] tracking-[-0.035em]">
+                {d.studio.title1}
+                <br />
+                <span className="bg-[var(--bx-grad-hero)] bg-clip-text text-transparent">
+                  {d.studio.title2}
+                </span>
+              </h1>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <p className="mt-5 max-w-[440px] text-[15px] leading-[1.7] text-[var(--bx-text-muted)]">
+                {d.studio.subtitle}
+              </p>
+            </Reveal>
+            <Reveal delay={0.18}>
+              <div className="mt-[30px] flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => scrollTo('download')}
+                  className="bx-btn bx-btn-primary bx-btn-lg"
+                >
+                  <DownloadIcon size={15} strokeWidth={2.5} />
+                  {d.studio.ctaDownload}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollTo('download')}
+                  className="bx-btn bx-btn-ghost bx-btn-lg"
+                >
+                  {d.studio.ctaBrowser}
+                  <span className="rounded bg-[var(--bx-brand-soft)] px-[7px] py-0.5 font-mono text-[9.5px] font-semibold text-[var(--bx-brand)]">
+                    {d.common.comingSoon}
+                  </span>
+                </button>
               </div>
-              <div
-                className="overflow-hidden rounded-[var(--bx-radius-lg)] border border-[var(--bx-border)] bg-[var(--bx-bg-deep)]"
-                aria-hidden
-              >
-                <div className="flex items-center gap-2 border-b border-[var(--bx-border)] px-4 py-2.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[var(--bx-bg-muted)]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[var(--bx-bg-muted)]" />
-                  <div className="ml-2 flex-1 rounded-[var(--bx-radius-sm)] bg-[var(--bx-bg-muted)] px-3 py-1 font-mono text-[10px] text-[var(--bx-text-dim)]">
-                    {chrome.browserUrl}
-                  </div>
-                </div>
-                <div className="space-y-3 p-5">
-                  <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--bx-text-dim)]">
-                    <span className="h-2 w-2 rounded-full bg-[var(--bx-success)]" />
-                    {chrome.agentOnline}
-                  </div>
-                  <div className="h-2.5 w-4/5 rounded-full bg-[var(--bx-bg-muted)]" />
-                  <div className="h-2.5 w-3/5 rounded-full bg-[var(--bx-bg-muted)]" />
-                  <div className="ml-auto h-8 w-2/3 rounded-[var(--bx-radius-md)] bg-[var(--bx-active)]" />
-                  <div className="h-2.5 w-1/2 rounded-full bg-[var(--bx-bg-muted)]" />
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </section>
-      </div>
+            </Reveal>
+            <Reveal delay={0.24}>
+              <p className="mt-[18px] font-mono text-[11px] text-[var(--bx-text-dim)]">
+                {status === 'ready' && release
+                  ? `${release.version} · macOS / Windows / Linux · GitHub Releases`
+                  : d.studio.heroMeta}
+              </p>
+            </Reveal>
+          </div>
 
-      {/* Download */}
-      <div id="download" className="scroll-mt-16">
-        <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
-          <SectionHead
-            eyebrow={d.studio.download.eyebrow}
-            title={d.studio.download.title}
-            subtitle={d.studio.download.subtitle}
-            className="mb-8"
-          />
-
-          {status === 'loading' ? (
-            <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-8 text-center text-sm text-[var(--bx-text-muted)] shadow-[var(--bx-shadow-card)]">
-              {d.studio.download.lookingUp}
-            </div>
-          ) : null}
-
-          {status === 'ready' && release ? (
-            <div className="space-y-4">
-              {primaryDownload ? (
-                <Reveal>
-                  <div
-                    className="rounded-[var(--bx-radius-xl)] p-[1.5px]"
+          {/* Terminal visual + floating remote chip */}
+          <Reveal delay={0.2} y={32} className="relative">
+            <div className="overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border-strong)] bg-[var(--bx-bg-deep)] shadow-[var(--bx-shadow-pop)]">
+              <div className="flex items-center gap-2 border-b border-[var(--bx-border)] px-3.5 py-2.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+                <span className="ml-2 font-mono text-[11px] text-[var(--bx-text-dim)]">
+                  {chrome.terminalTitle}
+                </span>
+                <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] text-[var(--bx-success)]">
+                  <span
+                    className="h-[5px] w-[5px] rounded-full bg-current"
                     style={{
-                      background: 'var(--bx-grad-border)',
-                      backgroundSize: '300% auto',
-                      animation: 'bx-borderflow 8s linear infinite',
+                      animation: 'bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite',
                     }}
-                  >
-                    <div className="relative overflow-hidden rounded-[15px] bg-[var(--bx-bg-deep)]">
-                      <div
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0"
-                        style={{
-                          background:
-                            'radial-gradient(70% 130% at 50% 0%, var(--bx-brand-soft), transparent 70%)',
-                        }}
-                      />
-                      <div className="relative flex flex-col items-center gap-4 px-8 py-10 text-center">
-                        <p className="m-0 font-mono text-[11px] font-semibold tracking-[0.14em] text-[var(--bx-brand)] uppercase">
-                          {d.studio.download.recommended}
-                        </p>
-                        <a
-                          href={primaryDownload.url}
-                          className="bx-btn bx-btn-primary bx-btn-lg"
-                          rel="noopener"
-                        >
-                          <DownloadIcon size={17} />
-                          {platform} · {primaryDownload.label}
-                        </a>
-                        <p className="font-mono text-[11px] text-[var(--bx-text-dim)]">
-                          {d.studio.download.version}: {release.version}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              ) : null}
-              <Stagger className="grid gap-3.5 sm:grid-cols-3">
-                {release.sections.map((section) => {
-                  const Icon = PLATFORM_ICONS[section.title]
-                  return (
-                    <StaggerItem
-                      key={section.title}
-                      className="h-full overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon size={19} className="text-[var(--bx-brand-bright)]" />
-                        <h3 className="text-[15px] font-bold tracking-tight">{section.title}</h3>
-                      </div>
-                      <div className="mt-4 flex flex-col gap-2">
-                        {section.items.map((item) => (
-                          <a
-                            key={item.url}
-                            href={item.url}
-                            rel="noopener"
-                            className="flex items-center justify-between rounded-[var(--bx-radius-md)] border border-[var(--bx-border)] px-3.5 py-2.5 text-sm text-[var(--bx-text-soft)] transition-colors hover:border-[var(--bx-border-strong)] hover:bg-[var(--bx-hover)]"
-                          >
-                            {item.label}
-                            <DownloadIcon size={14} className="text-[var(--bx-text-dim)]" />
-                          </a>
-                        ))}
-                      </div>
-                    </StaggerItem>
-                  )
-                })}
-              </Stagger>
-              <p className="text-center font-mono text-[11px] text-[var(--bx-text-dim)]">
-                {d.studio.download.allBuilds}{' '}
-                <a href={RELEASES_PAGE_URL} className="underline" target="_blank" rel="noopener">
-                  GitHub Releases
-                </a>
-              </p>
-            </div>
-          ) : null}
-
-          {status === 'error' ? (
-            <div className="rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-8 text-center shadow-[var(--bx-shadow-card)]">
-              <h3 className="text-lg font-bold">{d.studio.download.lookupFailed}</h3>
-              <p className="mt-2 text-sm text-[var(--bx-text-muted)]">
-                {d.studio.download.lookupFailedBody}
-              </p>
-              <a
-                className="bx-btn bx-btn-primary mt-6 inline-flex"
-                href={RELEASES_PAGE_URL}
-                target="_blank"
-                rel="noopener"
-              >
-                {d.studio.download.browseGithub}
-              </a>
-            </div>
-          ) : null}
-        </section>
-      </div>
-
-      {/* Install notes */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
-        <SectionHead
-          eyebrow={d.studio.install.eyebrow}
-          title={d.studio.install.title}
-          className="mb-8"
-        />
-        <Stagger className="grid gap-3.5 sm:grid-cols-3">
-          {d.studio.install.items.map((item) => {
-            const Icon = PLATFORM_ICONS[item.title as PlatformName] ?? Monitor
-            return (
-              <StaggerItem
-                key={item.title}
-                className="h-full overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Icon size={18} className="text-[var(--bx-brand-bright)]" />
-                  <h3 className="text-sm font-bold tracking-tight">{item.title}</h3>
+                  />
+                  {chrome.remoteOn}
+                </span>
+              </div>
+              <div className="space-y-0 px-5 py-[18px] font-mono text-[12.5px] leading-[2]">
+                <div>
+                  <span className="text-[var(--bx-text-dim)]">$</span>{' '}
+                  <span className="text-[var(--bx-text-soft)]">{chrome.cmd}</span>
                 </div>
-                <p className="mt-3 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
-                  {item.body}
-                </p>
-              </StaggerItem>
-            )
-          })}
-        </Stagger>
-      </section>
-
-      {/* FAQ */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-[88px]">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
-          <SectionHead eyebrow={d.studio.faq.eyebrow} title={d.studio.faq.title} />
-          <Reveal>
-            <FaqList items={d.studio.faq.items} idPrefix="studio-faq" />
+                <div>
+                  <span className="text-[var(--bx-success)]">✓</span>{' '}
+                  <span className="text-[var(--bx-text-muted)]">{chrome.signedIn}</span>
+                </div>
+                <div>
+                  <span className="text-[var(--bx-brand)]">→</span>{' '}
+                  <span className="text-[var(--bx-text-muted)]">{chrome.scan}</span>{' '}
+                  <span className="text-[var(--bx-cyan)]">{chrome.scanPath}</span>{' '}
+                  <span className="text-[var(--bx-text-dim)]">{chrome.scanMeta}</span>
+                </div>
+                <div>
+                  <span className="text-[var(--bx-brand)]">→</span>{' '}
+                  <span className="text-[var(--bx-text-muted)]">{chrome.skillLabel}</span>{' '}
+                  <span className="text-[var(--bx-brand-bright)]">{chrome.skillName}</span>{' '}
+                  <span className="text-[var(--bx-text-dim)]">{chrome.skillMeta}</span>
+                </div>
+                <div>
+                  <span className="text-[var(--bx-brand)]">→</span>{' '}
+                  <span className="text-[var(--bx-text-muted)]">{chrome.write}</span>{' '}
+                  <span className="text-[var(--bx-cyan)]">{chrome.writePath}</span>
+                </div>
+                <div>
+                  <span className="text-[var(--bx-success)]">✓</span>{' '}
+                  <span className="text-[var(--bx-text-soft)]">{chrome.done}</span>
+                  <span className="bx-caret ml-1.5" />
+                </div>
+              </div>
+            </div>
+            <div
+              aria-hidden
+              className="absolute -right-3.5 -bottom-4 flex items-center gap-2.5 whitespace-nowrap rounded-[10px] border border-[var(--bx-border-strong)] bg-[var(--bx-bg-card)] px-3.5 py-2.5 shadow-[var(--bx-shadow-pop)]"
+            >
+              <Globe size={14} className="text-[var(--bx-brand)]" strokeWidth={2} />
+              <span>
+                <span className="block text-[10px] text-[var(--bx-text-dim)]">
+                  {chrome.remoteLabel}
+                </span>
+                <span className="block font-mono text-[11.5px] font-semibold">
+                  {chrome.browserUrl}
+                </span>
+              </span>
+            </div>
           </Reveal>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="mx-auto max-w-[1200px] px-6 pb-24">
-        <CtaBand
-          title={d.studio.ctaBandTitle}
-          subtitle={d.studio.ctaBandSubtitle}
-          actions={[
-            {
-              kind: 'button',
-              onClick: () => scrollTo('download'),
-              label: d.studio.ctaDownload,
-              primary: true,
-            },
-            {
-              kind: 'href',
-              href: RELEASES_PAGE_URL,
-              label: d.studio.download.browseGithub,
-              primary: false,
-              external: true,
-            },
-          ]}
-        />
+      {/* Features strip — design: 4 equal cards, no section head */}
+      <section
+        data-screen-label="Studio 特性"
+        className="mx-auto max-w-[1200px] px-6 py-[72px]"
+      >
+        <Stagger className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {d.studio.features.items.map((item, i) => {
+            const Icon = FEATURE_ICONS[i] ?? Cpu
+            return (
+              <StaggerItem
+                key={item.title}
+                className="rounded-[var(--bx-radius-lg)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-5 shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]"
+              >
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                  <Icon size={15} strokeWidth={2} />
+                </span>
+                <h3 className="mt-3.5 text-[15px] font-extrabold tracking-[-0.02em]">
+                  {item.title}
+                </h3>
+                <p className="mt-[7px] text-[13px] leading-[1.65] text-[var(--bx-text-muted)]">
+                  {item.body}
+                </p>
+              </StaggerItem>
+            )
+          })}
+        </Stagger>
+      </section>
+
+      {/* Download — design: 2-col, recommended CTA + flat asset list */}
+      <section
+        id="download"
+        data-screen-label="下载"
+        className="scroll-mt-16 border-t border-[var(--bx-border)]"
+        style={{
+          background: 'color-mix(in srgb, var(--bx-bg-elevated) 55%, transparent)',
+        }}
+      >
+        <div className="mx-auto grid max-w-[1200px] items-center gap-10 px-6 py-[72px] lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
+              <span className="h-px w-5 bg-[var(--bx-brand)]" />
+              {d.studio.download.eyebrow}
+            </p>
+            <h2 className="mt-3.5 text-[32px] font-extrabold tracking-[-0.03em]">
+              {d.studio.download.title}
+            </h2>
+            <p className="mt-3.5 max-w-[400px] text-sm leading-[1.7] text-[var(--bx-text-muted)]">
+              {d.studio.download.subtitle}
+            </p>
+            {status === 'ready' && primaryDownload ? (
+              <div
+                className="mt-6 w-fit rounded-[var(--bx-radius-lg)] p-[1.5px]"
+                style={{
+                  background: 'var(--bx-grad-border)',
+                  backgroundSize: '300% auto',
+                  animation: 'bx-borderflow 8s linear infinite',
+                }}
+              >
+                <a
+                  href={primaryDownload.url}
+                  rel="noopener"
+                  className="inline-flex items-center gap-2.5 rounded-[11px] bg-[var(--bx-bg-deep)] px-[22px] py-3 text-[14.5px] font-bold text-[var(--bx-text)] transition-colors hover:text-[var(--bx-brand-bright)]"
+                >
+                  {(() => {
+                    const Icon = PLATFORM_ICONS[platform]
+                    return <Icon size={16} className="text-[var(--bx-brand)]" />
+                  })()}
+                  {d.studio.download.recommended} · {platform} ({primaryDownload.label})
+                  {release ? (
+                    <span className="font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+                      {release.version}
+                    </span>
+                  ) : null}
+                </a>
+              </div>
+            ) : null}
+            {status === 'loading' ? (
+              <p className="mt-6 text-sm text-[var(--bx-text-muted)]">
+                {d.studio.download.lookingUp}
+              </p>
+            ) : null}
+            {status === 'error' ? (
+              <div className="mt-6">
+                <p className="text-sm text-[var(--bx-text-muted)]">
+                  {d.studio.download.lookupFailedBody}
+                </p>
+                <a
+                  className="bx-btn bx-btn-primary mt-4 inline-flex"
+                  href={RELEASES_PAGE_URL}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {d.studio.download.browseGithub}
+                </a>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)]">
+            {status === 'ready' && flatDownloads.length > 0
+              ? flatDownloads.map((row) => {
+                  const Icon = PLATFORM_ICONS[row.os]
+                  return (
+                    <div
+                      key={row.url}
+                      className="grid grid-cols-[110px_1fr_auto] items-center gap-4 border-t border-[var(--bx-line)] px-5 py-3 first:border-t-0 transition-colors hover:bg-[var(--bx-hover)]"
+                    >
+                      <span className="flex items-center gap-2 text-[13px] font-bold">
+                        <Icon size={14} className="text-[var(--bx-brand)]" />
+                        {row.os}
+                      </span>
+                      <span className="truncate font-mono text-xs text-[var(--bx-text-muted)]">
+                        {row.label}
+                      </span>
+                      <a
+                        href={row.url}
+                        rel="noopener"
+                        className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[var(--bx-brand)] hover:text-[var(--bx-brand-bright)]"
+                      >
+                        {d.studio.download.downloadLabel}
+                        <DownloadIcon size={12} strokeWidth={2.5} />
+                      </a>
+                    </div>
+                  )
+                })
+              : null}
+            {status === 'loading' ? (
+              <div className="px-5 py-8 text-center text-sm text-[var(--bx-text-muted)]">
+                {d.studio.download.lookingUp}
+              </div>
+            ) : null}
+            {status === 'error' ? (
+              <div className="px-5 py-8 text-center text-sm text-[var(--bx-text-muted)]">
+                {d.studio.download.lookupFailed}
+              </div>
+            ) : null}
+            <p className="m-0 border-t border-[var(--bx-line)] px-5 py-2.5 font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+              {d.studio.download.installTip}{' '}
+              <a
+                href={RELEASES_PAGE_URL}
+                target="_blank"
+                rel="noopener"
+                className={cx('underline hover:text-[var(--bx-text-soft)]')}
+              >
+                GitHub Releases
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ — design: 0.8fr / 2.2fr */}
+      <section
+        data-screen-label="Studio FAQ"
+        className="mx-auto max-w-[1200px] px-6 py-[72px] pb-24"
+      >
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_2.2fr]">
+          <div>
+            <p className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.18em] text-[var(--bx-brand)] uppercase">
+              <span className="h-px w-5 bg-[var(--bx-brand)]" />
+              {d.studio.faq.eyebrow}
+            </p>
+            <h2 className="mt-3.5 text-[30px] font-extrabold tracking-[-0.03em]">
+              {d.studio.faq.title}
+            </h2>
+          </div>
+          <Reveal>
+            <FaqList items={d.studio.faq.items} idPrefix="studio-faq" />
+          </Reveal>
+        </div>
       </section>
     </div>
   )
