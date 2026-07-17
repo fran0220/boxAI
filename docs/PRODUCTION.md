@@ -460,3 +460,15 @@ curl -fsS https://you-box.com/health
 # 备份
 docker exec sub2api-postgres pg_dump -U sub2api -d sub2api -Fc > /root/boxai-$(date +%F).dump
 ```
+
+
+## Customer shell flags (BoxAI)
+
+| Flag | Default | Notes |
+|------|---------|-------|
+| `BOXAI_BROWSER_SESSION` | on | Host-only session cookies |
+| `BOXAI_LEGACY_BROWSER_ADOPTION` | off when drained | One-time legacy refresh import |
+| `BOXAI_CONSOLE_ADMIN_SESSION_ONLY` | off | When on, non-admin cannot mint console cookies (breaks WeChat MP console re-login) |
+| `BOXAI_AUTH_TX` | off | Experimental auth transaction continue API |
+| `VITE_CUSTOMER_SHELL_REDIRECT` | on for console host | Non-admin console routes → apex |
+

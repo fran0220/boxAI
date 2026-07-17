@@ -13,6 +13,9 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Wei-Shaw/sub2api/internal/pkg/response"
+	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -105,4 +108,151 @@ func unmarshalAuthTx(raw []byte) (*AuthTxRecord, error) {
 		return nil, err
 	}
 	return &rec, nil
+}
+
+// authTxContinueRequest is the uniform continue payload.
+type authTxContinueRequest struct {
+	TransactionID string         `json:"transaction_id" binding:"required"`
+	Action        string         `json:"action" binding:"required"` // e.g. "totp"
+	Payload       map[string]any `json:"payload"`
+}
+
+// BoxAIAuthTxContinue advances an auth transaction.
+// Currently implements action "totp" by delegating to the existing 2FA login session
+// (temp_token stored on the transaction or provided in payload).
+// POST /api/v1/auth/tx/continue  (gated by BOXAI_AUTH_TX=1)
+func (h *AuthHandler) BoxAIAuthTxContinue(store BoxAICodeStore) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if !AuthTxEnabled() {
+			response.NotFound(c, "Auth transaction API is not enabled")
+			return
+		}
+		if store == nil {
+			response.ErrorFrom(c, registrationStoreError())
+			return
+		}
+		var req authTxContinueRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			response.BadRequest(c, "Invalid request: "+err.Error())
+			return
+		}
+		if !validAuthTxID(req.TransactionID) {
+			response.BadRequest(c, "Auth transaction is invalid or expired")
+			return
+		}
+		raw, err := store.Get(c.Request.Context(), authTxKey(req.TransactionID))
+		if err != nil {
+			response.BadRequest(c, "Auth transaction is invalid or expired")
+			return
+		}
+		rec, err := unmarshalAuthTx([]byte(raw))
+		if err != nil {
+			response.BadRequest(c, "Auth transaction is invalid or expired")
+			return
+		}
+
+		switch strings.ToLower(strings.TrimSpace(req.Action)) {
+		case "totp":
+			// Bridge to existing Login2FA: require temp_token + totp_code in payload.
+			tempToken, _ := req.Payload["temp_token"].(string)
+			if tempToken == "" {
+				tempToken = rec.TempToken
+			}
+			code, _ := req.Payload["totp_code"].(string)
+			if tempToken == "" || code == "" {
+				response.BadRequest(c, "totp continue requires temp_token and totp_code")
+				return
+			}
+			// Reuse Login2FA by binding a synthetic request body is awkward; call service path via handler clone.
+			c.Set("boxai_auth_tx_id", req.TransactionID)
+			// Invoke existing 2FA completion by constructing expected JSON shape through internal call.
+			// Fall through to public Login2FA contract: set body fields via re-dispatch is not available;
+			// call the same service steps as Login2FA.
+			h.completeAuthTxTOTP(c, store, req.TransactionID, rec, tempToken, code)
+			return
+		default:
+			response.BadRequest(c, "Unsupported auth transaction action")
+		}
+	}
+}
+
+func (h *AuthHandler) completeAuthTxTOTP(c *gin.Context, store BoxAICodeStore, txID string, _ *AuthTxRecord, tempToken, totpCode string) {
+	if h.totpService == nil {
+		response.BadRequest(c, "2FA is not available")
+		return
+	}
+	session, err := h.totpService.GetLoginSession(c.Request.Context(), tempToken)
+	if err != nil || session == nil {
+		response.BadRequest(c, "Invalid or expired 2FA session")
+		return
+	}
+	if err := h.totpService.VerifyCode(c.Request.Context(), session.UserID, totpCode); err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	user, err := h.userService.GetByID(c.Request.Context(), session.UserID)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	if err := ensureLoginUserActive(user); err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	if err := h.ensureBackendModeAllowsUser(c.Request.Context(), user); err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	_ = h.totpService.DeleteLoginSession(c.Request.Context(), tempToken)
+	_, _ = store.Take(c.Request.Context(), authTxKey(txID))
+	h.authService.RecordSuccessfulLogin(c.Request.Context(), user.ID)
+	h.respondWithTokenPair(c, user)
+}
+
+// BoxAIAuthTxStartFromTOTP creates a transaction wrapper around an existing temp_token 2FA step.
+// Optional helper for clients that already received requires_2fa from /auth/login.
+// POST /api/v1/auth/tx/from-totp  body: { temp_token, return_to? }
+func (h *AuthHandler) BoxAIAuthTxStartFromTOTP(store BoxAICodeStore) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if !AuthTxEnabled() {
+			response.NotFound(c, "Auth transaction API is not enabled")
+			return
+		}
+		if store == nil {
+			response.ErrorFrom(c, registrationStoreError())
+			return
+		}
+		var body struct {
+			TempToken string `json:"temp_token" binding:"required"`
+			ReturnTo  string `json:"return_to"`
+		}
+		if err := c.ShouldBindJSON(&body); err != nil {
+			response.BadRequest(c, "Invalid request: "+err.Error())
+			return
+		}
+		id, err := newAuthTxID()
+		if err != nil {
+			response.InternalError(c, "Failed to create auth transaction")
+			return
+		}
+		rec := &AuthTxRecord{
+			Stage:     string(AuthTxNextTOTP),
+			TempToken: body.TempToken,
+			ReturnTo:  body.ReturnTo,
+		}
+		raw, err := marshalAuthTx(rec)
+		if err != nil {
+			response.InternalError(c, "Failed to create auth transaction")
+			return
+		}
+		if err := store.Put(c.Request.Context(), authTxKey(id), string(raw), authTxTTL); err != nil {
+			response.ErrorFrom(c, registrationStoreError())
+			return
+		}
+		response.Success(c, AuthTxResponse{
+			Status:        AuthTxNextTOTP,
+			TransactionID: id,
+			ReturnTo:      body.ReturnTo,
+		})
+	}
 }

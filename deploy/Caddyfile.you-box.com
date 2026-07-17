@@ -76,6 +76,7 @@ you-box.com {
 		path /api/v1/auth/me /api/v1/auth/logout /api/v1/auth/revoke-all-sessions
 		path /api/v1/auth/login /api/v1/auth/login/2fa /api/v1/auth/register
 		path /api/v1/auth/registration/prepare /api/v1/auth/registration/complete
+		path /api/v1/auth/tx/continue /api/v1/auth/tx/from-totp
 		path /api/v1/auth/send-verify-code /api/v1/auth/forgot-password /api/v1/auth/reset-password
 		path /api/v1/auth/validate-promo-code /api/v1/auth/validate-invitation-code
 		path /api/v1/auth/boxai/desktop/authorize

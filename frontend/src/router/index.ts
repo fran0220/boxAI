@@ -213,7 +213,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: () => import('@/views/user/DashboardView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -225,7 +225,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/keys',
     name: 'Keys',
-    component: () => import('@/views/user/KeysView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -238,7 +238,7 @@ const routes: RouteRecordRaw[] = [
     path: '/batch-image',
     name: 'BatchImageGuide',
     alias: '/docs/batch-image',
-    component: () => import('@/views/user/BatchImageGuideView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -250,7 +250,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/usage',
     name: 'Usage',
-    component: () => import('@/views/user/UsageView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -262,7 +262,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/redeem',
     name: 'Redeem',
-    component: () => import('@/views/user/RedeemView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -274,7 +274,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/affiliate',
     name: 'Affiliate',
-    component: () => import('@/views/user/AffiliateView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -286,7 +286,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/available-channels',
     name: 'UserAvailableChannels',
-    component: () => import('@/views/user/AvailableChannelsView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -298,7 +298,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/profile',
     name: 'Profile',
-    component: () => import('@/views/user/ProfileView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -310,7 +310,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/subscriptions',
     name: 'Subscriptions',
-    component: () => import('@/views/user/SubscriptionsView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -335,7 +335,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/orders',
     name: 'OrderList',
-    component: () => import('@/views/user/UserOrdersView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -406,7 +406,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/custom/:id',
     name: 'CustomPage',
-    component: () => import('@/views/user/CustomPageView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,
@@ -499,7 +499,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/monitor',
     name: 'ChannelStatus',
-    component: () => import('@/views/user/ChannelStatusView.vue'),
+    component: () => import('@/views/public/ApexCustomerRedirect.vue'),
     meta: {
       requiresAuth: true,
       requiresAdmin: false,

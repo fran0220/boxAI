@@ -62,6 +62,14 @@ func RegisterAuthRoutes(
 		auth.POST("/boxai/desktop/token", rateLimiter.LimitWithOptions("boxai-desktop-token", 30, time.Minute, middleware.RateLimitOptions{
 			FailureMode: middleware.RateLimitFailClose,
 		}), h.Auth.BoxAIDesktopToken(NewBoxAICodeStore(redisClient)))
+		// BOXAI: Auth Transaction continue (feature-flagged BOXAI_AUTH_TX).
+		authTxStore := NewBoxAICodeStore(redisClient)
+		auth.POST("/tx/continue", rateLimiter.LimitWithOptions("auth-tx-continue", 30, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIAuthTxContinue(authTxStore))
+		auth.POST("/tx/from-totp", rateLimiter.LimitWithOptions("auth-tx-from-totp", 30, time.Minute, middleware.RateLimitOptions{
+			FailureMode: middleware.RateLimitFailClose,
+		}), h.Auth.BoxAIAuthTxStartFromTOTP(authTxStore))
 		// 优惠码验证接口添加速率限制：每分钟最多 10 次（Redis 故障时 fail-close）
 		auth.POST("/validate-promo-code", rateLimiter.LimitWithOptions("validate-promo", 10, time.Minute, middleware.RateLimitOptions{
 			FailureMode: middleware.RateLimitFailClose,
