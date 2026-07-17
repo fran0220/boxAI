@@ -35,7 +35,7 @@ Local SSO callbacks are an explicit backend opt-in (comma-separated):
 | Env | Default | Meaning |
 |-----|---------|---------|
 | `BOXAI_BROWSER_SESSION` | on | Host-only browser cookie and bootstrap/logout endpoints |
-| `BOXAI_LEGACY_BROWSER_ADOPTION` | on during rollout | One-time legacy localStorage refresh-token adoption |
+| `BOXAI_LEGACY_BROWSER_ADOPTION` | off in compose | One-time legacy localStorage refresh-token adoption; enable only while draining old tokens. Go treats **unset** as on — set explicitly in env. |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | In-memory browser access JWT lifetime |
 | `BOXAI_DESKTOP_JWT_GATEWAY` | on | JWT→API key on `/v1/*` |
 

@@ -27,6 +27,7 @@ import { Login } from '@/pages/auth/Login'
 import { Signup } from '@/pages/auth/Signup'
 import { ForgotPassword } from '@/pages/auth/ForgotPassword'
 import { ResetPassword } from '@/pages/auth/ResetPassword'
+import { OAuthCallback } from '@/pages/auth/OAuthCallback'
 import { Checkout } from '@/pages/Checkout'
 import { PaymentResult } from '@/pages/PaymentResult'
 import { DesktopAuth } from '@/pages/DesktopAuth'
@@ -70,9 +71,15 @@ export default function App() {
         <Route path="signup" element={<Signup />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="reset-password" element={<ResetPassword />} />
-        {/* Legacy SSO URLs → login (return_to preserved by query if present). */}
+        {/* OAuth frontend callbacks (relative FrontendRedirectURL on same host). */}
+        <Route path="auth/oauth/callback" element={<OAuthCallback />} />
+        <Route path="auth/linuxdo/callback" element={<OAuthCallback />} />
+        <Route path="auth/wechat/callback" element={<OAuthCallback />} />
+        <Route path="auth/oidc/callback" element={<OAuthCallback />} />
+        <Route path="auth/dingtalk/callback" element={<OAuthCallback />} />
+        {/* Legacy SSO URLs → login. Query (e.g. return_to) is dropped by Navigate; clients should use /login. */}
         <Route path="sso" element={<Navigate to="/login" replace />} />
-        <Route path="sso/callback" element={<Navigate to="/account" replace />} />
+        <Route path="sso/callback" element={<Navigate to="/login" replace />} />
         <Route path="sso/authorize" element={<Navigate to="/login" replace />} />
 
         <Route path="checkout" element={<Checkout />} />

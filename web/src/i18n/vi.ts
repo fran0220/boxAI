@@ -278,7 +278,7 @@ export const vi: Dict = {
     badge: 'Bảng giá',
     title: 'Giá đơn giản, minh bạch',
     subtitle:
-      'Bắt đầu miễn phí, trả theo lượng dùng; đăng ký gói tại bảng điều khiển khi cần hạn mức cao hơn. Giá và nội dung gói thực tế hiển thị tại bảng điều khiển.',
+      'Bắt đầu miễn phí, trả theo lượng dùng; đăng ký gói khi cần hạn mức cao hơn. Giá và nội dung gói thực tế hiển thị tại trang thanh toán.',
     highlight: 'Phổ biến nhất',
     plans: [
       {
@@ -296,7 +296,7 @@ export const vi: Dict = {
         period: '/tháng',
         desc: 'Dành cho nhà sáng tạo cá nhân chuyên sâu',
         features: ['Bao gồm mọi tính năng Khởi đầu', 'Đồng thời cao hơn', 'Hạn mức gói tiết kiệm hơn', 'Ưu tiên định tuyến mô hình'],
-        cta: 'Kích hoạt tại bảng điều khiển',
+        cta: 'Đăng ký gói',
         highlighted: true,
       },
       {
@@ -305,7 +305,7 @@ export const vi: Dict = {
         period: '/tháng',
         desc: 'Cộng tác nhóm nhỏ và quản lý phân nhóm',
         features: ['Bao gồm mọi tính năng Chuyên nghiệp', 'Nhiều khóa và quản lý nhóm', 'Báo cáo sử dụng', 'Hỗ trợ ưu tiên'],
-        cta: 'Kích hoạt tại bảng điều khiển',
+        cta: 'Đăng ký gói',
         highlighted: false,
       },
       {
@@ -318,7 +318,7 @@ export const vi: Dict = {
         highlighted: false,
       },
     ],
-    note: 'Kích hoạt gói, nạp tiền và hóa đơn thực hiện tại bảng điều khiển; nội dung trên chỉ mang tính giới thiệu, thông tin chính thức theo bảng điều khiển.',
+    note: 'Kích hoạt gói và nạp tiền hoàn tất trên you-box.com; nội dung trên chỉ mang tính giới thiệu, thông tin chính thức theo trang thanh toán.',
     compare: {
       title: 'So sánh gói',
       plans: ['Khởi đầu', 'Chuyên nghiệp', 'Nhóm', 'Doanh nghiệp'],
@@ -341,15 +341,15 @@ export const vi: Dict = {
         },
         {
           q: 'Nạp tiền hoặc mở gói thế nào?',
-          a: 'Đăng nhập bảng điều khiển, hoàn tất nạp tiền hoặc đăng ký tại trang «Mua gói», hỗ trợ nhiều phương thức thanh toán.',
+          a: 'Đăng nhập trên you-box.com và hoàn tất nạp tiền hoặc đăng ký tại Checkout. Hỗ trợ nhiều phương thức thanh toán.',
         },
         {
           q: 'Có thể hủy bất cứ lúc nào không?',
-          a: 'Gói đăng ký tự quản lý tại bảng điều khiển; số dư nạp theo lượng dùng có hiệu lực lâu dài đến khi dùng hết.',
+          a: 'Gói đăng ký tự quản lý tại Tài khoản → Gói; số dư nạp theo lượng dùng có hiệu lực lâu dài đến khi dùng hết.',
         },
       ],
     },
-    consoleCta: 'Quản lý gói tại bảng điều khiển',
+    consoleCta: 'Đến trang thanh toán',
   },
   account: {
     metaTitle: 'Tài khoản của tôi',
@@ -806,6 +806,20 @@ export const vi: Dict = {
     resetSubmit: 'Đặt mật khẩu mới',
     resetOk: 'Đã đặt lại. Vui lòng đăng nhập.',
     resetFailed: 'Đặt lại thất bại',
+    oauthOrContinue: 'Hoặc tiếp tục với',
+    oauthContinueWith: 'Tiếp tục với {provider}',
+    oauthLinuxDo: 'LinuxDo',
+    oauthGitHub: 'GitHub',
+    oauthGoogle: 'Google',
+    oauthWeChat: 'WeChat',
+    oauthDingTalk: 'DingTalk',
+    oauthOidc: 'OIDC',
+    oauthCallbackTitle: 'Đang hoàn tất đăng nhập…',
+    oauthCallbackHint: 'Đang xác nhận phiên, vui lòng chờ.',
+    oauthFailedTitle: 'Đăng nhập chưa hoàn tất',
+    oauthFailed: 'Đăng nhập OAuth thất bại. Vui lòng thử lại.',
+    oauthPendingUnsupported:
+      'Tài khoản OAuth này vẫn cần bước đăng ký chưa hỗ trợ trên trang này. Hãy đăng ký bằng email, hoặc hoàn tất trên tài khoản đã liên kết nếu bạn đã có.',
   },
   desktopAuth: {
     metaTitle: 'Ủy quyền Desktop',

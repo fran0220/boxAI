@@ -19,7 +19,7 @@ Default merge and edit policy by path. Unknown backend paths → **sync-first**.
 | `backend/ent/`, `backend/cmd/` | sync-first | Schema via ent; cmd only product display wires | theirs + replay |
 | `backend/internal/branding/` | product-first | Product identity constants | — |
 | `backend/internal/boxai/` | product-first | Optional product package | — |
-| `backend/internal/handler/boxai_*.go` | product-first | Web SSO, desktop auth, Creator key, JWT bridge | — |
+| `backend/internal/handler/boxai_*.go` | product-first | Browser session, desktop auth, Creator key, JWT bridge | — |
 | `backend/internal/server/routes/boxai_*.go` | product-first | Redis code store adapter | — |
 | `backend/migrations/*` version `<900` | sync-first (read-only) | Only via upstream merge | theirs |
 | `backend/migrations/9xx_boxai_*.sql` | product-first | Forward-only, idempotent; prefer `boxai_` settings keys | — |

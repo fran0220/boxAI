@@ -146,13 +146,16 @@ func (h *AuthHandler) writeOAuthTokenPairResponse(c *gin.Context, tokenPair *ser
 // not carry the Origin/CSRF headers available to frontend fetch requests.
 // Production UI hosts (console or apex) may establish a host-bound session cookie.
 // BOXAI: customer shell unification — apex (web surface) can mint browser sessions too.
+// Relative frontend callbacks mean "same host as this callback request" (not console-only).
 func (h *AuthHandler) redirectOAuthTokenPairOrBrowserSession(c *gin.Context, frontendCallback string, tokenPair *service.TokenPair, user *service.User, redirectTo string) {
 	surface, _, hostOK := browserSurface(c)
 	callbackURL, parseErr := url.Parse(frontendCallback)
+	callbackIsRelative := parseErr == nil && callbackURL.Scheme == "" && callbackURL.Host == "" && strings.HasPrefix(callbackURL.Path, "/")
 	callbackIsConsole := parseErr == nil && ((callbackURL.Scheme == "https" && callbackURL.Host == "console.you-box.com") ||
-		(callbackURL.Scheme == "" && callbackURL.Host == "" && strings.HasPrefix(callbackURL.Path, "/")))
+		(callbackIsRelative && surface == service.BrowserSurfaceConsole))
 	callbackIsWeb := parseErr == nil && ((callbackURL.Scheme == "https" && callbackURL.Host == "you-box.com") ||
-		(callbackURL.Scheme == "http" && (callbackURL.Host == "localhost:5173" || callbackURL.Host == "127.0.0.1:5173")))
+		(callbackURL.Scheme == "http" && (callbackURL.Host == "localhost:5173" || callbackURL.Host == "127.0.0.1:5173")) ||
+		(callbackIsRelative && surface == service.BrowserSurfaceWeb))
 	if BrowserSessionEnabled() && hostOK {
 		if surface == service.BrowserSurfaceConsole && callbackIsConsole {
 			_ = h.authService.RevokeRefreshToken(c.Request.Context(), tokenPair.RefreshToken)

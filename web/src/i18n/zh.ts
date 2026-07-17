@@ -274,7 +274,7 @@ export const zh = {
     badge: '定价',
     title: '简单透明的定价',
     subtitle:
-      '免费开始,按量付费;需要更高配额时在控制台订阅套餐。实际价格与套餐内容以控制台显示为准。',
+      '免费开始，按量付费；需要更高配额时在本站订阅套餐。实际价格与套餐内容以结账页显示为准。',
     highlight: '最受欢迎',
     plans: [
       {
@@ -292,7 +292,7 @@ export const zh = {
         period: '/月',
         desc: '面向重度个人创作者',
         features: ['包含入门全部能力', '更高请求并发', '订阅配额更划算', '优先模型路由'],
-        cta: '前往控制台开通',
+        cta: '立即订阅',
         highlighted: true,
       },
       {
@@ -301,7 +301,7 @@ export const zh = {
         period: '/月',
         desc: '小团队协作与分组管理',
         features: ['包含专业全部能力', '多密钥与分组管理', '用量报表', '优先支持'],
-        cta: '前往控制台开通',
+        cta: '立即订阅',
         highlighted: false,
       },
       {
@@ -314,7 +314,7 @@ export const zh = {
         highlighted: false,
       },
     ],
-    note: '套餐开通、充值与发票均在控制台完成;以上内容为方案说明,实际以控制台为准。',
+    note: '套餐开通与充值在 you-box.com 结账完成；以上内容为方案说明，实际以结账页为准。',
     compare: {
       title: '方案对比',
       plans: ['入门', '专业', '团队', '企业'],
@@ -337,15 +337,15 @@ export const zh = {
         },
         {
           q: '如何充值或开通套餐?',
-          a: '登录控制台,在「购买套餐」页面完成充值或订阅,支持多种支付方式。',
+          a: '在 you-box.com 登录后，于「结账」页完成充值或订阅，支持多种支付方式。',
         },
         {
           q: '可以随时取消吗?',
-          a: '订阅可在控制台自助管理;按量余额长期有效,用完为止。',
+          a: '订阅可在「账户 → 订阅」自助管理；按量余额长期有效，用完为止。',
         },
       ],
     },
-    consoleCta: '在控制台管理套餐',
+    consoleCta: '前往结账',
   },
   account: {
     metaTitle: '我的账户',
@@ -802,6 +802,20 @@ export const zh = {
     resetSubmit: '设置新密码',
     resetOk: '密码已重置，请登录',
     resetFailed: '重置失败',
+    oauthOrContinue: '或使用以下方式继续',
+    oauthContinueWith: '使用 {provider} 继续',
+    oauthLinuxDo: 'LinuxDo',
+    oauthGitHub: 'GitHub',
+    oauthGoogle: 'Google',
+    oauthWeChat: '微信',
+    oauthDingTalk: '钉钉',
+    oauthOidc: 'OIDC',
+    oauthCallbackTitle: '正在完成登录…',
+    oauthCallbackHint: '正在确认会话，请稍候。',
+    oauthFailedTitle: '登录未完成',
+    oauthFailed: 'OAuth 登录失败，请重试。',
+    oauthPendingUnsupported:
+      '该 OAuth 账号仍需额外注册步骤，本页暂不支持。请改用邮箱注册，或在已有账号上完成绑定后再登录。',
   },
   desktopAuth: {
     metaTitle: 'Desktop 授权',

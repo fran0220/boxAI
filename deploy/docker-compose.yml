@@ -98,8 +98,10 @@ services:
       # BOXAI: browser-session migration controls (keep parity with local compose).
       - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-15}
       - BOXAI_BROWSER_SESSION=${BOXAI_BROWSER_SESSION:-true}
-      - BOXAI_LEGACY_BROWSER_ADOPTION=${BOXAI_LEGACY_BROWSER_ADOPTION:-true}
-      - BOXAI_WEB_SSO=${BOXAI_WEB_SSO:-true}
+      # Prefer false once legacy localStorage refresh tokens are drained.
+      - BOXAI_LEGACY_BROWSER_ADOPTION=${BOXAI_LEGACY_BROWSER_ADOPTION:-false}
+      # BOXAI_WEB_SSO is retired and ignored; kept for older env files only.
+      - BOXAI_WEB_SSO=${BOXAI_WEB_SSO:-false}
       - BOXAI_WEB_SSO_REDIRECT_URIS=${BOXAI_WEB_SSO_REDIRECT_URIS:-}
 
       # =======================================================================
