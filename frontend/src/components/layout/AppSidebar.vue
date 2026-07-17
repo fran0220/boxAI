@@ -197,6 +197,7 @@ import { sanitizeSvg } from '@/utils/sanitize'
 import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, makeSidebarFlag } from '@/utils/featureFlags'
 import { useBatchImageAccess } from '@/composables/useBatchImageAccess'
+import { customerShellRedirectEnabled } from '@/utils/apexOrigin'
 
 interface NavItem {
   path: string
@@ -250,6 +251,7 @@ const isAdmin = computed(() => authStore.isAdmin)
 const sidebarNavRef = ref<HTMLElement | null>(null)
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
+// BOXAI: non-admin home is apex (redirect); admin lands on ops dashboard.
 const homePath = computed(() => (isAdmin.value ? '/admin/dashboard' : '/dashboard'))
 
 // Track which parent nav groups are expanded
@@ -727,12 +729,16 @@ function finalizeNav(items: NavItem[]): NavItem[] {
   return authStore.isSimpleMode ? visible.filter(item => !item.hideInSimpleMode) : visible
 }
 
+// BOXAI: customer shell unification — ordinary users never see console nav
+// (router hard-redirects them to apex). Admins keep personal account links
+// for ops (legacy console user pages remain for admin self-service).
 // User navigation items (for regular users)
-const userNavItems = computed((): NavItem[] => finalizeNav(buildSelfNavItems(true)))
+const userNavItems = computed((): NavItem[] => {
+  if (customerShellRedirectEnabled()) return []
+  return finalizeNav(buildSelfNavItems(true))
+})
 
 // Personal navigation items (for admin's "My Account" section, without Dashboard).
-// Admins access 可用渠道 from this section just like regular users — there is no
-// separate admin entry, since the page is purely a user-facing view.
 const personalNavItems = computed((): NavItem[] => finalizeNav(buildSelfNavItems(false)))
 
 // Custom menu items filtered by visibility

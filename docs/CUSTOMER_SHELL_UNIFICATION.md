@@ -49,10 +49,32 @@ Invariants:
 - Token unification across surfaces
 - Cookie-BFF for all APIs
 - External IdP
-- WeChat MP in-WeChat purchase on apex
-- BatchImage / AvailableChannels / CustomPage ports
-- Admin UI rewrite
-- Immediate deletion of Vue user views (keep dark for rollback ≥1 release)
+- WeChat MP in-WeChat purchase on apex (still console deep-link)
+- Pixel-perfect Vue Keys/Usage tables (parity of actions, not every column)
+- Immediate hard-delete of Vue user view files (redirect + hide nav first)
+- Full Stripe Elements / Airwallex SDK embed (pay_url + QR first; hosted fallback)
+
+## Migrated customer routes (apex)
+
+| Apex | Was console |
+|------|-------------|
+| `/account` | `/dashboard` |
+| `/account/keys` | `/keys` |
+| `/account/usage` | `/usage` |
+| `/account/profile` | `/profile` |
+| `/account/security` | profile TOTP |
+| `/account/subscription` | `/subscriptions` |
+| `/account/orders` | `/orders` |
+| `/account/redeem` | `/redeem` |
+| `/account/affiliate` | `/affiliate` |
+| `/account/channels` | `/available-channels` |
+| `/account/monitor` | `/monitor` |
+| `/account/batch-image` | `/batch-image` |
+| `/account/announcements` | announcements |
+| `/checkout` | `/purchase` + payment subroutes |
+| `/payment/result` | `/payment/result` |
+| `/login`… | console auth (admin login remains) |
+| `/desktop-auth` | `/desktop-auth` | (keep dark for rollback ≥1 release)
 
 ## PR Plan
 

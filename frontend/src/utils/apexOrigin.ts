@@ -14,8 +14,9 @@ export function apexOrigin(): string {
 }
 
 /**
- * When true, non-admin navigations to migrated customer paths hard-redirect to apex.
- * Default on in production host; opt-out with VITE_CUSTOMER_SHELL_REDIRECT=0.
+ * When true, non-admin navigations to customer paths hard-redirect to apex.
+ * Default on for production console host; opt-out with VITE_CUSTOMER_SHELL_REDIRECT=0.
+ * Local: set VITE_CUSTOMER_SHELL_REDIRECT=1 to exercise redirects.
  */
 export function customerShellRedirectEnabled(): boolean {
   const flag = (import.meta.env.VITE_CUSTOMER_SHELL_REDIRECT as string | undefined)?.trim()
@@ -27,8 +28,25 @@ export function customerShellRedirectEnabled(): boolean {
   return false
 }
 
-/** Console customer paths that now live on the apex React shell. */
+/** Console paths that remain valid for everyone (auth bridge, legal, setup). */
+const CONSOLE_PUBLIC_PREFIXES = [
+  '/login',
+  '/register',
+  '/email-verify',
+  '/forgot-password',
+  '/reset-password',
+  '/auth/',
+  '/boxai/sso/',
+  '/legal/',
+  '/setup',
+  '/key-usage',
+  '/download/desktop',
+]
+
+/** Console customer paths → apex React routes. */
 export const APEX_CUSTOMER_PATH_MAP: Record<string, string> = {
+  '/': '/account',
+  '/home': '/',
   '/dashboard': '/account',
   '/keys': '/account/keys',
   '/usage': '/account/usage',
@@ -38,14 +56,39 @@ export const APEX_CUSTOMER_PATH_MAP: Record<string, string> = {
   '/orders': '/account/orders',
   '/redeem': '/account/redeem',
   '/affiliate': '/account/affiliate',
+  '/available-channels': '/account/channels',
+  '/monitor': '/account/monitor',
+  '/batch-image': '/account/batch-image',
   '/desktop-auth': '/desktop-auth',
+  '/payment/result': '/payment/result',
+  '/payment/qrcode': '/checkout',
+  '/payment/stripe': '/checkout',
+  '/payment/airwallex': '/checkout',
+  '/payment/stripe-popup': '/checkout',
+}
+
+export function isConsolePublicPath(path: string): boolean {
+  if (CONSOLE_PUBLIC_PREFIXES.some((p) => path === p || path.startsWith(p))) return true
+  // OAuth / SSO exact routes already covered by prefixes
+  return false
+}
+
+export function isConsoleAdminPath(path: string): boolean {
+  return path === '/admin' || path.startsWith('/admin/')
 }
 
 export function mapConsolePathToApex(path: string, search = ''): string | null {
   const exact = APEX_CUSTOMER_PATH_MAP[path]
   if (exact) return `${apexOrigin()}${exact}${search}`
-  // payment sub-routes → apex result/checkout
-  if (path === '/payment/result') return `${apexOrigin()}/payment/result${search}`
+  if (path.startsWith('/custom/')) return `${apexOrigin()}/account${search}`
   if (path.startsWith('/payment/')) return `${apexOrigin()}/checkout${search}`
   return null
+}
+
+/**
+ * Absolute apex URL for a path (used by admin "open customer shell" links).
+ */
+export function apexUrl(path: string): string {
+  const p = path.startsWith('/') ? path : `/${path}`
+  return `${apexOrigin()}${p}`
 }

@@ -218,6 +218,7 @@ import type { LoginAgreementDocument, TotpLoginResponse } from '@/types'
 import { extractI18nErrorMessage } from '@/utils/apiError'
 import { clearAllAffiliateReferralCodes } from '@/utils/oauthAffiliate'
 import { safeLoginReturnPath } from '@/utils/safeReturnPath'
+import { apexOrigin, apexUrl, customerShellRedirectEnabled, mapConsolePathToApex } from '@/utils/apexOrigin'
 
 const { t } = useI18n()
 const LOGIN_AGREEMENT_STORAGE_KEY = 'sub2api_login_agreement_consent'
@@ -227,6 +228,32 @@ const LOGIN_AGREEMENT_STORAGE_KEY = 'sub2api_login_agreement_consent'
 const router = useRouter()
 const authStore = useAuthStore()
 const appStore = useAppStore()
+
+// BOXAI: after password/2FA login — admins stay on console; customers go to apex shell.
+async function redirectAfterLogin(): Promise<void> {
+  const raw = router.currentRoute.value.query.redirect as string | undefined
+  // Transitional Web SSO authorize handoff must stay on console.
+  if (typeof raw === 'string' && raw.startsWith('/boxai/sso/authorize')) {
+    await router.push(safeLoginReturnPath(raw, '/admin/dashboard'))
+    return
+  }
+  if (authStore.isAdmin) {
+    const redirectTo = safeLoginReturnPath(raw, '/admin/dashboard')
+    await router.push(redirectTo)
+    return
+  }
+  if (customerShellRedirectEnabled()) {
+    const relative = safeLoginReturnPath(raw, '/account')
+    const mapped = mapConsolePathToApex(relative.split('?')[0], relative.includes('?') ? relative.slice(relative.indexOf('?')) : '')
+    window.location.replace(mapped || apexUrl('/account'))
+    return
+  }
+  // Local dual-shell without redirect flag: still prefer apex for non-admins.
+  const fallback = `${apexOrigin()}/account`
+  const dest = safeLoginReturnPath(raw, '/dashboard')
+  const apexMapped = mapConsolePathToApex(dest.split('?')[0], dest.includes('?') ? dest.slice(dest.indexOf('?')) : '')
+  window.location.replace(apexMapped || fallback)
+}
 
 // BOXAI: carry ?redirect= across the register link so sign-ups started from
 // the marketing origin still return to the Web SSO authorize handoff.
@@ -508,10 +535,9 @@ async function handleLogin(): Promise<void> {
     clearAllAffiliateReferralCodes()
     appStore.showSuccess(t('auth.loginSuccess'))
 
-    // Redirect to dashboard or intended route
-    // BOXAI: validate business destinations while allowing the explicit SSO authorize handoff.
-    const redirectTo = safeLoginReturnPath(router.currentRoute.value.query.redirect as string, '/dashboard')
-    await router.push(redirectTo)
+    // BOXAI: non-admins go to apex customer shell; admins stay on console.
+    // Allow explicit SSO authorize handoff for transitional bridge.
+    await redirectAfterLogin()
   } catch (error: unknown) {
     // Reset Turnstile on error
     if (turnstileRef.value) {
@@ -543,9 +569,7 @@ async function handle2FAVerify(code: string): Promise<void> {
     clearAllAffiliateReferralCodes()
     appStore.showSuccess(t('auth.loginSuccess'))
 
-    // Redirect to dashboard or intended route
-    const redirectTo = safeLoginReturnPath(router.currentRoute.value.query.redirect as string, '/dashboard')
-    await router.push(redirectTo)
+    await redirectAfterLogin()
   } catch (error: unknown) {
     const err = error as { message?: string; response?: { data?: { message?: string } } }
     const message = err.response?.data?.message || err.message || t('profile.totp.loginFailed')

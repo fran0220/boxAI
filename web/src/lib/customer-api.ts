@@ -202,6 +202,7 @@ export interface PublicOrderResult {
 export interface TotpStatus {
   enabled: boolean
   available?: boolean
+  feature_enabled?: boolean
 }
 
 // —— Keys ——
@@ -415,4 +416,75 @@ export async function authorizeDesktopLogin(params: {
     redirect_uri: params.redirect_uri,
     state: params.state,
   })
+}
+
+// —— Channels / monitor / announcements / TOTP ——
+
+export interface AvailableChannel {
+  id?: number
+  name?: string
+  platform?: string
+  models?: string[]
+  group_name?: string
+  [key: string]: unknown
+}
+
+export async function listAvailableChannels(): Promise<AvailableChannel[]> {
+  return apiGet('/api/v1/channels/available')
+}
+
+export interface UserMonitorView {
+  id: number
+  name: string
+  provider?: string
+  group_name?: string
+  primary_model?: string
+  primary_status?: string
+  primary_latency_ms?: number | null
+  availability_7d?: number
+}
+
+export async function listChannelMonitors(): Promise<{ items: UserMonitorView[] }> {
+  return apiGet('/api/v1/channel-monitors')
+}
+
+export interface UserAnnouncement {
+  id: number
+  title: string
+  content: string
+  read_at?: string
+  created_at?: string
+}
+
+export async function listAnnouncements(unreadOnly = false): Promise<UserAnnouncement[]> {
+  return apiGet(withQuery('/api/v1/announcements', unreadOnly ? { unread_only: 1 } : undefined))
+}
+
+export async function markAnnouncementRead(id: number): Promise<{ message: string }> {
+  return apiPost(`/api/v1/announcements/${id}/read`, {})
+}
+
+export async function totpVerificationMethod(): Promise<{ method: string }> {
+  return apiGet('/api/v1/user/totp/verification-method')
+}
+
+export async function totpSendCode(): Promise<{ success: boolean }> {
+  return apiPost('/api/v1/user/totp/send-code', {})
+}
+
+export async function totpSetup(payload: { email_code?: string; password?: string }): Promise<{
+  secret: string
+  qr_code_url: string
+  setup_token: string
+  countdown: number
+}> {
+  return apiPost('/api/v1/user/totp/setup', payload)
+}
+
+export async function totpEnable(payload: { totp_code: string; setup_token: string }): Promise<{ success: boolean }> {
+  return apiPost('/api/v1/user/totp/enable', payload)
+}
+
+export async function totpDisable(payload: { email_code?: string; password?: string }): Promise<{ success: boolean }> {
+  return apiPost('/api/v1/user/totp/disable', payload)
 }

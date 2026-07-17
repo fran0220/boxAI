@@ -44,7 +44,8 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `docs/WEB_PLATFORM.md` | Host topology, customer shell migration, SSO bridge, env flags |
 | `docs/CUSTOMER_SHELL_UNIFICATION.md` | Target architecture + PR plan (apex customer, console admin-only) |
 | `web/src/lib/customer-api.ts` | Apex customer-center JSON API client |
-| `web/src/pages/account/*` | Customer account center (keys, usage, profile, orders, …) |
+| `web/src/pages/account/*` | Customer account center (keys, usage, profile, security/2FA, orders, channels, monitor, batch-image, announcements, …) |
+| `frontend/src/utils/apexOrigin.ts` | Console→apex path map; non-admin redirect; admin-first console |
 | `web/src/pages/auth/Login.tsx` (and Signup/Forgot/Reset) | Apex credential forms (password + registration transaction) |
 | `web/src/pages/Checkout.tsx` | Apex checkout (Stripe/QR/Airwallex; WeChat MP → console) |
 | `web/src/pages/DesktopAuth.tsx` | Apex Desktop PKCE authorize page |

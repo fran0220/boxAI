@@ -21,6 +21,10 @@ import { AccountSubscription } from '@/pages/account/Subscription'
 import { AccountOrders } from '@/pages/account/Orders'
 import { AccountRedeem } from '@/pages/account/Redeem'
 import { AccountAffiliate } from '@/pages/account/Affiliate'
+import { AccountChannels } from '@/pages/account/Channels'
+import { AccountMonitor } from '@/pages/account/Monitor'
+import { AccountBatchImage } from '@/pages/account/BatchImage'
+import { AccountAnnouncements } from '@/pages/account/Announcements'
 import { Login } from '@/pages/auth/Login'
 import { Signup } from '@/pages/auth/Signup'
 import { ForgotPassword } from '@/pages/auth/ForgotPassword'
@@ -97,6 +101,10 @@ export default function App() {
           <Route path="orders" element={<AccountOrders />} />
           <Route path="redeem" element={<AccountRedeem />} />
           <Route path="affiliate" element={<AccountAffiliate />} />
+          <Route path="channels" element={<AccountChannels />} />
+          <Route path="monitor" element={<AccountMonitor />} />
+          <Route path="batch-image" element={<AccountBatchImage />} />
+          <Route path="announcements" element={<AccountAnnouncements />} />
         </Route>
 
         <Route

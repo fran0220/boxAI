@@ -6,12 +6,16 @@ const links = [
   { to: '/account', end: true, key: 'overview' as const },
   { to: '/account/keys', end: false, key: 'keys' as const },
   { to: '/account/usage', end: false, key: 'usage' as const },
+  { to: '/account/channels', end: false, key: 'channels' as const },
+  { to: '/account/monitor', end: false, key: 'monitor' as const },
   { to: '/account/subscription', end: false, key: 'subscription' as const },
   { to: '/account/orders', end: false, key: 'orders' as const },
   { to: '/account/profile', end: false, key: 'profile' as const },
   { to: '/account/security', end: false, key: 'security' as const },
   { to: '/account/redeem', end: false, key: 'redeem' as const },
   { to: '/account/affiliate', end: false, key: 'affiliate' as const },
+  { to: '/account/batch-image', end: false, key: 'batchImage' as const },
+  { to: '/account/announcements', end: false, key: 'announcements' as const },
 ]
 
 export function AccountLayout() {
