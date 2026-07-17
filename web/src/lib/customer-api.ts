@@ -460,21 +460,86 @@ export type OAuthLoginFlags = {
   google: boolean
 }
 
-export function parseOAuthLoginFlags(raw: Record<string, unknown> | null | undefined): OAuthLoginFlags {
+/**
+ * OAuth provider callback host must match the host that runs OAuth start
+ * (state cookies are host-bound). Absolute redirect_uri pointing at another host
+ * (e.g. console while on apex) will fail invalid_state — hide those providers.
+ *
+ * Empty / missing / relative redirect_url → compatible (legacy / not published).
+ */
+export function oauthRedirectCompatibleWithHost(
+  redirectUrl: string | null | undefined,
+  currentHost: string,
+): boolean {
+  const raw = (redirectUrl ?? '').trim()
+  if (!raw) return true
+  if (raw.startsWith('/')) return true
+  try {
+    const host = new URL(raw).hostname.toLowerCase()
+    const cur = currentHost.toLowerCase().replace(/:\d+$/, '')
+    if (host === cur) return true
+    // www alias pair
+    if (host === `www.${cur}` || cur === `www.${host}`) return true
+    return false
+  } catch {
+    return false
+  }
+}
+
+function currentBrowserHost(): string {
+  if (typeof window === 'undefined' || !window.location?.hostname) return ''
+  return window.location.hostname
+}
+
+/** Product multi-host apex: hide email-OAuth until callback host is known + matching. */
+function isProductApexHost(host: string): boolean {
+  const h = host.toLowerCase()
+  return h === 'you-box.com' || h === 'www.you-box.com'
+}
+
+function emailOAuthEnabledForHost(redirectUrl: unknown, host: string): boolean {
+  if (typeof redirectUrl !== 'string') {
+    // Field missing from public settings (pre-gate backend): fail closed on product apex only.
+    return !isProductApexHost(host)
+  }
+  return oauthRedirectCompatibleWithHost(redirectUrl, host)
+}
+
+export function parseOAuthLoginFlags(
+  raw: Record<string, unknown> | null | undefined,
+  options?: { host?: string },
+): OAuthLoginFlags {
   const asBool = (v: unknown) => v === true
   const asString = (v: unknown, fallback: string) => (typeof v === 'string' && v.trim() ? v : fallback)
   const open = raw?.wechat_oauth_open_enabled
   const mp = raw?.wechat_oauth_mp_enabled
   const wechatLegacy = asBool(raw?.wechat_oauth_enabled)
   const wechat = wechatLegacy || open === true || mp === true
+  const host = (options?.host ?? currentBrowserHost()).trim()
+
+  // Email-OAuth providers store absolute backend callback URLs. Hide when the
+  // configured callback host cannot receive cookies from this page's start host.
+  // On multi-host product apex, fail closed if public redirect_url is not yet
+  // published (older backend) so customers never hit invalid_state.
+  let google = asBool(raw?.google_oauth_enabled)
+  let github = asBool(raw?.github_oauth_enabled)
+  if (host) {
+    if (google) {
+      google = emailOAuthEnabledForHost(raw?.google_oauth_redirect_url, host)
+    }
+    if (github) {
+      github = emailOAuthEnabledForHost(raw?.github_oauth_redirect_url, host)
+    }
+  }
+
   return {
     linuxdo: asBool(raw?.linuxdo_oauth_enabled),
     dingtalk: asBool(raw?.dingtalk_oauth_enabled),
     wechat,
     oidc: asBool(raw?.oidc_oauth_enabled),
     oidcName: asString(raw?.oidc_oauth_provider_name, 'OIDC'),
-    github: asBool(raw?.github_oauth_enabled),
-    google: asBool(raw?.google_oauth_enabled),
+    github,
+    google,
   }
 }
 

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -111,6 +112,11 @@ func TestLegacyBrowserAdoptionEnabledDefaultOff(t *testing.T) {
 	// BOXAI: process default flipped off (compose/example already prefer false).
 	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "")
 	require.False(t, LegacyBrowserAdoptionEnabled())
+
+	// True process-unset (not merely empty string).
+	require.NoError(t, os.Unsetenv("BOXAI_LEGACY_BROWSER_ADOPTION"))
+	require.False(t, LegacyBrowserAdoptionEnabled())
+
 	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "false")
 	require.False(t, LegacyBrowserAdoptionEnabled())
 	t.Setenv("BOXAI_LEGACY_BROWSER_ADOPTION", "0")

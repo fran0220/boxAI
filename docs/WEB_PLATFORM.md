@@ -116,14 +116,19 @@ Apex Login only renders buttons for enabled providers (see `parseOAuthLoginFlags
 
 **Provider `redirect_uri` (backend callback)** must be registered with the IdP.
 Relative `*_oauth_frontend_redirect_url` (e.g. `/auth/oauth/callback`) resolves on
-the **callback request host**. For apex browser sessions, prefer dual-registering
-IdP callbacks for both:
+the **callback request host**. State cookies are host-bound: **start host must
+match callback host**. Public settings publish `google_oauth_redirect_url` /
+`github_oauth_redirect_url` (not secrets); the apex SPA **hides** those providers
+when the configured callback host ≠ the current page host (avoids customer-facing
+`invalid_state` while console-only callbacks remain).
+
+For apex browser sessions, dual-register IdP callbacks for both:
 
 - `https://you-box.com/api/v1/auth/oauth/<provider>/callback`
 - `https://console.you-box.com/api/v1/auth/oauth/<provider>/callback`
 
-and setting the active `*_oauth_redirect_url` (or start from the host you intend
-to mint the cookie on). Edge must allowlist apex `auth/oauth/*` (see
+then set the active `*_oauth_redirect_url` to the host you intend to mint the
+cookie on (customers → apex). Edge must allowlist apex `auth/oauth/*` (see
 `deploy/nginx-you-box.com.conf`).
 
 **Desktop login** uses a separate PKCE pair:

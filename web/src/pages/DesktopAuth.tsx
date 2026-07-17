@@ -31,7 +31,9 @@ function DesktopAuthInner() {
         setError(t.missingParams)
         return
       }
-      if (!redirectUri.startsWith(DESKTOP_SCHEME) && !redirectUri.startsWith('http://127.0.0.1') && !redirectUri.startsWith('http://localhost')) {
+      // Align with backend isAllowedDesktopRedirectURI: custom scheme only.
+      // Loopback HTTP was previously accepted in SPA then rejected by authorize.
+      if (!redirectUri.toLowerCase().startsWith(DESKTOP_SCHEME)) {
         setStatus('error')
         setError(t.badRedirect)
         return

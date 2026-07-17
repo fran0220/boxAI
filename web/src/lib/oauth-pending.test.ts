@@ -86,6 +86,9 @@ describe('oauth-pending helpers', () => {
       }),
     ).toBe(true)
 
+    // Bare payload is not silent — avoid empty-success classification.
+    expect(isSilentOAuthCompletion({})).toBe(false)
+
     expect(
       isSilentOAuthCompletion({
         error: 'invitation_required',
@@ -300,6 +303,33 @@ describe('oauth-pending helpers', () => {
     })
 
     expect(outcome).toEqual({ kind: 'error', message: 'exchange_failed' })
+  })
+
+  it('redirect-only exchange without host session is error (not false authenticated)', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+    // pending exchange returns redirect only (bind path after token scrub)
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({
+        redirect: '/account/profile',
+      }),
+    )
+    // bootstrap session → unauthenticated
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify({ code: 40100, message: 'unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+
+    const outcome = await completeOAuthFromCallback({
+      authResult: '',
+      redirect: '',
+      error: '',
+      errorDescription: '',
+    })
+
+    expect(outcome).toEqual({ kind: 'error', message: 'session_bootstrap_failed' })
+    expect(getSessionSnapshot().status).not.toBe('authenticated')
   })
 
   it('runOAuthCallbackOnce shares one promise across remounts', async () => {

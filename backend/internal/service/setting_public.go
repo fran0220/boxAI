@@ -211,9 +211,12 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 		SettingKeyGitHubOAuthEnabled,
 		SettingKeyGitHubOAuthClientID,
 		SettingKeyGitHubOAuthClientSecret,
+		// BOXAI: expose redirect hosts so customer shell can hide cross-host OAuth.
+		SettingKeyGitHubOAuthRedirectURL,
 		SettingKeyGoogleOAuthEnabled,
 		SettingKeyGoogleOAuthClientID,
 		SettingKeyGoogleOAuthClientSecret,
+		SettingKeyGoogleOAuthRedirectURL,
 		SettingKeyBalanceLowNotifyEnabled,
 		SettingKeyBalanceLowNotifyThreshold,
 		SettingKeyBalanceLowNotifyRechargeURL,
@@ -322,11 +325,14 @@ func (s *SettingService) GetPublicSettings(ctx context.Context) (*PublicSettings
 		OIDCOAuthEnabled:                 oidcEnabled,
 		OIDCOAuthProviderName:            oidcProviderName,
 		GitHubOAuthEnabled:               gitHubEnabled,
-		GoogleOAuthEnabled:               googleEnabled,
-		BalanceLowNotifyEnabled:          settings[SettingKeyBalanceLowNotifyEnabled] == "true",
-		AccountQuotaNotifyEnabled:        settings[SettingKeyAccountQuotaNotifyEnabled] == "true",
-		BalanceLowNotifyThreshold:        balanceLowNotifyThreshold,
-		BalanceLowNotifyRechargeURL:      settings[SettingKeyBalanceLowNotifyRechargeURL],
+		// BOXAI: redirect_uri is not secret; used by apex to hide mismatched OAuth.
+		GitHubOAuthRedirectURL:      strings.TrimSpace(settings[SettingKeyGitHubOAuthRedirectURL]),
+		GoogleOAuthEnabled:          googleEnabled,
+		GoogleOAuthRedirectURL:      strings.TrimSpace(settings[SettingKeyGoogleOAuthRedirectURL]),
+		BalanceLowNotifyEnabled:     settings[SettingKeyBalanceLowNotifyEnabled] == "true",
+		AccountQuotaNotifyEnabled:   settings[SettingKeyAccountQuotaNotifyEnabled] == "true",
+		BalanceLowNotifyThreshold:   balanceLowNotifyThreshold,
+		BalanceLowNotifyRechargeURL: settings[SettingKeyBalanceLowNotifyRechargeURL],
 
 		ChannelMonitorEnabled:                !isFalseSettingValue(settings[SettingKeyChannelMonitorEnabled]),
 		ChannelMonitorDefaultIntervalSeconds: parseChannelMonitorInterval(settings[SettingKeyChannelMonitorDefaultIntervalSeconds]),
@@ -477,10 +483,14 @@ type PublicSettingsInjectionPayload struct {
 	OIDCOAuthEnabled                 bool                     `json:"oidc_oauth_enabled"`
 	OIDCOAuthProviderName            string                   `json:"oidc_oauth_provider_name"`
 	GitHubOAuthEnabled               bool                     `json:"github_oauth_enabled"`
-	GoogleOAuthEnabled               bool                     `json:"google_oauth_enabled"`
-	BackendModeEnabled               bool                     `json:"backend_mode_enabled"`
-	PaymentEnabled                   bool                     `json:"payment_enabled"`
-	Version                          string                   `json:"version"`
+	// BOXAI: public redirect_uri for same-host OAuth gate (not secret).
+	GitHubOAuthRedirectURL string `json:"github_oauth_redirect_url"`
+	GoogleOAuthEnabled     bool   `json:"google_oauth_enabled"`
+	// BOXAI: public redirect_uri for same-host OAuth gate (not secret).
+	GoogleOAuthRedirectURL string `json:"google_oauth_redirect_url"`
+	BackendModeEnabled     bool   `json:"backend_mode_enabled"`
+	PaymentEnabled         bool   `json:"payment_enabled"`
+	Version                string `json:"version"`
 	// 服务器全局时区（IANA 名称与当前 UTC 偏移），高峰时段等服务端本地时间窗口的展示标注用
 	ServerTimezone              string  `json:"server_timezone"`
 	ServerUTCOffset             string  `json:"server_utc_offset"`
@@ -546,16 +556,19 @@ func (s *SettingService) GetPublicSettingsForInjection(ctx context.Context) (any
 		OIDCOAuthEnabled:                 settings.OIDCOAuthEnabled,
 		OIDCOAuthProviderName:            settings.OIDCOAuthProviderName,
 		GitHubOAuthEnabled:               settings.GitHubOAuthEnabled,
-		GoogleOAuthEnabled:               settings.GoogleOAuthEnabled,
-		BackendModeEnabled:               settings.BackendModeEnabled,
-		PaymentEnabled:                   settings.PaymentEnabled,
-		Version:                          s.version,
-		ServerTimezone:                   timezone.Name(),
-		ServerUTCOffset:                  timezone.UTCOffset(),
-		BalanceLowNotifyEnabled:          settings.BalanceLowNotifyEnabled,
-		AccountQuotaNotifyEnabled:        settings.AccountQuotaNotifyEnabled,
-		BalanceLowNotifyThreshold:        settings.BalanceLowNotifyThreshold,
-		BalanceLowNotifyRechargeURL:      settings.BalanceLowNotifyRechargeURL,
+		// BOXAI: public redirect_uri for same-host OAuth gate.
+		GitHubOAuthRedirectURL:      settings.GitHubOAuthRedirectURL,
+		GoogleOAuthEnabled:          settings.GoogleOAuthEnabled,
+		GoogleOAuthRedirectURL:      settings.GoogleOAuthRedirectURL,
+		BackendModeEnabled:          settings.BackendModeEnabled,
+		PaymentEnabled:              settings.PaymentEnabled,
+		Version:                     s.version,
+		ServerTimezone:              timezone.Name(),
+		ServerUTCOffset:             timezone.UTCOffset(),
+		BalanceLowNotifyEnabled:     settings.BalanceLowNotifyEnabled,
+		AccountQuotaNotifyEnabled:   settings.AccountQuotaNotifyEnabled,
+		BalanceLowNotifyThreshold:   settings.BalanceLowNotifyThreshold,
+		BalanceLowNotifyRechargeURL: settings.BalanceLowNotifyRechargeURL,
 
 		ChannelMonitorEnabled:                settings.ChannelMonitorEnabled,
 		ChannelMonitorDefaultIntervalSeconds: settings.ChannelMonitorDefaultIntervalSeconds,

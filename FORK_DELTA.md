@@ -98,7 +98,10 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/service/content_moderation.go` | Fallback site name |
 | `backend/internal/service/setting_features.go` | `GetSiteName` default |
 | `backend/internal/service/setting_parse.go` | Default settings site name |
-| `backend/internal/service/setting_public.go` | Public settings default site name |
+| `backend/internal/service/setting_public.go` | Public settings default site name; BOXAI: publish `google/github_oauth_redirect_url` for same-host OAuth gate |
+| `backend/internal/service/settings_view.go` | BOXAI: public OAuth redirect URL fields |
+| `backend/internal/handler/setting_handler.go` | BOXAI: expose public OAuth redirect URLs in `/settings/public` |
+| `backend/internal/handler/dto/settings.go` | BOXAI: public OAuth redirect URL JSON fields |
 | `backend/internal/service/totp_service.go` | TOTP issuer |
 | `backend/internal/service/payment_order.go` | Payment subject product prefix |
 | `backend/internal/service/payment_order_result_test.go` | Subject assertion uses branding |

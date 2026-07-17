@@ -95,6 +95,10 @@ function hasHardMultiStepBlocker(completion: PendingOAuthExchangeResult): boolea
 /**
  * Silent completion (existing-user login or bind) vs parked multi-step UI.
  * Mirrors Vue LinuxDoCallbackView happy path without rendering chooser forms.
+ *
+ * Requires positive evidence of a completed exchange: access_token, auth_result=session,
+ * or a bind-style redirect. Bare `{}` is not silent (avoids false "success").
+ * Final auth still requires token or bootstrap in finalizeSilentCompletion.
  */
 export function isSilentOAuthCompletion(completion: PendingOAuthExchangeResult): boolean {
   if (completion.adoption_required === true) return false
@@ -102,7 +106,14 @@ export function isSilentOAuthCompletion(completion: PendingOAuthExchangeResult):
   if (hasHardMultiStepBlocker(completion)) return false
   // Generic error without tokens → not silent login
   if (completion.error && !(completion.access_token && completion.access_token.trim())) return false
-  return true
+
+  const hasToken = !!(completion.access_token && completion.access_token.trim())
+  if (hasToken) return true
+  if ((completion.auth_result || '').trim() === 'session') return true
+  // Bind path often returns only redirect after token scrubbing — candidate for bootstrap.
+  if ((completion.redirect || '').trim()) return true
+  // Empty / unknown payload: park rather than pretend success.
+  return false
 }
 
 /**
@@ -187,11 +198,9 @@ async function finalizeSilentCompletion(
   }
 
   // Bind (or re-login) completion without new token: host session should already exist.
+  // Never treat redirect alone as proof of auth (false empty-success).
   const session = await bootstrapSession(true)
   if (session.status !== 'authenticated') {
-    if (completion.redirect) {
-      return { kind: 'authenticated', redirect: dest }
-    }
     return { kind: 'error', message: 'session_bootstrap_failed' }
   }
   return { kind: 'authenticated', redirect: dest }

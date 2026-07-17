@@ -46,6 +46,9 @@ export function OAuthCallback() {
       if (cancelled) return
 
       if (outcome.kind === 'authenticated') {
+        // Clear busy before navigate so a no-op/same-route replace cannot leave
+        // a perpetual “Completing login…” spinner.
+        setBusy(false)
         navigate(outcome.redirect, { replace: true })
         return
       }
