@@ -258,7 +258,7 @@ go test -tags=unit ./...
 
 ```bash
 cd deploy
-# 编辑 .env：设置 POSTGRES_PASSWORD、JWT_SECRET，并 pin BOXAI_IMAGE
+# 编辑 .env：设置 POSTGRES_PASSWORD、JWT_SECRET；生产镜像 pin 由 Actions Deploy 写入
 docker compose -f docker-compose.local.yml up -d
 ```
 

@@ -51,7 +51,7 @@ Design every change so the next upstream release-tag merge stays mechanical.
 
 - Apex host UI only in `web/`.
 - Never embed `web/dist` into Go.
-- Publish with `deploy/scripts/deploy-web-static.sh`.
+- Publish apex via Actions **Deploy production** (`mode=web` or `full`); emergency only: `deploy/scripts/deploy-web-static.sh`.
 - Edge: `deploy/nginx-you-box.com.conf`.
 
 ### Desktop (`desktop/`)

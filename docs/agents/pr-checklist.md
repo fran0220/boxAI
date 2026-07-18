@@ -26,6 +26,6 @@
 ## Release / production ship
 
 - [ ] Tag `vX.Y.Z-box.N` matches upstream baseline `X.Y.Z`
-- [ ] `BOXAI_IMAGE` pin recorded for operators
-- [ ] `web/` changes: static deploy + `verify-topology.sh`
-- [ ] Image-only: confirm apex HTML does not need a web rebuild
+- [ ] Ship via Actions: Release → **Deploy production** (not ad-hoc SSH pin)
+- [ ] `web/` changes: Deploy `mode=web` or `full` (image alone does not update apex)
+- [ ] Image-only: Deploy `mode=app`; confirm apex HTML does not need a web rebuild

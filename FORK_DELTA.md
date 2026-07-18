@@ -42,7 +42,7 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `docs/WEB_PLATFORM.md` | Host topology, customer shell, admin console, env flags |
 | `docs/CUSTOMER_SHELL_UNIFICATION.md` | Target architecture + PR plan (apex customer, console admin-only) |
 | `web/src/lib/customer-api.ts` | Apex customer-center JSON API client |
-| `web/src/components/workspace/*`, `web/src/pages/app/*` | Unified protected customer workspace shell, product navigation/capabilities, and Agent/Desktop entry point |
+| `web/src/components/workspace/*`, `web/src/pages/app/*` | Unified protected customer workspace shell, product navigation/capabilities, and securely embedded hosted Agent WebUI |
 | `web/src/pages/account/*` | Customer workspace modules (keys, usage, profile, security/2FA, orders, channels, monitor, batch-image, announcements, …) |
 | `frontend/src/views/public/ApexCustomerRedirect.vue` | Console stub for removed customer pages → apex |
 | `frontend/src/utils/apexOrigin.ts` | Console→apex path map; non-admin redirect; admin-first console |
@@ -52,9 +52,11 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `backend/internal/handler/boxai_auth_tx.go` | Auth Transaction types/helpers (flag `BOXAI_AUTH_TX`, dark) |
 | `docs/LOCAL_DEV.md` | Local three-process developer guide |
 | `docs/OFFICE_MODULE.md` | Desktop module + web URL map |
-| `deploy/Caddyfile.you-box.com` | 3-host Caddy (apex / console / api) |
-| `deploy/nginx-you-box.com.conf` | Live production nginx multi-host topology |
-| `deploy/scripts/deploy-web-static.sh` | Build+rsync React to production docroot |
+| `deploy/Caddyfile.you-box.com` | 3-host Caddy with Agent HTTP/WebSocket/gRPC relay routing |
+| `deploy/nginx-you-box.com.conf` | Live production nginx multi-host + Agent Relay topology |
+| `deploy/scripts/ci-deploy.sh` | Production CI deploy: pin GHCR images + build/rsync React + smoke (Postgres/Redis untouched) |
+| `.github/workflows/deploy-production.yml` | Deploy production workflow (after Release or workflow_dispatch) |
+| `deploy/scripts/deploy-web-static.sh` | Emergency/local React rsync only (primary path is ci-deploy / Actions) |
 | `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
 | `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
 | `backend/internal/branding/` | Backend product name/tagline helpers |
@@ -126,6 +128,18 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/handler/auth_wechat_oauth.go` | WeChat completion uses the centralized browser-session response |
 | `backend/internal/handler/auth_dingtalk_oauth.go` | DingTalk completion uses the centralized browser-session response |
 | `backend/internal/server/routes/user.go` | BOXAI: `POST /boxai/creator/ensure-key` (apiKeyService arg) |
+| `backend/internal/server/routes/user.go` | BOXAI: JWT-protected Creator cloud persistence routes |
+| `backend/internal/middleware/rate_limiter.go` | BOXAI: derive per-client rate-limit keys through the configured trusted reverse-proxy chain |
+| `backend/internal/handler/{handler.go,wire.go}` | BOXAI: wire product-first Creator cloud handler |
+| `backend/cmd/server/wire_gen.go` | BOXAI: generated Creator cloud handler wiring |
+| `backend/internal/boxai/creator/` | BOXAI: user-isolated Postgres metadata and private R2 object storage |
+| `backend/migrations/901_boxai_creator_cloud.sql` | BOXAI: Creator record/object metadata schema |
+| `deploy/nginx-you-box.com.conf` | BOXAI: allow authenticated Creator cloud routes through the apex API allowlist |
+| `desktop/crates/agent-gateway/`, `desktop/Dockerfile` | BOXAI: hosted multi-tenant Agent Relay, bounded replay, secure account JWT handoff, and production image |
+| `desktop/crates/agent-gui/src/App.tsx` | BOXAI: keep production desktop Relay endpoint and refreshed JWT synchronized automatically |
+| `deploy/docker-compose.local.yml`, `deploy/.env.example` | BOXAI: private Creator R2 configuration plus pinned hosted Agent Relay service |
+| `deploy/{nginx-you-box.com.conf,Caddyfile.you-box.com}` | BOXAI: unified `api.you-box.com` model API + Agent WebUI/WebSocket/gRPC edge routes |
+| `deploy/scripts/verify-topology.sh` | BOXAI: verify Agent Relay health, auth boundary, WebUI, and frame policy |
 | `backend/internal/server/router.go` | BOXAI: pass apiKeyService into RegisterUserRoutes |
 | `backend/internal/handler/boxai_desktop_gateway_auth.go` | BOXAI: prefer API key named `boxai-creator` in JWT bridge |
 

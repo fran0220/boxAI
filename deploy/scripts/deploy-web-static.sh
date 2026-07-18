@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
-# Build React web/ and rsync dist to production docroot on youbox.
-# Usage:
-#   ./deploy/scripts/deploy-web-static.sh              # build + deploy to youbox
+# Emergency / local-only helper: build React web/ and rsync to production docroot.
+#
+# Production primary path is GitHub Actions:
+#   Deploy production workflow → deploy/scripts/ci-deploy.sh (MODE=web|full)
+# Prefer Actions over this script so builds are reproducible and audited.
+#
+# Usage (emergency):
+#   ./deploy/scripts/deploy-web-static.sh              # build + deploy
 #   ./deploy/scripts/deploy-web-static.sh --build-only
 #   SSH_HOST=youbox DOCROOT=/var/www/you-box.com ./deploy/scripts/deploy-web-static.sh
 set -euo pipefail
+echo "note: production deploys should use GitHub Actions (Deploy production); this script is emergency/local only" >&2
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SSH_HOST="${SSH_HOST:-youbox}"
@@ -22,7 +28,9 @@ if [[ ! -d node_modules ]]; then
 fi
 pnpm typecheck
 pnpm test:run
-pnpm build
+# BOXAI: production customer workspace embeds the hosted Agent Relay. Operators
+# can override the URL for staging, while the public deployment stays turnkey.
+VITE_AGENT_REMOTE_URL="${VITE_AGENT_REMOTE_URL:-https://api.you-box.com}" pnpm build
 
 if [[ ! -f dist/index.html ]]; then
   echo "error: web/dist/index.html missing after build" >&2

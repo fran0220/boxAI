@@ -35,7 +35,7 @@
 | [agents/ownership-zones.md](./agents/ownership-zones.md) | Path policies |
 | [agents/change-design.md](./agents/change-design.md) | How to change code |
 | [agents/upstream-sync.md](./agents/upstream-sync.md) | Upstream merge SOP |
-| [agents/deploy-release.md](./agents/deploy-release.md) | Image + edge publish |
+| [agents/deploy-release.md](./agents/deploy-release.md) | Release + Deploy production (CI) |
 | [agents/pr-checklist.md](./agents/pr-checklist.md) | PR gates |
 
 ## Other
