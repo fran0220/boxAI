@@ -18,6 +18,7 @@ import { useTheme } from '@/lib/theme'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
 import { RELEASES_PAGE_URL } from '@/lib/releases'
+import { WORKSPACE_PATHS } from '@/lib/workspace-navigation'
 import { BX_EASE } from '@/components/motion/Reveal'
 import { LangSwitcher } from './LangSwitcher'
 
@@ -54,7 +55,7 @@ export function Header() {
   }, [menuOpen])
 
   const path = location.pathname
-  const activeCreator = path.startsWith('/create')
+  const activeCreator = path.startsWith(WORKSPACE_PATHS.create)
   const activeStudio = path.startsWith('/studio')
   const activePricing = path.startsWith('/pricing')
   const activeStatus = path.startsWith('/status')
@@ -65,37 +66,37 @@ export function Header() {
   > = {
     products: {
       links: [
-        { t: megaCopy.products.creator.t, d: megaCopy.products.creator.d, to: '/create' },
+        { t: megaCopy.products.creator.t, d: megaCopy.products.creator.d, to: WORKSPACE_PATHS.createImage },
         { t: megaCopy.products.studio.t, d: megaCopy.products.studio.d, to: '/studio' },
-        { t: megaCopy.products.api.t, d: megaCopy.products.api.d, to: '/account/keys' },
-        { t: megaCopy.products.account.t, d: megaCopy.products.account.d, to: '/account' },
+        { t: megaCopy.products.api.t, d: megaCopy.products.api.d, to: WORKSPACE_PATHS.developerKeys },
+        { t: megaCopy.products.account.t, d: megaCopy.products.account.d, to: WORKSPACE_PATHS.home },
       ],
       feat: {
         k: megaCopy.products.feat.k,
         t: megaCopy.products.feat.t,
         d: megaCopy.products.feat.d,
-        to: '/account/keys',
+        to: WORKSPACE_PATHS.developerKeys,
       },
     },
     solutions: {
       links: [
-        { t: megaCopy.solutions.image.t, d: megaCopy.solutions.image.d, to: '/create/image' },
-        { t: megaCopy.solutions.video.t, d: megaCopy.solutions.video.d, to: '/create/video' },
+        { t: megaCopy.solutions.image.t, d: megaCopy.solutions.image.d, to: WORKSPACE_PATHS.createImage },
+        { t: megaCopy.solutions.video.t, d: megaCopy.solutions.video.d, to: WORKSPACE_PATHS.createVideo },
         { t: megaCopy.solutions.agent.t, d: megaCopy.solutions.agent.d, to: '/studio' },
-        { t: megaCopy.solutions.dev.t, d: megaCopy.solutions.dev.d, to: '/account/keys' },
+        { t: megaCopy.solutions.dev.t, d: megaCopy.solutions.dev.d, to: WORKSPACE_PATHS.developerKeys },
       ],
       feat: {
         k: megaCopy.solutions.feat.k,
         t: megaCopy.solutions.feat.t,
         d: megaCopy.solutions.feat.d,
-        to: '/account',
+        to: WORKSPACE_PATHS.home,
       },
     },
     resources: {
       links: [
         { t: megaCopy.resources.status.t, d: megaCopy.resources.status.d, to: '/status' },
         // No public docs route — label matches destination (API keys), not "docs".
-        { t: megaCopy.resources.docs.t, d: megaCopy.resources.docs.d, to: '/account/keys' },
+        { t: megaCopy.resources.docs.t, d: megaCopy.resources.docs.d, to: WORKSPACE_PATHS.developerKeys },
         {
           t: megaCopy.resources.changelog.t,
           d: megaCopy.resources.changelog.d,
@@ -244,7 +245,7 @@ export function Header() {
           {authed ? (
             <div className="hidden items-center gap-1.5 md:flex">
               <Link
-                to="/account"
+                to={WORKSPACE_PATHS.home}
                 className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-[-0.01em] whitespace-nowrap text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_rgba(31,213,185,0.7)]"
               >
                 {d.nav.console}
@@ -353,7 +354,7 @@ export function Header() {
             >
               <nav className="space-y-1" aria-label="Mobile">
                 {[
-                  { to: '/create', label: d.nav.creator },
+                  { to: WORKSPACE_PATHS.createImage, label: d.nav.creator },
                   { to: '/studio', label: d.nav.studio },
                   { to: '/pricing', label: d.nav.pricing },
                   { to: '/status', label: d.nav.status },
@@ -381,7 +382,7 @@ export function Header() {
                 {authed ? (
                   <div className="space-y-1">
                     <Link
-                      to="/account"
+                      to={WORKSPACE_PATHS.settingsProfile}
                       className="flex items-center gap-2 rounded-[var(--bx-radius)] px-3 py-2.5 text-sm font-semibold hover:bg-[var(--bx-hover)]"
                     >
                       <User size={16} />

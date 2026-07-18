@@ -17,7 +17,7 @@ export function Signup() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const { status } = useAuth()
-  const returnTo = safeReturnPath(params.get('return_to'), '/account')
+  const returnTo = safeReturnPath(params.get('return_to'), '/app')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -70,7 +70,7 @@ export function Signup() {
   }
 
   const loginHref =
-    returnTo && returnTo !== '/account'
+    returnTo && returnTo !== '/app'
       ? `/login?return_to=${encodeURIComponent(returnTo)}`
       : '/login'
 

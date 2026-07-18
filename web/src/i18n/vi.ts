@@ -10,7 +10,7 @@ export const vi: Dict = {
     pricing: 'Bảng giá',
     status: 'Trạng thái',
     solutions: 'Giải pháp',
-    console: 'Bảng điều khiển',
+    console: 'Không gian làm việc',
     account: 'Tài khoản',
     login: 'Đăng nhập',
     signup: 'Đăng ký miễn phí',
@@ -143,7 +143,7 @@ export const vi: Dict = {
         },
         {
           title: 'Studio workbench',
-          body: 'Agent desktop truy cập tệp và chuỗi công cụ cục bộ, sắp hỗ trợ điều khiển từ xa qua trình duyệt.',
+          body: 'Agent desktop truy cập tệp và chuỗi công cụ cục bộ; truy cập từ xa cần Gateway tự lưu trữ.',
         },
         {
           title: 'API gateway mô hình',
@@ -161,7 +161,7 @@ export const vi: Dict = {
       chips: ['Xác thực', 'Tính phí', 'Điều phối'],
       products: [
         { title: 'Xưởng sáng tạo', desc: 'Ảnh · video · tài sản' },
-        { title: 'Studio workbench', desc: 'Agent cục bộ · điều khiển từ xa' },
+        { title: 'Studio workbench', desc: 'Agent cục bộ · Gateway tự lưu trữ tùy chọn' },
         { title: 'Trung tâm tài khoản', desc: 'Số dư · khóa · mức dùng' },
         { title: 'API mở', desc: 'Tương thích OpenAI /v1' },
       ],
@@ -169,14 +169,14 @@ export const vi: Dict = {
     bento: {
       creator: {
         title: 'Xưởng sáng tạo',
-        path: '/create',
+        path: '/app/create/image',
         cta: 'Mở',
         body: 'Hàng đợi không chặn, remix ảnh tham chiếu, ảnh thành video. Lịch sử tạo sinh lưu trong trình duyệt của bạn.',
       },
       studio: {
         title: 'Studio workbench',
         cta: 'Tải xuống',
-        body: 'Runtime Agent cục bộ: Skills, MCP và bộ nhớ dài hạn; trình duyệt có thể điều khiển từ xa.',
+        body: 'Runtime Agent cục bộ với Skills, MCP và bộ nhớ dài hạn; truy cập từ xa cần Gateway tự lưu trữ.',
         demoCmd: 'boxai agent run',
         demoReady: 'signed in · gateway ready',
         demoStack: 'skills: 12 · mcp: 3 · memory: on',
@@ -274,7 +274,7 @@ export const vi: Dict = {
         },
         {
           q: 'Xưởng sáng tạo và Studio khác nhau thế nào?',
-          a: 'Xưởng sáng tạo tạo ảnh và video ngay trên trình duyệt, dùng ngay lập tức; Studio là bàn làm việc agent trên desktop, truy cập tệp và công cụ cục bộ, sắp hỗ trợ truy cập từ xa qua trình duyệt. Cả hai dùng chung tài khoản và số dư.',
+          a: 'Xưởng sáng tạo tạo ảnh và video ngay trên trình duyệt, dùng ngay lập tức; Studio là bàn làm việc agent trên desktop, truy cập tệp và công cụ cục bộ; truy cập từ xa cần Gateway tự lưu trữ. Cả hai dùng chung tài khoản và số dư.',
         },
       ],
     },
@@ -292,7 +292,7 @@ export const vi: Dict = {
     title1: 'AI agent của bạn,',
     title2: 'chạy trên chính máy của bạn',
     subtitle:
-      'Chạy tác vụ, đọc ghi tệp, thực thi lệnh — với Skills, MCP và bộ nhớ dài hạn. Khi desktop trực tuyến, tiếp quản từ bất kỳ trình duyệt nào.',
+      'Chạy tác vụ, đọc ghi tệp, thực thi lệnh — với Skills, MCP và bộ nhớ dài hạn. Cấu hình Gateway tự lưu trữ để truy cập từ xa trên trình duyệt.',
     ctaDownload: 'Tải bản desktop',
     ctaBrowser: 'Bản trình duyệt',
     heroMeta: 'macOS / Windows / Linux · GitHub Releases',
@@ -309,9 +309,9 @@ export const vi: Dict = {
       write: 'write',
       writePath: '~/Reports/weekly-0717.md',
       done: 'done in 42s · $0.031 đã trừ vào số dư chung',
-      remoteOn: 'remote: on',
-      remoteLabel: 'Điều khiển từ xa qua trình duyệt',
-      browserUrl: 'studio.you-box.com',
+      remoteOn: 'local: ready',
+      remoteLabel: 'Truy cập từ xa qua trình duyệt',
+      browserUrl: 'Cần Gateway tự lưu trữ',
     },
     features: {
       items: [
@@ -329,7 +329,7 @@ export const vi: Dict = {
         },
         {
           title: 'Truy cập từ xa qua trình duyệt',
-          body: 'Khi desktop trực tuyến, mở cùng bàn làm việc từ bất kỳ trình duyệt nào để tiếp tục.',
+          body: 'Tiếp tục từ trình duyệt với Gateway tự lưu trữ; dịch vụ BoxAI lưu trữ vẫn đang được xây dựng.',
         },
       ],
     },
@@ -362,7 +362,7 @@ export const vi: Dict = {
         },
         {
           q: 'Bản trình duyệt hoạt động ra sao?',
-          a: 'Bản trình duyệt cần desktop trực tuyến: khi ứng dụng kết nối gateway từ xa, bạn có thể tiếp quản từ bất kỳ trình duyệt nào bằng cùng tài khoản. Gateway đa người dùng đang được xây dựng; trước đó có thể tự triển khai theo tài liệu.',
+          a: 'Hiện tại bạn cần tự triển khai và cấu hình Gateway, đồng thời giữ desktop trực tuyến. Việc tiếp tục trên trình duyệt đi qua Gateway đó; truy cập từ xa do BoxAI lưu trữ chưa khả dụng.',
         },
         {
           q: 'Cập nhật thế nào?',
@@ -529,6 +529,55 @@ export const vi: Dict = {
     groupPlatform: 'Platform',
     groupAccount: 'Account',
     groupMore: 'Thêm',
+  },
+  workspace: {
+    title: 'Không gian người dùng',
+    accountReady: 'Quyền tài khoản đã sẵn sàng',
+    mobileModules: 'Mô-đun sản phẩm',
+    balance: 'Số dư dùng chung',
+    models: 'Mô hình & kênh',
+    notifications: 'Thông báo',
+    notificationsUnavailable: 'Quản trị viên chưa bật thông báo số dư.',
+    modules: {
+      create: 'Sáng tạo',
+      agent: 'Agent',
+      developer: 'Nhà phát triển',
+      billing: 'Thanh toán',
+      settings: 'Cài đặt',
+    },
+    availability: {
+      desktop: 'Desktop',
+      locked: 'Chưa mở',
+    },
+    agentPage: {
+      metaTitle: 'Không gian Agent',
+      eyebrow: 'DEVICE-SCOPED AGENT',
+      title: 'Chạy Agent trên thiết bị của bạn',
+      subtitle:
+        'Tài khoản, số dư và ủy quyền được quản lý tại đây; hội thoại, tệp và trạng thái công cụ thuộc ứng dụng desktop. Truy cập từ xa trên trình duyệt chỉ hiện khi dịch vụ thật đã được cấu hình.',
+      accountConnected: 'Đã kết nối tài khoản BoxAI',
+      desktopReady: 'Khả dụng',
+      desktopTitle: 'BoxAI Studio desktop',
+      desktopBody:
+        'Cài ứng dụng desktop và đăng nhập cùng tài khoản BoxAI qua PKCE trên trình duyệt. Agent chỉ truy cập tệp, lệnh và công cụ cục bộ trong phạm vi bạn cấp.',
+      downloadFor: 'Tải bản {platform}',
+      openReleases: 'Xem tất cả bộ cài',
+      remoteTitle: 'Truy cập từ xa trên trình duyệt',
+      remoteReady: 'Đã cấu hình',
+      remoteUnavailable: 'Chưa triển khai',
+      remoteConfiguredBody:
+        'Gateway từ xa đã được cấu hình cho môi trường này. Khi desktop trực tuyến và kết nối, bạn có thể tiếp tục phiên ở trang từ xa riêng.',
+      remoteUnavailableBody:
+        'Dịch vụ trình duyệt từ xa do BoxAI lưu trữ chưa được triển khai tại đây. Trang này không giả lập thiết bị trực tuyến hay yêu cầu token desktop; hãy dùng ứng dụng desktop hoặc tự lưu trữ Gateway theo hướng dẫn.',
+      openRemote: 'Mở không gian từ xa',
+      selfHostGuide: 'Hướng dẫn tự lưu trữ',
+      localTitle: 'Dữ liệu ở lại thiết bị',
+      localBody:
+        'Lịch sử hội thoại, quyền tệp cục bộ và cấu hình công cụ thuộc desktop, không bị trang web này mô tả như tài sản đám mây.',
+      permissionTitle: 'Ranh giới quyền rõ ràng',
+      permissionBody:
+        'Web quản lý tài khoản và lối vào; desktop quản lý khả năng cục bộ; kết nối Gateway quyết định quyền truy cập từ xa.',
+    },
   },
   accountKeys: {
     metaTitle: 'Khóa API',

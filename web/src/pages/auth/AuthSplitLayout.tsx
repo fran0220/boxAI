@@ -19,7 +19,7 @@ export interface AuthSplitLayoutProps {
 }
 
 function tabTo(path: string, returnTo?: string) {
-  if (!returnTo || returnTo === '/account') return path
+  if (!returnTo || returnTo === '/app') return path
   return `${path}?return_to=${encodeURIComponent(returnTo)}`
 }
 

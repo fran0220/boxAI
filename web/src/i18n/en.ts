@@ -10,7 +10,7 @@ export const en: Dict = {
     pricing: 'Pricing',
     status: 'Status',
     solutions: 'Solutions',
-    console: 'Console',
+    console: 'Workspace',
     account: 'Account',
     login: 'Log in',
     signup: 'Sign up free',
@@ -131,7 +131,7 @@ export const en: Dict = {
         },
         {
           title: 'Studio workbench',
-          body: 'Desktop Agent access to local files and toolchains, with browser remote takeover coming.',
+          body: 'Desktop Agent access to local files and toolchains; browser remote access requires a self-hosted Gateway.',
         },
         {
           title: 'Model gateway API',
@@ -149,7 +149,7 @@ export const en: Dict = {
       chips: ['Auth', 'Billing', 'Routing'],
       products: [
         { title: 'Online Creator', desc: 'Image · video · assets' },
-        { title: 'Studio workbench', desc: 'Local Agent · remote takeover' },
+        { title: 'Studio workbench', desc: 'Local Agent · optional self-hosted Gateway' },
         { title: 'Account center', desc: 'Balance · keys · usage' },
         { title: 'Open API', desc: 'OpenAI-compatible /v1' },
       ],
@@ -157,14 +157,14 @@ export const en: Dict = {
     bento: {
       creator: {
         title: 'Online Creator',
-        path: '/create',
+        path: '/app/create/image',
         cta: 'Open',
         body: 'Non-blocking job queue, reference remix, image-to-video. Generation history lives in your own browser.',
       },
       studio: {
         title: 'Studio workbench',
         cta: 'Download',
-        body: 'Local Agent runtime: Skills, MCP and long-term memory, with browser remote takeover.',
+        body: 'Local Agent runtime with Skills, MCP and long-term memory; remote access requires a self-hosted Gateway.',
         demoCmd: 'boxai agent run',
         demoReady: 'signed in · gateway ready',
         demoStack: 'skills: 12 · mcp: 3 · memory: on',
@@ -262,7 +262,7 @@ export const en: Dict = {
         },
         {
           q: 'How do Creator and Studio differ?',
-          a: 'Creator generates images and video in the browser, ready to use instantly. Studio is a desktop agent workbench with access to local files and tools, with browser remote access coming soon. Both share one account and balance.',
+          a: 'Creator generates images and video in the browser, ready to use instantly. Studio is a desktop agent workbench with access to local files and tools; remote access requires a self-hosted Gateway. Both share one account and balance.',
         },
       ],
     },
@@ -280,7 +280,7 @@ export const en: Dict = {
     title1: 'Your AI agent,',
     title2: 'running on your own machine',
     subtitle:
-      'Run tasks, read and write files, execute commands — with Skills, MCP, and long-term memory. When your desktop is online, take over from any browser.',
+      'Run tasks, read and write files, execute commands — with Skills, MCP, and long-term memory. Add a self-hosted Gateway for browser remote access.',
     ctaDownload: 'Download for desktop',
     ctaBrowser: 'Browser version',
     heroMeta: 'macOS / Windows / Linux · GitHub Releases',
@@ -297,9 +297,9 @@ export const en: Dict = {
       write: 'write',
       writePath: '~/Reports/weekly-0717.md',
       done: 'done in 42s · $0.031 billed to shared balance',
-      remoteOn: 'remote: on',
-      remoteLabel: 'Browser remote control',
-      browserUrl: 'studio.you-box.com',
+      remoteOn: 'local: ready',
+      remoteLabel: 'Browser remote access',
+      browserUrl: 'Self-hosted Gateway required',
     },
     features: {
       items: [
@@ -317,7 +317,7 @@ export const en: Dict = {
         },
         {
           title: 'Browser remote access',
-          body: 'While your desktop is online, open the same workbench from any browser to continue.',
+          body: 'Continue from a browser with a self-hosted Gateway; BoxAI hosted access is still under construction.',
         },
       ],
     },
@@ -350,7 +350,7 @@ export const en: Dict = {
         },
         {
           q: 'How does the browser version work?',
-          a: 'It relies on your desktop being online: once the app connects to a remote gateway, you can take over from any browser with the same account. The hosted multi-tenant gateway is under construction; self-hosting is documented in the meantime.',
+          a: 'It currently requires you to deploy and configure your own Gateway while keeping the desktop online. Browser continuation works through that Gateway; BoxAI-hosted browser remote access is not available yet.',
         },
         {
           q: 'How do I update?',
@@ -517,6 +517,55 @@ export const en: Dict = {
     groupPlatform: 'Platform',
     groupAccount: 'Account',
     groupMore: 'More',
+  },
+  workspace: {
+    title: 'Customer workspace',
+    accountReady: 'Account access ready',
+    mobileModules: 'Product modules',
+    balance: 'Shared balance',
+    models: 'Models & channels',
+    notifications: 'Notifications',
+    notificationsUnavailable: 'Balance notifications are not enabled by the administrator.',
+    modules: {
+      create: 'Create',
+      agent: 'Agent',
+      developer: 'Developer',
+      billing: 'Billing',
+      settings: 'Settings',
+    },
+    availability: {
+      desktop: 'Desktop',
+      locked: 'Unavailable',
+    },
+    agentPage: {
+      metaTitle: 'Agent workspace',
+      eyebrow: 'DEVICE-SCOPED AGENT',
+      title: 'Run the Agent on your own device',
+      subtitle:
+        'Account, balance and authorization are managed here; conversations, files and tool state stay with your desktop app. Browser remote access appears only when a real remote service is configured.',
+      accountConnected: 'BoxAI account connected',
+      desktopReady: 'Available',
+      desktopTitle: 'BoxAI Studio desktop',
+      desktopBody:
+        'Install the desktop app and sign in to the same BoxAI account through browser PKCE. The Agent can access local files, commands and tools only within the permissions you grant.',
+      downloadFor: 'Download for {platform}',
+      openReleases: 'View all installers',
+      remoteTitle: 'Browser remote access',
+      remoteReady: 'Configured',
+      remoteUnavailable: 'Not deployed',
+      remoteConfiguredBody:
+        'A remote Gateway is configured for this environment. Once your desktop is online and connected, continue the session on the separate remote site.',
+      remoteUnavailableBody:
+        'BoxAI hosted browser remote access is not deployed here. This page does not simulate online devices or ask for desktop tokens; keep using the desktop app or self-host the Gateway from the guide.',
+      openRemote: 'Open remote workspace',
+      selfHostGuide: 'Self-hosting guide',
+      localTitle: 'Device data stays on-device',
+      localBody:
+        'Conversation history, local-file permissions and tool configuration are desktop-owned, not presented as cloud assets by this site.',
+      permissionTitle: 'Explicit permission boundaries',
+      permissionBody:
+        'The web app owns account entry points, the desktop owns local capabilities, and Gateway connectivity controls remote access.',
+    },
   },
   accountKeys: {
     metaTitle: 'API keys',

@@ -604,7 +604,7 @@ export function AccountBatchImage() {
               >
                 {loadingJobs ? t.refresh : t.loadJobs}
               </button>
-              <Link to="/account/keys" className="bx-btn bx-btn-ghost bx-btn-sm">
+              <Link to="/app/developer/keys" className="bx-btn bx-btn-ghost bx-btn-sm">
                 {t.openKeys}
               </Link>
             </div>

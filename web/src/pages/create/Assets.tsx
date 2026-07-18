@@ -64,11 +64,11 @@ export function Assets() {
   }
 
   function useAsReference(asset: AssetRecord) {
-    navigate('/create/image', { state: { reference: asset.payload } })
+    navigate('/app/create/image', { state: { reference: asset.payload } })
   }
 
   function makeVideo(asset: AssetRecord) {
-    navigate('/create/video', {
+    navigate('/app/create/video', {
       state: { frame: asset.payload, prompt: asset.prompt || asset.title },
     })
   }

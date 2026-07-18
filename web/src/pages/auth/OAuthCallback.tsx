@@ -46,7 +46,7 @@ export function OAuthCallback() {
       }
 
       // Shared promise: first mount runs exchange; StrictMode remount reuses it.
-      const outcome = await runOAuthCallbackOnce(frag, { defaultRedirect: '/account' })
+      const outcome = await runOAuthCallbackOnce(frag, { defaultRedirect: '/app' })
       if (cancelled) return
 
       if (outcome.kind === 'authenticated') {

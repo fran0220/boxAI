@@ -4,6 +4,7 @@ import { BRAND_LOGO_SVG, BRAND_NAME, consoleOrigin } from '@/lib/brand'
 import { fetchPublicStatus, type OverallStatus } from '@/lib/public-status'
 import { RELEASES_PAGE_URL } from '@/lib/releases'
 import { useI18n } from '@/i18n'
+import { WORKSPACE_PATHS } from '@/lib/workspace-navigation'
 import { cx } from '@/lib/cx'
 
 type FooterStatus = OverallStatus | 'unknown'
@@ -52,9 +53,9 @@ export function Footer() {
     {
       title: d.footer.product,
       links: [
-        { label: d.footer.creator, to: '/create' },
+        { label: d.footer.creator, to: WORKSPACE_PATHS.createImage },
         { label: d.footer.studio, to: '/studio' },
-        { label: d.footer.openApi, to: '/account/keys' },
+        { label: d.footer.openApi, to: WORKSPACE_PATHS.developerKeys },
         { label: d.footer.pricing, to: '/pricing' },
       ],
     },
@@ -62,8 +63,8 @@ export function Footer() {
       title: d.footer.resources,
       links: [
         { label: d.footer.status, to: '/status' },
-        { label: d.footer.apiKeys, to: '/account/keys' },
-        { label: d.footer.usage, to: '/account/usage' },
+        { label: d.footer.apiKeys, to: WORKSPACE_PATHS.developerKeys },
+        { label: d.footer.usage, to: WORKSPACE_PATHS.developerUsage },
         { label: d.footer.github, href: RELEASES_PAGE_URL },
       ],
     },
@@ -72,7 +73,7 @@ export function Footer() {
       links: [
         { label: d.footer.login, to: '/login' },
         { label: d.footer.signup, to: '/signup' },
-        { label: d.footer.myAccount, to: '/account' },
+        { label: d.footer.myAccount, to: WORKSPACE_PATHS.home },
       ],
     },
     {

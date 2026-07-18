@@ -430,7 +430,7 @@ export async function unbindAuthIdentity(provider: BindableOAuthProvider): Promi
 /** Start OAuth bind flow (full navigation). Uses session cookie path. */
 export function buildOAuthBindingStartURL(
   provider: BindableOAuthProvider,
-  redirectTo = '/account/profile',
+  redirectTo = '/app/settings/profile',
 ): string {
   const base = '/api/v1'
   const params = new URLSearchParams({
@@ -448,7 +448,7 @@ export function buildOAuthBindingStartURL(
 /** Start OAuth login (full navigation). Same-origin apex → edge allowlisted `/auth/oauth/*`. */
 export function buildOAuthLoginStartURL(
   provider: BindableOAuthProvider,
-  redirectTo = '/account',
+  redirectTo = '/app',
 ): string {
   const base = '/api/v1'
   const params = new URLSearchParams({

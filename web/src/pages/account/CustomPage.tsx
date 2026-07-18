@@ -104,7 +104,7 @@ export function AccountCustomPage() {
         <h1 className="bx-account-page-title">{t.title}</h1>
         <div className="bx-account-panel bx-account-panel-pad mt-4">
           <p className="bx-text-danger m-0 text-sm">{error}</p>
-          <Link to="/account" className="bx-btn bx-btn-ghost bx-btn-sm mt-4">
+          <Link to="/app" className="bx-btn bx-btn-ghost bx-btn-sm mt-4">
             {t.back}
           </Link>
         </div>

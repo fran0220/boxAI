@@ -40,6 +40,24 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       // Do not ship TypeScript sources via production sourcemaps.
       sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined
+            if (
+              id.includes('/react/') ||
+              id.includes('/react-dom/') ||
+              id.includes('/react-router') ||
+              id.includes('/scheduler/')
+            ) {
+              return 'vendor-react'
+            }
+            if (id.includes('/motion/')) return 'vendor-motion'
+            if (id.includes('/lucide-react/')) return 'vendor-icons'
+            return undefined
+          },
+        },
+      },
     },
     test: {
       environment: 'jsdom',

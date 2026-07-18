@@ -10,7 +10,7 @@ export const zh = {
     pricing: '定价',
     status: '状态',
     solutions: '解决方案',
-    console: '控制台',
+    console: '工作台',
     account: '账户',
     login: '登录',
     signup: '免费注册',
@@ -118,7 +118,7 @@ export const zh = {
         },
         {
           title: 'Studio 工作台',
-          body: '桌面 Agent 访问本地文件与工具链，并将支持浏览器远程接管。',
+          body: '桌面 Agent 访问本地文件与工具链；浏览器远程访问需配置自托管 Gateway。',
         },
         {
           title: '模型网关 API',
@@ -136,7 +136,7 @@ export const zh = {
       chips: ['鉴权', '计费', '调度'],
       products: [
         { title: '在线创作台', desc: '图像 · 视频 · 资产' },
-        { title: 'Studio 工作台', desc: '本地 Agent · 远程接管' },
+        { title: 'Studio 工作台', desc: '本地 Agent · 可选自托管 Gateway' },
         { title: '账户中心', desc: '余额 · 密钥 · 用量' },
         { title: '开放 API', desc: 'OpenAI 兼容 /v1' },
       ],
@@ -144,14 +144,14 @@ export const zh = {
     bento: {
       creator: {
         title: '在线创作台',
-        path: '/create',
+        path: '/app/create/image',
         cta: '打开',
         body: '非阻塞任务队列、参考图 Remix、图生视频。生成历史保存在你自己的浏览器里。',
       },
       studio: {
         title: 'Studio 工作台',
         cta: '下载',
-        body: '本地 Agent 运行时：Skills、MCP 与长期记忆，浏览器可远程接管。',
+        body: '本地 Agent 运行时：Skills、MCP 与长期记忆；远程访问需自托管 Gateway。',
         demoCmd: 'boxai agent run',
         demoReady: 'signed in · gateway ready',
         demoStack: 'skills: 12 · mcp: 3 · memory: on',
@@ -249,7 +249,7 @@ export const zh = {
         },
         {
           q: '创作台和 Studio 有什么区别？',
-          a: '创作台在浏览器中生成图像与视频，即开即用；Studio 是桌面 Agent 工作台，可访问本地文件与工具链，并将支持浏览器远程接管。两者共用同一账户与余额。',
+          a: '创作台在浏览器中生成图像与视频，即开即用；Studio 是桌面 Agent 工作台，可访问本地文件与工具链，配置自托管 Gateway 后才可远程访问。两者共用同一账户与余额。',
         },
       ],
     },
@@ -267,7 +267,7 @@ export const zh = {
     title1: '你的 AI Agent，',
     title2: '跑在你自己的电脑上',
     subtitle:
-      '执行任务、读写文件、运行命令，配合 Skills、MCP 与长期记忆；桌面在线时可从任意浏览器远程接管。',
+      '执行任务、读写文件、运行命令，配合 Skills、MCP 与长期记忆；配置自托管 Gateway 后可从浏览器远程接管。',
     ctaDownload: '下载桌面端',
     ctaBrowser: '浏览器版',
     heroMeta: 'macOS / Windows / Linux · GitHub Releases',
@@ -284,9 +284,9 @@ export const zh = {
       write: 'write',
       writePath: '~/Reports/weekly-0717.md',
       done: 'done in 42s · 用量 $0.031 已计入共享余额',
-      remoteOn: 'remote: on',
-      remoteLabel: '浏览器远程接管',
-      browserUrl: 'studio.you-box.com',
+      remoteOn: 'local: ready',
+      remoteLabel: '浏览器远程访问',
+      browserUrl: '需配置自托管 Gateway',
     },
     features: {
       items: [
@@ -304,7 +304,7 @@ export const zh = {
         },
         {
           title: '浏览器远程接管',
-          body: '桌面在线时，从任意浏览器打开同一个工作台继续对话与管理。',
+          body: '配置自托管 Gateway 后可从浏览器继续对话；BoxAI 托管版仍在建设中。',
         },
       ],
     },
@@ -337,7 +337,7 @@ export const zh = {
         },
         {
           q: '浏览器版怎么用？',
-          a: '浏览器版依赖桌面端在线：桌面 App 连接远程网关后，你可以在任意浏览器登录同一账户远程接管。官方托管网关正在建设中，上线前可按文档自托管。',
+          a: '目前需要自行部署并配置 Gateway，且桌面端需保持在线；完成后才能通过该 Gateway 在浏览器继续使用。BoxAI 官方托管的浏览器远程服务尚未上线。',
         },
         {
           q: '如何更新？',
@@ -504,6 +504,53 @@ export const zh = {
     groupPlatform: 'Platform',
     groupAccount: 'Account',
     groupMore: '更多',
+  },
+  workspace: {
+    title: '用户工作台',
+    accountReady: '账户权限已就绪',
+    mobileModules: '产品模块',
+    balance: '共享余额',
+    models: '模型与渠道',
+    notifications: '通知',
+    notificationsUnavailable: '管理员当前未开放余额通知功能。',
+    modules: {
+      create: '创作',
+      agent: 'Agent',
+      developer: '开发者',
+      billing: '账单',
+      settings: '设置',
+    },
+    availability: {
+      desktop: '桌面端',
+      locked: '未开放',
+    },
+    agentPage: {
+      metaTitle: 'Agent 工作台',
+      eyebrow: 'DEVICE-SCOPED AGENT',
+      title: '在自己的设备上运行 Agent',
+      subtitle:
+        '账户、余额与授权在这里统一管理；对话、文件和工具状态由你的桌面端持有。浏览器远程入口只在远程服务真实配置后开放。',
+      accountConnected: 'BoxAI 账户已连接',
+      desktopReady: '可用',
+      desktopTitle: 'BoxAI Studio 桌面端',
+      desktopBody:
+        '安装桌面端后，通过浏览器 PKCE 登录同一 BoxAI 账户。Agent 可以在你的授权范围内访问本地文件、命令与工具。',
+      downloadFor: '下载 {platform} 版',
+      openReleases: '查看全部安装包',
+      remoteTitle: '浏览器远程访问',
+      remoteReady: '已配置',
+      remoteUnavailable: '未部署',
+      remoteConfiguredBody:
+        '远程 Gateway 已由当前环境配置。桌面在线且连接成功后，可从独立远程站点继续会话。',
+      remoteUnavailableBody:
+        '当前没有 BoxAI 托管的浏览器远程服务。此处不会模拟在线设备或要求粘贴桌面令牌；你仍可使用桌面端，或按文档自托管 Gateway。',
+      openRemote: '打开远程工作台',
+      selfHostGuide: '自托管说明',
+      localTitle: '设备数据留在设备',
+      localBody: '会话历史、本地文件权限和工具配置由桌面端保存，不会被这个网页伪装成云端资产。',
+      permissionTitle: '权限边界清晰',
+      permissionBody: '网页负责账户与入口；桌面负责本地能力；Gateway 在线状态决定是否可远程接管。',
+    },
   },
   accountKeys: {
     metaTitle: 'API 密钥',

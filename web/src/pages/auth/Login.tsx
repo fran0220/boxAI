@@ -38,7 +38,7 @@ export function Login() {
   const { status } = useAuth()
 
   const state = location.state as { from?: string } | null
-  const returnTo = safeReturnPath(state?.from || params.get('return_to'), '/account')
+  const returnTo = safeReturnPath(state?.from || params.get('return_to'), '/app')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -119,7 +119,7 @@ export function Login() {
   }
 
   const signupHref =
-    returnTo && returnTo !== '/account'
+    returnTo && returnTo !== '/app'
       ? `/signup?return_to=${encodeURIComponent(returnTo)}`
       : '/signup'
 

@@ -352,15 +352,15 @@ export function AccountOverview() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <Link to="/create" className="bx-account-quick-link">
+          <Link to="/app/create/image" className="bx-account-quick-link">
             <span>{t.goCreator}</span>
             <ArrowRight size={14} className="text-[var(--bx-brand)]" />
           </Link>
-          <Link to="/account/keys" className="bx-account-quick-link">
+          <Link to="/app/developer/keys" className="bx-account-quick-link">
             <span>{t.manageKeys}</span>
             <ArrowRight size={14} className="text-[var(--bx-brand)]" />
           </Link>
-          <Link to="/studio" className="bx-account-quick-link">
+          <Link to="/app/agent" className="bx-account-quick-link">
             <span>{t.goStudio}</span>
             <ArrowRight size={14} className="text-[var(--bx-brand)]" />
           </Link>

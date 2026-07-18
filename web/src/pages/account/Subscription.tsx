@@ -184,7 +184,7 @@ export function AccountSubscription() {
           )}
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
-          <Link to="/account/orders" className="bx-btn bx-btn-ghost bx-btn-sm">
+          <Link to="/app/billing/orders" className="bx-btn bx-btn-ghost bx-btn-sm">
             {t.managePayment}
           </Link>
           <button
@@ -336,7 +336,7 @@ export function AccountSubscription() {
         <div className="flex items-center justify-between px-5 pb-2.5 pt-3.5">
           <p className="m-0 text-[13.5px] font-bold">{t.invoices}</p>
           <Link
-            to="/account/orders"
+            to="/app/billing/orders"
             className="font-mono text-[11px] font-semibold text-[var(--bx-brand-bright)] hover:text-[var(--bx-cyan,var(--bx-brand))]"
           >
             {t.viewAllOrders}

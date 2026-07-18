@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useReducedMotion } from 'motion/react'
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from 'motion/react'
 import {
   ArrowRight,
   Check,
@@ -14,7 +20,9 @@ import { BRAND_LOGO_SVG, BRAND_NAME } from '@/lib/brand'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import { MODEL_MARQUEE } from '@/content/models'
-import { Reveal } from '@/components/motion/Reveal'
+import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
+import { HeroCanvas } from '@/components/home/HeroCanvas'
+import { FxCard } from '@/components/home/FxCard'
 import { CtaBand, FaqList } from '@/components/marketing'
 import {
   fetchPublicStatus,
@@ -30,53 +38,63 @@ import { cx } from '@/lib/cx'
 function HeroBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* Base glow rising from the horizon */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 130% 95% at 82% 115%, rgba(31,213,185,0.38), rgba(12,159,140,0.13) 42%, transparent 68%)',
+            'radial-gradient(ellipse 120% 90% at 50% 112%, rgba(31,213,185,0.32), rgba(12,159,140,0.1) 45%, transparent 70%)',
+        }}
+      />
+      {/* Aurora blobs drifting slowly behind everything */}
+      <div
+        className="absolute top-[-22%] left-[-16%] h-[72%] w-[68%] rounded-full opacity-60 blur-[90px]"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(31,213,185,0.28), transparent 65%)',
+          animation: 'bx-aurora-a 24s var(--bx-ease-inout) infinite alternate',
         }}
       />
       <div
-        className="absolute top-[4%] left-[-30%] h-[320px] w-[160%] blur-[48px]"
+        className="absolute top-[6%] right-[-22%] h-[82%] w-[60%] rounded-full opacity-50 blur-[100px]"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(53,214,244,0.22), transparent 65%)',
+          animation: 'bx-aurora-b 30s var(--bx-ease-inout) infinite alternate',
+        }}
+      />
+      {/* Interactive constellation */}
+      <HeroCanvas className="absolute inset-0 h-full w-full opacity-70" />
+      {/* Perspective floor grid rolling toward the viewer */}
+      <div
+        className="absolute inset-x-[-24%] bottom-[-2%] h-[48%]"
+        style={{
+          transform: 'perspective(520px) rotateX(58deg)',
+          transformOrigin: '50% 100%',
+          backgroundImage:
+            'linear-gradient(rgba(108,245,221,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(108,245,221,0.12) 1px, transparent 1px)',
+          backgroundSize: '56px 56px',
+          animation: 'bx-grid-fwd 2.8s linear infinite',
+          WebkitMaskImage: 'linear-gradient(to top, #000 32%, transparent 94%)',
+          maskImage: 'linear-gradient(to top, #000 32%, transparent 94%)',
+        }}
+      />
+      {/* Vertical light beams */}
+      <div
+        className="absolute top-[-6%] left-[16%] h-[56%] w-px origin-top"
         style={{
           background:
-            'linear-gradient(100deg, transparent, rgba(31,213,185,0.22) 30%, rgba(53,214,244,0.28) 50%, rgba(124,199,255,0.16) 70%, transparent)',
-          animation: 'bx-ribbon-a 14s var(--bx-ease-inout) infinite alternate',
+            'linear-gradient(to bottom, transparent, rgba(108,245,221,0.5), transparent)',
+          animation: 'bx-beam 6.5s var(--bx-ease-inout) infinite',
         }}
       />
       <div
-        className="absolute top-[34%] left-[-30%] h-[240px] w-[160%] opacity-85 blur-[62px]"
+        className="absolute top-[-10%] right-[21%] h-[64%] w-px origin-top"
         style={{
           background:
-            'linear-gradient(80deg, transparent, rgba(124,199,255,0.16) 30%, rgba(31,213,185,0.24) 55%, rgba(53,214,244,0.14) 75%, transparent)',
-          animation: 'bx-ribbon-b 19s var(--bx-ease-inout) infinite alternate',
+            'linear-gradient(to bottom, transparent, rgba(124,199,255,0.45), transparent)',
+          animation: 'bx-beam 8s var(--bx-ease-inout) infinite 2.2s',
         }}
       />
-      <div
-        className="absolute bottom-[-66vw] left-1/2 h-[132vw] w-[132vw] -translate-x-1/2 rounded-full blur-[22px]"
-        style={{
-          background:
-            'conic-gradient(from 0deg, transparent 0deg, rgba(31,213,185,0.22) 16deg, transparent 42deg, transparent 128deg, rgba(53,214,244,0.16) 152deg, transparent 182deg, transparent 258deg, rgba(124,199,255,0.14) 288deg, transparent 320deg)',
-          animation: 'bx-spin 42s linear infinite',
-        }}
-      />
-      <div
-        className="absolute bottom-[-66vw] left-1/2 h-[132vw] w-[132vw] -translate-x-1/2 rounded-full opacity-75 blur-[36px]"
-        style={{
-          background:
-            'conic-gradient(from 90deg, transparent 0deg, rgba(31,213,185,0.16) 24deg, transparent 60deg, transparent 200deg, rgba(53,214,244,0.13) 230deg, transparent 268deg)',
-          animation: 'bx-spin 66s linear infinite reverse',
-        }}
-      />
-      <div
-        className="absolute bottom-[-14vw] left-1/2 h-[30vw] w-[92vw] -translate-x-1/2 rounded-full border border-[rgba(108,245,221,0.4)]"
-        style={{ animation: 'bx-hpulse 6s var(--bx-ease) infinite' }}
-      />
-      <div
-        className="absolute bottom-[-14vw] left-1/2 h-[30vw] w-[92vw] -translate-x-1/2 rounded-full border border-[rgba(53,214,244,0.35)]"
-        style={{ animation: 'bx-hpulse 6s var(--bx-ease) infinite 3s' }}
-      />
+      {/* Shooting stars */}
       <span
         className="absolute top-[12%] right-[6%] h-[2px] w-[220px] rounded-[2px]"
         style={{
@@ -98,43 +116,12 @@ function HeroBackdrop() {
           animation: 'bx-streak 11s linear infinite 5.4s',
         }}
       />
-      {/* Design: inset -560px 0 0 — particles extend above hero */}
-      <div
-        className="absolute inset-x-0 bottom-0 opacity-50"
-        style={{
-          top: '-560px',
-          backgroundImage: 'radial-gradient(rgba(108,245,221,0.4) 1px, transparent 1.6px)',
-          backgroundSize: '96px 96px',
-          animation: 'bx-pan 46s linear infinite',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 bottom-0 opacity-45"
-        style={{
-          top: '-560px',
-          backgroundImage: 'radial-gradient(rgba(124,199,255,0.32) 1px, transparent 1.6px)',
-          backgroundSize: '150px 150px',
-          backgroundPosition: '40px 60px',
-          animation: 'bx-pan 90s linear infinite',
-        }}
-      />
-      <div
-        className="absolute left-[8%] right-[8%] h-px"
-        style={{
-          top: '92%',
-          background:
-            'linear-gradient(90deg, transparent, rgba(108,245,221,0.45) 30%, rgba(53,214,244,0.45) 70%, transparent)',
-          animation: 'bx-scan 10s var(--bx-ease-inout) infinite',
-        }}
-      />
+      {/* Vignette + bottom fade into page bg */}
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage:
-            'linear-gradient(rgba(151,173,185,0.075) 1px, transparent 1px), linear-gradient(90deg, rgba(151,173,185,0.075) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-          WebkitMaskImage: 'radial-gradient(ellipse 110% 85% at 50% 105%, #000 20%, transparent 78%)',
-          maskImage: 'radial-gradient(ellipse 110% 85% at 50% 105%, #000 20%, transparent 78%)',
+          background:
+            'radial-gradient(ellipse 92% 72% at 50% 42%, transparent 55%, rgba(5,7,10,0.52))',
         }}
       />
       <div className="absolute inset-x-0 bottom-0 h-[140px] bg-gradient-to-t from-[rgba(5,7,10,0.92)] to-transparent" />
@@ -270,6 +257,20 @@ export function Home() {
   const [statusItems, setStatusItems] = useState<PublicStatusItem[]>([])
   const [statusReady, setStatusReady] = useState(false)
 
+  // Hero pointer parallax — content floats a few px against the cursor.
+  const reducedMotion = useReducedMotion()
+  const parX = useMotionValue(0)
+  const parY = useMotionValue(0)
+  const parSX = useSpring(parX, { stiffness: 55, damping: 16 })
+  const parSY = useSpring(parY, { stiffness: 55, damping: 16 })
+  const parTransform = useMotionTemplate`translate3d(${parSX}px, ${parSY}px, 0)`
+  const onHeroPointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (reducedMotion) return
+    const r = e.currentTarget.getBoundingClientRect()
+    parX.set(((e.clientX - r.left) / r.width - 0.5) * 12)
+    parY.set(((e.clientY - r.top) / r.height - 0.5) * 8)
+  }
+
   useEffect(() => {
     const ctrl = new AbortController()
     fetchPublicStatus('7d', ctrl.signal)
@@ -361,9 +362,16 @@ export function Home() {
   return (
     <div className="relative isolate overflow-x-hidden">
       {/* Hero — always dark cinema look per design */}
-      <section data-screen-label="Hero" className="relative overflow-hidden bg-[#05070a] text-[#f2f5f6]">
+      <section
+        data-screen-label="Hero"
+        className="relative overflow-hidden bg-[#05070a] text-[#f2f5f6]"
+        onPointerMove={onHeroPointerMove}
+      >
         <HeroBackdrop />
-        <div className="relative mx-auto flex min-h-[max(76vh,560px)] max-w-[1200px] flex-col justify-end px-6 pt-[104px] pb-[76px]">
+        <motion.div
+          className="relative mx-auto flex min-h-[max(76vh,560px)] max-w-[1200px] flex-col justify-end px-6 pt-[104px] pb-[76px]"
+          style={reducedMotion ? undefined : { transform: parTransform }}
+        >
           <p
             className="m-0 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.2em] text-[#6cf5dd] uppercase"
             style={{ animation: 'bx-rise 0.8s var(--bx-ease) both' }}
@@ -377,7 +385,13 @@ export function Home() {
           >
             {d.home.hero.title1}
             {d.home.hero.titleSep}
-            <span className="bg-[var(--bx-grad-hero)] bg-clip-text text-transparent">
+            <span
+              className="bg-[var(--bx-grad-hero)] bg-clip-text text-transparent"
+              style={{
+                backgroundSize: '220% auto',
+                animation: 'bx-textflow 7s var(--bx-ease-inout) infinite',
+              }}
+            >
               {d.home.hero.title2}
             </span>
           </h1>
@@ -406,30 +420,43 @@ export function Home() {
               {d.home.hero.ctaApi}
             </Link>
           </div>
+        </motion.div>
+        {/* Scroll cue */}
+        <div
+          aria-hidden
+          className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 md:block"
+          style={{ animation: 'bx-rise 0.8s var(--bx-ease) 0.6s both' }}
+        >
+          <span className="flex h-9 w-[22px] items-start justify-center rounded-full border border-white/25 p-1.5">
+            <span
+              className="h-2 w-[3px] rounded-full bg-[#6cf5dd]"
+              style={{ animation: 'bx-scroll-dot 1.8s var(--bx-ease-inout) infinite' }}
+            />
+          </span>
         </div>
       </section>
 
       {/* Stats — models from marquee list; availability from public status mean; modes/accounts are product facts */}
       <section data-screen-label="Stats" className="border-b border-[var(--bx-border)] bg-[var(--bx-bg)]">
-        <div className="mx-auto grid max-w-[1200px] grid-cols-2 px-6 md:grid-cols-4">
-          <div className="py-9 pr-6">
+        <Stagger className="mx-auto grid max-w-[1200px] grid-cols-2 px-6 md:grid-cols-4">
+          <StaggerItem className="py-9 pr-6">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
               {statModels != null ? Math.round(statModels) : STAT_MODELS}+
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[0].label}
             </p>
-          </div>
-          <div className="border-l border-[var(--bx-border)] px-6 py-9">
+          </StaggerItem>
+          <StaggerItem className="border-l border-[var(--bx-border)] px-6 py-9">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
               {statModes != null ? Math.round(statModes) : STAT_MODES}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[1].label}
             </p>
-          </div>
+          </StaggerItem>
           {/* Mobile 2-col: top border only (no left edge border). md+: left divider like design. */}
-          <div className="border-t border-[var(--bx-border)] px-6 py-9 md:border-t-0 md:border-l">
+          <StaggerItem className="border-t border-[var(--bx-border)] px-6 py-9 md:border-t-0 md:border-l">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-text)]">
               {statAvail != null
                 ? `${statAvail.toFixed(1)}%`
@@ -440,16 +467,16 @@ export function Home() {
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[2].label}
             </p>
-          </div>
-          <div className="border-t border-l border-[var(--bx-border)] py-9 pl-6 md:border-t-0">
+          </StaggerItem>
+          <StaggerItem className="border-t border-l border-[var(--bx-border)] py-9 pl-6 md:border-t-0">
             <p className="m-0 font-mono text-[clamp(30px,3vw,42px)] font-semibold tracking-tight tabular-nums text-[var(--bx-brand)]">
               {STAT_ACCOUNTS}
             </p>
             <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">
               {d.home.stats[3].label}
             </p>
-          </div>
-        </div>
+          </StaggerItem>
+        </Stagger>
       </section>
 
       {/* Value cards */}
@@ -462,7 +489,10 @@ export function Home() {
         <div className="mt-10 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {valueCards.map((card) => (
             <Reveal key={card.key}>
-              <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]">
+              <FxCard
+                tilt={false}
+                className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]"
+              >
                 <div
                   className="relative flex aspect-[16/10] items-end p-3.5"
                   style={{ background: card.grad }}
@@ -475,7 +505,7 @@ export function Home() {
                   <h3 className="m-0 text-base font-extrabold tracking-tight">{card.title}</h3>
                   <p className="mt-2 text-[13px] leading-relaxed text-[var(--bx-text-muted)]">{card.body}</p>
                 </div>
-              </div>
+              </FxCard>
             </Reveal>
           ))}
         </div>
@@ -525,17 +555,16 @@ export function Home() {
         </Reveal>
         <Reveal>
           <div className="grid items-center gap-4 rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-6 shadow-[var(--bx-shadow-card)] md:grid-cols-[minmax(0,1fr)_48px_auto_48px_minmax(0,1.15fr)] md:gap-0 md:px-5 md:py-7 lg:grid-cols-[200px_110px_auto_110px_1fr] lg:px-8 lg:py-9">
-            <div className="flex flex-col gap-2.5">
+            <Stagger className="flex flex-col gap-2.5">
               {UPSTREAMS.map((u) => (
-                <div
-                  key={u}
-                  className="flex items-center gap-2.5 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3 py-2"
-                >
-                  <span className="h-1.5 w-1.5 rounded-[2px] bg-[var(--bx-brand)] opacity-85" />
-                  <span className="font-mono text-xs font-medium text-[var(--bx-text-soft)]">{u}</span>
-                </div>
+                <StaggerItem key={u}>
+                  <div className="flex items-center gap-2.5 rounded-lg border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3 py-2 transition-colors hover:border-[var(--bx-brand-ring)]">
+                    <span className="h-1.5 w-1.5 rounded-[2px] bg-[var(--bx-brand)] opacity-85" />
+                    <span className="font-mono text-xs font-medium text-[var(--bx-text-soft)]">{u}</span>
+                  </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
             {/* Simplified connectors (md); full multi-path set on lg */}
             <div aria-hidden className="relative hidden h-[220px] w-12 md:block lg:hidden">
               <svg viewBox="0 0 48 220" className="absolute inset-0 block h-[220px] w-12">
@@ -669,25 +698,24 @@ export function Home() {
                 />
               ))}
             </div>
-            <div className="flex flex-col gap-3.5">
+            <Stagger className="flex flex-col gap-3.5">
               {products.map((p) => {
                 const Icon = p.icon
                 return (
-                  <div
-                    key={p.title}
-                    className="flex items-center gap-3 rounded-[10px] border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3.5 py-3 transition hover:translate-x-1 hover:border-[var(--bx-brand-ring)]"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
-                      <Icon size={15} />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-[13.5px] font-bold tracking-tight">{p.title}</span>
-                      <span className="mt-0.5 block text-[11.5px] text-[var(--bx-text-dim)]">{p.desc}</span>
-                    </span>
-                  </div>
+                  <StaggerItem key={p.title}>
+                    <div className="flex items-center gap-3 rounded-[10px] border border-[var(--bx-border)] bg-[var(--bx-bg-card)] px-3.5 py-3 transition hover:translate-x-1 hover:border-[var(--bx-brand-ring)]">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
+                        <Icon size={15} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[13.5px] font-bold tracking-tight">{p.title}</span>
+                        <span className="mt-0.5 block text-[11.5px] text-[var(--bx-text-dim)]">{p.desc}</span>
+                      </span>
+                    </div>
+                  </StaggerItem>
                 )
               })}
-            </div>
+            </Stagger>
           </div>
         </Reveal>
       </section>
@@ -696,7 +724,7 @@ export function Home() {
       <section data-screen-label="Products" className="mx-auto max-w-[1200px] px-6 pt-6 pb-[88px]">
         <div className="grid grid-cols-1 gap-3.5 md:grid-cols-12">
           <Reveal className="md:col-span-7">
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
+            <FxCard className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition-[border-color,box-shadow] hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]">
               <div className="flex items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <ImageIcon size={15} />
@@ -741,11 +769,11 @@ export function Home() {
                   <span className="font-mono text-[10px] text-[var(--bx-text-dim)]">gen…</span>
                 </div>
               </div>
-            </div>
+            </FxCard>
           </Reveal>
 
           <Reveal className="md:col-span-5" delay={0.04}>
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
+            <FxCard className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition-[border-color,box-shadow] hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]">
               <div className="flex items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <Monitor size={15} />
@@ -780,11 +808,11 @@ export function Home() {
                   style={{ animation: 'bx-blink 1s ease infinite' }}
                 />
               </div>
-            </div>
+            </FxCard>
           </Reveal>
 
           <Reveal className="md:col-span-5" delay={0.06}>
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
+            <FxCard className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition-[border-color,box-shadow] hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]">
               <div className="flex items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <LayoutDashboard size={15} />
@@ -825,11 +853,11 @@ export function Home() {
                   ))}
                 </div>
               </div>
-            </div>
+            </FxCard>
           </Reveal>
 
           <Reveal className="md:col-span-7" delay={0.08}>
-            <div className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition hover:-translate-y-[3px] hover:border-[var(--bx-brand-ring)]">
+            <FxCard className="flex h-full flex-col overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-card)] transition-[border-color,box-shadow] hover:border-[var(--bx-brand-ring)] hover:shadow-[var(--bx-shadow-pop)]">
               <div className="flex flex-wrap items-center gap-2.5 px-5 pt-[18px]">
                 <span className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[var(--bx-brand-soft)] text-[var(--bx-brand)]">
                   <Code2 size={15} />
@@ -860,7 +888,7 @@ export function Home() {
                   {`'{"model": "claude-sonnet-4-5", "messages": [...]}'`}
                 </span>
               </pre>
-            </div>
+            </FxCard>
           </Reveal>
         </div>
       </section>
@@ -907,7 +935,15 @@ export function Home() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <div className="overflow-hidden rounded-[var(--bx-radius-xl)] border border-[var(--bx-border-strong)] bg-[var(--bx-bg-deep)] shadow-[var(--bx-shadow-pop)]">
+            <div
+              className="rounded-[var(--bx-radius-xl)] p-[1.5px] shadow-[var(--bx-shadow-pop)]"
+              style={{
+                background: 'var(--bx-grad-border)',
+                backgroundSize: '300% auto',
+                animation: 'bx-borderflow 8s linear infinite',
+              }}
+            >
+            <div className="overflow-hidden rounded-[14.5px] bg-[var(--bx-bg-deep)]">
               <div className="flex items-center gap-1 border-b border-[var(--bx-border)] px-2.5 py-2">
                 {CODE_TABS.map((tab) => (
                   <button
@@ -936,6 +972,7 @@ export function Home() {
               <pre className="m-0 min-h-[220px] overflow-x-auto px-[22px] py-5 font-mono text-[12.5px] leading-[1.9] whitespace-pre-wrap">
                 {codeSamples[codeTab]}
               </pre>
+            </div>
             </div>
           </Reveal>
         </div>
@@ -1104,8 +1141,9 @@ export function Home() {
                 plan.highlighted ? 'text-[var(--bx-brand)]' : 'text-[var(--bx-text-soft)]',
               )
               return (
-                <div
+                <FxCard
                   key={plan.name}
+                  tilt={false}
                   className={cx(
                     'relative flex flex-col rounded-[var(--bx-radius-lg)] p-[22px] transition hover:-translate-y-[3px]',
                     plan.highlighted
@@ -1115,9 +1153,13 @@ export function Home() {
                   style={
                     plan.highlighted
                       ? {
-                          background:
-                            'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box',
                           border: '1px solid transparent',
+                          backgroundImage:
+                            'linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)), var(--bx-grad-border)',
+                          backgroundClip: 'padding-box, border-box',
+                          backgroundOrigin: 'padding-box, border-box',
+                          backgroundSize: 'auto, 300% auto',
+                          animation: 'bx-borderflow 8s linear infinite',
                         }
                       : undefined
                   }
@@ -1153,7 +1195,7 @@ export function Home() {
                       {plan.cta} →
                     </Link>
                   )}
-                </div>
+                </FxCard>
               )
             })}
           </div>

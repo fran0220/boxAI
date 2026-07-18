@@ -1223,29 +1223,66 @@ input[type='range'].bx-range::-moz-range-thumb {
 }
 
 /* —— Hero / gateway motion (design tokens) —— */
-@keyframes bx-ribbon-a {
+@keyframes bx-aurora-a {
   from {
-    transform: rotate(-10deg) translateX(-6%);
+    transform: translate(-6%, -3%) rotate(-4deg) scale(1);
   }
   to {
-    transform: rotate(-10deg) translateX(6%);
+    transform: translate(5%, 4%) rotate(3deg) scale(1.14);
   }
 }
-@keyframes bx-ribbon-b {
+@keyframes bx-aurora-b {
   from {
-    transform: rotate(7deg) translateX(5%);
+    transform: translate(5%, 3%) rotate(4deg) scale(1.1);
   }
   to {
-    transform: rotate(7deg) translateX(-5%);
+    transform: translate(-5%, -4%) rotate(-3deg) scale(1);
   }
 }
-@keyframes bx-hpulse {
+@keyframes bx-grid-fwd {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 56px,
+      0 56px;
+  }
+}
+@keyframes bx-textflow {
   0% {
-    transform: scale(0.55);
-    opacity: 0.55;
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
   100% {
-    transform: scale(1.3);
+    background-position: 0% 50%;
+  }
+}
+@keyframes bx-beam {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scaleY(0.85);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scaleY(1.1);
+  }
+}
+@keyframes bx-scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(13px);
     opacity: 0;
   }
 }
@@ -1264,35 +1301,6 @@ input[type='range'].bx-range::-moz-range-thumb {
   100% {
     opacity: 0;
     transform: translate(-380px, 170px) rotate(-24deg);
-  }
-}
-@keyframes bx-pan {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 0 -560px;
-  }
-}
-@keyframes bx-scan {
-  0% {
-    top: 92%;
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.85;
-  }
-  70% {
-    opacity: 0.85;
-  }
-  100% {
-    top: 6%;
-    opacity: 0;
-  }
-}
-@keyframes bx-spin {
-  to {
-    transform: rotate(360deg);
   }
 }
 @keyframes bx-travel {
@@ -1383,6 +1391,30 @@ input[type='range'].bx-range::-moz-range-thumb {
 }
 
 /* —— Misc —— */
+
+/* Cursor-tracking spotlight used by FxCard (vars set on pointermove). */
+.bx-fxcard {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.bx-fxcard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    300px circle at var(--mx, 50%) var(--my, -20%),
+    color-mix(in srgb, var(--bx-brand) 13%, transparent),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity var(--bx-dur-med) ease;
+}
+.bx-fxcard:hover::after {
+  opacity: 1;
+}
 
 @keyframes bx-blink {
   0%,

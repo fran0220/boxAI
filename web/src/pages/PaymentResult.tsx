@@ -86,10 +86,10 @@ export function PaymentResult() {
         </>
       ) : null}
       <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link to="/account/orders" className="bx-btn bx-btn-primary">
+        <Link to="/app/billing/orders" className="bx-btn bx-btn-primary">
           {t.orders}
         </Link>
-        <Link to="/account" className="bx-btn bx-btn-ghost">
+        <Link to="/app" className="bx-btn bx-btn-ghost">
           {t.account}
         </Link>
       </div>

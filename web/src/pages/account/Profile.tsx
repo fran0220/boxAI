@@ -166,10 +166,10 @@ function errMsg(err: unknown, fallback: string): string {
   return err instanceof ApiError ? err.message : fallback
 }
 
-export function AccountProfile() {
+export function AccountProfile({ notificationsOnly = false }: { notificationsOnly?: boolean }) {
   const { d } = useI18n()
   const t = d.accountProfile
-  usePageMeta(t.metaTitle)
+  usePageMeta(notificationsOnly ? t.balanceNotify : t.metaTitle)
 
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [settings, setSettings] = useState<PublicProfileSettings>(DEFAULT_SETTINGS)
@@ -326,7 +326,7 @@ export function AccountProfile() {
   }
 
   function startOAuthBind(provider: BindableOAuthProvider) {
-    window.location.href = buildOAuthBindingStartURL(provider, '/account/profile')
+    window.location.href = buildOAuthBindingStartURL(provider, '/app/settings/profile')
   }
 
   async function onUnbind(provider: BindableOAuthProvider, label: string) {
@@ -543,11 +543,22 @@ export function AccountProfile() {
 
   return (
     <div>
-      <h1 className="bx-account-page-title">{t.title}</h1>
-      <p className="bx-account-page-sub">{t.subtitle}</p>
+      {notificationsOnly ? (
+        <>
+          <h1 className="bx-account-page-title">{t.balanceNotify}</h1>
+          <p className="bx-account-page-sub">{t.balanceNotifyHint}</p>
+          {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
+          {message ? (
+            <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <h1 className="bx-account-page-title">{t.title}</h1>
+          <p className="bx-account-page-sub">{t.subtitle}</p>
 
-      {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
-      {message ? <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
+          {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
+          {message ? <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
 
       {/* 2-col: avatar card + multi-field form (design) */}
       <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_1.8fr] lg:items-start">
@@ -797,16 +808,13 @@ export function AccountProfile() {
             </button>
           </form>
         ) : null}
-      </section>
+          </section>
+        </>
+      )}
 
       {/* Balance notify */}
-      {settings.balance_low_notify_enabled ? (
+      {notificationsOnly && settings.balance_low_notify_enabled ? (
         <section className="bx-account-panel bx-account-panel-pad mt-3 space-y-4">
-          <div>
-            <h3 className="m-0 font-semibold">{t.balanceNotify}</h3>
-            <p className="mt-1 mb-0 text-sm text-[var(--bx-text-dim)]">{t.balanceNotifyHint}</p>
-          </div>
-
           <label className="flex items-center justify-between gap-3 text-sm">
             <span>{t.balanceNotifyEnabled}</span>
             <input
@@ -1004,7 +1012,15 @@ export function AccountProfile() {
         </section>
       ) : null}
 
-      {quotas && quotas.length > 0 ? (
+      {notificationsOnly && !settings.balance_low_notify_enabled ? (
+        <div className="bx-account-panel bx-account-panel-pad mt-4">
+          <p className="m-0 text-sm text-[var(--bx-text-muted)]">
+            {d.workspace.notificationsUnavailable}
+          </p>
+        </div>
+      ) : null}
+
+      {!notificationsOnly && quotas && quotas.length > 0 ? (
         <section className="bx-account-panel bx-account-panel-pad mt-3 space-y-3">
           <h3 className="m-0 font-semibold">{t.platformQuotas}</h3>
           <ul className="m-0 space-y-2 p-0 list-none text-sm">

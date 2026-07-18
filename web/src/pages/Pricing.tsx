@@ -23,7 +23,10 @@ export function Pricing() {
       return { kind: 'href', href: d.pricing.contactHref }
     }
     if (ctaKind === 'signup') {
-      return { kind: 'link', to: authed ? '/create' : '/signup?return_to=/create' }
+      return {
+        kind: 'link',
+        to: authed ? '/app/create/image' : '/signup?return_to=/app/create/image',
+      }
     }
     const checkout = '/checkout?type=subscription'
     return {
