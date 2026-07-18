@@ -3,14 +3,21 @@ package server
 import (
 	"context"
 	"net"
+	"net/http"
+	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 	"time"
 
+	"github.com/liveagent/agent-gateway/internal/auth"
 	"github.com/liveagent/agent-gateway/internal/config"
 	gatewayv1 "github.com/liveagent/agent-gateway/internal/proto/v1"
 	"github.com/liveagent/agent-gateway/internal/session"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 )
 
@@ -226,5 +233,60 @@ func TestAgentConnectDispatchesCorrelatedPong(t *testing.T) {
 		}
 	case <-ctx.Done():
 		t.Fatalf("timed out waiting for probe delivery ack: %v", ctx.Err())
+	}
+}
+
+func TestAgentConnectEndsAfterBoxAITokenRevocation(t *testing.T) {
+	var revoked atomic.Bool
+	profile := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		if revoked.Load() {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"code":0,"data":{"id":9}}`))
+	}))
+	defer profile.Close()
+	auth.ConfigureBoxAI(profile.URL)
+	defer auth.ConfigureBoxAI("")
+
+	listener := bufconn.Listen(1024 * 1024)
+	grpcServer := grpc.NewServer()
+	gatewayv1.RegisterAgentGatewayServer(grpcServer, NewTenantGRPCServer(&config.Config{
+		MultiTenant:       true,
+		HeartbeatPeriod:   time.Hour,
+		AuthRecheckPeriod: 20 * time.Millisecond,
+	}, session.NewTenants()))
+	t.Cleanup(func() {
+		grpcServer.Stop()
+		_ = listener.Close()
+	})
+	go func() { _ = grpcServer.Serve(listener) }()
+
+	conn, err := grpc.NewClient(
+		"passthrough:///bufnet",
+		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) {
+			return listener.DialContext(ctx)
+		}),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer aaa.bbb.ccc")
+	stream, err := gatewayv1.NewAgentGatewayClient(conn).AgentConnect(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = stream.Recv(); err != nil {
+		t.Fatalf("initial heartbeat: %v", err)
+	}
+	revoked.Store(true)
+	if _, err = stream.Recv(); status.Code(err) != codes.Unauthenticated {
+		t.Fatalf("stream error = %v, code = %s, want unauthenticated", err, status.Code(err))
 	}
 }

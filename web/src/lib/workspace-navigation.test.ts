@@ -3,8 +3,10 @@ import {
   deriveWorkspaceCapabilities,
   getWorkspaceModule,
   getWorkspaceNavItems,
+  getWorkspaceSidebarGroups,
   isUsableRemoteUrl,
   WORKSPACE_PATHS,
+  WORKSPACE_SIDEBAR_GROUPS,
 } from './workspace-navigation'
 
 describe('workspace capability derivation', () => {
@@ -63,5 +65,83 @@ describe('workspace navigation', () => {
     expect(getWorkspaceNavItems('settings', capabilities).map((item) => item.id)).not.toContain(
       'notifications',
     )
+  })
+})
+
+describe('workspace sidebar leaf tree', () => {
+  it('defines product → platform → billing → account groups', () => {
+    expect(WORKSPACE_SIDEBAR_GROUPS.map((g) => g.id)).toEqual([
+      'product',
+      'platform',
+      'billing',
+      'account',
+    ])
+  })
+
+  it('nests create children under the product group', () => {
+    const product = WORKSPACE_SIDEBAR_GROUPS.find((g) => g.id === 'product')
+    const create = product?.items.find((item) => item.id === 'create')
+    expect(create?.path).toBe(WORKSPACE_PATHS.create)
+    expect(create?.children?.map((c) => c.id)).toEqual(['image', 'video', 'assets', 'batch'])
+    expect(create?.children?.map((c) => c.path)).toContain(WORKSPACE_PATHS.createImage)
+    expect(product?.items.map((item) => item.id)).toContain('agent')
+  })
+
+  it('places overview with developer leaves under platform', () => {
+    const platform = WORKSPACE_SIDEBAR_GROUPS.find((g) => g.id === 'platform')
+    expect(platform?.items.map((item) => item.id)).toEqual([
+      'overview',
+      'keys',
+      'usage',
+      'models',
+      'monitor',
+    ])
+  })
+
+  it('filters hidden capabilities but keeps locked payment and offline agent', () => {
+    const capabilities = deriveWorkspaceCapabilities({ authenticated: true })
+    const groups = getWorkspaceSidebarGroups(capabilities)
+
+    const billing = groups.find((g) => g.id === 'billing')
+    expect(billing?.items.map((item) => item.id)).toEqual(['subscription', 'orders', 'redeem'])
+    expect(billing?.items.find((item) => item.id === 'subscription')).toBeTruthy()
+
+    const account = groups.find((g) => g.id === 'account')
+    expect(account?.items.map((item) => item.id)).not.toContain('notifications')
+    expect(account?.items.map((item) => item.id)).toContain('announcements')
+
+    const product = groups.find((g) => g.id === 'product')
+    expect(product?.items.map((item) => item.id)).toContain('agent')
+    expect(capabilities.agentRemote).toBe('offline')
+    expect(capabilities.payment).toBe('locked')
+  })
+
+  it('surfaces affiliate and notifications when public settings enable them', () => {
+    const capabilities = deriveWorkspaceCapabilities({
+      authenticated: true,
+      publicSettings: {
+        payment_enabled: true,
+        affiliate_enabled: true,
+        balance_low_notify_enabled: true,
+      },
+    })
+    const groups = getWorkspaceSidebarGroups(capabilities)
+    expect(groups.find((g) => g.id === 'billing')?.items.map((i) => i.id)).toContain('affiliate')
+    expect(groups.find((g) => g.id === 'account')?.items.map((i) => i.id)).toContain(
+      'notifications',
+    )
+  })
+
+  it('uses canonical /app paths for sidebar leaves', () => {
+    const flatPaths: string[] = []
+    for (const group of WORKSPACE_SIDEBAR_GROUPS) {
+      for (const item of group.items) {
+        flatPaths.push(item.path)
+        for (const child of item.children ?? []) flatPaths.push(child.path)
+      }
+    }
+    expect(flatPaths.every((path) => path.startsWith('/app'))).toBe(true)
+    expect(flatPaths).toContain(WORKSPACE_PATHS.developerKeys)
+    expect(flatPaths).toContain(WORKSPACE_PATHS.createImage)
   })
 })

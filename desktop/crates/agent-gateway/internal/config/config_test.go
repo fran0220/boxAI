@@ -114,6 +114,42 @@ func TestLoadUsesRailwayPortForHTTPDefault(t *testing.T) {
 	}
 }
 
+func TestLoadHostedSecurityAndRelayRetention(t *testing.T) {
+	t.Setenv("LIVEAGENT_GATEWAY_TOKEN", "dev-token")
+	t.Setenv("BOXAI_SERVER_URL", "https://console.example")
+	t.Setenv("BOXAI_GATEWAY_MULTI_TENANT", "true")
+	t.Setenv("BOXAI_GATEWAY_AUTH_RECHECK_PERIOD", "45s")
+	t.Setenv("LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS", "75")
+	resetFlagsForTest(t)
+	cfg := Load()
+	if cfg.RelayBufferSeconds != 75 {
+		t.Fatalf("RelayBufferSeconds = %d, want 75", cfg.RelayBufferSeconds)
+	}
+	if cfg.AuthRecheckPeriod != 45*time.Second {
+		t.Fatalf("AuthRecheckPeriod = %s, want 45s", cfg.AuthRecheckPeriod)
+	}
+	if cfg.AllowStaticToken() {
+		t.Fatal("hosted static token must be disabled by default")
+	}
+
+	t.Setenv("BOXAI_GATEWAY_ALLOW_HOSTED_STATIC_TOKEN", "true")
+	resetFlagsForTest(t)
+	if cfg = Load(); !cfg.AllowStaticToken() {
+		t.Fatal("hosted static token opt-in was ignored")
+	}
+}
+
+func TestHostedMultiTenantDoesNotRequireUnusedStaticToken(t *testing.T) {
+	t.Setenv("LIVEAGENT_GATEWAY_TOKEN", "")
+	t.Setenv("BOXAI_SERVER_URL", "https://you-box.com")
+	t.Setenv("BOXAI_GATEWAY_MULTI_TENANT", "true")
+	resetFlagsForTest(t)
+	cfg := Load()
+	if cfg.Token != "" || cfg.AllowStaticToken() {
+		t.Fatalf("hosted config unexpectedly enabled static auth: %+v", cfg)
+	}
+}
+
 func resetFlagsForTest(t *testing.T) {
 	t.Helper()
 	oldCommandLine := flag.CommandLine

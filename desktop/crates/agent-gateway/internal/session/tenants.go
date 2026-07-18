@@ -8,6 +8,7 @@ package session
 import (
 	"strings"
 	"sync"
+	"time"
 )
 
 // Tenants maps tenant ids to session managers. In single-tenant mode (the
@@ -16,8 +17,9 @@ import (
 type Tenants struct {
 	single *Manager
 
-	mu       sync.RWMutex
-	managers map[string]*Manager
+	mu             sync.RWMutex
+	managers       map[string]*Manager
+	managerFactory func() *Manager
 }
 
 // SingleTenant wraps an existing Manager so every identity resolves to it.
@@ -27,7 +29,14 @@ func SingleTenant(m *Manager) *Tenants {
 
 // NewTenants creates an empty multi-tenant registry.
 func NewTenants() *Tenants {
-	return &Tenants{managers: make(map[string]*Manager)}
+	return NewTenantsWithRelayRetention(conversationEventRetention)
+}
+
+func NewTenantsWithRelayRetention(retention time.Duration) *Tenants {
+	return &Tenants{
+		managers:       make(map[string]*Manager),
+		managerFactory: func() *Manager { return NewManagerWithRelayRetention(retention) },
+	}
 }
 
 func (t *Tenants) MultiTenant() bool {
@@ -58,7 +67,7 @@ func (t *Tenants) ManagerFor(tenantID string) *Manager {
 	if m := t.managers[tenantID]; m != nil {
 		return m
 	}
-	m = NewManager()
+	m = t.managerFactory()
 	t.managers[tenantID] = m
 	return m
 }

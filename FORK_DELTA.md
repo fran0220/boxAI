@@ -133,7 +133,11 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `backend/internal/handler/{handler.go,wire.go}` | BOXAI: wire product-first Creator cloud handler |
 | `backend/cmd/server/wire_gen.go` | BOXAI: generated Creator cloud handler wiring |
 | `backend/internal/boxai/creator/` | BOXAI: user-isolated Postgres metadata and private R2 object storage |
+| `backend/internal/handler/boxai_creator_cloud.go` | BOXAI: Creator cloud HTTP handler (snapshot/records/objects) |
+| `backend/internal/handler/boxai_creator_cloud_test.go` | BOXAI: Creator cloud handler unit tests |
 | `backend/migrations/901_boxai_creator_cloud.sql` | BOXAI: Creator record/object metadata schema |
+| `web/src/lib/creator-cloud.ts` | BOXAI: browser Creator cloud client + outbox |
+| `docs/CREATOR_CLOUD.md` | BOXAI: Creator cloud ops and API surface |
 | `deploy/nginx-you-box.com.conf` | BOXAI: allow authenticated Creator cloud routes through the apex API allowlist |
 | `desktop/crates/agent-gateway/`, `desktop/Dockerfile` | BOXAI: hosted multi-tenant Agent Relay, bounded replay, secure account JWT handoff, and production image |
 | `desktop/crates/agent-gui/src/App.tsx` | BOXAI: keep production desktop Relay endpoint and refreshed JWT synchronized automatically |

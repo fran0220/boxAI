@@ -17,13 +17,25 @@
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
-		Content-Security-Policy "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https:"
+		Content-Security-Policy "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; frame-src https://api.you-box.com https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https:"
 		# Remove server fingerprint if present
 		-Server
 	}
 }
 
+(boxai_agent_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors https://you-box.com"
+		-Server
+	}
+}
+
 (boxai_proxy_upstreams) {
+	header_up CF-Connecting-IP {remote_host}
 	header_up X-Real-IP {remote_host}
 	header_up X-Forwarded-For {remote_host}
 	header_up X-Forwarded-Proto {scheme}
@@ -82,7 +94,7 @@ you-box.com {
 		path /api/v1/auth/boxai/desktop/authorize
 		# BOXAI: customer OAuth start/callback/bind/pending on apex (dual-host with console).
 		path /api/v1/auth/oauth /api/v1/auth/oauth/*
-		path /api/v1/boxai/creator/ensure-key
+		path /api/v1/boxai/creator /api/v1/boxai/creator/*
 		path /api/v1/keys /api/v1/keys/*
 		path /api/v1/usage /api/v1/usage/*
 		path /api/v1/user /api/v1/user/*
@@ -187,7 +199,7 @@ console.you-box.com {
 # Login/register/admin remain on console / apex (same-origin or console host).
 # ---------------------------------------------------------------------------
 api.you-box.com {
-	import boxai_security_headers
+	import boxai_agent_headers
 	encode zstd gzip
 
 	tls {
@@ -196,7 +208,7 @@ api.you-box.com {
 
 	@allowed {
 		path /v1/*
-			path /api/v1/auth/boxai/desktop/token
+		path /api/v1/auth/boxai/desktop/token
 		path /api/v1/auth/refresh
 		path /api/v1/settings/public
 		path /health
@@ -209,8 +221,32 @@ api.you-box.com {
 		}
 	}
 
-	handle {
+	@relay_grpc {
+		protocol grpc
+		path /liveagent.gateway.v1.AgentGateway/*
+	}
+	handle @relay_grpc {
+		reverse_proxy h2c://127.0.0.1:50051
+	}
+
+	@relay_http {
+		path /healthz /ws /ws/terminal /api/status /api/files/import /api/public/history-shares/* /image-proxy /t/*
+	}
+	handle @relay_http {
+		reverse_proxy 127.0.0.1:8081 {
+			import boxai_proxy_upstreams
+			flush_interval -1
+		}
+	}
+
+	handle /api/* {
 		respond "Not Found" 404
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:8081 {
+			import boxai_proxy_upstreams
+		}
 	}
 
 	request_body {

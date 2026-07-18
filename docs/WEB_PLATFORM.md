@@ -145,10 +145,28 @@ browser WebUI) product + download page (legacy `/desktop` and `/download` redire
 to it). `/pricing` shows static plan cards; purchase CTAs go to apex
 `/checkout` (or `/login?return_to=/checkout…` when anonymous).
 
+## Customer workspace (`/app`)
+
+Authenticated product shell (React) under `/app/*` with capability-aware left nav
+(groups: product / platform / billing / account). Legacy `/account/*` and bare
+`/create/*` redirect into `/app/...` (see `web/src/components/LegacyRouteRedirect.tsx`).
+
+| Path | Role |
+|------|------|
+| `/app` | Overview |
+| `/app/create/image\|video\|assets\|batch` | Creator workbench |
+| `/app/agent` | Hosted Agent WebUI embed |
+| `/app/developer/*` | Keys, usage, models, monitor |
+| `/app/billing/*` | Subscription, orders, redeem, affiliate |
+| `/app/settings/*` | Profile, security, notifications, announcements |
+
+Shell: `web/src/components/workspace/*` + `web/src/lib/workspace-navigation.ts`.
+
 ## Creator
 
-Creator is an image/video generation workbench on the apex React app
-(`/create/image` — default, `/create/video`, `/create/assets`).
+Creator is the image/video generation workbench on the apex React app
+(**canonical** `/app/create/image`, `/app/create/video`, `/app/create/assets`,
+`/app/create/batch`; legacy `/create/*` redirects).
 
 **Image workbench** embeds a BoxAI-adapted build of
 [gpt_image_playground](https://github.com/CookSleep/gpt_image_playground) (MIT)
@@ -156,18 +174,45 @@ under `web/src/image-playground/`:
 
 - Text-to-image, multi-reference + mask edit, streaming, gallery, favorites, Agent (Responses API)
 - Auth: live session JWT injected only for the BoxAI gateway origin (never persisted as API key; multi-provider locked)
-- History: playground IndexedDB (`gpt-image-playground`) plus mirror into Creator `assets-db` for `/create/assets`
+- History: playground IndexedDB (`gpt-image-playground`) plus mirror into Creator `assets-db` for assets
 - Attribution / license: settings about panel + `LICENSE.upstream`
 
-Video generation stays on the simpler Creator page. Desktop Studio agent chat is separate.
+Video generation stays on the simpler Creator page. Desktop Studio agent chat remains the full local agent product.
 
-Creator metadata (`image_task`, `agent_conversation`, `video_job`, `asset`, `project`) is authoritative in Postgres. Private binary objects use presigned PUT/GET against Cloudflare R2; the browser keeps per-account IndexedDB/localStorage only as cache and durable outbox. Deletes are tombstones, so a stale offline upsert cannot revive newer deleted metadata.
+### Creator cloud (Postgres + private R2)
+
+When `BOXAI_CREATOR_CLOUD_ENABLED=true` and `R2_*` are set:
+
+| Layer | Store |
+|-------|--------|
+| Metadata | Postgres tables `boxai_creator_records` / `boxai_creator_objects` (migration `901_boxai_creator_cloud.sql`) |
+| Binaries | Private R2 bucket via presigned PUT/GET (never public bucket) |
+| Browser | Per-account IndexedDB + localStorage outbox cache only |
+
+Kinds: `image_task`, `agent_conversation`, `video_job`, `asset`, `project`. Deletes are tombstones so a stale offline upsert cannot revive newer deleted metadata.
+
+Authenticated HTTP (browser session / JWT; apex allowlisted):
+
+```http
+GET    /api/v1/boxai/creator/snapshot
+PUT    /api/v1/boxai/creator/records/:kind/:client_id
+DELETE /api/v1/boxai/creator/records/:kind/:client_id
+POST   /api/v1/boxai/creator/objects/:client_id/upload
+POST   /api/v1/boxai/creator/objects/:client_id/complete
+GET    /api/v1/boxai/creator/objects/:client_id/url
+DELETE /api/v1/boxai/creator/objects/:client_id
+POST   /api/v1/boxai/creator/ensure-key
+```
+
+Code: `backend/internal/boxai/creator/`, `backend/internal/handler/boxai_creator_cloud.go`, client `web/src/lib/creator-cloud.ts`. Details: [CREATOR_CLOUD.md](./CREATOR_CLOUD.md).
 
 ## Hosted Agent
 
 `/app/agent` embeds the Relay WebUI from `https://api.you-box.com`. The apex parent passes its current short-lived access JWT via exact-origin/source-checked `postMessage`; the child verifies it through `/api/status` and keeps injected credentials in memory only. Desktop PKCE login automatically configures the same host for HTTPS gRPC and refreshes the Relay token with the account session. Terminal, SSH, git, and tunnel permissions remain explicit desktop settings and are not auto-enabled.
 
-Calls:
+Hosted multi-tenant Relay (`boxai-agent-gateway` compose service): JWT validated against BoxAI; sessions isolated by user ID; production keeps static shared token **off**.
+
+Model / Creator gateway calls:
 
 ```http
 Authorization: Bearer <access JWT>
@@ -197,18 +242,23 @@ JWT is translated to the user’s API key by `BOXAI_DESKTOP_JWT_GATEWAY` (shared
 The apex allowlist is deny-by-default for `/api/*` with **admin/setup hard-denied**,
 then explicit customer paths: session bootstrap, credential login/register,
 **OAuth start/callback/bind/pending** (`/api/v1/auth/oauth/*`), customer
-keys/usage/user/payment/subscriptions/redeem, and Creator ensure-key.
+keys/usage/user/payment/subscriptions/redeem, Creator ensure-key, and
+**Creator cloud** `/api/v1/boxai/creator/*` (snapshot/records/objects).
 Console continues to proxy the complete backend surface.
 
 ## Code map
 
 | Path | Role |
 |------|------|
-| `web/` | React product SPA |
+| `web/` | React product SPA (workspace `/app`, Creator, marketing) |
+| `web/src/components/workspace/*` | Customer workspace shell + nav |
+| `web/src/lib/creator-cloud.ts` | Creator cloud client + outbox |
 | `frontend/` | Vue console (embedded) |
-| `backend/internal/handler/boxai_*.go` | Browser session, desktop auth, Creator key, JWT bridge |
+| `backend/internal/boxai/creator/` | Creator cloud service (Postgres + R2) |
+| `backend/internal/handler/boxai_*.go` | Browser session, desktop auth, Creator key/cloud, JWT bridge |
+| `backend/migrations/901_boxai_creator_cloud.sql` | Creator cloud schema |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis store adapter |
-| `desktop/` | Tauri client |
+| `desktop/` | Tauri client + hosted agent-gateway |
 | `deploy/scripts/ci-deploy.sh` | Production deploy orchestrator (CI primary) |
 | `deploy/scripts/` | nginx apply, topology verify, emergency static |
 

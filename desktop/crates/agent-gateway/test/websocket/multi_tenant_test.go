@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -111,6 +112,12 @@ func TestMultiTenantWebSocketBindsToOwnTenant(t *testing.T) {
 	if payload := firstStatusEvent(t, connA); payload["online"] != true {
 		t.Fatalf("user A should see its agent online, got %#v", payload)
 	}
+	// A connection is tenant-bound for its entire lifetime. Token refresh uses
+	// a reconnect; an in-place second auth must never rebind existing forwarders.
+	sendEnvelope(t, connA, "auth-again", "auth", map[string]any{"token": "userb.jwt.tok"})
+	if env := receiveEnvelopeWithID(t, connA, "auth-again"); env.Type != "error" || env.Error != "already authenticated" {
+		t.Fatalf("second auth envelope = %#v, want already authenticated", env)
+	}
 
 	connB, cleanupB := dialGatewayWebSocketPath(t, handler)
 	defer cleanupB()
@@ -141,5 +148,46 @@ func TestMultiTenantWebSocketRejectsInvalidToken(t *testing.T) {
 	err := conn.ReadJSON(&env)
 	if err == nil && !(env.Type == "error" && env.Error != "") {
 		t.Fatalf("auth reply = %#v, want error envelope or closed connection", env)
+	}
+}
+
+func TestMultiTenantWebSocketClosesAfterTokenRevocation(t *testing.T) {
+	var revoked atomic.Bool
+	profile := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		if revoked.Load() {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"code":0,"data":{"id":7}}`))
+	}))
+	defer profile.Close()
+	auth.ConfigureBoxAI(profile.URL)
+	defer auth.ConfigureBoxAI("")
+
+	handler := server.NewTenantHTTPServer(&config.Config{
+		MultiTenant:              true,
+		AuthRecheckPeriod:        20 * time.Millisecond,
+		RequestTimeout:           time.Second,
+		WebSocketHeartbeatPeriod: time.Second,
+		WebSocketWriteTimeout:    time.Second,
+	}, session.NewTenants())
+	conn, cleanup := dialGatewayWebSocketPath(t, handler)
+	defer cleanup()
+	authWebSocket(t, conn, "aaa.bbb.ccc")
+
+	revoked.Store(true)
+	if err := conn.SetReadDeadline(time.Now().Add(time.Second)); err != nil {
+		t.Fatal(err)
+	}
+	for {
+		var envelope wsEnvelope
+		err := conn.ReadJSON(&envelope)
+		if err != nil {
+			if closeErr, ok := err.(*websocket.CloseError); ok && closeErr.Code != websocket.ClosePolicyViolation {
+				t.Fatalf("close code = %d, want %d", closeErr.Code, websocket.ClosePolicyViolation)
+			}
+			return
+		}
 	}
 }

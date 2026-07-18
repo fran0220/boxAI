@@ -20,6 +20,8 @@ import { useAuth } from '@/lib/use-auth'
 import { usePageMeta } from '@/lib/meta'
 import { useI18n } from '@/i18n'
 import { Spinner } from '@/components/ui/Spinner'
+import { WORKSPACE_PATHS } from '@/lib/workspace-navigation'
+import { useWorkspace } from '@/components/workspace/WorkspaceContext'
 
 function formatNum(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
@@ -64,6 +66,8 @@ export function AccountOverview() {
   const t = d.account
   usePageMeta(t.metaTitle)
   const { user: sessionUser } = useAuth()
+  const { capabilities } = useWorkspace()
+  const paymentAvailable = capabilities.payment === 'available'
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [stats, setStats] = useState<UserDashboardStats | null>(null)
   const [trend, setTrend] = useState<UsageTrendPoint[]>([])
@@ -186,12 +190,22 @@ export function AccountOverview() {
         <div className="bx-account-panel-grad">
           <div className="flex items-center justify-between gap-2">
             <p className="bx-account-mono-label">{t.balanceUniversal}</p>
-            <Link
-              to="/checkout"
-              className="rounded-[6px] bg-[var(--bx-grad-cta)] px-3 py-1 text-xs font-bold text-[var(--bx-ink)] transition hover:-translate-y-px"
-            >
-              {t.billing}
-            </Link>
+            {paymentAvailable ? (
+              <Link
+                to={WORKSPACE_PATHS.checkout}
+                className="rounded-[6px] bg-[var(--bx-grad-cta)] px-3 py-1 text-xs font-bold text-[var(--bx-ink)] transition hover:-translate-y-px"
+              >
+                {t.billing}
+              </Link>
+            ) : (
+              <span
+                aria-disabled="true"
+                title={d.workspace.availability.locked}
+                className="cursor-not-allowed rounded-[6px] border border-[var(--bx-border)] px-3 py-1 text-xs font-bold text-[var(--bx-text-dim)] opacity-70"
+              >
+                {t.billing}
+              </span>
+            )}
           </div>
           <p className="bx-account-stat-value bx-account-stat-value--lg">
             {typeof balance === 'number' ? `$${balance.toFixed(2)}` : '—'}
@@ -352,16 +366,39 @@ export function AccountOverview() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <Link to="/app/create/image" className="bx-account-quick-link">
+          <Link to={WORKSPACE_PATHS.createImage} className="bx-account-quick-link">
             <span>{t.goCreator}</span>
             <ArrowRight size={14} className="text-[var(--bx-brand)]" />
           </Link>
-          <Link to="/app/developer/keys" className="bx-account-quick-link">
+          <Link to={WORKSPACE_PATHS.developerKeys} className="bx-account-quick-link">
             <span>{t.manageKeys}</span>
             <ArrowRight size={14} className="text-[var(--bx-brand)]" />
           </Link>
-          <Link to="/app/agent" className="bx-account-quick-link">
-            <span>{t.goStudio}</span>
+          {paymentAvailable ? (
+            <Link to={WORKSPACE_PATHS.billingSubscription} className="bx-account-quick-link">
+              <span>{d.accountNav.subscription}</span>
+              <ArrowRight size={14} className="text-[var(--bx-brand)]" />
+            </Link>
+          ) : (
+            <span
+              aria-disabled="true"
+              title={d.workspace.availability.locked}
+              className="bx-account-quick-link cursor-not-allowed opacity-60"
+            >
+              <span>{d.accountNav.subscription}</span>
+              <span className="font-mono text-[10px] text-[var(--bx-warning)]">
+                {d.workspace.availability.locked}
+              </span>
+            </span>
+          )}
+          {paymentAvailable ? (
+            <Link to={WORKSPACE_PATHS.checkout} className="bx-account-quick-link">
+              <span>{t.billing}</span>
+              <ArrowRight size={14} className="text-[var(--bx-brand)]" />
+            </Link>
+          ) : null}
+          <Link to={WORKSPACE_PATHS.agent} className="bx-account-quick-link">
+            <span>{d.workspace.modules.agent}</span>
             <ArrowRight size={14} className="text-[var(--bx-brand)]" />
           </Link>
         </div>

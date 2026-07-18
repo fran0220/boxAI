@@ -139,6 +139,18 @@ function applyRuntimeSystemDefaults(settings: AppSettings, defaultWorkdir: strin
   });
 }
 
+const BOXAI_HOSTED_GATEWAY_ORIGIN = "https://api.you-box.com";
+
+function hostedGatewayOrigin(session: BoxAISession): string | null {
+  try {
+    const url = new URL(session.serverUrl);
+    if (url.origin !== BOXAI_HOSTED_GATEWAY_ORIGIN) return null;
+    return url.origin;
+  } catch {
+    return null;
+  }
+}
+
 export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsSection, setSettingsSection] = useState<SectionId>("system");
@@ -366,6 +378,43 @@ export default function App() {
     },
     [queueSettingsSave],
   );
+
+  // BOXAI: production account sessions double as short-lived credentials for
+  // the hosted, per-account Agent Relay. Keep endpoints and refreshed tokens
+  // in sync automatically, but leave terminal/SSH/git/tunnel permissions at
+  // their existing explicit user-controlled values.
+  useEffect(() => {
+    if (!settingsReady) return;
+    const gatewayOrigin = session ? hostedGatewayOrigin(session) : null;
+    setSettings((prev) => {
+      const remote = prev.remote;
+      if (!gatewayOrigin) {
+        // A custom BoxAI server keeps its explicitly configured relay. Only
+        // clear credentials that this production auto-configuration owns.
+        if (session || remote.gatewayUrl !== BOXAI_HOSTED_GATEWAY_ORIGIN) return prev;
+        if (remote.token === "" && !remote.enabled) return prev;
+        return { ...prev, remote: { ...remote, enabled: false, token: "" } };
+      }
+      if (
+        remote.enabled &&
+        remote.gatewayUrl === gatewayOrigin &&
+        remote.grpcPort === 443 &&
+        remote.grpcEndpoint === gatewayOrigin &&
+        remote.token === session?.accessToken
+      ) return prev;
+      return {
+        ...prev,
+        remote: {
+          ...remote,
+          enabled: true,
+          gatewayUrl: gatewayOrigin,
+          grpcPort: 443,
+          grpcEndpoint: gatewayOrigin,
+          token: session?.accessToken ?? "",
+        },
+      };
+    });
+  }, [session, setSettings, settingsReady]);
 
   // Authoritative live read for tool write paths: settingsRef is updated
   // synchronously by setSettings, so read-modify-write sequences that stay in

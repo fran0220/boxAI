@@ -33,6 +33,18 @@ function formatPrice(n: number | undefined | null): string {
   return `$${n % 1 === 0 ? n.toFixed(0) : n.toFixed(2)}`
 }
 
+function subscriptionStatusLabel(
+  status: string,
+  labels: { active: string; expired: string; cancelled: string; pending: string },
+): string {
+  const s = (status || '').toLowerCase()
+  if (s.includes('active') || s === 'ok' || s === 'running') return labels.active
+  if (s.includes('expir')) return labels.expired
+  if (s.includes('cancel')) return labels.cancelled
+  if (s.includes('pend') || s.includes('wait')) return labels.pending
+  return status || '—'
+}
+
 export function AccountSubscription() {
   const { d } = useI18n()
   const t = d.accountSubscription
@@ -164,7 +176,9 @@ export function AccountSubscription() {
                 {activeSub && isActiveStatus(activeSub.status) ? (
                   <span className="bx-account-pill-ok">{t.active}</span>
                 ) : activeSub ? (
-                  <span className="bx-account-status bx-account-status--muted">{activeSub.status}</span>
+                  <span className="bx-account-status bx-account-status--muted">
+                    {subscriptionStatusLabel(activeSub.status, t)}
+                  </span>
                 ) : null}
               </div>
               <p className="mt-2 font-mono text-[11.5px] text-[var(--bx-text-muted)]">
@@ -187,14 +201,6 @@ export function AccountSubscription() {
           <Link to="/app/billing/orders" className="bx-btn bx-btn-ghost bx-btn-sm">
             {t.managePayment}
           </Link>
-          <button
-            type="button"
-            className="bx-btn bx-btn-ghost bx-btn-sm text-[var(--bx-text-muted)] opacity-70"
-            disabled
-            title={t.cancelUnavailable}
-          >
-            {t.cancelSubscription}
-          </button>
         </div>
       </div>
 
@@ -216,7 +222,7 @@ export function AccountSubscription() {
                           : 'bx-account-status bx-account-status--muted'
                       }
                     >
-                      {sub.status}
+                      {subscriptionStatusLabel(sub.status, t)}
                     </span>
                   </p>
                 </div>
@@ -346,22 +352,20 @@ export function AccountSubscription() {
           <p className="bx-account-empty">{t.noInvoices}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="bx-account-table min-w-[560px]">
+            <table className="bx-account-table min-w-[480px]">
               <thead>
                 <tr>
                   <th>{t.colDate}</th>
                   <th>{t.colDesc}</th>
                   <th className="text-right">{t.colAmount}</th>
                   <th>{t.colStatus}</th>
-                  <th className="text-right">{t.colInvoice}</th>
                 </tr>
               </thead>
               <tbody>
                 {invoices.map((iv) => {
-                  const paid =
-                    iv.status === 'PAID' ||
-                    iv.status === 'COMPLETED' ||
-                    iv.status === 'REFUNDED'
+                  const st = (iv.status || '').toUpperCase()
+                  const isRefunded = st === 'REFUNDED'
+                  const isPaid = st === 'PAID' || st === 'COMPLETED'
                   return (
                     <tr key={iv.id}>
                       <td className="num font-mono text-[11.5px] text-[var(--bx-text-muted)]">
@@ -379,13 +383,16 @@ export function AccountSubscription() {
                         ${Number(iv.pay_amount ?? iv.amount ?? 0).toFixed(2)}
                       </td>
                       <td>
-                        {paid ? (
+                        {isRefunded ? (
+                          <span className="bx-account-status bx-account-status--warn">{t.refunded}</span>
+                        ) : isPaid ? (
                           <span className="bx-account-status bx-account-status--ok">{t.paid}</span>
                         ) : (
-                          <span className="bx-account-status bx-account-status--muted">{iv.status}</span>
+                          <span className="bx-account-status bx-account-status--muted">
+                            {iv.status || '—'}
+                          </span>
                         )}
                       </td>
-                      <td className="text-right text-[var(--bx-text-dim)]">—</td>
                     </tr>
                   )
                 })}

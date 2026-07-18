@@ -61,6 +61,8 @@ type Handlers struct {
 	PaymentWebhook   *PaymentWebhookHandler
 	AvailableChannel *AvailableChannelHandler
 	BatchImage       *BatchImageHandler
+	// BOXAI: Creator cloud persistence endpoints.
+	CreatorCloud *BoxAICreatorCloudHandler
 }
 
 // BuildInfo contains build-time information

@@ -4,6 +4,7 @@ package auth_test
 import (
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 
 	"github.com/liveagent/agent-gateway/internal/auth"
@@ -79,5 +80,32 @@ func TestValidateBearerHeaderAcceptsBoxAIJWT(t *testing.T) {
 
 	if !auth.ValidateBearerHeader("Bearer aaa.bbb.ccc", "static-token") {
 		t.Fatal("bearer header with a valid boxAI JWT should be accepted")
+	}
+}
+
+func TestRevalidateTokenBypassesPositiveCache(t *testing.T) {
+	var revoked atomic.Bool
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		if revoked.Load() {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"code":0,"data":{"id":42}}`))
+	}))
+	defer ts.Close()
+	auth.ConfigureBoxAI(ts.URL)
+	defer auth.ConfigureBoxAI("")
+
+	identity, ok := auth.ResolveTokenWithPolicy("aaa.bbb.ccc", "", false)
+	if !ok || identity.UserID != "42" {
+		t.Fatalf("initial identity = %#v ok=%t", identity, ok)
+	}
+	revoked.Store(true)
+	if _, ok = auth.ResolveTokenWithPolicy("aaa.bbb.ccc", "", false); !ok {
+		t.Fatal("ordinary resolution should still use its short positive cache")
+	}
+	if _, result := auth.RevalidateTokenWithPolicy("aaa.bbb.ccc", "", false); result != auth.TokenRevalidationInvalid {
+		t.Fatal("forced revalidation accepted a revoked token")
 	}
 }

@@ -64,34 +64,42 @@ export function PaymentResult() {
   }, [params, t.failed, t.missing])
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16 text-center sm:px-6">
-      {status === 'loading' ? <Spinner /> : null}
-      {status === 'paid' ? (
-        <>
-          <h1 className="bx-display text-2xl font-bold text-[var(--bx-brand-bright)]">{t.success}</h1>
-          {detail ? <p className="mt-2 font-mono text-xs text-[var(--bx-text-dim)]">{detail}</p> : null}
-        </>
-      ) : null}
-      {status === 'pending' ? (
-        <>
-          <h1 className="bx-display text-2xl font-bold">{t.pending}</h1>
-          <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.pendingBody}</p>
-          {detail ? <p className="mt-2 font-mono text-xs text-[var(--bx-text-dim)]">{detail}</p> : null}
-        </>
-      ) : null}
-      {status === 'error' ? (
-        <>
-          <h1 className="bx-display text-2xl font-bold">{t.error}</h1>
-          <p className="bx-text-danger mt-2 text-sm">{error}</p>
-        </>
-      ) : null}
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link to="/app/billing/orders" className="bx-btn bx-btn-primary">
-          {t.orders}
-        </Link>
-        <Link to="/app" className="bx-btn bx-btn-ghost">
-          {t.account}
-        </Link>
+    <div className="mx-auto max-w-md px-4 py-16 sm:px-6">
+      <div className="bx-account-panel px-6 py-10 text-center">
+        {status === 'loading' ? <Spinner /> : null}
+        {status === 'paid' ? (
+          <>
+            <h1 className="bx-display m-0 text-2xl font-bold text-[var(--bx-brand-bright)]">
+              {t.success}
+            </h1>
+            {detail ? (
+              <p className="mt-2 mb-0 font-mono text-xs text-[var(--bx-text-dim)]">{detail}</p>
+            ) : null}
+          </>
+        ) : null}
+        {status === 'pending' ? (
+          <>
+            <h1 className="bx-display m-0 text-2xl font-bold">{t.pending}</h1>
+            <p className="mt-2 mb-0 text-sm text-[var(--bx-text-muted)]">{t.pendingBody}</p>
+            {detail ? (
+              <p className="mt-2 mb-0 font-mono text-xs text-[var(--bx-text-dim)]">{detail}</p>
+            ) : null}
+          </>
+        ) : null}
+        {status === 'error' ? (
+          <>
+            <h1 className="bx-display m-0 text-2xl font-bold">{t.error}</h1>
+            <p className="bx-text-danger mt-2 mb-0 text-sm">{error}</p>
+          </>
+        ) : null}
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link to="/app/billing/orders" className="bx-btn bx-btn-primary">
+            {t.orders}
+          </Link>
+          <Link to="/app" className="bx-btn bx-btn-ghost">
+            {t.account}
+          </Link>
+        </div>
       </div>
     </div>
   )

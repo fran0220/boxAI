@@ -14,6 +14,7 @@ type Config struct {
 	Token                    string
 	BoxAIServerURL           string
 	MultiTenant              bool
+	AllowHostedStaticToken   bool
 	GRPCAddr                 string
 	HTTPAddr                 string
 	TLSCert                  string
@@ -24,6 +25,7 @@ type Config struct {
 	ChatStartTimeout         time.Duration
 	ChatRenderStartTimeout   time.Duration
 	HeartbeatPeriod          time.Duration
+	AuthRecheckPeriod        time.Duration
 	WebSocketHeartbeatPeriod time.Duration
 	WebSocketHeartbeatGrace  time.Duration
 	WebSocketWriteTimeout    time.Duration
@@ -31,6 +33,12 @@ type Config struct {
 	GRPCMaxMessageBytes      int
 	RelayBufferSeconds       int
 	CommandQueueTimeout      time.Duration
+}
+
+// AllowStaticToken preserves standalone compatibility while making the
+// shared credential opt-in in hosted multi-tenant deployments.
+func (c *Config) AllowStaticToken() bool {
+	return !c.MultiTenant || c.AllowHostedStaticToken
 }
 
 func Load() *Config {
@@ -41,6 +49,7 @@ func Load() *Config {
 	flag.StringVar(&cfg.BoxAIServerURL, "boxai-server-url", getenv("BOXAI_SERVER_URL", ""), "boxAI server URL for account token validation (optional)")
 	// BOXAI: hosted mode isolating sessions per boxAI account.
 	flag.BoolVar(&cfg.MultiTenant, "multi-tenant", getenvBool("BOXAI_GATEWAY_MULTI_TENANT", false), "isolate agent sessions per boxAI account (requires -boxai-server-url)")
+	flag.BoolVar(&cfg.AllowHostedStaticToken, "allow-hosted-static-token", getenvBool("BOXAI_GATEWAY_ALLOW_HOSTED_STATIC_TOKEN", false), "allow the shared token in multi-tenant mode (unsafe; break-glass only)")
 	flag.StringVar(&cfg.GRPCAddr, "grpc-addr", getenv("LIVEAGENT_GATEWAY_GRPC_ADDR", ":50051"), "gRPC listen address")
 	flag.StringVar(&cfg.HTTPAddr, "http-addr", getenv("LIVEAGENT_GATEWAY_HTTP_ADDR", defaultHTTPAddr()), "HTTP listen address")
 	flag.StringVar(&cfg.TLSCert, "tls-cert", getenv("LIVEAGENT_GATEWAY_TLS_CERT", ""), "TLS certificate path")
@@ -51,6 +60,9 @@ func Load() *Config {
 	flag.DurationVar(&cfg.ChatStartTimeout, "chat-start-timeout", getenvDuration("LIVEAGENT_GATEWAY_CHAT_START_TIMEOUT", 5*time.Second), "initial timeout waiting for a delivered remote chat request to start")
 	flag.DurationVar(&cfg.ChatRenderStartTimeout, "chat-render-start-timeout", getenvDuration("LIVEAGENT_GATEWAY_CHAT_RENDER_START_TIMEOUT", 10*time.Second), "additional timeout waiting for the desktop app to start a delivered remote chat request")
 	flag.DurationVar(&cfg.HeartbeatPeriod, "heartbeat-period", getenvDuration("LIVEAGENT_GATEWAY_HEARTBEAT_PERIOD", 30*time.Second), "ping interval for agent connection")
+	// BOXAI: hosted JWTs are rechecked so expired or revoked credentials cannot
+	// keep WebSocket and gRPC streams alive indefinitely.
+	flag.DurationVar(&cfg.AuthRecheckPeriod, "auth-recheck-period", getenvDuration("BOXAI_GATEWAY_AUTH_RECHECK_PERIOD", time.Minute), "interval for revalidating hosted account tokens")
 	flag.DurationVar(&cfg.WebSocketHeartbeatPeriod, "websocket-heartbeat-period", getenvDuration("LIVEAGENT_GATEWAY_WS_HEARTBEAT_PERIOD", 15*time.Second), "ping interval for browser WebSocket connections")
 	flag.DurationVar(&cfg.WebSocketHeartbeatGrace, "websocket-heartbeat-grace", getenvDuration("LIVEAGENT_GATEWAY_WS_HEARTBEAT_GRACE", 5*time.Second), "extra slack added to the browser WebSocket idle timeout (idle = 3x period + grace)")
 	flag.DurationVar(&cfg.WebSocketWriteTimeout, "websocket-write-timeout", getenvDuration("LIVEAGENT_GATEWAY_WS_WRITE_TIMEOUT", 10*time.Second), "write timeout for browser WebSocket connections")
@@ -65,7 +77,7 @@ func Load() *Config {
 	cfg.TLSCert = strings.TrimSpace(cfg.TLSCert)
 	cfg.TLSKey = strings.TrimSpace(cfg.TLSKey)
 
-	if cfg.Token == "" {
+	if cfg.Token == "" && cfg.AllowStaticToken() {
 		flag.Usage()
 		panic("gateway token is required")
 	}
@@ -88,6 +100,9 @@ func Load() *Config {
 	}
 	if cfg.ChatRenderStartTimeout <= 0 {
 		cfg.ChatRenderStartTimeout = 10 * time.Second
+	}
+	if cfg.AuthRecheckPeriod <= 0 {
+		cfg.AuthRecheckPeriod = time.Minute
 	}
 	if cfg.WebSocketHeartbeatPeriod <= 0 {
 		cfg.WebSocketHeartbeatPeriod = 15 * time.Second

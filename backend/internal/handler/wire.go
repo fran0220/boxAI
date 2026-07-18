@@ -119,6 +119,7 @@ func ProvideHandlers(
 	paymentWebhookHandler *PaymentWebhookHandler,
 	availableChannelHandler *AvailableChannelHandler,
 	batchImageHandler *BatchImageHandler,
+	creatorCloudHandler *BoxAICreatorCloudHandler, // BOXAI
 	_ *service.IdempotencyCoordinator,
 	_ *service.IdempotencyCleanupService,
 ) *Handlers {
@@ -141,6 +142,7 @@ func ProvideHandlers(
 		PaymentWebhook:   paymentWebhookHandler,
 		AvailableChannel: availableChannelHandler,
 		BatchImage:       batchImageHandler,
+		CreatorCloud:     creatorCloudHandler, // BOXAI
 	}
 }
 
@@ -174,6 +176,7 @@ var ProviderSet = wire.NewSet(
 	NewPaymentWebhookHandler,
 	NewAvailableChannelHandler,
 	NewBatchImageHandler,
+	NewBoxAICreatorCloudHandler, // BOXAI
 
 	// Admin handlers
 	admin.NewDashboardHandler,

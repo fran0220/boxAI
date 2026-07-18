@@ -26,8 +26,7 @@ check() {
 }
 
 check_headers() {
-  local name="$1" url="$2" required header missing=0
-  required='strict-transport-security x-content-type-options x-frame-options referrer-policy permissions-policy content-security-policy'
+  local name="$1" url="$2" required="${3:-strict-transport-security x-content-type-options x-frame-options referrer-policy permissions-policy content-security-policy}" header missing=0
   curl -sS -D "$headers_file" -o /dev/null --max-time 25 "$url" || true
   for header in $required; do
     if ! grep -qi "^${header}:" "$headers_file"; then
@@ -123,11 +122,20 @@ check "api admin blocked" "$API/api/v1/admin/settings" "404|401|403"
 check "api browser session blocked" "$API/api/v1/auth/session" "404" POST
 check "api registration prepare blocked" "$API/api/v1/auth/registration/prepare" "404" POST
 check "api registration complete blocked" "$API/api/v1/auth/registration/complete" "404" POST
+check "api Agent Relay health" "$API/healthz" "200"
+check "api Agent WebUI" "$API/" "200"
+check "api Agent Relay status unauth" "$API/api/status" "401"
 
 echo "=== HTTPS security headers ==="
 check_headers "apex" "$APEX/"
 check_headers "console" "$CONSOLE/"
-check_headers "api" "$API/health"
+check_headers "api" "$API/" 'strict-transport-security x-content-type-options referrer-policy permissions-policy content-security-policy'
+if curl -sSI "$API/" | tr -d '\r' | grep -qi '^content-security-policy:.*frame-ancestors https://you-box.com'; then
+  echo "OK  API WebUI frame-ancestors restricted to apex"
+else
+  echo "FAIL API WebUI frame-ancestors does not allow only apex"
+  fail=1
+fi
 
 echo "=== www redirect ==="
 loc=$(curl -sSI "https://www.you-box.com/" | tr -d '\r' | awk 'tolower($1)=="location:"{print $2; exit}')

@@ -887,6 +887,127 @@ body.drag-selecting * {
   border-radius: 6px;
 }
 
+/* Precision Teal re-skin for create-shell composer controls (scoped) */
+.bx-create-image-shell .bx-create-image-composer-card {
+  background: var(--bx-bg-elevated);
+  border-color: var(--bx-border-strong, var(--bx-border));
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .bg-gray-200,
+.bx-create-image-shell .bx-create-image-composer-card .bg-gray-300,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:bg-white\/\[0\.04\],
+.bx-create-image-shell .bx-create-image-composer-card .dark\:bg-white\/\[0\.06\] {
+  background: var(--bx-bg-muted) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .text-gray-300,
+.bx-create-image-shell .bx-create-image-composer-card .text-gray-400,
+.bx-create-image-shell .bx-create-image-composer-card .text-gray-500,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:text-gray-300,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:text-gray-500 {
+  color: var(--bx-text-dim) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .hover\:bg-gray-100:hover,
+.bx-create-image-shell .bx-create-image-composer-card .hover\:bg-gray-300:hover,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:hover\:bg-white\/\[0\.08\]:hover,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:hover\:bg-white\/\[0\.1\]:hover {
+  background: var(--bx-hover) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .hover\:text-gray-600:hover,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:hover\:text-gray-200:hover {
+  color: var(--bx-text) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .border-gray-200,
+.bx-create-image-shell .bx-create-image-composer-card .border-gray-200\/60,
+.bx-create-image-shell .bx-create-image-composer-card .border-gray-200\/70,
+.bx-create-image-shell .bx-create-image-composer-card .border-gray-300,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:border-white\/\[0\.08\] {
+  border-color: var(--bx-border) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .bg-teal-500,
+.bx-create-image-shell .bx-create-image-composer-card .bg-teal-500\/90 {
+  background: var(--bx-brand) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .border-teal-500,
+.bx-create-image-shell .bx-create-image-composer-card .border-2.border-teal-500 {
+  border-color: var(--bx-brand) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .bg-teal-50,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:bg-teal-500\/10 {
+  background: var(--bx-brand-soft) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .text-teal-600,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:text-teal-300,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:text-teal-400 {
+  color: var(--bx-brand-bright) !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .focus\:ring-teal-300\/40:focus,
+.bx-create-image-shell .bx-create-image-composer-card .dark\:focus\:ring-teal-500\/30:focus {
+  --tw-ring-color: var(--bx-brand-ring);
+  box-shadow: 0 0 0 1px var(--bx-brand-ring);
+}
+
+.bx-create-image-shell .bx-create-image-composer-card [contenteditable='true'],
+.bx-create-image-shell .bx-create-image-composer-card .prompt-placeholder {
+  color: var(--bx-text);
+}
+
+.bx-create-image-shell .bx-create-image-composer-card .prompt-placeholder {
+  color: var(--bx-text-dim) !important;
+}
+
+.bx-create-image-shell .bx-create-image-attach-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  border: 1px solid var(--bx-border);
+  background: var(--bx-bg-muted);
+  color: var(--bx-text-muted);
+  padding: 0.625rem;
+  transition:
+    color var(--bx-dur-fast) ease,
+    background var(--bx-dur-fast) ease,
+    border-color var(--bx-dur-fast) ease;
+}
+
+.bx-create-image-shell .bx-create-image-attach-btn:hover:not(:disabled) {
+  border-color: var(--bx-brand);
+  background: var(--bx-hover);
+  color: var(--bx-brand-bright);
+}
+
+.bx-create-image-shell .bx-create-image-attach-btn:disabled,
+.bx-create-image-shell .bx-create-image-attach-btn.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.bx-create-image-shell .bx-create-image-param-select {
+  border-radius: 7px;
+  border: 1px solid var(--bx-border);
+  background: var(--bx-bg-muted);
+  color: var(--bx-text);
+  font-size: 12px;
+  padding: 0.375rem 0.75rem;
+  transition:
+    border-color var(--bx-dur-fast) ease,
+    background var(--bx-dur-fast) ease;
+}
+
+.bx-create-image-shell .bx-create-image-param-select:hover {
+  border-color: var(--bx-brand);
+  background: var(--bx-hover);
+}
+
 @media (max-width: 640px) {
   .bx-create-image-toolbar {
     padding: 8px 12px;

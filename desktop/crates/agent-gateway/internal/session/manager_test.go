@@ -9,6 +9,17 @@ import (
 	gatewayv1 "github.com/liveagent/agent-gateway/internal/proto/v1"
 )
 
+func TestManagerUsesConfiguredRelayRetention(t *testing.T) {
+	m := NewManagerWithRelayRetention(75 * time.Second)
+	if got := m.convStreams.eventRetention; got != 75*time.Second {
+		t.Fatalf("event retention = %s, want 75s", got)
+	}
+	tenants := NewTenantsWithRelayRetention(42 * time.Second)
+	if got := tenants.ManagerFor("user:1").convStreams.eventRetention; got != 42*time.Second {
+		t.Fatalf("tenant event retention = %s, want 42s", got)
+	}
+}
+
 func TestStatusBroadcastIdentifiesOnlineSessionReplacement(t *testing.T) {
 	manager := NewManager()
 	statuses, unsubscribe := manager.SubscribeStatus()

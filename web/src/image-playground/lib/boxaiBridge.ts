@@ -26,6 +26,8 @@ export async function mirrorTaskOutputsToAssets(task: TaskRecord): Promise<void>
       const image = await getImage(imageId)
       if (!image?.dataUrl) continue
       await addAsset({
+        // Stable projection id makes retries/tabs/devices idempotent in the cloud repository.
+        id: `playground-${task.id}-${imageId}`,
         kind: 'image',
         title: (task.prompt || 'Image').slice(0, 80),
         model: task.apiModel,

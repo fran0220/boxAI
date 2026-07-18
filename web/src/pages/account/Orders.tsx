@@ -227,6 +227,29 @@ export function AccountOrders() {
     return t.typeOther
   }
 
+  function statusLabel(status: string): string {
+    switch ((status || '').toUpperCase()) {
+      case 'COMPLETED':
+        return t.statusCompleted
+      case 'PAID':
+        return t.statusPaid
+      case 'PENDING':
+        return t.statusPending
+      case 'FAILED':
+        return t.statusFailed
+      case 'CANCELLED':
+        return t.statusCancelled
+      case 'EXPIRED':
+        return t.statusExpired
+      case 'REFUNDED':
+        return t.statusRefunded
+      case 'RECHARGING':
+        return t.statusRecharging
+      default:
+        return status || '—'
+    }
+  }
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -298,7 +321,7 @@ export function AccountOrders() {
         </div>
       ) : (
         <div className="bx-account-table-wrap mt-3 overflow-x-auto">
-          <table className="bx-account-table min-w-[720px]">
+          <table className="bx-account-table min-w-[760px]">
             <thead>
               <tr>
                 <th>{t.colId}</th>
@@ -307,6 +330,7 @@ export function AccountOrders() {
                 <th className="text-right">{t.colAmount}</th>
                 <th>{t.colMethod}</th>
                 <th>{t.colStatus}</th>
+                <th className="text-right">{t.colActions}</th>
               </tr>
             </thead>
             <tbody>
@@ -315,6 +339,8 @@ export function AccountOrders() {
                 const amount = Number(o.pay_amount ?? o.amount ?? 0)
                 const isRecharge = type === 'recharge'
                 const isRefund = type === 'refund' || o.status === 'REFUNDED'
+                const showCancel = o.status === 'PENDING'
+                const showRefund = canRequestRefund(o)
                 return (
                   <tr key={o.id}>
                     <td>
@@ -339,30 +365,10 @@ export function AccountOrders() {
                       </span>
                     </td>
                     <td className="max-w-[220px] truncate text-[var(--bx-text-muted)]">
-                      {o.order_type}
-                      {o.plan_id ? ` · plan #${o.plan_id}` : ''}
-                      {o.status === 'PENDING' || canRequestRefund(o) ? (
-                        <span className="ml-2 inline-flex gap-1">
-                          {o.status === 'PENDING' ? (
-                            <button
-                              type="button"
-                              className="bx-account-outline-btn"
-                              onClick={() => void onCancel(o)}
-                            >
-                              {t.cancel}
-                            </button>
-                          ) : null}
-                          {canRequestRefund(o) ? (
-                            <button
-                              type="button"
-                              className="bx-account-outline-btn"
-                              onClick={() => void onRefund(o)}
-                            >
-                              {t.refund}
-                            </button>
-                          ) : null}
-                        </span>
-                      ) : null}
+                      {o.order_type || typeLabel(type)}
+                      {o.plan_id
+                        ? ` · ${t.planIdLabel.replace('{id}', String(o.plan_id))}`
+                        : ''}
                     </td>
                     <td
                       className="num text-right font-semibold"
@@ -376,7 +382,33 @@ export function AccountOrders() {
                       {o.payment_type || '—'}
                     </td>
                     <td>
-                      <span className={statusTone(o.status)}>{o.status}</span>
+                      <span className={statusTone(o.status)}>{statusLabel(o.status)}</span>
+                    </td>
+                    <td className="text-right">
+                      {showCancel || showRefund ? (
+                        <span className="inline-flex flex-wrap justify-end gap-1">
+                          {showCancel ? (
+                            <button
+                              type="button"
+                              className="bx-account-outline-btn"
+                              onClick={() => void onCancel(o)}
+                            >
+                              {t.cancel}
+                            </button>
+                          ) : null}
+                          {showRefund ? (
+                            <button
+                              type="button"
+                              className="bx-account-outline-btn"
+                              onClick={() => void onRefund(o)}
+                            >
+                              {t.refund}
+                            </button>
+                          ) : null}
+                        </span>
+                      ) : (
+                        <span className="font-mono text-[10px] text-[var(--bx-text-dim)]">—</span>
+                      )}
                     </td>
                   </tr>
                 )

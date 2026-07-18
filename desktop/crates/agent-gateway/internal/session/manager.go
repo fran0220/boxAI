@@ -79,6 +79,15 @@ type Status struct {
 }
 
 func NewManager() *Manager {
+	return NewManagerWithRelayRetention(conversationEventRetention)
+}
+
+// NewManagerWithRelayRetention configures the age bound for conversation
+// replay. Event count and byte bounds remain enforced independently.
+func NewManagerWithRelayRetention(retention time.Duration) *Manager {
+	if retention <= 0 {
+		retention = conversationEventRetention
+	}
 	m := &Manager{
 		registry:         newSessionRegistry(),
 		syncHub:          newSyncHub(),
@@ -88,8 +97,7 @@ func NewManager() *Manager {
 		managedProcesses: newManagedProcessHub(),
 		statusSubs:       newStatusSubscriberHub(),
 	}
-	m.convStreams = newConversationStreamStore(m.IsOnline)
+	m.convStreams = newConversationStreamStore(m.IsOnline, retention)
 	go m.tunnelExpirySweepLoop()
 	return m
 }
-

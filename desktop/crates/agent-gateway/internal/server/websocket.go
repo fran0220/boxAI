@@ -327,6 +327,10 @@ func (c *websocketConnection) close() {
 }
 
 func (c *websocketConnection) handleAuth(req websocketRequest) {
+	if c.authorized {
+		_ = c.writeError(req.ID, "already authenticated")
+		return
+	}
 	var payload websocketAuthPayload
 	if err := decodeWebSocketPayload(req.Payload, &payload); err != nil {
 		_ = c.writeError(req.ID, "invalid auth payload")
@@ -334,7 +338,7 @@ func (c *websocketConnection) handleAuth(req websocketRequest) {
 		return
 	}
 
-	identity, ok := auth.ResolveToken(payload.Token, c.cfg.Token)
+	identity, ok := auth.ResolveTokenWithPolicy(payload.Token, c.cfg.Token, c.cfg.AllowStaticToken())
 	if !ok {
 		_ = c.writeError(req.ID, "unauthorized")
 		c.close()
@@ -365,6 +369,7 @@ func (c *websocketConnection) handleAuth(req websocketRequest) {
 	c.startManagedProcessStateForwarder()
 	c.startStatusEventForwarder()
 	c.startWebSocketHeartbeat()
+	c.startAuthRevalidation(payload.Token, identity)
 	if err := c.writeResponse(req.ID, map[string]any{"ok": true}); err != nil {
 		c.close()
 		return
@@ -673,6 +678,42 @@ func (c *websocketConnection) startWebSocketHeartbeat() {
 			}
 		}()
 	})
+}
+
+// BOXAI: browser sockets can outlive the access token that opened them. A
+// hosted JWT is therefore checked against the account service for as long as
+// the socket is active; static standalone credentials keep their old behavior.
+func (c *websocketConnection) startAuthRevalidation(token string, identity auth.Identity) {
+	revalidator := newHostedCredentialRevalidator(c.cfg, token, identity)
+	if revalidator == nil {
+		return
+	}
+	period := c.cfg.AuthRecheckPeriod
+	if period <= 0 {
+		period = time.Minute
+	}
+	go func() {
+		ticker := time.NewTicker(period)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-c.done:
+				return
+			case <-ticker.C:
+				if !revalidator.shouldTerminate() {
+					continue
+				}
+				deadline := time.Now().Add(c.controlWriteTimeout())
+				_ = c.conn.WriteControl(
+					websocket.CloseMessage,
+					websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "authentication expired"),
+					deadline,
+				)
+				c.close()
+				return
+			}
+		}
+	}()
 }
 
 // touchInboundActivity records liveness for every inbound frame and pushes the

@@ -342,7 +342,11 @@ export default function TaskGrid() {
       </div>
       {selectionBox && (
         <div
-          className="fixed bg-teal-500/20 border border-teal-500/50 pointer-events-none z-[30]"
+          className={
+            isCreateShell
+              ? 'fixed pointer-events-none z-[30] border border-[var(--bx-brand)] bg-[color-mix(in_srgb,var(--bx-brand)_20%,transparent)]'
+              : 'fixed bg-teal-500/20 border border-teal-500/50 pointer-events-none z-[30]'
+          }
           style={{
             left: Math.min(selectionBox.startPageX, selectionBox.currentPageX) - window.scrollX,
             top: Math.min(selectionBox.startPageY, selectionBox.currentPageY) - window.scrollY,

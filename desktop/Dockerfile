@@ -5,6 +5,10 @@ FROM node:22.17.1-bookworm-slim AS webui
 WORKDIR /src/crates/agent-gateway/web
 RUN npm install -g pnpm@10.32.1
 
+# BOXAI: the hosted WebUI accepts in-memory auth only from the product workspace.
+ARG VITE_BOXAI_PARENT_ORIGIN=https://you-box.com
+ENV VITE_BOXAI_PARENT_ORIGIN=${VITE_BOXAI_PARENT_ORIGIN}
+
 COPY crates/agent-gateway/web/package.json crates/agent-gateway/web/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
@@ -30,7 +34,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
 FROM debian:bookworm-slim AS runtime
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates \
+    && apt-get install -y --no-install-recommends ca-certificates wget \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --system --uid 10001 --user-group --home-dir /nonexistent --shell /usr/sbin/nologin liveagent \

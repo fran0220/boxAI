@@ -93,13 +93,27 @@ func TestMultiTenantStatusIsIsolatedPerAccount(t *testing.T) {
 		t.Fatalf("user B status leaked agent identity: %#v", payload)
 	}
 
-	// The static shared token lands in the reserved local tenant, not user A's.
+	// Hosted mode rejects the static shared token by default so no shared
+	// local tenant can be created accidentally.
 	code, payload = getStatus(t, handler, "static-secret")
-	if code != http.StatusOK {
-		t.Fatalf("static token status code = %d, want 200", code)
+	if code != http.StatusUnauthorized {
+		t.Fatalf("static token status code = %d, want 401", code)
 	}
-	if online, _ := payload["online"].(bool); online {
-		t.Fatalf("static token must not see user A's agent, got %#v", payload)
+}
+
+func TestMultiTenantStaticTokenRequiresExplicitOptIn(t *testing.T) {
+	handler, _ := newMultiTenantHTTPHandler(t, nil)
+	// Rebuild with the same registry-independent policy; the fake validator is
+	// already configured by the helper.
+	handler = server.NewTenantHTTPServer(&config.Config{
+		Token:                  "static-secret",
+		MultiTenant:            true,
+		AllowHostedStaticToken: true,
+		RequestTimeout:         500 * time.Millisecond,
+	}, session.NewTenants())
+	code, _ := getStatus(t, handler, "static-secret")
+	if code != http.StatusOK {
+		t.Fatalf("opted-in static token status code = %d, want 200", code)
 	}
 }
 

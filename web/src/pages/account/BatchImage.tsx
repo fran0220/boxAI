@@ -85,6 +85,54 @@ function statusClass(status: string): string {
   return 'bx-account-status bx-account-status--muted'
 }
 
+function batchStatusLabel(
+  status: string,
+  labels: {
+    statusQueued: string
+    statusRunning: string
+    statusCompleted: string
+    statusFailed: string
+    statusCancelled: string
+    statusOutputDeleted: string
+    statusIndexing: string
+    statusProcessing: string
+    statusSettling: string
+  },
+): string {
+  switch (String(status || '').toLowerCase()) {
+    case 'queued':
+      return labels.statusQueued
+    case 'running':
+      return labels.statusRunning
+    case 'completed':
+      return labels.statusCompleted
+    case 'failed':
+      return labels.statusFailed
+    case 'cancelled':
+      return labels.statusCancelled
+    case 'output_deleted':
+      return labels.statusOutputDeleted
+    case 'indexing':
+      return labels.statusIndexing
+    case 'processing_results':
+      return labels.statusProcessing
+    case 'settling':
+      return labels.statusSettling
+    default:
+      return status || '—'
+  }
+}
+
+/** Optional preview fields when gateway returns them (not always present). */
+function extractItemPreviewUrls(item: BatchImageItem): string[] {
+  const urls = [
+    item.thumbnail_url,
+    item.image_url,
+    ...(Array.isArray(item.image_urls) ? item.image_urls : []),
+  ]
+  return urls.filter((u): u is string => typeof u === 'string' && u.length > 0)
+}
+
 export function AccountBatchImage() {
   const { d } = useI18n()
   const t = d.accountBatchImage
@@ -111,7 +159,10 @@ export function AccountBatchImage() {
   const [itemsJob, setItemsJob] = useState<BatchImageJob | null>(null)
   const [items, setItems] = useState<BatchImageItem[]>([])
   const [loadingItems, setLoadingItems] = useState(false)
-  const [galleryLabels, setGalleryLabels] = useState<string[]>([])
+  /** Real preview URLs only — never fake placeholder tiles. */
+  const [galleryThumbs, setGalleryThumbs] = useState<Array<{ id: string; url: string; label: string }>>(
+    [],
+  )
 
   const keyReady = apiKey.trim().length > 0
 
@@ -181,20 +232,43 @@ export function AccountBatchImage() {
       const res = await listBatchImageJobs(key, { limit: 50 })
       const list = res.data || []
       setJobs(list)
-      // Best-effort gallery labels from recent completed jobs
+      // Gallery: only real image URLs. Probe one completed job first — skip extra
+      // fetches when the gateway items schema has no preview URL fields.
       const completed = list.filter((j) => j.status === 'completed' && (j.success_count || 0) > 0)
-      const labels: string[] = []
-      for (const j of completed.slice(0, 3)) {
-        const base = (j.task_name || j.model || j.id).slice(0, 18)
-        const n = Math.min(j.success_count || 0, 3)
-        for (let i = 1; i <= n && labels.length < 6; i += 1) {
-          labels.push(`${base}_${String(i).padStart(2, '0')}`)
+      const thumbs: Array<{ id: string; url: string; label: string }> = []
+      if (completed.length > 0) {
+        try {
+          const probe = await listBatchImageItems(key, completed[0].id, 'completed')
+          const probeItems = probe.data || []
+          const probeHasUrls = probeItems.some((item) => extractItemPreviewUrls(item).length > 0)
+          if (probeHasUrls) {
+            for (const j of completed.slice(0, 4)) {
+              const itemRes =
+                j.id === completed[0].id
+                  ? { data: probeItems }
+                  : await listBatchImageItems(key, j.id, 'completed')
+              for (const item of itemRes.data || []) {
+                for (const url of extractItemPreviewUrls(item)) {
+                  if (thumbs.length >= 12) break
+                  thumbs.push({
+                    id: `${j.id}-${item.custom_id}-${thumbs.length}`,
+                    url,
+                    label: j.task_name || j.model || item.custom_id,
+                  })
+                }
+                if (thumbs.length >= 12) break
+              }
+              if (thumbs.length >= 12) break
+            }
+          }
+        } catch {
+          /* gallery optional */
         }
-        if (labels.length >= 6) break
       }
-      setGalleryLabels(labels)
+      setGalleryThumbs(thumbs)
     } catch (err) {
       setJobs([])
+      setGalleryThumbs([])
       setError(errMessage(err, t.loadFailed))
     } finally {
       setLoadingJobs(false)
@@ -378,9 +452,7 @@ export function AccountBatchImage() {
                 className="bx-account-input-muted font-mono text-[12.5px]"
                 value={prompts}
                 onChange={(e) => setPrompts(e.target.value)}
-                placeholder={
-                  'a serene mountain lake at dawn\ncyberpunk street market, neon rain\nminimalist product shot, studio light'
-                }
+                placeholder={t.promptsPlaceholder}
               />
             </label>
             <div className="mt-3 grid grid-cols-2 gap-2">
@@ -506,7 +578,9 @@ export function AccountBatchImage() {
                       <span className="min-w-0 truncate font-mono text-xs text-[var(--bx-text-soft)]">
                         {label}
                       </span>
-                      <span className={cx('shrink-0', statusClass(job.status))}>{job.status}</span>
+                      <span className={cx('shrink-0', statusClass(job.status))}>
+                        {batchStatusLabel(job.status, t)}
+                      </span>
                     </div>
                     <div className="mt-2 flex items-center gap-2.5">
                       <span className="bx-account-progress flex-1">
@@ -613,7 +687,7 @@ export function AccountBatchImage() {
         ) : null}
       </div>
 
-      {/* 6-up gallery chrome */}
+      {/* Gallery: real thumbs only; single empty state when no URLs */}
       <div className="bx-account-panel bx-account-panel-pad mt-3">
         <div className="flex items-center justify-between">
           <p className="m-0 text-[13.5px] font-bold">{t.latestOutputs}</p>
@@ -626,14 +700,21 @@ export function AccountBatchImage() {
             {t.packZip}
           </button>
         </div>
-        {galleryLabels.length === 0 ? (
+        {galleryThumbs.length === 0 ? (
           <p className="bx-account-empty mt-3.5">{t.galleryHint}</p>
         ) : (
           <div className="bx-account-gallery mt-3.5">
-            {galleryLabels.slice(0, 6).map((label) => (
-              <div key={label} className="bx-account-gallery-tile">
-                <span>{label}</span>
-              </div>
+            {galleryThumbs.map((thumb) => (
+              <a
+                key={thumb.id}
+                href={thumb.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bx-account-gallery-tile overflow-hidden no-underline"
+                title={thumb.label}
+              >
+                <img src={thumb.url} alt="" className="h-full w-full object-cover" />
+              </a>
             ))}
           </div>
         )}
@@ -645,6 +726,7 @@ export function AccountBatchImage() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           role="dialog"
           aria-modal="true"
+          aria-label={t.itemsModalTitle}
           onClick={() => {
             setItemsJob(null)
             setItems([])
@@ -657,7 +739,7 @@ export function AccountBatchImage() {
             <div className="flex items-start justify-between gap-3 border-b border-[var(--bx-border)] px-5 py-4">
               <div className="min-w-0">
                 <h3 className="truncate text-base font-semibold text-[var(--bx-text)]">
-                  {t.items}
+                  {t.itemsModalTitle}
                   {itemsJob.task_name ? ` · ${itemsJob.task_name}` : ''}
                 </h3>
                 <p className="mt-0.5 truncate font-mono text-xs text-[var(--bx-text-dim)]">
@@ -667,6 +749,7 @@ export function AccountBatchImage() {
               <button
                 type="button"
                 className="bx-account-outline-btn"
+                aria-label={d.common.close}
                 onClick={() => {
                   setItemsJob(null)
                   setItems([])
@@ -687,10 +770,10 @@ export function AccountBatchImage() {
                   <table className="bx-account-table min-w-[520px]">
                     <thead>
                       <tr>
-                        <th>custom_id</th>
-                        <th>prompt</th>
+                        <th>{t.colCustomId}</th>
+                        <th>{t.colPrompt}</th>
                         <th>{t.colStatus}</th>
-                        <th>images</th>
+                        <th>{t.colImages}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -708,7 +791,9 @@ export function AccountBatchImage() {
                             ) : null}
                           </td>
                           <td>
-                            <span className={statusClass(item.status)}>{item.status}</span>
+                            <span className={statusClass(item.status)}>
+                              {batchStatusLabel(item.status, t)}
+                            </span>
                           </td>
                           <td className="num">{item.image_count}</td>
                         </tr>

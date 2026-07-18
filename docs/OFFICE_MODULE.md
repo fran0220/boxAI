@@ -11,7 +11,7 @@ Tauri desktop client (React WebView + Rust) with optional self-hosted remote gat
 | Model / chat API | https://api.you-box.com/v1 (or console host) |
 | Auth bridge | `BOXAI_DESKTOP_JWT_GATEWAY` on `/v1/*` (same bridge as Creator) |
 
-Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/create`) is for gateway try-and-create, not a full local agent.
+Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/app/create`) is gateway try-and-create plus cloud-synced history (Postgres + R2), not a full local agent OS.
 
 ## Code
 
@@ -19,7 +19,7 @@ Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/create
 |------|------|
 | `desktop/` | Vendored app (provenance: `desktop/UPSTREAM.md`) |
 | `desktop/crates/agent-gui/` | Tauri + React UI |
-| `desktop/crates/agent-gateway/` | Optional remote Go gateway |
+| `desktop/crates/agent-gateway/` | Optional remote Go gateway **and** BoxAI hosted multi-tenant Relay image |
 | `backend/internal/handler/boxai_desktop_*.go` | PKCE authorize/token + JWT gateway bridge |
 
 ## Goals
@@ -28,14 +28,15 @@ Desktop is **local-first** for agent/tools. Browser Creator (`you-box.com/create
 2. Locked providers: `BoxAI (Claude)` and `BoxAI (OpenAI)` only.
 3. Inference goes through BoxAI `/v1/*` with user JWT (bridged to API key).
 4. Model list from `GET /v1/models` with local cache.
-5. Token refresh via `POST /api/v1/auth/refresh`.
+5. Token refresh via `POST /api/v1/auth/refresh` (and browser-session paths on apex).
 6. Server URL is user-configured (production default: `https://api.you-box.com`).
    Browser authorize page for known BoxAI hosts is always apex
    `https://you-box.com/desktop-auth`; API calls stay on the configured server.
+7. Hosted Relay on `api.you-box.com` is multi-tenant (per BoxAI user); desktop auto-syncs endpoint + refreshed JWT.
 
 ## Non-goals
 
-- Full agent workspace inside the browser (that is Desktop).
+- Replacing Desktop for full local tools/terminal/git (browser `/app/agent` is **hosted WebUI only**).
 - Password entry inside the Tauri webview (always system browser).
 
 ## Login flow

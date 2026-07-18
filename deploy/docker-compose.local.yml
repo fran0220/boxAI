@@ -59,6 +59,8 @@ services:
       - SERVER_PORT=8080
       - SERVER_MODE=${SERVER_MODE:-release}
       - ENABLE_SERVER_TIMING=${ENABLE_SERVER_TIMING:-false}
+      # BOXAI: only the private Docker bridge may supply forwarded client IPs.
+      - SERVER_TRUSTED_PROXIES=${SERVER_TRUSTED_PROXIES:-172.16.0.0/12}
       - RUN_MODE=${RUN_MODE:-standard}
 
       # =======================================================================
@@ -107,6 +109,14 @@ services:
       - BOXAI_LEGACY_BROWSER_ADOPTION=${BOXAI_LEGACY_BROWSER_ADOPTION:-false}
       - BOXAI_WEB_SSO=${BOXAI_WEB_SSO:-false}
       - BOXAI_WEB_SSO_REDIRECT_URIS=${BOXAI_WEB_SSO_REDIRECT_URIS:-}
+
+      # BOXAI: Creator metadata stays in Postgres; private binaries use R2.
+      - BOXAI_CREATOR_CLOUD_ENABLED=${BOXAI_CREATOR_CLOUD_ENABLED:-false}
+      - R2_ENDPOINT=${R2_ENDPOINT:-}
+      - R2_REGION=${R2_REGION:-auto}
+      - R2_BUCKET=${R2_BUCKET:-}
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID:-}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY:-}
 
       # =======================================================================
       # Setup Configuration
@@ -197,6 +207,37 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+  # BOXAI: hosted per-account Agent Relay. It owns only WebUI/WebSocket/gRPC
+  # relay state; identity remains authoritative in the main BoxAI backend.
+  agent-gateway:
+    image: ${BOXAI_AGENT_GATEWAY_IMAGE:-ghcr.io/fran0220/boxai-agent-gateway:0.1.155-box.19}
+    container_name: boxai-agent-gateway
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${AGENT_GATEWAY_HTTP_PORT:-8081}:8080"
+      - "127.0.0.1:${AGENT_GATEWAY_GRPC_PORT:-50051}:50051"
+    environment:
+      - PORT=8080
+      - LIVEAGENT_GATEWAY_GRPC_ADDR=:50051
+      # BOXAI: validate JWTs directly against the backend control plane. Do
+      # not hairpin through apex/API edge routing from inside the Docker net.
+      - BOXAI_SERVER_URL=${BOXAI_AGENT_GATEWAY_AUTH_URL:-http://sub2api:8080}
+      - BOXAI_GATEWAY_MULTI_TENANT=true
+      - BOXAI_GATEWAY_ALLOW_HOSTED_STATIC_TOKEN=false
+      - BOXAI_GATEWAY_AUTH_RECHECK_PERIOD=${BOXAI_GATEWAY_AUTH_RECHECK_PERIOD:-1m}
+      - LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS=${LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS:-120}
+    depends_on:
+      sub2api:
+        condition: service_healthy
+    networks:
+      - sub2api-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-T", "5", "-O", "/dev/null", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # ===========================================================================
   # PostgreSQL Database

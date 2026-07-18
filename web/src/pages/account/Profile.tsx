@@ -560,10 +560,10 @@ export function AccountProfile({ notificationsOnly = false }: { notificationsOnl
           {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
           {message ? <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
 
-      {/* 2-col: avatar card + multi-field form (design) */}
-      <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_1.8fr] lg:items-start">
+      {/* Compact real profile: username, email, joined/UID, balance — no half-disabled mock fields */}
+      <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,240px)_1fr] lg:items-start">
         <div className="bx-account-panel flex flex-col items-center px-6 py-[26px] text-center">
-          <div className="flex h-[76px] w-[76px] items-center justify-center rounded-[18px] bg-[var(--bx-grad-cta)] text-[30px] font-extrabold text-[var(--bx-ink)]">
+          <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[18px] bg-[var(--bx-grad-cta)] text-[28px] font-extrabold text-[var(--bx-ink)]">
             {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
@@ -574,27 +574,24 @@ export function AccountProfile({ notificationsOnly = false }: { notificationsOnl
               initial
             )}
           </div>
-          <p className="mt-3.5 mb-0 text-[15px] font-extrabold">
-            {username || '—'}
-          </p>
+          <p className="mt-3.5 mb-0 text-[15px] font-extrabold">{username || '—'}</p>
           <p className="mt-0.5 mb-0 font-mono text-[11px] text-[var(--bx-text-dim)]">
             {primaryEmail || profile?.email || '—'}
           </p>
-          <button
-            type="button"
-            className="bx-btn bx-btn-ghost bx-btn-sm mt-4 opacity-70"
-            disabled
-            title={t.avatarUnavailable}
-          >
-            {t.changeAvatar}
-          </button>
-          {joinedAt || profile?.id ? (
+          {joinedAt || profile?.id != null ? (
             <p className="mt-4 w-full border-t border-[var(--bx-line)] pt-4 font-mono text-[10.5px] text-[var(--bx-text-dim)]">
               {joinedAt ? `${t.joinedAt} ${joinedAt}` : ''}
-              {joinedAt && profile?.id ? ' · ' : ''}
+              {joinedAt && profile?.id != null ? ' · ' : ''}
               {profile?.id != null ? `UID ${profile.id}` : ''}
             </p>
           ) : null}
+          <p className="bx-account-stat-hint mt-3 w-full text-left sm:text-center">
+            {t.balance}: ${profile?.balance?.toFixed(2) ?? '—'} · {t.concurrency}:{' '}
+            {profile?.concurrency ?? '—'}
+            {typeof profile?.frozen_balance === 'number' && profile.frozen_balance > 0
+              ? ` · ${t.frozenBalance}: $${profile.frozen_balance.toFixed(2)}`
+              : ''}
+          </p>
         </div>
 
         <form onSubmit={saveProfile} className="bx-account-panel px-6 py-[22px]">
@@ -609,71 +606,15 @@ export function AccountProfile({ notificationsOnly = false }: { notificationsOnl
               />
             </label>
             <label className="block">
-              <span className="bx-account-field-label">
-                {t.displayName}
-                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
-                  {t.fieldComingSoon}
-                </span>
-              </span>
-              <input
-                className="bx-account-input-muted opacity-70"
-                value=""
-                disabled
-                readOnly
-                placeholder={t.fieldComingSoon}
-                title={t.fieldComingSoon}
-              />
-            </label>
-            <label className="block">
               <span className="bx-account-field-label">{t.email}</span>
               <input
-                className="bx-account-input-muted opacity-70"
+                className="bx-account-input-muted opacity-80"
                 value={primaryEmail || profile?.email || ''}
                 disabled
                 readOnly
               />
             </label>
-            <label className="block">
-              <span className="bx-account-field-label">
-                {t.region}
-                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
-                  {t.fieldComingSoon}
-                </span>
-              </span>
-              <input
-                className="bx-account-input-muted opacity-70"
-                value=""
-                disabled
-                readOnly
-                placeholder={t.fieldComingSoon}
-                title={t.fieldComingSoon}
-              />
-            </label>
-            <label className="block sm:col-span-2">
-              <span className="bx-account-field-label">
-                {t.bio}
-                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
-                  {t.fieldComingSoon}
-                </span>
-              </span>
-              <textarea
-                rows={3}
-                className="bx-account-input-muted opacity-70"
-                value=""
-                disabled
-                readOnly
-                placeholder={t.fieldComingSoon}
-                title={t.fieldComingSoon}
-              />
-            </label>
           </div>
-          <p className="bx-account-stat-hint mt-3">
-            {t.balance}: ${profile?.balance?.toFixed(2) ?? '—'} · {t.concurrency}:{' '}
-            {profile?.concurrency ?? '—'}
-            {typeof profile?.frozen_balance === 'number' && profile.frozen_balance > 0
-              ? ` · ${t.frozenBalance}: $${profile.frozen_balance.toFixed(2)}`
-              : ''}
-          </p>
           <div className="mt-[18px] flex justify-end gap-2">
             <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={resetForm}>
               {t.reset}

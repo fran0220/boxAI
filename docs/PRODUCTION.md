@@ -208,7 +208,7 @@ LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS=120
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15` | 浏览器内存 access JWT 的短有效期；优先于 `JWT_EXPIRE_HOUR` |
 | `BOXAI_BROWSER_SESSION` | 启用每个 UI host 独立的 `__Host-boxai_session` |
 | `BOXAI_LEGACY_BROWSER_ADOPTION` | 迁移期一次性接收旧 localStorage refresh token；compose/example 与 Go 进程在 **未设置** 时均默认 `false`，仅排水期显式写 `true` |
-| `BOXAI_CREATOR_CLOUD_ENABLED` + `R2_*` | Creator 元数据启用 Postgres 权威源；二进制仅进 private R2，不公开 bucket |
+| `BOXAI_CREATOR_CLOUD_ENABLED` + `R2_*` | Creator 元数据启用 Postgres 权威源；二进制仅进 private R2，不公开 bucket。细节：[CREATOR_CLOUD.md](./CREATOR_CLOUD.md) |
 | `BOXAI_AGENT_GATEWAY_IMAGE` | Hosted Relay 固定镜像；按用户 ID 隔离，生产禁止静态共享 token |
 
 完整变量表见仓库 `deploy/.env.example`。
