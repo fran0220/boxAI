@@ -51,6 +51,6 @@ main            → upstream baseline + BoxAI delta
 
 ## After land
 
-- Publish tag when shipping: `vX.Y.Z-box.N`.
+- If publishing public artifacts, use tag `vX.Y.Z-box.N`; production itself deploys the reviewed commit.
 - Set `FORK_DELTA.md` baseline to the merged upstream tag.
-- If only image changes: Deploy production `mode=app` with the new tag. If `web/` also changed: `mode=full` (or `web`).
+- After the sync commit passes review and gates, run Deploy production with that exact commit; app, Relay, and React always move together.

@@ -53,7 +53,7 @@ Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL
 4. **Compliance freeze** — `frontend/src/stores/adminCompliance.ts` and `docs/legal/*` are byte-stable (CI hashes). Product UI says BoxAI; legal ack copy keeps Sub2API wording.
 5. **Upstream sync** — merge by upstream **release tag**; **merge not rebase** on published `main`; sync PRs contain no feature work.
 6. **No full-repo rebrand** — do not mass-rename binary, env keys, embed path, ports, `/health`, or DB names.
-7. **Do not embed React in Go** — apex HTML is edge-static; image rebuild does not update `you-box.com` without Deploy `mode=web|full` (`ci-deploy.sh`).
+7. **Do not embed React in Go** — apex HTML is edge-static; only the commit-based Deploy production workflow publishes `web/dist` to `you-box.com`.
 
 ## Ownership (summary)
 

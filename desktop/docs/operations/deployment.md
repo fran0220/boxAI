@@ -3,15 +3,16 @@
 本文档描述 **Desktop / Agent Gateway** 自动化发布链路，以及与 **BoxAI 生产托管 Relay** 的关系。
 
 > BoxAI youbox 整站（Go 控制面 + React + compose 内 agent-gateway）的日常发版见仓库根文档：
-> [`docs/PRODUCTION.md`](../../../docs/PRODUCTION.md) §1.0 · [`docs/agents/deploy-release.md`](../../../docs/agents/deploy-release.md)
-> （Actions **Release** → **Deploy production**，不要本机 SSH pin 作为主路径。）
+> [`docs/PRODUCTION.md`](../../../docs/PRODUCTION.md) · [`docs/agents/deploy-release.md`](../../../docs/agents/deploy-release.md)
+> （手动 **Deploy production** 选择 commit，生产机本地构建；与公开 Release/GHCR 分离。）
 
 ## 自动化入口
 
 | 入口 | Workflow | 动作 |
 |---|---|---|
 | PR / `main` push | 仓库根 CI / desktop 相关 jobs | Gateway、WebUI、GUI、Tauri 测试等（以当前 `.github/workflows/*` 为准）。 |
-| `v*` tag（BoxAI 产品） | `release.yml` + `deploy-production.yml` | 推 `ghcr.io/fran0220/boxai`（+ agent 镜像若同发）并部署 youbox。 |
+| 手动选择 branch/tag/SHA | `deploy-production.yml` | youbox 从同一 commit 本地构建 Go API + hosted Relay，并发布 React。 |
+| `v*` tag（BoxAI 产品） | `release.yml` | 发布公开 GHCR/Go artifacts；不触发生产部署。 |
 | `v*` tag / 手动 | `desktop-release.yml` | 并行构建 macOS / Windows / Linux 桌面包，上传 GitHub Release。 |
 | 用户自部署 Gateway | 根目录 `desktop/Dockerfile` 或独立镜像流 | 用户自有平台；与 youbox 托管 Relay 分离。 |
 
@@ -69,7 +70,7 @@ LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS=120
 
 ## BoxAI 托管 Relay 与用户自部署 Gateway
 
-BoxAI 生产在 **youbox compose** 运行 `boxai-agent-gateway`，边缘由 `api.you-box.com` 终止 TLS（WebUI/WS → `:8081`，gRPC → `:50051`）。镜像 pin 与主站一并走 **Deploy production**（`BOXAI_AGENT_GATEWAY_IMAGE`）。
+BoxAI 生产在 **youbox compose** 运行 `boxai-agent-gateway`，边缘由 `api.you-box.com` 终止 TLS（WebUI/WS → `:8081`，gRPC → `:50051`）。Relay 与主 Go API 从同一个部署 commit 在生产机本地构建，不依赖 `BOXAI_AGENT_GATEWAY_IMAGE` 或 GHCR。
 
 需要独立部署或自定义域名的用户仍可用自己的 Railway 账号部署本仓库，或在其他 Docker 平台部署固定版本镜像（Standalone + `LIVEAGENT_GATEWAY_TOKEN`）。
 

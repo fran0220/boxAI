@@ -11,7 +11,7 @@ Public multi-arch image for the BoxAI AI API Gateway (product surface on top of 
 | Embeds | **Vue console only** (`frontend/` → Go `embed`) |
 | Does **not** include | React marketing/workspace (`web/` is static on the edge) |
 
-**Production ship path:** GitHub Actions **Release** (push image) → **Deploy production** (pin on youbox + rsync `web/`). See [PRODUCTION.md](../docs/PRODUCTION.md) §1.0 and [agents/deploy-release.md](../docs/agents/deploy-release.md). Do not treat this page as a day-2 release runbook.
+**BoxAI production ship path:** manually deploy a selected Git commit; the production host builds local images and does not consume this public image flow. See [PRODUCTION.md](../docs/PRODUCTION.md) and [agents/deploy-release.md](../docs/agents/deploy-release.md). This page is for public/self-hosted Docker use, not the youbox day-2 runbook.
 
 Production dual-frontend topology: [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md) · nginx: [nginx-you-box.com.conf](./nginx-you-box.com.conf).
 
@@ -41,7 +41,7 @@ cp .env.example .env   # set secrets; pin BOXAI_IMAGE (+ optional R2 / agent-gat
 docker compose -f docker-compose.local.yml up -d
 ```
 
-Day-2 upgrades on **youbox** go through Actions Deploy (`mode=app|full`), not hand-edited pins.
+Day-2 upgrades on **youbox** go through the selected-commit Actions Deploy, not hand-edited image pins.
 
 ## Docker Compose snippet
 

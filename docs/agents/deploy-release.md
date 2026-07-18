@@ -1,125 +1,69 @@
-# Deploy and release
+# Production deploy and public release
 
-## Production
+Production and public artifacts are intentionally separate.
 
-| Item | Value |
-|------|--------|
-| SSH | `youbox` (`160.187.1.155`) |
-| Product | `https://you-box.com` — React `/var/www/you-box.com` + proxy `/api` `/v1` `/health` |
-| Console | `https://console.you-box.com` — proxy to Go embed |
-| API | `https://api.you-box.com` — model gateway + hosted Agent WebUI/WebSocket/gRPC + public desktop tokens |
-| App dir | `/opt/boxAI` |
-| Compose | `docker-compose.yml` (from `deploy/docker-compose.local.yml`) |
-| Image | `ghcr.io/fran0220/boxai:<pin>` |
-| Agent image | `ghcr.io/fran0220/boxai-agent-gateway:<pin>` |
-| Listen | `127.0.0.1:8080` |
-| Edge | `deploy/nginx-you-box.com.conf` · `deploy/Caddyfile.you-box.com` |
-| Data | PostgreSQL 18 + Redis 8 **on host compose** (unchanged by deploy) |
+## Production: one host, one commit
 
-Ops: [PRODUCTION.md](../PRODUCTION.md) · Architecture: [WEB_PLATFORM.md](../WEB_PLATFORM.md).
-
-## Primary release path (only)
-
-```
-main green (CI + Fork Gates)
-    → git tag vX.Y.Z-box.N && push
-    → workflow Release          # build + push GHCR (version tag WITHOUT leading v)
-    → workflow Deploy production  # pin compose images + build/rsync web + verify-topology
-```
-
-| Workflow | Role |
-|----------|------|
-| `backend-ci.yml` / `fork-gates.yml` | Test only — **never** deploys |
-| `release.yml` | Tag → GHCR image(s) |
-| **`deploy-production.yml`** | **Sole production deploy entry** |
-
-### Deploy modes (`workflow_dispatch` or after Release)
-
-| Mode | App image | React static | Use |
-|------|-----------|--------------|-----|
-| `full` | pin + pull + up | build + rsync | Normal release (default after tag) |
-| `app` | pin + pull + up | — | Hotfix API/console embed only |
-| `web` | — | build + rsync | Hotfix apex marketing/workspace UI |
-
-Orchestrator: [`deploy/scripts/ci-deploy.sh`](../../deploy/scripts/ci-deploy.sh).
+| Item | Standard |
+|---|---|
+| Entry | Manual `.github/workflows/deploy-production.yml` |
+| Input | Branch, tag, or immutable commit SHA |
+| Host | `youbox`, application root `/opt/boxAI` |
+| Runtime | Docker Compose on the host |
+| App images | Built locally as `boxai-local/*:<commit>`; no registry |
+| React | Built/tested in Actions, synchronized to `/var/www/you-box.com` |
+| Data | Existing Postgres 18 + Redis 8 + `/opt/boxAI/data` |
+| External store | Private Cloudflare R2 configured only in host `.env` |
 
 ```bash
-# Normal
-git tag v0.1.155-box.11 && git push origin v0.1.155-box.11
-
-# Manual
-gh workflow run deploy-production.yml -R fran0220/boxAI -f mode=web
-gh workflow run deploy-production.yml -R fran0220/boxAI -f mode=app -f image_tag=0.1.155-box.11
-gh workflow run deploy-production.yml -R fran0220/boxAI -f mode=full -f image_tag=0.1.155-box.11
+gh workflow run deploy-production.yml -R fran0220/boxAI -f ref=main
 ```
 
-### GitHub secrets / env
+The workflow resolves the ref to a full SHA. `deploy/scripts/ci-deploy.sh` transfers only that commit's `git archive`, builds the Go API and hosted Agent Relay on the server, backs up state, updates the two stateless application containers, publishes React/Nginx, and runs topology smoke checks.
 
-| Name | Kind | Purpose |
-|------|------|---------|
-| `production` | Environment | Deploy job; optional reviewers |
-| `DEPLOY_SSH_KEY` | Secret | Deploy private key |
-| `DEPLOY_HOST` | Secret | Host IP/name |
-| `DEPLOY_USER` | Secret | SSH user |
-| `DEPLOY_APP_DIR` | Variable | Default `/opt/boxAI` |
-| `DEPLOY_DOCROOT` | Variable | Default `/var/www/you-box.com` |
+### Invariants
 
-Server must allow: SSH, `docker compose` in app dir, write docroot, pull from GHCR.
+- No tag, Release workflow, GHCR permission, or package token is needed.
+- Never upload `.env`, R2 keys, DB data, or runtime data from CI.
+- Never run `compose down -v`; routine deploy does not recreate Postgres/Redis.
+- Fail closed unless existing Postgres/Redis belong to Compose project `boxai` and mount the configured host data directories.
+- React remains edge-static; the root Dockerfile embeds Vue only.
+- `api.you-box.com` is the unified public gateway, while Agent Relay remains a separate process because it owns WS/gRPC/long-lived session behavior.
+- Migrations are forward-only and run from the Go app entrypoint.
+- On activation failure, restore the prior app, Nginx, and static site from the automatic backup.
 
-## Retired as primary path
+### Required GitHub configuration
 
-Do **not** document these as the normal ship process:
+Production environment secrets: `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER`. Optional vars: `DEPLOY_APP_DIR`, `DEPLOY_DOCROOT`, `VITE_AGENT_REMOTE_URL`.
 
-| Old habit | Replacement |
-|-----------|-------------|
-| Local `./deploy/scripts/deploy-web-static.sh` then SSH | Deploy `mode=web` or `full` |
-| SSH `sed` `BOXAI_IMAGE` + `docker compose pull/up` | Deploy `mode=app` or `full` |
-| Ad-hoc mix of the two | Single Actions entry |
-| Production pin `:latest` | Forbidden |
+### Verification
 
-Emergency only: `deploy-web-static.sh` (prints warning), `ci-deploy.sh` with local SSH key, `apply-nginx-topology.sh` for edge conf.
+```bash
+ssh youbox /opt/boxAI/current/deploy/scripts/production-compose.sh ps
+ssh youbox cat /opt/boxAI/current/.boxai-commit
+./deploy/scripts/verify-topology.sh
+```
 
-## Deploy standards
+See [`docs/PRODUCTION.md`](../PRODUCTION.md) for bootstrap, service inventory, backups, and acceptance.
 
-| Choice | Standard |
-|--------|----------|
-| Compose | `deploy/docker-compose.local.yml` on host |
-| Product web | Static `web/dist` on edge (not in image) |
-| Image content | Vue console embed + Go API |
-| Data plane | Postgres + Redis containers — **never** recreated by Deploy |
+## Public release: optional artifact publishing
 
-### Do not change
+`release.yml` remains available for public GHCR images and Go artifacts; `desktop-release.yml` publishes desktop installers. Neither workflow deploys production or triggers `Deploy production`.
 
-- Env variable names  
-- Volume `/app/data`  
-- Port `8080`  
-- `/health`  
-- `AUTO_SETUP`, entrypoint migrations, `schema_migrations`  
-- Binary/service name `sub2api`  
+| Target | Versioning |
+|---|---|
+| Public backend image / binaries | `vX.Y.Z-box.N` |
+| Desktop installers | desktop release tag policy |
+| Production | exact Git commit SHA |
 
-### Rules
+## Break-glass
 
-- Never prod `:latest`.
-- Pin tag or digest; keep N-1 image for rollback (re-run Deploy with previous `image_tag`).
-- Migrations forward-only.
-- React UI change requires Deploy `web` or `full` (image alone is not enough).
-- Deploy must not `compose down -v` or touch `postgres_data` / `redis_data`.
+From a clean checkout at the commit to deploy, build `web/dist`, then run:
 
-## Release
+```bash
+export DEPLOY_HOST=… DEPLOY_USER=… DEPLOY_SSH_KEY_PATH=…
+export COMMIT_SHA="$(git rev-parse HEAD)"
+./deploy/scripts/ci-deploy.sh
+```
 
-| Item | Value |
-|------|--------|
-| Registry | `ghcr.io/fran0220/boxai` |
-| Tag | `vX.Y.Z-box.N` (git) → image `X.Y.Z-box.N` |
-| Full | multi-arch GoReleaser |
-| Hotfix | `simple_release` (amd64) via `release.yml` workflow_dispatch |
-| Image frontend install | `frontend/` pnpm only |
-| React | `web/` built in Deploy job |
-
-### Gate order
-
-1. `main` green (CI + Fork Gates).  
-2. Compliance + migration lint.  
-3. Image release (`release.yml`).  
-4. Deploy production (`full` after tag, or manual mode).  
-5. Confirm Actions smoke / `verify-topology` green.  
+`deploy-web-static.sh` and `apply-nginx-topology.sh` are narrow emergency/bootstrap helpers, not the normal release path.

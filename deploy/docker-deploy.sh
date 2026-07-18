@@ -9,8 +9,8 @@
 #
 # After bootstrap: docker compose up -d
 #
-# BoxAI production day-2 ship path is GitHub Actions (Release + Deploy production),
-# NOT repeated runs of this script. See docs/PRODUCTION.md §1.0.
+# BoxAI production day-2 ship path is the manual, commit-based Deploy production
+# workflow, NOT a public Release or repeated runs of this script.
 # =============================================================================
 
 set -e

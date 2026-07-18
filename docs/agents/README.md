@@ -7,7 +7,7 @@ Entry: repository root [AGENTS.md](../../AGENTS.md).
 | [ownership-zones.md](./ownership-zones.md) | Where may I edit? Conflict policy |
 | [change-design.md](./change-design.md) | How to structure a change |
 | [upstream-sync.md](./upstream-sync.md) | Merging an upstream release tag |
-| [deploy-release.md](./deploy-release.md) | Release + Deploy production (CI primary) |
+| [deploy-release.md](./deploy-release.md) | Commit-based production deploy + separate public releases |
 | [../CREATOR_CLOUD.md](../CREATOR_CLOUD.md) | Creator cloud (Postgres + private R2) |
 | [pr-checklist.md](./pr-checklist.md) | Before opening/merging a PR |
 

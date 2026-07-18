@@ -13,8 +13,8 @@ Canonical product architecture for **you-box.com**: **customer shell on apex Rea
 | `console.you-box.com` | **Admin** (+ WeChat MP payment exception paths); Desktop browser login (legacy URL) | Go binary embeds Vue (`frontend/` build) |
 | `api.you-box.com` | Public model API + desktop token exchange + hosted Agent WebUI/WebSocket/gRPC | Edge routes model/auth calls to Go and account-isolated remote-agent traffic to the dedicated Relay |
 
-One Docker image (`ghcr.io/fran0220/boxai:<pin>`) runs the Go server (Vue embed + API). React is **never** embedded in that binary.
-The Agent Relay is a separate pinned image (`ghcr.io/fran0220/boxai-agent-gateway:<pin>`): it validates BoxAI JWTs through the apex identity API and isolates all in-memory sessions by user ID. It does not own identity, billing, Creator metadata, or local file execution.
+One Go application container (Vue embed + API) is built from the selected production commit. Public GHCR images remain available to self-hosters, but production does not consume them. React is **never** embedded in that binary.
+The Agent Relay is a separate process built from the same deployed Git commit as the Go API: it validates BoxAI JWTs through the backend identity API and isolates all in-memory sessions by user ID. It does not own identity, billing, Creator metadata, or local file execution.
 
 ## Auth
 
@@ -259,16 +259,16 @@ Console continues to proxy the complete backend surface.
 | `backend/migrations/901_boxai_creator_cloud.sql` | Creator cloud schema |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis store adapter |
 | `desktop/` | Tauri client + hosted agent-gateway |
-| `deploy/scripts/ci-deploy.sh` | Production deploy orchestrator (CI primary) |
+| `deploy/scripts/ci-deploy.sh` | Selected-commit single-host deploy orchestrator |
 | `deploy/scripts/` | nginx apply, topology verify, emergency static |
 
 ## Ops
 
-**Primary:** GitHub Actions **Deploy production** (after Release tag, or `workflow_dispatch` `mode=app|web|full`). See [PRODUCTION.md](./PRODUCTION.md) §1.0 and [agents/deploy-release.md](./agents/deploy-release.md).
+**Primary:** manually run GitHub Actions **Deploy production** with a branch, tag, or commit. The resolved commit builds locally on the production host; public Release/GHCR publishing is independent. See [PRODUCTION.md](./PRODUCTION.md) and [agents/deploy-release.md](./agents/deploy-release.md).
 
 ```bash
 # Emergency / local only — not the normal ship path
-./deploy/scripts/ci-deploy.sh          # requires DEPLOY_* env
+./deploy/scripts/ci-deploy.sh          # requires built web/dist + DEPLOY_* env
 ./deploy/scripts/deploy-web-static.sh  # web-only emergency
 ./deploy/scripts/apply-nginx-topology.sh
 ./deploy/scripts/verify-topology.sh

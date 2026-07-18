@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Emergency / local-only helper: build React web/ and rsync to production docroot.
 #
-# Production primary path is GitHub Actions:
-#   Deploy production workflow → deploy/scripts/ci-deploy.sh (MODE=web|full)
+# Production primary path is the commit-based GitHub Actions Deploy production
+# workflow, which always publishes app, Relay, and matching React artifacts.
 # Prefer Actions over this script so builds are reproducible and audited.
 #
 # Usage (emergency):

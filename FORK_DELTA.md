@@ -54,8 +54,11 @@ Update this file in the **same PR** as any new BOXAI marker or product-first pat
 | `docs/OFFICE_MODULE.md` | Desktop module + web URL map |
 | `deploy/Caddyfile.you-box.com` | 3-host Caddy with Agent HTTP/WebSocket/gRPC relay routing |
 | `deploy/nginx-you-box.com.conf` | Live production nginx multi-host + Agent Relay topology |
-| `deploy/scripts/ci-deploy.sh` | Production CI deploy: pin GHCR images + build/rsync React + smoke (Postgres/Redis untouched) |
-| `.github/workflows/deploy-production.yml` | Deploy production workflow (after Release or workflow_dispatch) |
+| `deploy/scripts/ci-deploy.sh` | Commit-based single-host deploy: local image builds, backup/rollback, React/Nginx publish, and smoke |
+| `deploy/scripts/production-compose.sh` | Operate the active commit with the production Compose override |
+| `deploy/docker-compose.production.yml` | Host-local app/Relay builds and persistent-data path override |
+| `.github/workflows/deploy-production.yml` | Manual selected-commit production deployment; independent of Release/GHCR |
+| `.github/workflows/release.yml` | Public artifacts only; explicitly decoupled from production deploy |
 | `deploy/scripts/deploy-web-static.sh` | Emergency/local React rsync only (primary path is ci-deploy / Actions) |
 | `deploy/scripts/apply-nginx-topology.sh` | Install nginx topology + certbot expand |
 | `deploy/scripts/verify-topology.sh` | HTTP topology smoke checks |
@@ -141,7 +144,7 @@ Markers: search `BOXAI:` in the tree. Intentional call sites:
 | `deploy/nginx-you-box.com.conf` | BOXAI: allow authenticated Creator cloud routes through the apex API allowlist |
 | `desktop/crates/agent-gateway/`, `desktop/Dockerfile` | BOXAI: hosted multi-tenant Agent Relay, bounded replay, secure account JWT handoff, and production image |
 | `desktop/crates/agent-gui/src/App.tsx` | BOXAI: keep production desktop Relay endpoint and refreshed JWT synchronized automatically |
-| `deploy/docker-compose.local.yml`, `deploy/.env.example` | BOXAI: private Creator R2 configuration plus pinned hosted Agent Relay service |
+| `deploy/docker-compose.local.yml`, `deploy/.env.example` | BOXAI: private Creator R2 configuration plus hosted Agent Relay service |
 | `deploy/{nginx-you-box.com.conf,Caddyfile.you-box.com}` | BOXAI: unified `api.you-box.com` model API + Agent WebUI/WebSocket/gRPC edge routes |
 | `deploy/scripts/verify-topology.sh` | BOXAI: verify Agent Relay health, auth boundary, WebUI, and frame policy |
 | `backend/internal/server/router.go` | BOXAI: pass apiKeyService into RegisterUserRoutes |

@@ -24,7 +24,8 @@ services:
   # Sub2API Application
   # ===========================================================================
   sub2api:
-    # BOXAI: public image; pin a concrete tag in production.
+    # BOXAI: public/self-hosted default; BoxAI production replaces this with a
+    # host-local commit image through docker-compose.production.yml.
     image: ${BOXAI_IMAGE:-ghcr.io/fran0220/boxai:0.1.155-box.2}
     container_name: sub2api
     restart: unless-stopped
@@ -47,8 +48,8 @@ services:
       - AUTO_SETUP=true
 
       # BOXAI: never use admin UI in-place binary upgrade in compose (would pull
-      # Wei-Shaw/sub2api and overwrite the BoxAI product binary). Upgrade by
-      # pinning BOXAI_IMAGE and: docker compose pull && docker compose up -d
+      # Wei-Shaw/sub2api and overwrite the BoxAI product binary). Self-hosted
+      # installs pin BOXAI_IMAGE; BoxAI production deploys a selected commit.
       - BOXAI_DISABLE_INPLACE_UPDATE=${BOXAI_DISABLE_INPLACE_UPDATE:-true}
       - UPDATE_GITHUB_REPO=${UPDATE_GITHUB_REPO:-fran0220/boxAI}
 

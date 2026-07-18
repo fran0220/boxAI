@@ -1,209 +1,226 @@
 #!/usr/bin/env bash
-# Production deploy orchestrator for GitHub Actions (or emergency local use).
-#
-# Primary path: Actions → this script → SSH (compose pin/up) + rsync (web/).
-# Postgres/Redis stay on the host compose project and are never recreated here.
-#
-# Usage:
-#   MODE=full IMAGE_TAG=0.1.155-box.10 ./deploy/scripts/ci-deploy.sh
-#   MODE=app  IMAGE_TAG=0.1.155-box.10 ./deploy/scripts/ci-deploy.sh
-#   MODE=web  ./deploy/scripts/ci-deploy.sh
-#
-# Required env:
-#   DEPLOY_HOST, DEPLOY_USER
-# Optional:
-#   DEPLOY_SSH_KEY_PATH, DEPLOY_APP_DIR (/opt/boxAI), DOCROOT (/var/www/you-box.com)
-#   BOXAI_IMAGE_REPO, AGENT_IMAGE_REPO, PIN_AGENT (default 1)
-#   SKIP_WEB_TESTS (default 0), VITE_AGENT_REMOTE_URL
+# Deploy one immutable Git commit to the single BoxAI production host.
+# Go API and Agent Relay images are built on that host; React is built by CI.
+# Postgres, Redis, private R2 credentials, and user data remain in place.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-MODE="${MODE:-full}"
-IMAGE_TAG="${IMAGE_TAG:-}"
 DEPLOY_HOST="${DEPLOY_HOST:?DEPLOY_HOST is required}"
 DEPLOY_USER="${DEPLOY_USER:?DEPLOY_USER is required}"
-DEPLOY_APP_DIR="${DEPLOY_APP_DIR:-/opt/boxAI}"
+DEPLOY_ROOT="${DEPLOY_ROOT:-/opt/boxAI}"
 DOCROOT="${DOCROOT:-/var/www/you-box.com}"
-BOXAI_IMAGE_REPO="${BOXAI_IMAGE_REPO:-ghcr.io/fran0220/boxai}"
-AGENT_IMAGE_REPO="${AGENT_IMAGE_REPO:-ghcr.io/fran0220/boxai-agent-gateway}"
-PIN_AGENT="${PIN_AGENT:-1}"
-SKIP_WEB_TESTS="${SKIP_WEB_TESTS:-0}"
-VITE_AGENT_REMOTE_URL="${VITE_AGENT_REMOTE_URL:-https://api.you-box.com}"
+COMMIT_SHA="${COMMIT_SHA:-$(git -C "$ROOT" rev-parse HEAD)}"
 
-export RSYNC_RSH="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
+COMMIT_SHA="$(git -C "$ROOT" rev-parse "${COMMIT_SHA}^{commit}")"
+RELEASE_DIR="${DEPLOY_ROOT}/releases/${COMMIT_SHA}"
+WEB_RELEASE_DIR="${DEPLOY_ROOT}/web-releases/${COMMIT_SHA}"
+
 SSH_BASE=(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new)
+RSYNC_SSH="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
 if [[ -n "${DEPLOY_SSH_KEY_PATH:-}" ]]; then
   SSH_BASE+=(-i "$DEPLOY_SSH_KEY_PATH" -o IdentitiesOnly=yes)
-  export RSYNC_RSH="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -i ${DEPLOY_SSH_KEY_PATH} -o IdentitiesOnly=yes"
+  RSYNC_SSH+=" -i ${DEPLOY_SSH_KEY_PATH} -o IdentitiesOnly=yes"
 fi
 
 ssh_run() {
   "${SSH_BASE[@]}" "${DEPLOY_USER}@${DEPLOY_HOST}" "$@"
 }
 
-normalize_tag() {
-  local t="$1"
-  t="${t#v}"
-  if [[ -z "$t" || "$t" == "latest" ]]; then
-    echo "error: IMAGE_TAG must be a concrete pin (got '${1:-}')" >&2
-    exit 1
-  fi
-  if [[ "$t" == *":"* ]]; then
-    echo "error: IMAGE_TAG must not include registry path with digest form: $t" >&2
-    exit 1
-  fi
-  printf '%s' "$t"
-}
+if [[ ! -f "$ROOT/web/dist/index.html" ]]; then
+  echo "error: web/dist/index.html missing; build the React app before deploy" >&2
+  exit 1
+fi
 
-remote_pin_and_up() {
-  local tag="$1"
-  local app_image="${BOXAI_IMAGE_REPO}:${tag}"
-  local agent_image="${AGENT_IMAGE_REPO}:${tag}"
-
-  echo "==> Remote pin + compose up tag=${tag}"
-  # Pass args as env to remote bash to avoid nested-quote bugs.
-  ssh_run env \
-    DEPLOY_APP_DIR="$DEPLOY_APP_DIR" \
-    APP_IMAGE="$app_image" \
-    AGENT_IMAGE="$agent_image" \
-    PIN_AGENT="$PIN_AGENT" \
-    bash -s <<'REMOTE'
+echo "==> Stage source commit ${COMMIT_SHA}"
+stage_state="$(ssh_run env DEPLOY_ROOT="$DEPLOY_ROOT" COMMIT_SHA="$COMMIT_SHA" bash -s <<'REMOTE'
 set -euo pipefail
-cd "${DEPLOY_APP_DIR}"
-if [[ ! -f .env ]]; then
-  echo "error: ${DEPLOY_APP_DIR}/.env missing" >&2
+release_dir="${DEPLOY_ROOT}/releases/${COMMIT_SHA}"
+if [[ -f "${release_dir}/.boxai-commit" ]] && [[ "$(cat "${release_dir}/.boxai-commit")" == "$COMMIT_SHA" ]]; then
+  echo existing
+  exit 0
+fi
+tmp_dir="${DEPLOY_ROOT}/releases/.${COMMIT_SHA}.tmp"
+rm -rf "$tmp_dir" "$release_dir"
+mkdir -p "$tmp_dir"
+echo upload
+REMOTE
+)"
+
+if [[ "$stage_state" == *upload* ]]; then
+  git -C "$ROOT" archive "$COMMIT_SHA" | \
+    "${SSH_BASE[@]}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+      "tar -x -C '${DEPLOY_ROOT}/releases/.${COMMIT_SHA}.tmp'"
+  ssh_run env DEPLOY_ROOT="$DEPLOY_ROOT" COMMIT_SHA="$COMMIT_SHA" bash -s <<'REMOTE'
+set -euo pipefail
+tmp_dir="${DEPLOY_ROOT}/releases/.${COMMIT_SHA}.tmp"
+release_dir="${DEPLOY_ROOT}/releases/${COMMIT_SHA}"
+printf '%s\n' "$COMMIT_SHA" >"${tmp_dir}/.boxai-commit"
+mv "$tmp_dir" "$release_dir"
+REMOTE
+fi
+
+echo "==> Stage React build"
+ssh_run "mkdir -p '${WEB_RELEASE_DIR}'"
+rsync -az --delete -e "$RSYNC_SSH" \
+  --exclude '.DS_Store' \
+  "$ROOT/web/dist/" \
+  "${DEPLOY_USER}@${DEPLOY_HOST}:${WEB_RELEASE_DIR}/"
+
+echo "==> Build and activate ${COMMIT_SHA} on ${DEPLOY_USER}@${DEPLOY_HOST}"
+ssh_run env \
+  DEPLOY_ROOT="$DEPLOY_ROOT" \
+  RELEASE_DIR="$RELEASE_DIR" \
+  WEB_RELEASE_DIR="$WEB_RELEASE_DIR" \
+  DOCROOT="$DOCROOT" \
+  BOXAI_COMMIT="$COMMIT_SHA" \
+  bash -s <<'REMOTE'
+set -euo pipefail
+
+env_file="${DEPLOY_ROOT}/.env"
+base_compose="${RELEASE_DIR}/deploy/docker-compose.local.yml"
+prod_compose="${RELEASE_DIR}/deploy/docker-compose.production.yml"
+active_link="${DEPLOY_ROOT}/current"
+nginx_site="/etc/nginx/sites-available/you-box.com"
+timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+backup_dir="${DEPLOY_ROOT}/backups/deploy-${timestamp}-${BOXAI_COMMIT}"
+sudo_cmd=()
+if [[ "$(id -u)" -ne 0 ]]; then
+  sudo_cmd=(sudo)
+fi
+
+if [[ ! -f "$env_file" ]]; then
+  echo "error: ${env_file} is missing" >&2
   exit 1
 fi
 
-COMPOSE_FILE=docker-compose.yml
-if [[ ! -f "$COMPOSE_FILE" ]]; then
-  if [[ -f docker-compose.local.yml ]]; then
-    COMPOSE_FILE=docker-compose.local.yml
-  else
-    echo "error: no docker-compose.yml in ${DEPLOY_APP_DIR}" >&2
+require_data_container() {
+  local container="$1" destination="$2" expected_source="$3"
+  local project source
+  project="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "$container" 2>/dev/null || true)"
+  source="$(docker inspect --format "{{range .Mounts}}{{if eq .Destination \"${destination}\"}}{{.Source}}{{end}}{{end}}" "$container" 2>/dev/null || true)"
+  if [[ "$project" != "boxai" || "$source" != "$expected_source" ]]; then
+    echo "error: ${container} is not the expected BoxAI data container" >&2
+    echo "       compose project=${project:-absent}, data source=${source:-absent}" >&2
+    echo "       expected project=boxai, data source=${expected_source}" >&2
+    echo "       complete the one-time host adoption in docs/PRODUCTION.md before deploying" >&2
     exit 1
-  fi
-fi
-
-pin_env() {
-  local key="$1" val="$2"
-  if grep -q "^${key}=" .env; then
-    # portable in-place edit
-    local tmp
-    tmp="$(mktemp)"
-    awk -v k="$key" -v v="$val" 'BEGIN{FS=OFS="="} $1==k {$0=k"="v} {print}' .env >"$tmp"
-    cat "$tmp" >.env
-    rm -f "$tmp"
-  else
-    printf '%s=%s\n' "$key" "$val" >> .env
   fi
 }
 
-pin_env BOXAI_IMAGE "$APP_IMAGE"
-if [[ "$PIN_AGENT" == "1" ]]; then
-  pin_env BOXAI_AGENT_GATEWAY_IMAGE "$AGENT_IMAGE"
+# A routine deploy never creates or adopts data services implicitly. This also
+# prevents a project-name/path mismatch from booting against an empty database.
+require_data_container sub2api-postgres /var/lib/postgresql/data "${DEPLOY_ROOT}/postgres_data"
+require_data_container sub2api-redis /data "${DEPLOY_ROOT}/redis_data"
+
+compose=(docker compose -p boxai --env-file "$env_file" -f "$base_compose" -f "$prod_compose")
+export BOXAI_COMMIT DEPLOY_ROOT
+
+echo "Validating compose and building local images ..."
+"${compose[@]}" config --quiet
+"${compose[@]}" build sub2api agent-gateway
+
+mkdir -p "$backup_dir"
+chmod 700 "$backup_dir"
+cp "$env_file" "$backup_dir/.env"
+chmod 600 "$backup_dir/.env"
+if [[ -e "$active_link" ]]; then
+  readlink -f "$active_link" >"$backup_dir/previous-release"
+elif [[ -f "${DEPLOY_ROOT}/docker-compose.yml" ]]; then
+  cp "${DEPLOY_ROOT}/docker-compose.yml" "$backup_dir/docker-compose.yml"
+fi
+if [[ -f "$nginx_site" ]]; then
+  "${sudo_cmd[@]}" cp "$nginx_site" "$backup_dir/nginx-you-box.com.conf"
+fi
+if [[ -d "$DOCROOT" ]]; then
+  "${sudo_cmd[@]}" tar -C "$DOCROOT" -czf "$backup_dir/web.tar.gz" .
+fi
+if docker inspect sub2api-postgres >/dev/null 2>&1; then
+  docker exec sub2api-postgres sh -c \
+    'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' \
+    >"$backup_dir/postgres.dump"
 fi
 
-if grep -E '^(BOXAI_IMAGE|BOXAI_AGENT_GATEWAY_IMAGE)=.*:latest([[:space:]]|$)' .env; then
-  echo "error: :latest pin refused" >&2
-  exit 1
-fi
+mutated=0
+rollback() {
+  rc=$?
+  trap - ERR EXIT
+  if [[ "$mutated" == "1" ]]; then
+    echo "Deploy failed; restoring the previous release ..." >&2
+    if [[ -f "$backup_dir/nginx-you-box.com.conf" ]]; then
+      "${sudo_cmd[@]}" cp "$backup_dir/nginx-you-box.com.conf" "$nginx_site" || true
+      "${sudo_cmd[@]}" nginx -t >/dev/null 2>&1 && "${sudo_cmd[@]}" systemctl reload nginx || true
+    fi
+    if [[ -f "$backup_dir/web.tar.gz" ]]; then
+      "${sudo_cmd[@]}" mkdir -p "$DOCROOT"
+      "${sudo_cmd[@]}" find "$DOCROOT" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} + || true
+      "${sudo_cmd[@]}" tar -C "$DOCROOT" -xzf "$backup_dir/web.tar.gz" || true
+    fi
 
-echo "Pulling $APP_IMAGE ..."
-docker pull "$APP_IMAGE"
-
-SERVICES=(sub2api)
-if [[ "$PIN_AGENT" == "1" ]]; then
-  if docker pull "$AGENT_IMAGE"; then
-    SERVICES+=(agent-gateway)
-  else
-    echo "warn: agent image $AGENT_IMAGE unavailable; app still updated"
+    previous=""
+    previous_commit=""
+    if [[ -f "$backup_dir/previous-release" ]]; then
+      previous="$(cat "$backup_dir/previous-release" 2>/dev/null || true)"
+      previous_commit="$(cat "$previous/.boxai-commit" 2>/dev/null || true)"
+    fi
+    if [[ -n "$previous" && -n "$previous_commit" && -f "$previous/deploy/docker-compose.production.yml" ]]; then
+      BOXAI_COMMIT="$previous_commit" docker compose \
+        -p boxai --env-file "$env_file" \
+        -f "$previous/deploy/docker-compose.local.yml" \
+        -f "$previous/deploy/docker-compose.production.yml" \
+        up -d --no-deps sub2api agent-gateway || true
+    elif [[ -f "$backup_dir/docker-compose.yml" ]]; then
+      docker rm -f boxai-agent-gateway >/dev/null 2>&1 || true
+      docker compose -p boxai --project-directory "$DEPLOY_ROOT" --env-file "$env_file" \
+        -f "$backup_dir/docker-compose.yml" up -d --no-deps sub2api || true
+    fi
   fi
-fi
+  exit "$rc"
+}
+trap rollback ERR EXIT
 
-docker compose -f "$COMPOSE_FILE" up -d --no-deps "${SERVICES[@]}"
+mutated=1
+"${compose[@]}" up -d --no-deps sub2api agent-gateway
 
-echo "Waiting for local health ..."
-for i in $(seq 1 40); do
-  if curl -fsS --max-time 3 http://127.0.0.1:8080/health >/dev/null 2>&1; then
-    echo "OK sub2api /health"
+for attempt in $(seq 1 60); do
+  if curl -fsS --max-time 3 http://127.0.0.1:8080/health >/dev/null; then
     break
   fi
-  if [[ "$i" -eq 40 ]]; then
-    echo "error: sub2api /health not ready" >&2
-    docker compose -f "$COMPOSE_FILE" ps || true
+  if [[ "$attempt" -eq 60 ]]; then
+    echo "error: sub2api did not become healthy" >&2
     exit 1
   fi
   sleep 3
 done
 
-if docker ps --format '{{.Names}}' | grep -qx boxai-agent-gateway; then
-  if curl -fsS --max-time 5 http://127.0.0.1:8081/healthz >/dev/null 2>&1; then
-    echo "OK agent-gateway /healthz"
-  else
-    echo "warn: agent-gateway /healthz not ready (non-fatal)"
+for attempt in $(seq 1 40); do
+  if curl -fsS --max-time 3 http://127.0.0.1:8081/healthz >/dev/null; then
+    break
   fi
-fi
+  if [[ "$attempt" -eq 40 ]]; then
+    echo "error: Agent Relay did not become healthy" >&2
+    exit 1
+  fi
+  sleep 3
+done
 
-docker compose -f "$COMPOSE_FILE" ps
+"${sudo_cmd[@]}" mkdir -p "$DOCROOT"
+"${sudo_cmd[@]}" rsync -a --delete "${WEB_RELEASE_DIR}/" "${DOCROOT}/"
+"${sudo_cmd[@]}" install -m 0644 \
+  "${RELEASE_DIR}/deploy/nginx-you-box.com.conf" "$nginx_site"
+"${sudo_cmd[@]}" nginx -t
+"${sudo_cmd[@]}" systemctl reload nginx
+
+rm -f "${active_link}.new"
+ln -s "$RELEASE_DIR" "${active_link}.new"
+mv -Tf "${active_link}.new" "$active_link"
+mutated=0
+trap - ERR EXIT
+
+"${compose[@]}" ps
+echo "OK deployed commit ${BOXAI_COMMIT}"
+echo "Backup: ${backup_dir}"
 REMOTE
-}
 
-build_and_rsync_web() {
-  echo "==> Build web/ and rsync to ${DEPLOY_USER}@${DEPLOY_HOST}:${DOCROOT}"
-  cd "$ROOT/web"
-  if [[ ! -d node_modules ]]; then
-    pnpm install --frozen-lockfile
-  fi
-  if [[ "$SKIP_WEB_TESTS" != "1" ]]; then
-    pnpm typecheck
-    pnpm test:run
-  fi
-  VITE_AGENT_REMOTE_URL="$VITE_AGENT_REMOTE_URL" pnpm build
-  if [[ ! -f dist/index.html ]]; then
-    echo "error: web/dist/index.html missing after build" >&2
-    exit 1
-  fi
-
-  ssh_run "mkdir -p '${DOCROOT}' && (chown -R \"\$(whoami):\$(whoami)\" '${DOCROOT}' 2>/dev/null || true)"
-  rsync -az --delete \
-    --exclude '.DS_Store' \
-    "$ROOT/web/dist/" \
-    "${DEPLOY_USER}@${DEPLOY_HOST}:${DOCROOT}/"
-  ssh_run "test -f '${DOCROOT}/index.html' && ls -la '${DOCROOT}/index.html'"
-  echo "OK static web deployed"
-}
-
-run_smoke() {
-  echo "==> Smoke verify-topology"
-  APEX="${APEX:-https://you-box.com}" \
-  CONSOLE="${CONSOLE:-https://console.you-box.com}" \
-  API="${API:-https://api.you-box.com}" \
-    "$ROOT/deploy/scripts/verify-topology.sh"
-}
-
-case "$MODE" in
-  app|web|full) ;;
-  *)
-    echo "error: MODE must be app|web|full (got $MODE)" >&2
-    exit 1
-    ;;
-esac
-
-echo "ci-deploy MODE=$MODE HOST=${DEPLOY_USER}@${DEPLOY_HOST}"
-
-if [[ "$MODE" == "app" || "$MODE" == "full" ]]; then
-  if [[ -z "$IMAGE_TAG" ]]; then
-    echo "error: IMAGE_TAG required for MODE=$MODE" >&2
-    exit 1
-  fi
-  IMAGE_TAG="$(normalize_tag "$IMAGE_TAG")"
-  remote_pin_and_up "$IMAGE_TAG"
-fi
-
-if [[ "$MODE" == "web" || "$MODE" == "full" ]]; then
-  build_and_rsync_web
-fi
-
-run_smoke
-echo "OK ci-deploy finished MODE=$MODE"
+echo "==> Verify public topology"
+"$ROOT/deploy/scripts/verify-topology.sh"
+echo "OK production deploy ${COMMIT_SHA}"
