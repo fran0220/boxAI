@@ -35,7 +35,7 @@ const (
 )
 
 var (
-	ErrUnavailable       = errors.New("Creator cloud object storage is not configured")
+	ErrUnavailable       = errors.New("creator cloud object storage is not configured")
 	ErrInvalidRecord     = errors.New("invalid record")
 	ErrInvalidRecordKind = errors.New("invalid record kind")
 	ErrInvalidRecordPath = errors.New("invalid record path")
@@ -45,7 +45,7 @@ var (
 	ErrObjectConflict    = errors.New("object client_id already contains different content")
 	ErrObjectNotUploaded = errors.New("uploaded object was not found")
 	ErrObjectSize        = errors.New("uploaded object size does not match")
-	ErrQuotaExceeded     = errors.New("Creator cloud account quota exceeded")
+	ErrQuotaExceeded     = errors.New("creator cloud account quota exceeded")
 )
 
 type Record struct {
@@ -106,16 +106,16 @@ func NewFromEnv(db *sql.DB) (*Service, error) {
 	vals := []string{os.Getenv("R2_ENDPOINT"), os.Getenv("R2_REGION"), os.Getenv("R2_BUCKET"), os.Getenv("R2_ACCESS_KEY_ID"), os.Getenv("R2_SECRET_ACCESS_KEY")}
 	for _, v := range vals {
 		if strings.TrimSpace(v) == "" {
-			return nil, errors.New("Creator cloud is enabled but R2 configuration is incomplete")
+			return nil, errors.New("creator cloud is enabled but R2 configuration is incomplete")
 		}
 	}
 	u, err := url.Parse(vals[0])
 	if err != nil || u.Scheme != "https" || u.Host == "" {
-		return nil, errors.New("Creator cloud R2 endpoint must be a valid HTTPS URL")
+		return nil, errors.New("creator cloud R2 endpoint must be a valid HTTPS URL")
 	}
 	cfg, err := awsconfig.LoadDefaultConfig(context.Background(), awsconfig.WithRegion(vals[1]), awsconfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(vals[3], vals[4], "")))
 	if err != nil {
-		return nil, fmt.Errorf("initialize Creator cloud R2 client: %w", err)
+		return nil, fmt.Errorf("initialize creator cloud R2 client: %w", err)
 	}
 	client := s3.NewFromConfig(cfg, func(o *s3.Options) { o.BaseEndpoint = aws.String(u.String()); o.UsePathStyle = true })
 	svc.objects = &s3Store{client: client, presigner: s3.NewPresignClient(client), bucket: vals[2]}
@@ -151,7 +151,7 @@ func validID(s string) bool {
 		return false
 	}
 	for _, r := range s {
-		if !(r == '-' || r == '_' || r == '.' || r >= '0' && r <= '9' || r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z') {
+		if r != '-' && r != '_' && r != '.' && (r < '0' || r > '9') && (r < 'a' || r > 'z') && (r < 'A' || r > 'Z') {
 			return false
 		}
 	}
@@ -183,7 +183,7 @@ func (s *Service) Snapshot(ctx context.Context, uid int64, kind string, includeD
 	if err != nil {
 		return out, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	for rows.Next() {
 		var r Record
 		if err = rows.Scan(&r.Kind, &r.ClientID, &r.Payload, &r.ClientUpdatedAt, &r.Revision, &r.DeletedAt); err != nil {
@@ -198,7 +198,7 @@ func (s *Service) Snapshot(ctx context.Context, uid int64, kind string, includeD
 	if err != nil {
 		return out, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	for rows.Next() {
 		var o Object
 		if err = rows.Scan(&o.ClientID, &o.Kind, &o.MimeType, &o.SizeBytes, &o.Width, &o.Height, &o.Status, &o.DeletedAt); err != nil {

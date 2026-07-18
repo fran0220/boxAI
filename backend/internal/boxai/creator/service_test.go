@@ -93,7 +93,7 @@ func TestBeginUploadReturnsReadyObjectIdempotentlyAndRejectsContentChange(t *tes
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{presignPutURL: "put"}
 	svc := &Service{db: db, objects: store, enabled: true}
 	input := ObjectInput{Kind: "image", MimeType: "image/png", SizeBytes: 12}
@@ -135,7 +135,7 @@ func TestBeginUploadDoesNotResurrectObjectTombstone(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{presignPutURL: "put"}
 	mock.ExpectBegin()
 	mock.ExpectExec("SELECT pg_advisory_xact_lock").WithArgs(int64(7)).WillReturnResult(sqlmock.NewResult(0, 1))
@@ -162,7 +162,7 @@ func TestSnapshotIncludesRecordAndObjectTombstonesWhenRequested(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	deletedAt := time.Now().UTC().Truncate(time.Microsecond)
 	mock.ExpectQuery("SELECT kind,client_id,payload,client_updated_at,revision,deleted_at FROM boxai_creator_records").
 		WithArgs(int64(42), "image_task", true).
@@ -190,7 +190,7 @@ func TestPutRecordTreatsStaleReplayAsSuccessfulNoop(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	at := time.Now().UTC().Add(-time.Minute).Truncate(time.Microsecond)
 	payload := []byte(`{"ok":true}`)
 	mock.ExpectBegin()
@@ -219,7 +219,7 @@ func TestDeleteObjectTombstonesMetadataBeforeR2AndRemainsRetryable(t *testing.T)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{deleteErr: errors.New("r2 unavailable")}
 	mock.ExpectQuery("UPDATE boxai_creator_objects SET deleted_at=COALESCE").
 		WithArgs(int64(9), "image-1").
@@ -256,7 +256,7 @@ func TestDeleteObjectDoesNotTouchR2WhenTombstoneWriteFails(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{}
 	mock.ExpectQuery("UPDATE boxai_creator_objects SET deleted_at=COALESCE").
 		WithArgs(int64(9), "image-1").
@@ -275,7 +275,7 @@ func TestCompleteDoesNotReportReadyWhenConcurrentTombstoneWins(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{headSize: 12}
 	mock.ExpectQuery("SELECT client_id,kind,mime_type,size_bytes").WithArgs(int64(6), "image-1").
 		WillReturnRows(sqlmock.NewRows([]string{"client_id", "kind", "mime_type", "size_bytes", "width", "height", "status", "object_key"}).
@@ -296,7 +296,7 @@ func TestCreatorQuotasRejectBeforeMutationOrPresign(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{presignPutURL: "put"}
 	svc := &Service{db: db, objects: store, enabled: true}
 
@@ -330,7 +330,7 @@ func TestCleanupStalePendingTombstonesThenPurgesR2(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	store := &fakeObjectStore{}
 	cutoff := time.Now().UTC().Add(-pendingObjectTTL)
 	mock.ExpectQuery("SELECT user_id,client_id FROM boxai_creator_objects").WithArgs(cutoff, pendingCleanupBatch).

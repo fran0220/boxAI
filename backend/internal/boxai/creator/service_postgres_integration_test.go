@@ -22,7 +22,7 @@ func TestCreatorPostgresMigrationIsolationAndTombstones(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	ctx, cancel := context.WithTimeout(t.Context(), 30*time.Second)
 	defer cancel()
 	if _, err = db.ExecContext(ctx, `
