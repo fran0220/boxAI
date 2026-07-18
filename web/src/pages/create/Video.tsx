@@ -1,8 +1,7 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   CircleAlert,
-  Clapperboard,
   Download,
   ImagePlus,
   Loader2,
@@ -14,6 +13,11 @@ import {
   X,
 } from 'lucide-react'
 import { videoGenerations, videoStatus, ApiError } from '@/lib/api'
+import {
+  listAvailableChannels,
+  type AvailableChannel,
+  type UserSupportedModelPricing,
+} from '@/lib/customer-api'
 import {
   addAsset,
   listAssets,
@@ -27,6 +31,36 @@ import { cx } from '@/lib/cx'
 import { ModelPicker } from './components/ModelPicker'
 
 type JobStatus = 'queued' | 'processing' | 'succeeded' | 'failed'
+
+/** Duration badge only when media metadata yields a real duration. */
+function VideoThumb({ src }: { src: string }) {
+  const [durationLabel, setDurationLabel] = useState<string | null>(null)
+  return (
+    <div className="relative flex aspect-video items-center justify-center bg-[var(--bx-bg-muted)]">
+      <video
+        src={src}
+        preload="metadata"
+        muted
+        className="absolute inset-0 h-full w-full object-cover"
+        onLoadedMetadata={(e) => {
+          const sec = e.currentTarget.duration
+          if (!Number.isFinite(sec) || sec <= 0) return
+          const m = Math.floor(sec / 60)
+          const s = Math.floor(sec % 60)
+          setDurationLabel(`${m}:${String(s).padStart(2, '0')}`)
+        }}
+      />
+      <span className="bx-media-overlay relative z-[1] flex h-[38px] w-[38px] items-center justify-center rounded-lg">
+        <Play size={15} fill="currentColor" />
+      </span>
+      {durationLabel ? (
+        <span className="absolute bottom-2 right-2 z-[1] rounded bg-[rgba(2,4,5,0.6)] px-[7px] py-0.5 font-mono text-[9.5px] text-white/90">
+          {durationLabel}
+        </span>
+      ) : null}
+    </div>
+  )
+}
 
 interface VideoJob {
   localId: string
@@ -55,6 +89,32 @@ function extractUrl(data: Record<string, unknown>): string {
   return ''
 }
 
+/** Real unit price only — never invent design placeholders like $0.28. */
+function formatUnitPrice(p: UserSupportedModelPricing | null | undefined): string | null {
+  if (!p) return null
+  const unit = p.per_request_price ?? p.image_output_price
+  if (unit == null || Number.isNaN(Number(unit))) return null
+  const n = Number(unit)
+  if (n >= 1) return `$${n.toFixed(2)}`
+  if (n >= 0.01) return `$${n.toFixed(2)}`
+  return `$${n.toFixed(4)}`
+}
+
+function findModelUnitPrice(channels: AvailableChannel[], modelId: string): string | null {
+  const want = modelId.toLowerCase()
+  for (const ch of channels) {
+    for (const section of ch.platforms || []) {
+      for (const m of section.supported_models || []) {
+        if ((m.name || '').toLowerCase() === want) {
+          const label = formatUnitPrice(m.pricing)
+          if (label) return label
+        }
+      }
+    }
+  }
+  return null
+}
+
 export function VideoGen() {
   const { d } = useI18n()
   const location = useLocation()
@@ -67,8 +127,11 @@ export function VideoGen() {
   const [busy, setBusy] = useState(false)
   const [jobs, setJobs] = useState<VideoJob[]>([])
   const [history, setHistory] = useState<AssetRecord[]>([])
+  /** Real per-request price for selected model when channels API exposes it. */
+  const [modelPrice, setModelPrice] = useState<string | null>(null)
   const timersRef = useRef<Map<string, number>>(new Map())
   const fileRef = useRef<HTMLInputElement>(null)
+  const channelsCacheRef = useRef<AvailableChannel[] | null>(null)
 
   useEffect(() => {
     void listAssets('video').then(setHistory)
@@ -78,6 +141,35 @@ export function VideoGen() {
       timers.clear()
     }
   }, [])
+
+  // Optional cost line: only when available-channels returns a real unit price.
+  useEffect(() => {
+    if (!model) {
+      setModelPrice(null)
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      try {
+        if (!channelsCacheRef.current) {
+          channelsCacheRef.current = await listAvailableChannels()
+        }
+        if (cancelled) return
+        setModelPrice(findModelUnitPrice(channelsCacheRef.current || [], model))
+      } catch {
+        if (!cancelled) setModelPrice(null)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [model])
+
+  const generateHint = useMemo(() => {
+    const asyncHint = d.create.video.asyncHint
+    if (modelPrice) return `≈ ${modelPrice} · ${asyncHint}`
+    return asyncHint
+  }, [d.create.video.asyncHint, modelPrice])
 
   // Cross-module handoff: "Make video" on an image passes { frame, prompt }.
   useEffect(() => {
@@ -234,32 +326,27 @@ export function VideoGen() {
   }
 
   return (
-    <div className="bx-create-scroll flex-1">
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(280px,360px)_1fr]">
-        {/* Composer */}
+    <div className="bx-create-scroll">
+      <div className="bx-create-page bx-create-page--video">
+        {/* Composer — design: sticky left form 340px */}
         <form
           onSubmit={onSubmit}
-          className="bx-create-panel h-fit space-y-4 p-5 lg:sticky lg:top-4"
+          className="bx-create-panel h-fit space-y-3.5 p-[18px] lg:sticky lg:top-4"
         >
-          <h1 className="bx-create-panel-title">
-            <span className="bx-icon-box !h-9 !w-9">
-              <Clapperboard size={16} />
-            </span>
-            {d.create.video.title}
-          </h1>
+          <h1 className="bx-create-panel-title">{d.create.video.title}</h1>
 
           <div>
-            <label className="bx-label">{d.create.model.label}</label>
+            <label className="bx-create-field-label">{d.create.model.label}</label>
             <ModelPicker value={model} onChange={setModel} kind="video" />
           </div>
 
           <div>
-            <label className="bx-label" htmlFor="vid-prompt">
-              {d.create.video.title}
+            <label className="bx-create-field-label" htmlFor="vid-prompt">
+              {d.create.video.promptLabel}
             </label>
             <textarea
               id="vid-prompt"
-              className="bx-input min-h-[120px] text-sm"
+              className="bx-input min-h-[104px] text-[13px] leading-relaxed"
               placeholder={d.create.video.promptPlaceholder}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -268,7 +355,6 @@ export function VideoGen() {
           </div>
 
           <div>
-            <label className="bx-label">{d.create.video.firstFrame}</label>
             <input
               ref={fileRef}
               type="file"
@@ -277,13 +363,13 @@ export function VideoGen() {
               onChange={(e) => void onPickFrame(e.target.files?.[0])}
             />
             {frameUrl ? (
-              <div className="bx-thumb-selected flex items-center gap-3 rounded-[var(--bx-radius-md)] p-2">
+              <div className="bx-thumb-selected flex items-center gap-3 rounded-[7px] p-2">
                 <img
                   src={frameUrl}
                   alt=""
                   className="h-12 w-12 rounded-[var(--bx-radius-sm)] object-cover"
                 />
-                <p className="min-w-0 flex-1 text-xs text-[var(--bx-teal-bright)]">
+                <p className="min-w-0 flex-1 text-xs text-[var(--bx-brand-bright)]">
                   {d.create.video.firstFrameActive}
                   {frameFromCreator ? (
                     <span className="mt-0.5 block text-[10px] text-[var(--bx-text-dim)]">
@@ -304,121 +390,123 @@ export function VideoGen() {
                 </button>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="bx-dropzone"
-              >
-                <ImagePlus size={15} />
+              <button type="button" onClick={() => fileRef.current?.click()} className="bx-dropzone">
+                <ImagePlus size={13} />
                 {d.create.video.firstFrameAdd}
               </button>
             )}
           </div>
 
-          <button type="submit" disabled={busy || !model} className="bx-btn bx-btn-primary w-full">
+          <button
+            type="submit"
+            disabled={busy || !model}
+            className="bx-btn bx-btn-primary w-full !rounded-[7px] !py-2.5 !text-[13.5px]"
+          >
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
             {d.create.video.generate}
           </button>
+          {/* Design: "≈ $X · 异步任务可并行提交" — $ only when channels API has real unit price */}
+          <p className="bx-create-hint">{generateHint}</p>
         </form>
 
         {/* Jobs + history */}
-        <div className="space-y-6">
+        <div className="flex flex-col gap-3">
           {empty ? (
             <div className="bx-empty-state min-h-[320px]">
-              <span className="bx-icon-box">
-                <Clapperboard size={20} />
-              </span>
               <strong>{d.create.video.emptyTitle}</strong>
               <p className="max-w-sm text-sm leading-relaxed">{d.create.video.emptyBody}</p>
             </div>
           ) : (
             <>
               {jobs.length > 0 && (
-                <section>
-                  <p className="bx-eyebrow mb-3">{d.create.video.jobs}</p>
-                  <div className="space-y-3">
-                    {jobs.map((job) => (
-                      <article key={job.localId} className="bx-create-panel p-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex min-w-0 flex-1 items-center gap-2.5">
-                            {job.frameUrl ? (
-                              <img
-                                src={job.frameUrl}
-                                alt=""
-                                className="h-10 w-10 shrink-0 rounded-[var(--bx-radius-sm)] object-cover"
-                              />
-                            ) : null}
-                            <p className="min-w-0 flex-1 truncate text-sm" title={job.prompt}>
-                              {job.prompt}
-                            </p>
-                          </div>
-                          <span className={statusPillClass(job.status)}>
-                            {job.status === 'queued' || job.status === 'processing' ? (
-                              <Loader2 size={12} className="animate-spin" />
-                            ) : job.status === 'failed' ? (
-                              <CircleAlert size={12} />
-                            ) : (
-                              <Play size={12} />
-                            )}
-                            {statusLabel[job.status]}
-                          </span>
-                        </div>
-                        <p className="mt-1.5 text-xs text-[var(--bx-text-dim)]">
-                          <span className="font-mono">{job.model}</span>
-                          {' · '}
-                          {new Date(job.createdAt).toLocaleTimeString()}
+                <section className="flex flex-col gap-3">
+                  <p className="bx-create-section-label">{d.create.video.jobs}</p>
+                  {jobs.map((job) => (
+                    <article key={job.localId} className="bx-create-panel px-4 py-3.5">
+                      <div className="flex items-center gap-2.5">
+                        {job.status === 'queued' || job.status === 'processing' ? (
+                          <span
+                            className="inline-flex h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-[var(--bx-brand)] border-t-transparent"
+                            aria-hidden
+                          />
+                        ) : job.frameUrl ? (
+                          <img
+                            src={job.frameUrl}
+                            alt=""
+                            className="h-3.5 w-3.5 shrink-0 rounded-sm object-cover"
+                          />
+                        ) : (
+                          <Play size={14} className="shrink-0 text-[var(--bx-text-dim)]" />
+                        )}
+                        <p className="min-w-0 flex-1 truncate text-[13px]" title={job.prompt}>
+                          {job.prompt}
                         </p>
-                        {job.error ? (
-                          <div className="mt-3 flex items-center gap-2">
-                            <p className="bx-text-danger min-w-0 flex-1 text-xs">{job.error}</p>
-                            <button
-                              type="button"
-                              className="bx-btn bx-btn-ghost bx-btn-sm"
-                              onClick={() => retryJob(job)}
-                            >
-                              <RefreshCw size={12} />
-                              {d.create.job.retry}
-                            </button>
-                          </div>
-                        ) : null}
-                        {job.url ? (
-                          <div className="mt-3 space-y-2">
-                            <video
-                              src={job.url}
-                              controls
-                              className="w-full rounded-[var(--bx-radius-md)]"
-                            />
-                            <a
-                              href={job.url}
-                              download
-                              target="_blank"
-                              rel="noopener"
-                              className="bx-btn bx-btn-ghost bx-btn-sm"
-                            >
-                              <Download size={13} />
-                              {d.common.download}
-                            </a>
-                          </div>
-                        ) : null}
-                      </article>
-                    ))}
-                  </div>
+                        <span className={statusPillClass(job.status)}>
+                          {job.status === 'failed' ? <CircleAlert size={12} /> : null}
+                          {statusLabel[job.status]}
+                        </span>
+                      </div>
+                      {(job.status === 'queued' || job.status === 'processing') && (
+                        <div className="bx-create-job-progress" aria-hidden>
+                          <div className="bx-create-job-progress-fill" />
+                        </div>
+                      )}
+                      <p className="mt-2 font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+                        {job.model}
+                        {' · '}
+                        {new Date(job.createdAt).toLocaleTimeString()}
+                        {job.frameUrl ? ' · i2v' : ''}
+                      </p>
+                      {job.error ? (
+                        <div className="mt-3 flex items-center gap-2">
+                          <p className="bx-text-danger min-w-0 flex-1 text-xs">{job.error}</p>
+                          <button
+                            type="button"
+                            className="bx-btn bx-btn-ghost bx-btn-sm"
+                            onClick={() => retryJob(job)}
+                          >
+                            <RefreshCw size={12} />
+                            {d.create.job.retry}
+                          </button>
+                        </div>
+                      ) : null}
+                      {job.url ? (
+                        <div className="mt-3 space-y-2">
+                          <video
+                            src={job.url}
+                            controls
+                            className="w-full rounded-[var(--bx-radius-md)]"
+                          />
+                          <a
+                            href={job.url}
+                            download
+                            target="_blank"
+                            rel="noopener"
+                            className="bx-btn bx-btn-ghost bx-btn-sm"
+                          >
+                            <Download size={13} />
+                            {d.common.download}
+                          </a>
+                        </div>
+                      ) : null}
+                    </article>
+                  ))}
                 </section>
               )}
 
               {history.length > 0 && (
-                <section>
-                  <p className="bx-eyebrow mb-3">{d.create.video.history}</p>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                <section className="flex flex-col gap-3">
+                  <p className={cx('bx-create-section-label', jobs.length > 0 && 'mt-2')}>
+                    {d.create.video.history}
+                  </p>
+                  <div className="bx-create-video-history-grid">
                     {history.map((asset) => (
-                      <article key={asset.id} className="bx-create-panel overflow-hidden p-3">
-                        <video
-                          src={asset.payload}
-                          controls
-                          className="w-full rounded-[var(--bx-radius-sm)]"
-                          preload="metadata"
-                        />
-                        <div className="mt-2.5 flex items-center gap-1">
+                      <article
+                        key={asset.id}
+                        className="bx-create-panel overflow-hidden transition-[border-color] duration-[var(--bx-dur-fast)] hover:border-[var(--bx-brand-ring)]"
+                      >
+                        <VideoThumb src={asset.payload} />
+                        <div className="flex items-center gap-1.5 px-3 py-2.5">
                           <p
                             className="min-w-0 flex-1 truncate text-xs text-[var(--bx-text-muted)]"
                             title={asset.title}
@@ -430,16 +518,18 @@ export function VideoGen() {
                             className={cx(
                               'rounded-[var(--bx-radius-sm)] p-1.5 transition-colors',
                               asset.favorite
-                                ? 'text-[var(--bx-teal-bright)]'
-                                : 'text-[var(--bx-text-dim)] hover:text-[var(--bx-teal-bright)]',
+                                ? 'text-[var(--bx-brand-bright)]'
+                                : 'text-[var(--bx-text-dim)] hover:text-[var(--bx-brand-bright)]',
                             )}
                             onClick={() => void toggleFavorite(asset)}
                             aria-label={
-                              asset.favorite ? d.create.actions.unfavorite : d.create.actions.favorite
+                              asset.favorite
+                                ? d.create.actions.unfavorite
+                                : d.create.actions.favorite
                             }
                           >
                             <Star
-                              size={13}
+                              size={12}
                               className={asset.favorite ? 'fill-current' : undefined}
                             />
                           </button>
@@ -451,7 +541,7 @@ export function VideoGen() {
                             className="rounded-[var(--bx-radius-sm)] p-1.5 text-[var(--bx-text-dim)] transition-colors hover:text-[var(--bx-text)]"
                             aria-label={d.common.download}
                           >
-                            <Download size={13} />
+                            <Download size={12} />
                           </a>
                           <button
                             type="button"
@@ -459,7 +549,7 @@ export function VideoGen() {
                             onClick={() => void deleteAsset(asset)}
                             aria-label={d.common.delete}
                           >
-                            <Trash2 size={13} />
+                            <Trash2 size={12} />
                           </button>
                         </div>
                       </article>

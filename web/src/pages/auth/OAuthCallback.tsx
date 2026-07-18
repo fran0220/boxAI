@@ -7,6 +7,7 @@ import {
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
 import { Spinner } from '@/components/ui/Spinner'
+import { AuthSplitLayout } from './AuthSplitLayout'
 
 /**
  * Apex OAuth completion page.
@@ -45,7 +46,7 @@ export function OAuthCallback() {
       }
 
       // Shared promise: first mount runs exchange; StrictMode remount reuses it.
-      const outcome = await runOAuthCallbackOnce(frag, { defaultRedirect: '/account' })
+      const outcome = await runOAuthCallbackOnce(frag, { defaultRedirect: '/app' })
       if (cancelled) return
 
       if (outcome.kind === 'authenticated') {
@@ -71,27 +72,32 @@ export function OAuthCallback() {
   }, [navigate, t.oauthFailed, t.oauthPendingUnsupported])
 
   return (
-    <div className="mx-auto flex min-h-[50vh] max-w-md flex-col justify-center px-4 py-14 text-center sm:px-6">
+    <AuthSplitLayout
+      title={phase === 'error' ? t.oauthFailedTitle : t.oauthCallbackTitle}
+      subtitle={phase === 'error' ? undefined : t.oauthCallbackHint}
+    >
       {phase === 'error' ? (
-        <>
-          <h1 className="bx-display text-xl font-bold">{t.oauthFailedTitle}</h1>
-          <p className="bx-text-danger mt-3 text-sm">{error || t.oauthFailed}</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/login" className="bx-btn bx-btn-primary">
-              {d.auth.backToLogin}
-            </Link>
-            <Link to="/signup" className="bx-btn bx-btn-ghost">
-              {d.auth.signupTitle}
-            </Link>
-          </div>
-        </>
+        <div className="bx-auth-fields">
+          <p className="bx-auth-error">{error || t.oauthFailed}</p>
+          <Link to="/login" className="bx-auth-cta">
+            {d.auth.backToLogin}
+          </Link>
+          <Link to="/signup" className="bx-auth-oauth-btn w-full">
+            {d.auth.signupTitle}
+          </Link>
+        </div>
       ) : (
-        <>
-          <Spinner className="mx-auto" />
-          <h1 className="bx-display mt-4 text-xl font-bold">{t.oauthCallbackTitle}</h1>
-          <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.oauthCallbackHint}</p>
-        </>
+        <div className="bx-auth-fields items-center py-6 text-center">
+          <Spinner />
+          <p className="bx-auth-hint">{t.oauthCallbackHint}</p>
+        </div>
       )}
-    </div>
+
+      {phase === 'error' ? (
+        <p className="bx-auth-switch">
+          {t.switchNoAccount} <Link to="/signup">{t.switchFreeSignup}</Link>
+        </p>
+      ) : null}
+    </AuthSplitLayout>
   )
 }

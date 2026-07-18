@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font); overflow-x: hidden;">
+  <dc-import name="HeaderV2" active="studio" hint-size="100%,56px"></dc-import>
+
+  <!-- Hero -->
+  <section data-screen-label="Studio Hero" style="position: relative; border-bottom: 1px solid var(--bx-border);">
+    <div aria-hidden="true" style="pointer-events: none; position: absolute; inset: 0; background-image: linear-gradient(var(--bx-line) 1px, transparent 1px), linear-gradient(90deg, var(--bx-line) 1px, transparent 1px); background-size: 56px 56px; -webkit-mask-image: radial-gradient(ellipse 80% 90% at 50% 10%, #000 25%, transparent 90%); mask-image: radial-gradient(ellipse 80% 90% at 50% 10%, #000 25%, transparent 90%);"></div>
+    <div style="position: relative; margin-inline: auto; display: grid; max-width: 1200px; align-items: center; gap: 48px; padding: 72px 24px 64px; grid-template-columns: 0.95fr 1.05fr;">
+      <div>
+        <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0; animation: bx-rise 0.7s var(--bx-ease) both;">
+          <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+          BoxAI Studio
+        </p>
+        <h1 style="margin: 18px 0 0; font-size: clamp(38px, 4.2vw, 56px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.08; animation: bx-rise 0.7s var(--bx-ease) 0.06s both;">
+          你的 AI Agent，<br>
+          <span style="background: var(--bx-grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent;">跑在你自己的电脑上</span>
+        </h1>
+        <p style="margin: 20px 0 0; max-width: 440px; font-size: 15px; line-height: 1.7; color: var(--bx-text-muted); animation: bx-rise 0.7s var(--bx-ease) 0.12s both;">执行任务、读写文件、运行命令，配合 Skills、MCP 与长期记忆；桌面在线时可从任意浏览器远程接管。</p>
+        <div style="margin-top: 30px; display: flex; align-items: center; gap: 12px; animation: bx-rise 0.7s var(--bx-ease) 0.18s both;">
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; border-radius: var(--bx-radius-btn); padding: 11px 24px; font-weight: 700; font-size: 14.5px; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta); transition: transform var(--bx-dur-fast) var(--bx-ease);" style-hover="color: var(--bx-ink); transform: translateY(-2px);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+            下载桌面端
+          </a>
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; border-radius: var(--bx-radius-btn); padding: 11px 24px; font-weight: 700; font-size: 14.5px; border: 1px solid var(--bx-border-strong); color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">
+            浏览器版
+            <span style="border-radius: 4px; background: var(--bx-brand-soft); padding: 2px 7px; font-family: var(--bx-font-mono); font-size: 9.5px; font-weight: 600; color: var(--bx-brand);">即将上线</span>
+          </a>
+        </div>
+        <p style="margin: 18px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim); animation: bx-rise 0.7s var(--bx-ease) 0.24s both;">v0.4.2 · macOS / Windows / Linux · GitHub Releases</p>
+      </div>
+
+      <!-- Terminal visual -->
+      <div style="position: relative; animation: bx-scale-in 0.9s var(--bx-ease) 0.2s both;">
+        <div style="overflow: hidden; border-radius: var(--bx-radius-xl); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-deep); box-shadow: var(--bx-shadow-pop);">
+          <div style="display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--bx-border); padding: 10px 14px;">
+            <span style="height: 10px; width: 10px; border-radius: 50%; background: #ff5f57;"></span>
+            <span style="height: 10px; width: 10px; border-radius: 50%; background: #febc2e;"></span>
+            <span style="height: 10px; width: 10px; border-radius: 50%; background: #28c840;"></span>
+            <span style="font-family: var(--bx-font-mono); margin-left: 8px; font-size: 11px; color: var(--bx-text-dim);">boxai studio — agent session</span>
+            <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor; animation: bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></span>remote: on</span>
+          </div>
+          <div style="padding: 18px 20px; font-family: var(--bx-font-mono); font-size: 12.5px; line-height: 2;">
+            <div><span style="color: var(--bx-text-dim);">$</span> <span style="color: var(--bx-text-soft);">boxai agent run "整理下载目录并生成周报"</span></div>
+            <div><span style="color: var(--bx-success);">✓</span> <span style="color: var(--bx-text-muted);">signed in as creator@you-box.com · gateway ready</span></div>
+            <div><span style="color: var(--bx-brand);">→</span> <span style="color: var(--bx-text-muted);">scan</span> <span style="color: var(--bx-cyan);">~/Downloads</span> <span style="color: var(--bx-text-dim);">(214 files)</span></div>
+            <div><span style="color: var(--bx-brand);">→</span> <span style="color: var(--bx-text-muted);">skill:</span> <span style="color: var(--bx-brand-bright);">file-organizer</span> <span style="color: var(--bx-text-dim);">· mcp: filesystem</span></div>
+            <div><span style="color: var(--bx-brand);">→</span> <span style="color: var(--bx-text-muted);">write</span> <span style="color: var(--bx-cyan);">~/Reports/weekly-0717.md</span></div>
+            <div><span style="color: var(--bx-success);">✓</span> <span style="color: var(--bx-text-soft);">done in 42s · 用量 $0.031 已计入共享余额</span><span style="display: inline-block; width: 7px; height: 1.1em; vertical-align: text-bottom; background: var(--bx-brand); animation: bx-caret 1s ease infinite; margin-left: 6px;"></span></div>
+          </div>
+        </div>
+        <div aria-hidden="true" style="position: absolute; bottom: -16px; right: -14px; display: flex; align-items: center; gap: 10px; border-radius: 10px; border: 1px solid var(--bx-border-strong); background: var(--bx-bg-card); box-shadow: var(--bx-shadow-pop); padding: 10px 14px; white-space: nowrap; animation: bx-float 7s var(--bx-ease-inout) infinite;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+          <span>
+            <span style="display: block; font-size: 10px; color: var(--bx-text-dim);">浏览器远程接管</span>
+            <span style="display: block; font-family: var(--bx-font-mono); font-size: 11.5px; font-weight: 600;">studio.you-box.com</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features strip -->
+  <section data-screen-label="Studio 特性" style="margin-inline: auto; max-width: 1200px; padding: 72px 24px;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+      <sc-for list="{{ features }}" as="f" hint-placeholder-count="4">
+        <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 20px; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <span style="display: flex; height: 30px; width: 30px; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-brand-soft); color: var(--bx-brand);">{{ f.icon }}</span>
+          <h3 style="margin: 14px 0 0; font-size: 15px; font-weight: 800; letter-spacing: -0.02em;">{{ f.title }}</h3>
+          <p style="margin: 7px 0 0; font-size: 13px; line-height: 1.65; color: var(--bx-text-muted);">{{ f.body }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section data-screen-label="下载" style="border-top: 1px solid var(--bx-border); background: color-mix(in srgb, var(--bx-bg-elevated) 55%, transparent);">
+    <div style="margin-inline: auto; display: grid; max-width: 1200px; gap: 40px; padding: 72px 24px; grid-template-columns: 0.9fr 1.1fr; align-items: center;">
+      <div>
+        <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+          <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+          Download
+        </p>
+        <h2 style="margin: 14px 0 0; font-size: 32px; font-weight: 800; letter-spacing: -0.03em;">下载 BoxAI Studio</h2>
+        <p style="margin: 14px 0 0; max-width: 400px; font-size: 14px; line-height: 1.7; color: var(--bx-text-muted);">安装包发布于 GitHub Releases，安装后使用 BoxAI 账户一键登录（浏览器 PKCE 授权，无需复制密钥）。</p>
+        <div style="margin-top: 24px; border-radius: var(--bx-radius-lg); padding: 1.5px; background: var(--bx-grad-border); background-size: 300% auto; animation: bx-borderflow 8s linear infinite; width: fit-content;">
+          <a href="#" style="display: inline-flex; align-items: center; gap: 10px; border-radius: 11px; background: var(--bx-bg-deep); padding: 12px 22px; font-weight: 700; font-size: 14.5px; color: var(--bx-text);" style-hover="color: var(--bx-brand-bright);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"></path><path d="M10 2c1 .5 2 2 2 5"></path></svg>
+            为你的设备推荐 · macOS (.dmg)
+            <span style="font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">v0.4.2</span>
+          </a>
+        </div>
+      </div>
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+        <sc-for list="{{ downloads }}" as="d" hint-placeholder-count="6">
+          <div style="display: grid; grid-template-columns: 110px 1fr auto; gap: 16px; align-items: center; padding: 12px 20px; border-top: 1px solid var(--bx-line); transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;"><span style="color: var(--bx-brand); display: inline-flex;">{{ d.icon }}</span>{{ d.os }}</span>
+            <span style="font-family: var(--bx-font-mono); font-size: 12px; color: var(--bx-text-muted);">{{ d.file }}</span>
+            <a href="#" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">
+              下载
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+            </a>
+          </div>
+        </sc-for>
+        <p style="margin: 0; padding: 10px 20px; border-top: 1px solid var(--bx-line); font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">macOS 首次打开如被拦截 → 系统设置 · 隐私与安全性 · 允许；Linux AppImage 需 chmod +x</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section data-screen-label="Studio FAQ" style="margin-inline: auto; max-width: 1200px; padding: 72px 24px 96px;">
+    <div style="display: grid; grid-template-columns: 0.8fr 2.2fr; gap: 40px;">
+      <div>
+        <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+          <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+          FAQ
+        </p>
+        <h2 style="margin: 14px 0 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em;">常见问题</h2>
+      </div>
+      <div style="border-top: 1px solid var(--bx-border);">
+        <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="4">
+          <div style="border-bottom: 1px solid var(--bx-border);">
+            <button onClick="{{ item.toggle }}" aria-expanded="{{ item.open }}" style="display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 4px; text-align: left; background: transparent; border: none; cursor: pointer; color: var(--bx-text); font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -0.01em;" style-hover="color: var(--bx-brand-bright);">
+              <span style="display: flex; align-items: baseline; gap: 14px;"><span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">{{ item.num }}</span>{{ item.q }}</span>
+              <span style="flex-shrink: 0; color: var(--bx-text-dim); display: inline-flex; transition: transform var(--bx-dur) var(--bx-ease); transform: {{ item.chev }};">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              </span>
+            </button>
+            <div style="overflow: hidden; transition: max-height var(--bx-dur-med) var(--bx-ease), opacity var(--bx-dur-med) var(--bx-ease); max-height: {{ item.maxH }}; opacity: {{ item.opacity }};">
+              <p style="margin: 0; padding: 0 32px 20px 33px; font-size: 13.5px; line-height: 1.75; color: var(--bx-text-muted); max-width: 640px;">{{ item.a }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <dc-import name="FooterV2" hint-size="100%,360px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { faqOpen: 0 };
+  renderVals() {
+    const icon = (paths, size) => React.createElement('svg', { width: size || 15, height: size || 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', dangerouslySetInnerHTML: { __html: paths } });
+    const apple = '<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>';
+    const win = '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="M10 4v16"/><path d="M2 12h20"/>';
+    const term = '<polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>';
+    const faqs = [
+      { q: 'Studio 收费吗？', a: '应用本身免费，模型调用按账户余额计费，与创作台一致。' },
+      { q: '如何登录？', a: '应用内点击登录会打开浏览器完成账户授权（PKCE），授权后自动返回应用，全程无需复制密钥。' },
+      { q: '浏览器版怎么用？', a: '浏览器版依赖桌面端在线：桌面 App 连接远程网关后，你可以在任意浏览器登录同一账户远程接管。官方托管网关正在建设中，上线前可按文档自托管。' },
+      { q: '如何更新？', a: '新版本发布在 GitHub Releases，应用内也会提示更新；下载安装包覆盖安装即可。' },
+    ];
+    return {
+      features: [
+        { title: '本地 Agent 运行时', body: '在你的机器上执行任务、读写文件、运行命令，数据不离开本地。', icon: icon('<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>') },
+        { title: 'Skills · MCP · 记忆', body: '安装技能包、接入 MCP 工具服务器，配合跨会话长期记忆持续进化。', icon: icon('<path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/>') },
+        { title: '账户一键登录', body: '浏览器 PKCE 安全授权，与创作台、API 共享同一账户余额与网关。', icon: icon('<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>') },
+        { title: '浏览器远程接管', body: '桌面在线时，从任意浏览器打开同一个工作台继续对话与管理。', icon: icon('<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>') },
+      ],
+      downloads: [
+        { os: 'macOS', file: 'BoxAI-Studio-0.4.2-arm64.dmg', icon: icon(apple, 14) },
+        { os: 'macOS', file: 'BoxAI-Studio-0.4.2-x64.dmg', icon: icon(apple, 14) },
+        { os: 'Windows', file: 'BoxAI-Studio-Setup-0.4.2.exe', icon: icon(win, 14) },
+        { os: 'Windows', file: 'BoxAI-Studio-0.4.2-portable.zip', icon: icon(win, 14) },
+        { os: 'Linux', file: 'BoxAI-Studio-0.4.2.AppImage', icon: icon(term, 14) },
+        { os: 'Linux', file: 'boxai-studio_0.4.2_amd64.deb / .rpm', icon: icon(term, 14) },
+      ],
+      faqItems: faqs.map((f, i) => {
+        const open = this.state.faqOpen === i;
+        return {
+          num: '0' + (i + 1), q: f.q, a: f.a, open: open,
+          chev: open ? 'rotate(45deg)' : 'rotate(0deg)',
+          maxH: open ? '200px' : '0px',
+          opacity: open ? '1' : '0',
+          toggle: () => this.setState({ faqOpen: open ? -1 : i }),
+        };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>

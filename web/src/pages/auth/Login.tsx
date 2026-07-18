@@ -15,8 +15,8 @@ import { safeReturnPath } from '@/lib/safe-return'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
 import { useAuth } from '@/lib/use-auth'
-import { BRAND_LOGO_SVG } from '@/lib/brand'
 import { Spinner } from '@/components/ui/Spinner'
+import { AuthSplitLayout } from './AuthSplitLayout'
 
 const EMPTY_OAUTH: OAuthLoginFlags = {
   linuxdo: false,
@@ -38,7 +38,7 @@ export function Login() {
   const { status } = useAuth()
 
   const state = location.state as { from?: string } | null
-  const returnTo = safeReturnPath(state?.from || params.get('return_to'), '/account')
+  const returnTo = safeReturnPath(state?.from || params.get('return_to'), '/app')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -85,7 +85,7 @@ export function Login() {
 
   if (status === 'bootstrapping' || status === 'authenticated') {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--bx-bg)]">
         <Spinner />
       </div>
     )
@@ -118,20 +118,24 @@ export function Login() {
     window.location.href = buildOAuthLoginStartURL(provider, returnTo)
   }
 
-  return (
-    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center px-4 py-14 sm:px-6">
-      <div className="mb-8 text-center">
-        <img src={BRAND_LOGO_SVG} alt="" className="mx-auto h-10 w-10" />
-        <h1 className="bx-display mt-4 text-2xl font-bold">{d.auth.loginTitle}</h1>
-        <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.loginSubtitle}</p>
-      </div>
+  const signupHref =
+    returnTo && returnTo !== '/app'
+      ? `/signup?return_to=${encodeURIComponent(returnTo)}`
+      : '/signup'
 
-      <form onSubmit={onSubmit} className="bx-card space-y-4 p-6">
+  return (
+    <AuthSplitLayout
+      activeTab="login"
+      title={tempToken ? t.verify2faTitle : t.welcomeBack}
+      subtitle={tempToken ? t.verify2faSubtitle : t.loginSubtitle}
+      returnTo={returnTo}
+    >
+      <form onSubmit={onSubmit} className="bx-auth-fields">
         {tempToken ? (
-          <label className="block text-sm">
-            <span className="text-[var(--bx-text-muted)]">{t.totp}</span>
+          <label className="bx-auth-label">
+            <span className="bx-auth-label-text">{t.totp}</span>
             <input
-              className="bx-input mt-1 w-full tracking-widest"
+              className="bx-auth-input tracking-widest"
               value={totp}
               onChange={(e) => setTotp(e.target.value)}
               inputMode="numeric"
@@ -139,70 +143,72 @@ export function Login() {
               maxLength={6}
               required
               autoFocus
+              placeholder="000000"
             />
           </label>
         ) : (
           <>
-            <label className="block text-sm">
-              <span className="text-[var(--bx-text-muted)]">{t.email}</span>
+            <label className="bx-auth-label">
+              <span className="bx-auth-label-text">{t.email}</span>
               <input
                 type="email"
-                className="bx-input mt-1 w-full"
+                className="bx-auth-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                placeholder="you@example.com"
               />
             </label>
-            <label className="block text-sm">
-              <span className="text-[var(--bx-text-muted)]">{t.password}</span>
+            <label className="bx-auth-label">
+              <span className="bx-auth-label-row">
+                <span>{t.password}</span>
+                <Link to="/forgot-password" className="bx-auth-forgot">
+                  {t.forgot}
+                </Link>
+              </span>
               <input
                 type="password"
-                className="bx-input mt-1 w-full"
+                className="bx-auth-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
+                placeholder="••••••••"
               />
             </label>
           </>
         )}
-        {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
-        <button type="submit" className="bx-btn bx-btn-primary w-full" disabled={busy}>
+        {error ? <p className="bx-auth-error">{error}</p> : null}
+        <button type="submit" className="bx-auth-cta" disabled={busy}>
           {busy ? d.common.loading : tempToken ? t.verify2fa : t.login}
         </button>
       </form>
 
       {!tempToken && oauthReady && anyOAuthLoginEnabled(oauth) ? (
-        <div className="mt-6 space-y-3">
-          <div className="flex items-center gap-3 text-xs text-[var(--bx-text-dim)]">
-            <div className="h-px flex-1 bg-[var(--bx-border)]" />
-            <span>{t.oauthOrContinue}</span>
-            <div className="h-px flex-1 bg-[var(--bx-border)]" />
-          </div>
-          <div className="space-y-2">
+        <div className="bx-auth-oauth">
+          <div className="bx-auth-oauth-sep">{t.oauthOrContinue}</div>
+          <div className="bx-auth-oauth-grid">
             {oauthButtons.map((btn) => (
               <button
                 key={btn.provider}
                 type="button"
-                className="bx-btn bx-btn-ghost w-full"
+                className="bx-auth-oauth-btn"
                 onClick={() => startOAuth(btn.provider)}
               >
-                {t.oauthContinueWith.replace('{provider}', btn.label)}
+                {btn.label}
               </button>
             ))}
           </div>
         </div>
       ) : null}
 
-      <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-[var(--bx-text-muted)]">
-        <Link to={`/signup?return_to=${encodeURIComponent(returnTo)}`} className="hover:text-[var(--bx-text)]">
-          {t.toSignup}
-        </Link>
-        <Link to="/forgot-password" className="hover:text-[var(--bx-text)]">
-          {t.forgot}
-        </Link>
-      </div>
-    </div>
+      {!tempToken ? (
+        <p className="bx-auth-switch">
+          {t.switchNoAccount}{' '}
+          <Link to={signupHref}>{t.switchFreeSignup}</Link>
+        </p>
+      ) : null}
+    </AuthSplitLayout>
   )
 }

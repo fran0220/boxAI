@@ -1,22 +1,25 @@
 /* Vendored gpt_image_playground styles — scoped for BoxAI Creator embed.
  * Tailwind utilities come from web/src/index.css (single PostCSS pipeline).
  * Source: https://github.com/CookSleep/gpt_image_playground (MIT)
+ * BOXAI skin: Precision Teal — map HSL tokens to --bx-*; keep core logic intact.
  */
 
 /* Portaled modals attach to body; keep tokens on html.dark as well. */
 html.dark {
-  --background: 210 14% 4%;
-  --foreground: 210 20% 96%;
-  --muted: 210 10% 12%;
-  --muted-foreground: 215 10% 65%;
-  --border: 210 10% 16%;
-  --input: 210 10% 16%;
-  --primary: 168 76% 42%;
-  --primary-foreground: 168 40% 6%;
-  --sidebar: 210 12% 8%;
-  --sidebar-foreground: 210 20% 96%;
-  --font-ui-sans: var(--bx-font, 'Noto Sans SC', 'Space Grotesk', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
-  --font-mono: var(--bx-font-mono, 'SF Mono', Menlo, Consolas, monospace);
+  /* Surfaces aligned to --bx-bg / --bx-bg-card / --bx-border */
+  --background: 210 25% 3%;
+  --foreground: 180 20% 96%;
+  --muted: 210 18% 9%;
+  --muted-foreground: 190 10% 62%;
+  --border: 200 12% 16%;
+  --input: 200 12% 16%;
+  --primary: 171 74% 45%;
+  --primary-foreground: 168 80% 8%;
+  --sidebar: 210 20% 5%;
+  --sidebar-foreground: 180 20% 96%;
+  --font-ui-sans: var(--bx-font, 'Manrope', 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
+  --font-mono: var(--bx-font-mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  --radius: 0.5rem;
   --safe-area-top: 0px;
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -25,18 +28,19 @@ html.dark {
 
 /* Light mode playground HSL tokens (when site theme is light) */
 html:not(.dark) {
-  --background: 200 20% 97%;
-  --foreground: 222 47% 11%;
-  --muted: 210 20% 94%;
-  --muted-foreground: 215 16% 40%;
-  --border: 214 20% 88%;
-  --input: 214 20% 88%;
-  --primary: 168 76% 36%;
+  --background: 200 16% 96%;
+  --foreground: 195 30% 8%;
+  --muted: 200 14% 93%;
+  --muted-foreground: 200 10% 38%;
+  --border: 200 12% 86%;
+  --input: 200 12% 86%;
+  --primary: 171 84% 36%;
   --primary-foreground: 0 0% 100%;
-  --sidebar: 200 20% 98%;
-  --sidebar-foreground: 222 47% 11%;
-  --font-ui-sans: var(--bx-font, 'Noto Sans SC', 'Space Grotesk', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
-  --font-mono: var(--bx-font-mono, 'SF Mono', Menlo, Consolas, monospace);
+  --sidebar: 200 16% 98%;
+  --sidebar-foreground: 195 30% 8%;
+  --font-ui-sans: var(--bx-font, 'Manrope', 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif);
+  --font-mono: var(--bx-font-mono, 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  --radius: 0.5rem;
   --safe-area-top: 0px;
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -46,41 +50,42 @@ html:not(.dark) {
 .image-playground {
   /* Inherit HSL from html.dark / html:not(.dark); surface from --bx-* */
   --background: inherit;
+  --radius: 0.5rem;
   color-scheme: inherit;
   font-family: var(--font-ui-sans);
   -webkit-user-select: none;
   user-select: none;
-  background: var(--bx-bg, #080a0d);
-  color: var(--bx-text, #f4f5f7);
+  background: var(--bx-bg, #06080a);
+  color: var(--bx-text, #f2f5f6);
   min-height: 100%;
   flex: 1;
 }
 
 html.dark .image-playground {
-  --background: 210 14% 4%;
-  --foreground: 210 20% 96%;
-  --muted: 210 10% 12%;
-  --muted-foreground: 215 10% 65%;
-  --border: 210 10% 16%;
-  --input: 210 10% 16%;
-  --primary: 168 76% 42%;
-  --primary-foreground: 168 40% 6%;
-  --sidebar: 210 12% 8%;
-  --sidebar-foreground: 210 20% 96%;
+  --background: 210 25% 3%;
+  --foreground: 180 20% 96%;
+  --muted: 210 18% 9%;
+  --muted-foreground: 190 10% 62%;
+  --border: 200 12% 16%;
+  --input: 200 12% 16%;
+  --primary: 171 74% 45%;
+  --primary-foreground: 168 80% 8%;
+  --sidebar: 210 20% 5%;
+  --sidebar-foreground: 180 20% 96%;
   color-scheme: dark;
 }
 
 html:not(.dark) .image-playground {
-  --background: 200 20% 97%;
-  --foreground: 222 47% 11%;
-  --muted: 210 20% 94%;
-  --muted-foreground: 215 16% 40%;
-  --border: 214 20% 88%;
-  --input: 214 20% 88%;
-  --primary: 168 76% 36%;
+  --background: 200 16% 96%;
+  --foreground: 195 30% 8%;
+  --muted: 200 14% 93%;
+  --muted-foreground: 200 10% 38%;
+  --border: 200 12% 86%;
+  --input: 200 12% 86%;
+  --primary: 171 84% 36%;
   --primary-foreground: 0 0% 100%;
-  --sidebar: 200 20% 98%;
-  --sidebar-foreground: 222 47% 11%;
+  --sidebar: 200 16% 98%;
+  --sidebar-foreground: 195 30% 8%;
   color-scheme: light;
 }
 
@@ -101,29 +106,46 @@ html:not(.dark) .image-playground {
   -webkit-user-select: none;
 }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-::-webkit-scrollbar-track { background: transparent; }
+.image-playground ::-webkit-scrollbar { width: 8px; height: 8px; }
+.image-playground ::-webkit-scrollbar-thumb {
+  background: var(--bx-scrollbar, rgba(151, 173, 185, 0.3));
+  border-radius: 9999px;
+}
+.image-playground ::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--bx-brand, #1fd5b9) 40%, transparent);
+}
+.image-playground ::-webkit-scrollbar-track { background: transparent; }
 
-/* 隐藏 number input 的增减按?*/
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+/* 隐藏 number input 的增减按钮 */
+.image-playground input[type="number"]::-webkit-inner-spin-button,
+.image-playground input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="number"] {
+.image-playground input[type="number"] {
   -moz-appearance: textfield;
 }
 
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb { background: #3f3f46; }
-  ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--bx-brand, #1fd5b9); }
+  50% { border-color: var(--bx-brand-bright, #6cf5dd); }
 }
 
-@keyframes pulse-border {
-  0%, 100% { border-color: #3b82f6; }
-  50% { border-color: #93c5fd; }
+/* Tighter tool chrome: cards / modals use v2 radius */
+.image-playground .rounded-2xl {
+  border-radius: var(--bx-radius-lg, 12px);
+}
+.image-playground .rounded-xl {
+  border-radius: var(--bx-radius-md, 10px);
+}
+.image-playground .rounded-lg {
+  border-radius: var(--bx-radius, 8px);
+}
+
+/* Focus rings → brand */
+.image-playground :focus-visible {
+  outline: 2px solid var(--bx-brand, #1fd5b9);
+  outline-offset: 2px;
 }
 
 @keyframes agent-web-search-text-sweep {
@@ -218,13 +240,13 @@ input[type="number"] {
 }
 
 .markdown-renderer :where(blockquote) {
-  border-left: 3px solid rgba(45, 212, 191, 0.45);
+  border-left: 3px solid var(--bx-brand-ring, rgba(31, 213, 185, 0.38));
   color: #52525b;
   padding-left: 0.85rem;
 }
 
 .markdown-renderer :where(a) {
-  color: #0d9488;
+  color: var(--bx-brand-deep, #0c9f8c);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -419,7 +441,7 @@ input[type="number"] {
   }
 }
 
-/* contentEditable 中的 @图N 胶囊 tag — brand teal */
+/* contentEditable @image capsule tags — brand tokens */
 .mention-tag {
   display: inline-flex;
   align-items: center;
@@ -428,9 +450,9 @@ input[type="number"] {
   padding: 0 7px;
   margin: 0 2px;
   border-radius: 6px;
-  background: rgba(45, 212, 191, 0.12);
-  color: #0d9488;
-  border: 1px solid rgba(45, 212, 191, 0.28);
+  background: var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
+  color: var(--bx-brand-deep, #0c9f8c);
+  border: 1px solid var(--bx-brand-ring, rgba(31, 213, 185, 0.38));
   font-size: inherit;
   font-weight: 600;
   line-height: 1;
@@ -448,26 +470,26 @@ input[type="number"] {
 
 [contenteditable]::selection,
 [contenteditable] *::selection {
-  background: rgba(45, 212, 191, 0.22);
+  background: var(--bx-active, rgba(31, 213, 185, 0.12));
   color: inherit;
 }
 
 .mention-tag:hover {
-  background: rgba(45, 212, 191, 0.2);
+  background: var(--bx-active, rgba(31, 213, 185, 0.12));
 }
 
 .mention-tag.selected {
-  background: #14b8a6;
-  color: #04201d;
-  border-color: #0d9488;
-  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.25);
+  background: var(--bx-brand, #1fd5b9);
+  color: var(--bx-ink, #03261f);
+  border-color: var(--bx-brand-deep, #0c9f8c);
+  box-shadow: inset 0 0 0 1px var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
 }
 
 @media (prefers-color-scheme: dark) {
   .mention-tag {
-    background: rgba(45, 212, 191, 0.12);
-    color: #5eead4;
-    border-color: rgba(45, 212, 191, 0.22);
+    background: var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
+    color: var(--bx-brand-bright, #6cf5dd);
+    border-color: var(--bx-brand-ring, rgba(31, 213, 185, 0.38));
   }
 
   .mention-tag::selection,
@@ -478,19 +500,19 @@ input[type="number"] {
 
   [contenteditable]::selection,
   [contenteditable] *::selection {
-    background: rgba(45, 212, 191, 0.28);
+    background: var(--bx-active, rgba(31, 213, 185, 0.12));
     color: inherit;
   }
 
   .mention-tag:hover {
-    background: rgba(45, 212, 191, 0.2);
+    background: var(--bx-active, rgba(31, 213, 185, 0.12));
   }
 
   .mention-tag.selected {
-    background: #2dd4bf;
-    color: #04201d;
-    border-color: #5eead4;
-    box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.35);
+    background: var(--bx-brand, #1fd5b9);
+    color: var(--bx-ink, #03261f);
+    border-color: var(--bx-brand-bright, #6cf5dd);
+    box-shadow: inset 0 0 0 1px var(--bx-brand-soft, rgba(31, 213, 185, 0.12));
   }
 }
 
@@ -508,21 +530,21 @@ body.drag-selecting * {
   user-select: none !important;
 }
 
-/* Prefer teal focus rings inside playground */
+/* Prefer brand focus rings inside playground */
 .image-playground :focus-visible {
-  outline: 2px solid var(--bx-teal, #2dd4bf);
+  outline: 2px solid var(--bx-brand, #1fd5b9);
   outline-offset: 2px;
 }
 
-/* Brand CTA: primary teal buttons get gradient + rect radius when not tiny dots */
+/* Brand CTA: primary buttons get gradient + rect radius when not tiny dots */
 .image-playground button.bg-teal-500,
 .image-playground a.bg-teal-500 {
-  background-image: var(--bx-grad-cta, linear-gradient(135deg, #2dd4bf, #22d3ee));
+  background-image: var(--bx-grad-cta, linear-gradient(120deg, #1fd5b9, #22c9e0));
   background-color: transparent;
-  color: var(--bx-teal-ink, #04201d);
+  color: var(--bx-ink, #03261f);
   border-radius: var(--bx-radius-btn, 10px);
   font-weight: 600;
-  box-shadow: 0 8px 24px -8px rgba(45, 212, 191, 0.45);
+  box-shadow: var(--bx-shadow-cta, 0 8px 24px -8px rgba(31, 213, 185, 0.55));
 }
 
 .image-playground button.bg-teal-500:hover,
@@ -547,5 +569,345 @@ body.drag-selecting * {
   .image-playground .animate-dropdown-down,
   .image-playground .animate-dropdown-up {
     animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+ * Create-shell (/create/image) — matches 新版-创作台.dc.html
+ * Scoped under .bx-create-image-shell so default playground
+ * paths (if any) stay unchanged.
+ * ═══════════════════════════════════════════════════════════ */
+
+.bx-create-image-shell {
+  min-height: 0;
+  height: 100%;
+}
+
+.bx-create-image-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--bx-border);
+  background: var(--bx-bg);
+  padding: 8px 20px;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.bx-create-image-mode-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--bx-border);
+  border-radius: 7px;
+  padding: 2px;
+  background: var(--bx-bg-elevated);
+  flex-shrink: 0;
+}
+
+.bx-create-image-mode-btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  background: transparent;
+  color: var(--bx-text-dim);
+  transition: color var(--bx-dur-fast) ease, background var(--bx-dur-fast) ease;
+}
+
+.bx-create-image-mode-btn:hover {
+  color: var(--bx-text);
+}
+
+.bx-create-image-mode-btn.is-active {
+  font-weight: 700;
+  background: var(--bx-active);
+  color: var(--bx-brand-bright);
+}
+
+.bx-create-image-search {
+  position: relative;
+  flex: 1;
+  min-width: 140px;
+  max-width: 380px;
+}
+
+.bx-create-image-search-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--bx-text-dim);
+  pointer-events: none;
+}
+
+.bx-create-image-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 7px;
+  border: 1px solid var(--bx-border);
+  background: var(--bx-bg-elevated);
+  color: var(--bx-text);
+  padding: 6.5px 12px 6.5px 32px;
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  transition:
+    border-color var(--bx-dur-fast) ease,
+    box-shadow var(--bx-dur-fast) ease;
+}
+
+.bx-create-image-search-input:focus {
+  border-color: var(--bx-brand);
+  box-shadow: 0 0 0 3px var(--bx-brand-ring);
+}
+
+.bx-create-image-count {
+  font-family: var(--bx-font-mono);
+  font-size: 11px;
+  color: var(--bx-text-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bx-create-image-gallery {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 20px 170px;
+}
+
+.bx-create-image-task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .bx-create-image-task-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bx-create-image-task-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Compact tiles */
+.bx-create-shell-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--bx-radius-md, 10px);
+  border: 1px solid var(--bx-border);
+  background: var(--bx-bg-muted);
+  cursor: pointer;
+  transition:
+    transform var(--bx-dur) var(--bx-ease),
+    border-color var(--bx-dur) var(--bx-ease);
+}
+
+.bx-create-shell-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--bx-brand-ring);
+}
+
+.bx-create-shell-tile.is-selected {
+  border-color: var(--bx-brand);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bx-brand) 40%, transparent);
+}
+
+.bx-create-shell-tile-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--bx-brand);
+}
+
+.bx-create-shell-tile-shimmer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--bx-bg-muted) 25%,
+    var(--bx-hover) 50%,
+    var(--bx-bg-muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: bx-shimmer 1.6s linear infinite;
+}
+
+.bx-create-shell-tile-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--bx-bg-muted);
+  padding: 8px;
+  text-align: center;
+}
+
+.bx-create-shell-tile-hover {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
+  background: linear-gradient(transparent, rgba(2, 4, 5, 0.75));
+  opacity: 0;
+  transition: opacity var(--bx-dur-fast) ease;
+  z-index: 1;
+}
+
+.bx-create-shell-tile:hover .bx-create-shell-tile-hover,
+.bx-create-shell-tile:focus-within .bx-create-shell-tile-hover {
+  opacity: 1;
+}
+
+/* Floating composer */
+.bx-create-image-composer {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 30;
+  padding: 0 20px 18px;
+  background: linear-gradient(transparent, var(--bx-bg) 55%);
+  pointer-events: none;
+}
+
+.bx-create-image-composer > * {
+  pointer-events: auto;
+}
+
+.bx-create-image-composer-card {
+  margin-inline: auto;
+  max-width: 860px;
+  border-radius: var(--bx-radius-lg, 12px);
+  border: 1px solid var(--bx-border-strong);
+  background: var(--bx-bg-elevated);
+  box-shadow: var(--bx-shadow-pop);
+  padding: 0 0 10px;
+}
+
+/* Textarea: borderless inside elevated card */
+.bx-create-image-shell .bx-create-image-composer-card [contenteditable='true'],
+.bx-create-image-shell .bx-create-image-composer-card .prompt-placeholder {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 13px 16px 4px !important;
+  font-size: 13.5px !important;
+  line-height: 1.55 !important;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card [contenteditable='true']:focus {
+  ring: none;
+  outline: none;
+  box-shadow: none !important;
+}
+
+/* Params row as chip-like controls */
+.bx-create-image-shell .bx-create-image-composer-card .mt-3 {
+  padding: 0 10px;
+}
+
+.bx-create-image-shell .bx-create-image-composer-card label {
+  font-family: var(--bx-font-mono);
+  font-size: 11.5px;
+}
+
+.bx-create-image-generate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: none;
+  cursor: pointer;
+  border-radius: 7px;
+  padding: 8px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--bx-grad-cta);
+  color: var(--bx-ink);
+  box-shadow: var(--bx-shadow-cta);
+  transition: transform var(--bx-dur-fast) var(--bx-ease);
+  white-space: nowrap;
+}
+
+.bx-create-image-generate-btn:hover:not(:disabled):not(.is-disabled):not(.is-stop) {
+  transform: translateY(-1px);
+}
+
+.bx-create-image-generate-btn:disabled,
+.bx-create-image-generate-btn.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.bx-create-image-generate-btn.is-stop {
+  background: var(--bx-danger, #f87171);
+  color: #fff;
+  box-shadow: none;
+}
+
+.bx-create-image-generate-kbd {
+  font-family: var(--bx-font-mono);
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* Upload / attach as dashed chip style under create shell */
+.bx-create-image-shell .bx-create-image-composer-card .sm\:flex > div:last-child > div:first-child button {
+  border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+  .bx-create-image-toolbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .bx-create-image-gallery {
+    padding: 14px 12px 190px;
+  }
+
+  .bx-create-image-composer {
+    padding: 0 12px 12px;
+  }
+
+  .bx-create-image-count {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bx-create-shell-tile-shimmer {
+    animation: none;
   }
 }

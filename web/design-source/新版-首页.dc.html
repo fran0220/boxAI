@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+
+<div style="position: relative; isolation: isolate; min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font); overflow-x: hidden;">
+
+  <div style="position: relative; z-index: 10;">
+    <dc-import name="HeaderV2" hint-size="100%,56px"></dc-import>
+
+    <!-- ═══ Hero（Nebius 式全幅影院头图，双主题恒暗）═══ -->
+    <section data-screen-label="Hero" style="position: relative; overflow: hidden; background: #05070a; color: #f2f5f6;">
+      <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 130% 95% at 82% 115%, rgba(31,213,185,0.38), rgba(12,159,140,0.13) 42%, transparent 68%);"></div>
+        <div style="position: absolute; top: 4%; left: -30%; width: 160%; height: 320px; filter: blur(48px); background: linear-gradient(100deg, transparent, rgba(31,213,185,0.22) 30%, rgba(53,214,244,0.28) 50%, rgba(124,199,255,0.16) 70%, transparent); animation: bx-ribbon-a 14s var(--bx-ease-inout) infinite alternate;"></div>
+        <div style="position: absolute; top: 34%; left: -30%; width: 160%; height: 240px; filter: blur(62px); opacity: 0.85; background: linear-gradient(80deg, transparent, rgba(124,199,255,0.16) 30%, rgba(31,213,185,0.24) 55%, rgba(53,214,244,0.14) 75%, transparent); animation: bx-ribbon-b 19s var(--bx-ease-inout) infinite alternate;"></div>
+        <div style="position: absolute; left: 50%; bottom: -66vw; width: 132vw; height: 132vw; margin-left: -66vw; border-radius: 50%; filter: blur(22px); background: conic-gradient(from 0deg, transparent 0deg, rgba(31,213,185,0.22) 16deg, transparent 42deg, transparent 128deg, rgba(53,214,244,0.16) 152deg, transparent 182deg, transparent 258deg, rgba(124,199,255,0.14) 288deg, transparent 320deg); animation: bx-spin 42s linear infinite;"></div>
+        <div style="position: absolute; left: 50%; bottom: -66vw; width: 132vw; height: 132vw; margin-left: -66vw; border-radius: 50%; filter: blur(36px); opacity: 0.75; background: conic-gradient(from 90deg, transparent 0deg, rgba(31,213,185,0.16) 24deg, transparent 60deg, transparent 200deg, rgba(53,214,244,0.13) 230deg, transparent 268deg); animation: bx-spin 66s linear infinite reverse;"></div>
+        <div style="position: absolute; left: 50%; bottom: -14vw; width: 92vw; height: 30vw; margin-left: -46vw; border-radius: 50%; border: 1px solid rgba(108,245,221,0.4); animation: bx-hpulse 6s var(--bx-ease) infinite;"></div>
+        <div style="position: absolute; left: 50%; bottom: -14vw; width: 92vw; height: 30vw; margin-left: -46vw; border-radius: 50%; border: 1px solid rgba(53,214,244,0.35); animation: bx-hpulse 6s var(--bx-ease) infinite 3s;"></div>
+        <span style="position: absolute; top: 12%; right: 6%; width: 220px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, #6cf5dd, transparent); animation: bx-streak 7.5s linear infinite;"></span>
+        <span style="position: absolute; top: 30%; right: 22%; width: 170px; height: 1.5px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(124,199,255,0.9), transparent); animation: bx-streak 9s linear infinite 2.8s;"></span>
+        <span style="position: absolute; top: 6%; right: 40%; width: 140px; height: 1.5px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(53,214,244,0.9), transparent); animation: bx-streak 11s linear infinite 5.4s;"></span>
+        <div style="position: absolute; inset: -560px 0 0; background-image: radial-gradient(rgba(108,245,221,0.4) 1px, transparent 1.6px); background-size: 96px 96px; opacity: 0.5; animation: bx-pan 46s linear infinite;"></div>
+        <div style="position: absolute; inset: -560px 0 0; background-image: radial-gradient(rgba(124,199,255,0.32) 1px, transparent 1.6px); background-size: 150px 150px; background-position: 40px 60px; opacity: 0.45; animation: bx-pan 90s linear infinite;"></div>
+        <div style="position: absolute; left: 8%; right: 8%; height: 1px; top: 92%; background: linear-gradient(90deg, transparent, rgba(108,245,221,0.45) 30%, rgba(53,214,244,0.45) 70%, transparent); animation: bx-scan 10s var(--bx-ease-inout) infinite;"></div>
+        <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(151,173,185,0.075) 1px, transparent 1px), linear-gradient(90deg, rgba(151,173,185,0.075) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 110% 85% at 50% 105%, #000 20%, transparent 78%); mask-image: radial-gradient(ellipse 110% 85% at 50% 105%, #000 20%, transparent 78%);"></div>
+        <div style="position: absolute; inset: auto 0 0; height: 140px; background: linear-gradient(to top, rgba(5,7,10,0.92), transparent);"></div>
+      </div>
+      <div style="position: relative; margin-inline: auto; box-sizing: border-box; display: flex; max-width: 1200px; min-height: max(76vh, 560px); flex-direction: column; justify-content: flex-end; padding: 104px 24px 76px;">
+        <p style="display: inline-flex; align-items: center; gap: 8px; margin: 0; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #6cf5dd; animation: bx-rise 0.8s var(--bx-ease) both;">
+          <span style="width: 22px; height: 1px; background: #6cf5dd;"></span>
+          Unified AI Platform
+        </p>
+        <h1 style="margin: 18px 0 0; max-width: 980px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; font-size: clamp(52px, 6.6vw, 92px); animation: bx-rise 0.8s var(--bx-ease) 0.08s both;">
+          一个盒子，<span style="background: linear-gradient(95deg, #1fd5b9 0%, #35d6f4 55%, #7cc7ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">装下所有 AI</span>
+        </h1>
+        <p style="margin: 22px 0 0; max-width: 560px; font-size: 17px; line-height: 1.75; color: rgba(238,244,245,0.68); animation: bx-rise 0.8s var(--bx-ease) 0.16s both;">图像与视频创作台、桌面 Agent 工作台、OpenAI 兼容网关——所有模型、所有模态，共享同一份余额与同一个账户。</p>
+        <div style="margin-top: 34px; display: flex; align-items: center; gap: 12px; animation: bx-rise 0.8s var(--bx-ease) 0.24s both;">
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 13px 28px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; background: linear-gradient(120deg, #1fd5b9, #22c9e0); color: #03261f; box-shadow: 0 10px 30px -8px rgba(31,213,185,0.6); transition: transform var(--bx-dur-fast) var(--bx-ease), box-shadow var(--bx-dur) var(--bx-ease);" style-hover="color: #03261f; transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(31,213,185,0.7);">
+            开始创作
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </a>
+          <a href="#" style="display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 13px 28px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; border: 1px solid rgba(255,255,255,0.26); color: #f2f5f6; background: rgba(255,255,255,0.04); backdrop-filter: blur(6px); transition: border-color var(--bx-dur-fast) ease, background var(--bx-dur-fast) ease, color var(--bx-dur-fast) ease;" style-hover="border-color: #6cf5dd; color: #6cf5dd; background: rgba(31,213,185,0.08);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            接入 API
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 大数字统计带 ═══ -->
+    <section data-screen-label="Stats" style="border-bottom: 1px solid var(--bx-border); background: var(--bx-bg);">
+      <div style="margin-inline: auto; display: grid; max-width: 1200px; grid-template-columns: repeat(4, 1fr); padding: 0 24px;">
+        <div style="padding: 36px 24px 36px 0;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: clamp(30px, 3vw, 42px); font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--bx-text);">{{ stat0 }}+</p>
+          <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: var(--bx-text-muted);">聚合主流模型，一个 Key 全部可用</p>
+        </div>
+        <div style="border-left: 1px solid var(--bx-border); padding: 36px 24px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: clamp(30px, 3vw, 42px); font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--bx-text);">{{ stat1 }}</p>
+          <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: var(--bx-text-muted);">种生成模态：对话 · 图像 · 视频</p>
+        </div>
+        <div style="border-left: 1px solid var(--bx-border); padding: 36px 24px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: clamp(30px, 3vw, 42px); font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--bx-text);">{{ stat2 }}%</p>
+          <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: var(--bx-text-muted);">服务可用性，全渠道实时监控</p>
+        </div>
+        <div style="border-left: 1px solid var(--bx-border); padding: 36px 0 36px 24px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: clamp(30px, 3vw, 42px); font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--bx-brand);">1</p>
+          <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.6; color: var(--bx-text-muted);">个账户通行创作台、Studio 与 API</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 价值主张四卡 ═══ -->
+    <section data-screen-label="Value" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 88px 24px 40px;">
+      <h2 style="margin: 0 0 40px; max-width: 680px; font-size: clamp(32px, 3.6vw, 46px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.1; text-wrap: pretty;">从生成到交付，按你的方式</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+        <div style="display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease), box-shadow var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-4px); box-shadow: var(--bx-shadow-pop);">
+          <div style="position: relative; aspect-ratio: 16/10; background: linear-gradient(145deg, rgba(31,213,185,0.55), rgba(12,159,140,0.28) 55%, rgba(5,40,36,0.9)); display: flex; align-items: flex-end; padding: 14px;">
+            <span style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85);">creator</span>
+          </div>
+          <div style="padding: 18px 20px 22px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.015em;">在线创作台</h3>
+            <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.65; color: var(--bx-text-muted);">图像与视频生成即开即用，生成历史保存在你自己的浏览器。</p>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease), box-shadow var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-4px); box-shadow: var(--bx-shadow-pop);">
+          <div style="position: relative; aspect-ratio: 16/10; background: linear-gradient(215deg, rgba(53,214,244,0.5), rgba(31,213,185,0.2) 55%, rgba(4,32,40,0.92)); display: flex; align-items: flex-end; padding: 14px;">
+            <span style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85);">studio</span>
+          </div>
+          <div style="padding: 18px 20px 22px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.015em;">Studio 工作台</h3>
+            <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.65; color: var(--bx-text-muted);">桌面 Agent 访问本地文件与工具链，并将支持浏览器远程接管。</p>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease), box-shadow var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-4px); box-shadow: var(--bx-shadow-pop);">
+          <div style="position: relative; aspect-ratio: 16/10; background: linear-gradient(135deg, rgba(124,199,255,0.45), rgba(53,214,244,0.18) 50%, rgba(6,25,44,0.92)); display: flex; align-items: flex-end; padding: 14px;">
+            <span style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85);">gateway</span>
+          </div>
+          <div style="padding: 18px 20px 22px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.015em;">模型网关 API</h3>
+            <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.65; color: var(--bx-text-muted);">OpenAI 兼容 /v1，一个 Key 调用全部主流模型与模态。</p>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease), box-shadow var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-4px); box-shadow: var(--bx-shadow-pop);">
+          <div style="position: relative; aspect-ratio: 16/10; background: linear-gradient(160deg, rgba(31,213,185,0.4), rgba(124,199,255,0.22) 45%, rgba(3,20,26,0.94)); display: flex; align-items: flex-end; padding: 14px;">
+            <span style="font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85);">account</span>
+          </div>
+          <div style="padding: 18px 20px 22px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.015em;">统一账户</h3>
+            <p style="margin: 8px 0 0; font-size: 13px; line-height: 1.65; color: var(--bx-text-muted);">一份余额横跨全部产品，密钥与用量在控制台一目了然。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Model marquee ═══ -->
+    <section data-screen-label="Models" style="margin-top: 48px; border-top: 1px solid var(--bx-border); border-bottom: 1px solid var(--bx-border); background: color-mix(in srgb, var(--bx-bg-elevated) 55%, transparent);">
+      <div style="margin-inline: auto; display: flex; max-width: 1200px; align-items: center; gap: 24px; padding: 14px 24px;">
+        <span style="flex-shrink: 0; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bx-text-dim);">一个网关 · 全部主流模型</span>
+        <div style="min-width: 0; flex: 1; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);">
+          <div style="display: flex; width: max-content; gap: 8px; animation: bx-marquee 30s linear infinite;">
+            <sc-for list="{{ marquee }}" as="chip" hint-placeholder-count="30">
+              <span style="white-space: nowrap; border-radius: 6px; border: 1px solid var(--bx-border); padding: 5px 14px; font-family: var(--bx-font-mono); font-size: 12px; font-weight: 500; color: var(--bx-text-soft);">{{ chip }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Gateway diagram ═══ -->
+    <section data-screen-label="Gateway" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 88px 24px 72px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 44px;">
+        <div>
+          <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+            <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+            Gateway
+          </p>
+          <h2 style="margin: 14px 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.03em;">上游接入一次，四个入口同时可用</h2>
+        </div>
+        <p style="margin: 0; max-width: 380px; font-size: 14px; line-height: 1.7; color: var(--bx-text-muted); text-wrap: pretty;">网关统一鉴权、计费与调度：模型在左边接入，创作台、Studio、控制台与 API 在右边即刻可用。</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 200px 110px auto 110px 1fr; align-items: center; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 36px 32px;">
+        <!-- upstream models -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ upstreams }}" as="u" hint-placeholder-count="6">
+            <div style="display: flex; align-items: center; gap: 9px; border: 1px solid var(--bx-border); border-radius: 8px; background: var(--bx-bg-card); padding: 9px 12px;">
+              <span style="width: 7px; height: 7px; border-radius: 2px; background: var(--bx-brand); opacity: 0.85;"></span>
+              <span style="font-family: var(--bx-font-mono); font-size: 12px; font-weight: 500; color: var(--bx-text-soft);">{{ u }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <!-- connectors L -->
+        <div aria-hidden="true" style="position: relative; width: 110px; height: 314px;">
+          <svg viewBox="0 0 110 314" style="position: absolute; inset: 0; width: 110px; height: 314px; display: block;">
+            <path d="M0 21 C 60 21, 60 157, 110 157" fill="none" stroke="var(--bx-brand)" stroke-opacity="0.15" stroke-width="1"></path>
+            <path d="M0 75 C 60 75, 60 157, 110 157" fill="none" stroke="var(--bx-brand)" stroke-opacity="0.15" stroke-width="1"></path>
+            <path d="M0 129 C 60 129, 60 157, 110 157" fill="none" stroke="var(--bx-brand)" stroke-opacity="0.15" stroke-width="1"></path>
+            <path d="M0 184 C 60 184, 60 157, 110 157" fill="none" stroke="var(--bx-brand)" stroke-opacity="0.15" stroke-width="1"></path>
+            <path d="M0 238 C 60 238, 60 157, 110 157" fill="none" stroke="var(--bx-brand)" stroke-opacity="0.15" stroke-width="1"></path>
+            <path d="M0 292 C 60 292, 60 157, 110 157" fill="none" stroke="var(--bx-brand)" stroke-opacity="0.15" stroke-width="1"></path>
+          </svg>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-brand-bright); box-shadow: 0 0 10px 2px var(--bx-brand-ring); offset-path: path('M0 21 C 60 21, 60 157, 110 157'); animation: bx-travel 2.6s linear infinite;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-brand-bright); box-shadow: 0 0 10px 2px var(--bx-brand-ring); offset-path: path('M0 75 C 60 75, 60 157, 110 157'); animation: bx-travel 2.6s linear infinite 0.45s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-brand-bright); box-shadow: 0 0 10px 2px var(--bx-brand-ring); offset-path: path('M0 129 C 60 129, 60 157, 110 157'); animation: bx-travel 2.6s linear infinite 0.9s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-brand-bright); box-shadow: 0 0 10px 2px var(--bx-brand-ring); offset-path: path('M0 184 C 60 184, 60 157, 110 157'); animation: bx-travel 2.6s linear infinite 1.35s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-brand-bright); box-shadow: 0 0 10px 2px var(--bx-brand-ring); offset-path: path('M0 238 C 60 238, 60 157, 110 157'); animation: bx-travel 2.6s linear infinite 1.8s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-brand-bright); box-shadow: 0 0 10px 2px var(--bx-brand-ring); offset-path: path('M0 292 C 60 292, 60 157, 110 157'); animation: bx-travel 2.6s linear infinite 2.25s;"></span>
+        </div>
+        <!-- center cube -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 8px;">
+          <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+            <div aria-hidden="true" style="position: absolute; width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle, var(--bx-brand-soft), transparent 65%); animation: bx-glow 4s var(--bx-ease-inout) infinite;"></div>
+            <div aria-hidden="true" style="position: absolute; width: 118px; height: 118px; border-radius: 50%; border: 1px solid var(--bx-brand-ring); animation: bx-ring 3.2s var(--bx-ease) infinite;"></div>
+            <div aria-hidden="true" style="position: absolute; width: 118px; height: 118px; border-radius: 50%; border: 1px solid var(--bx-brand-ring); animation: bx-ring 3.2s var(--bx-ease) infinite 1.6s;"></div>
+            <img src="web/public/logo.svg" alt="BoxAI" style="position: relative; width: 108px; height: 108px;">
+          </div>
+          <span style="font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-muted);">BoxAI Gateway</span>
+          <span style="display: inline-flex; gap: 6px;">
+            <span style="border-radius: 4px; background: var(--bx-brand-soft); padding: 2px 8px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-brand);">鉴权</span>
+            <span style="border-radius: 4px; background: var(--bx-brand-soft); padding: 2px 8px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-brand);">计费</span>
+            <span style="border-radius: 4px; background: var(--bx-brand-soft); padding: 2px 8px; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-brand);">调度</span>
+          </span>
+        </div>
+        <!-- connectors R -->
+        <div aria-hidden="true" style="position: relative; width: 110px; height: 314px;">
+          <svg viewBox="0 0 110 314" style="position: absolute; inset: 0; width: 110px; height: 314px; display: block;">
+            <path d="M0 157 C 50 157, 50 40, 110 40" fill="none" stroke="var(--bx-cyan)" stroke-opacity="0.18" stroke-width="1"></path>
+            <path d="M0 157 C 50 157, 50 118, 110 118" fill="none" stroke="var(--bx-cyan)" stroke-opacity="0.18" stroke-width="1"></path>
+            <path d="M0 157 C 50 157, 50 196, 110 196" fill="none" stroke="var(--bx-cyan)" stroke-opacity="0.18" stroke-width="1"></path>
+            <path d="M0 157 C 50 157, 50 274, 110 274" fill="none" stroke="var(--bx-cyan)" stroke-opacity="0.18" stroke-width="1"></path>
+          </svg>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-cyan); box-shadow: 0 0 10px 2px var(--bx-info-soft); offset-path: path('M0 157 C 50 157, 50 40, 110 40'); animation: bx-travel 2.2s linear infinite 0.2s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-cyan); box-shadow: 0 0 10px 2px var(--bx-info-soft); offset-path: path('M0 157 C 50 157, 50 118, 110 118'); animation: bx-travel 2.2s linear infinite 0.75s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-cyan); box-shadow: 0 0 10px 2px var(--bx-info-soft); offset-path: path('M0 157 C 50 157, 50 196, 110 196'); animation: bx-travel 2.2s linear infinite 1.3s;"></span>
+          <span style="position: absolute; top: 0; left: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--bx-cyan); box-shadow: 0 0 10px 2px var(--bx-info-soft); offset-path: path('M0 157 C 50 157, 50 274, 110 274'); animation: bx-travel 2.2s linear infinite 1.85s;"></span>
+        </div>
+        <!-- products -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 12px; border: 1px solid var(--bx-border); border-radius: 10px; background: var(--bx-bg-card); padding: 12px 14px; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateX(4px);">
+              <span style="display: flex; height: 32px; width: 32px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-brand-soft); color: var(--bx-brand);">{{ p.icon }}</span>
+              <span style="min-width: 0;">
+                <span style="display: block; font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em;">{{ p.title }}</span>
+                <span style="display: block; margin-top: 1px; font-size: 11.5px; color: var(--bx-text-dim);">{{ p.desc }}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Bento product matrix ═══ -->
+    <section data-screen-label="Products" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 24px 24px 88px;">
+      <div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px;">
+
+        <!-- 创作台 -->
+        <div style="grid-column: span 7; display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 18px 20px 0;">
+            <span style="display: flex; height: 30px; width: 30px; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-brand-soft); color: var(--bx-brand);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+            </span>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.02em;">在线创作台</h3>
+            <span style="font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim); border: 1px solid var(--bx-border); border-radius: 4px; padding: 2px 6px;">/create</span>
+            <a href="#" style="margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">打开 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+          </div>
+          <p style="margin: 8px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--bx-text-muted);">非阻塞任务队列、参考图 Remix、图生视频。生成历史保存在你自己的浏览器里。</p>
+          <div aria-hidden="true" style="margin: 16px 20px 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+            <div style="aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--bx-border); background: linear-gradient(120deg, rgba(31,213,185,0.55), rgba(53,214,244,0.2));"></div>
+            <div style="aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--bx-border); background: linear-gradient(200deg, rgba(53,214,244,0.4), rgba(124,199,255,0.3));"></div>
+            <div style="aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--bx-border); background: linear-gradient(160deg, rgba(12,159,140,0.5), rgba(31,213,185,0.15));"></div>
+            <div style="position: relative; aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--bx-border); background: linear-gradient(90deg, var(--bx-bg-muted) 25%, var(--bx-hover) 50%, var(--bx-bg-muted) 75%); background-size: 200% 100%; animation: bx-shimmer 1.6s linear infinite; display: flex; align-items: center; justify-content: center;">
+              <span style="font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">gen…</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Studio -->
+        <div style="grid-column: span 5; display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 18px 20px 0;">
+            <span style="display: flex; height: 30px; width: 30px; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-brand-soft); color: var(--bx-brand);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
+            </span>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.02em;">Studio 工作台</h3>
+            <a href="#" style="margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">下载 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+          </div>
+          <p style="margin: 8px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--bx-text-muted);">本地 Agent 运行时：Skills、MCP 与长期记忆，浏览器可远程接管。</p>
+          <div aria-hidden="true" style="margin: 16px 20px 20px; flex: 1; border-radius: 8px; border: 1px solid var(--bx-border); background: var(--bx-bg-deep); padding: 12px 14px; font-family: var(--bx-font-mono); font-size: 11.5px; line-height: 1.8;">
+            <span style="color: var(--bx-text-dim);">$</span> <span style="color: var(--bx-text-soft);">boxai agent run</span><br>
+            <span style="color: var(--bx-success);">✓</span> <span style="color: var(--bx-text-muted);">signed in · gateway ready</span><br>
+            <span style="color: var(--bx-brand);">→</span> <span style="color: var(--bx-text-muted);">skills: 12 · mcp: 3 · memory: on</span><span style="display: inline-block; width: 6px; height: 1em; vertical-align: text-bottom; background: var(--bx-brand); animation: bx-caret 1s ease infinite; margin-left: 4px;"></span>
+          </div>
+        </div>
+
+        <!-- 控制台 -->
+        <div style="grid-column: span 5; display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 18px 20px 0;">
+            <span style="display: flex; height: 30px; width: 30px; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-brand-soft); color: var(--bx-brand);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+            </span>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.02em;">账户中心</h3>
+            <a href="#" style="margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">管理 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+          </div>
+          <p style="margin: 8px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--bx-text-muted);">余额、密钥、用量分析与订阅，一站式管理。</p>
+          <div aria-hidden="true" style="margin: 16px 20px 20px; flex: 1; border-radius: 8px; border: 1px solid var(--bx-border); background: var(--bx-bg-card); padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">
+              <span>今日 Token</span><span style="color: var(--bx-brand);">2.4M</span>
+            </div>
+            <div style="margin-top: 10px; display: flex; align-items: flex-end; gap: 3px; height: 52px;">
+              <sc-for list="{{ miniBars }}" as="b" hint-placeholder-count="18">
+                <div style="flex: 1; border-radius: 2px 2px 0 0; background: {{ b.bg }}; height: {{ b.h }}; transform-origin: bottom; animation: bx-bar-grow 0.8s var(--bx-ease) both {{ b.delay }};"></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <!-- 开放 API -->
+        <div style="grid-column: span 7; display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 18px 20px 0;">
+            <span style="display: flex; height: 30px; width: 30px; align-items: center; justify-content: center; border-radius: 8px; background: var(--bx-brand-soft); color: var(--bx-brand);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            </span>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.02em;">开放 API</h3>
+            <span style="font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-success); border: 1px solid color-mix(in srgb, var(--bx-success) 35%, transparent); border-radius: 4px; padding: 2px 6px;">OpenAI 兼容</span>
+            <a href="#" style="margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">获取密钥 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+          </div>
+          <p style="margin: 8px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--bx-text-muted);">一把密钥调用全部上游模型，Claude Code、Codex、Gemini CLI 直接接入。</p>
+          <div aria-hidden="true" style="margin: 16px 20px 20px; border-radius: 8px; border: 1px solid var(--bx-border); background: var(--bx-bg-deep); padding: 12px 16px; font-family: var(--bx-font-mono); font-size: 12px; line-height: 1.85; overflow-x: auto;">
+            <span style="color: var(--bx-text-dim);">curl</span> <span style="color: var(--bx-cyan);">https://api.you-box.com/v1/chat/completions</span> <span style="color: var(--bx-text-dim);">\</span><br>
+            &nbsp;&nbsp;<span style="color: var(--bx-text-dim);">-H</span> <span style="color: var(--bx-brand-bright);">"Authorization: Bearer sk-box-****"</span> <span style="color: var(--bx-text-dim);">\</span><br>
+            &nbsp;&nbsp;<span style="color: var(--bx-text-dim);">-d</span> <span style="color: var(--bx-text-soft);">'{"model": "claude-sonnet-4-5", "messages": [...]}'</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Developer section ═══ -->
+    <section data-screen-label="Developers" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; border-top: 1px solid var(--bx-border); background: color-mix(in srgb, var(--bx-bg-elevated) 55%, transparent);">
+      <div style="margin-inline: auto; display: grid; max-width: 1200px; gap: 56px; padding: 88px 24px; grid-template-columns: 0.9fr 1.1fr; align-items: center;">
+        <div>
+          <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+            <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+            For Developers
+          </p>
+          <h2 style="margin: 14px 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.03em;">五分钟接入，<br>无需改一行业务代码</h2>
+          <p style="margin: 16px 0 0; max-width: 400px; font-size: 14.5px; line-height: 1.7; color: var(--bx-text-muted);">标准 OpenAI 接口格式，替换 base_url 即完成迁移；Anthropic、Gemini 格式同样原生支持。</p>
+          <ul style="margin: 24px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;">
+            <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--bx-text-soft);">
+              <span style="display: flex; height: 20px; width: 20px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 5px; background: var(--bx-brand-soft); color: var(--bx-brand);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              Token 级精确计费，用量明细可导出
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--bx-text-soft);">
+              <span style="display: flex; height: 20px; width: 20px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 5px; background: var(--bx-brand-soft); color: var(--bx-brand);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              智能调度与粘性会话，多账号自动负载均衡
+            </li>
+            <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--bx-text-soft);">
+              <span style="display: flex; height: 20px; width: 20px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 5px; background: var(--bx-brand-soft); color: var(--bx-brand);"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+              密钥级额度、速率与 IP 限制
+            </li>
+          </ul>
+          <div style="margin-top: 28px; display: flex; flex-direction: column; gap: 6px; font-family: var(--bx-font-mono); font-size: 12px;">
+            <div style="display: flex; gap: 10px;"><span style="color: var(--bx-success); width: 40px;">POST</span><span style="color: var(--bx-text-muted);">/v1/chat/completions</span></div>
+            <div style="display: flex; gap: 10px;"><span style="color: var(--bx-success); width: 40px;">POST</span><span style="color: var(--bx-text-muted);">/v1/images/generations</span></div>
+            <div style="display: flex; gap: 10px;"><span style="color: var(--bx-success); width: 40px;">POST</span><span style="color: var(--bx-text-muted);">/v1/videos/generations</span></div>
+            <div style="display: flex; gap: 10px;"><span style="color: var(--bx-success); width: 40px;">POST</span><span style="color: var(--bx-text-muted);">/v1/messages</span></div>
+          </div>
+        </div>
+        <!-- code panel -->
+        <div style="border-radius: var(--bx-radius-xl); border: 1px solid var(--bx-border-strong); background: var(--bx-bg-deep); box-shadow: var(--bx-shadow-pop); overflow: hidden;">
+          <div style="display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--bx-border); padding: 8px 10px;">
+            <sc-for list="{{ codeTabs }}" as="tab" hint-placeholder-count="3">
+              <button onClick="{{ tab.pick }}" style="{{ tab.style }}">{{ tab.label }}</button>
+            </sc-for>
+            <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+              copy
+            </span>
+          </div>
+          <pre style="margin: 0; padding: 20px 22px; font-family: var(--bx-font-mono); font-size: 12.5px; line-height: 1.9; overflow-x: auto; min-height: 220px; white-space: pre-wrap;">{{ codeBody }}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Live status ═══ -->
+    <section data-screen-label="Status" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 88px 24px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 28px;">
+        <div>
+          <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+            <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+            Live Status
+          </p>
+          <h2 style="margin: 14px 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.03em;">渠道状态，公开可查</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <span style="display: inline-flex; align-items: center; gap: 7px; border: 1px solid color-mix(in srgb, var(--bx-success) 35%, transparent); border-radius: 6px; padding: 5px 12px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--bx-success);">
+            <span style="width: 6px; height: 6px; border-radius: 999px; background: currentColor; animation: bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></span>
+            OPERATIONAL
+          </span>
+          <a href="#" style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">完整状态页 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+        </div>
+      </div>
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 220px 110px 1fr 130px 110px; gap: 16px; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">
+          <span>渠道</span><span>提供方</span><span>近 30 次探测</span><span style="text-align: right;">对话延迟</span><span style="text-align: right;">可用性 · 7d</span>
+        </div>
+        <sc-for list="{{ statusRows }}" as="row" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 220px 110px 1fr 130px 110px; gap: 16px; align-items: center; padding: 13px 20px; border-top: 1px solid var(--bx-line); transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+            <span style="display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600;">
+              <span style="width: 7px; height: 7px; border-radius: 2px; background: {{ row.dot }};"></span>
+              {{ row.name }}
+            </span>
+            <span style="font-family: var(--bx-font-mono); font-size: 11.5px; color: var(--bx-text-dim);">{{ row.provider }}</span>
+            <span style="display: flex; align-items: flex-end; gap: 2px; height: 18px;">
+              <sc-for list="{{ row.timeline }}" as="seg" hint-placeholder-count="30">
+                <span style="flex: 1; max-width: 8px; border-radius: 1.5px; height: {{ seg.h }}; background: {{ seg.bg }}; transform-origin: bottom; animation: bx-bar-grow 0.7s var(--bx-ease) both {{ seg.delay }};"></span>
+              </sc-for>
+            </span>
+            <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--bx-text-soft);">{{ row.latency }} ms</span>
+            <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ row.availColor }};">{{ row.avail }}%</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ═══ Pricing teaser ═══ -->
+    <section data-screen-label="Pricing" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 0 24px 88px;">
+      <div style="display: grid; grid-template-columns: 0.8fr 1fr 1fr 1fr; gap: 14px; align-items: stretch;">
+        <div style="display: flex; flex-direction: column; justify-content: center; padding-right: 16px;">
+          <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+            <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+            Pricing
+          </p>
+          <h2 style="margin: 14px 0 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em;">按需付费，丰俭由人</h2>
+          <a href="#" style="margin-top: 16px; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">查看完整定价 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+        </div>
+        <div style="display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 22px; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <span style="font-family: var(--bx-font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">入门</span>
+          <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 30px; font-weight: 600; letter-spacing: -0.02em;">¥0</p>
+          <p style="margin: 8px 0 0; flex: 1; font-size: 12.5px; line-height: 1.65; color: var(--bx-text-muted);">注册即用，按量充值；全部模型、创作台与 API 网关。</p>
+          <a href="#" style="margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--bx-text-soft);" style-hover="color: var(--bx-brand-bright);">免费注册 →</a>
+        </div>
+        <div style="position: relative; display: flex; flex-direction: column; border-radius: var(--bx-radius-lg); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; padding: 22px; transition: transform var(--bx-dur) var(--bx-ease);" style-hover="transform: translateY(-3px);">
+          <span style="position: absolute; top: -9px; right: 14px; border-radius: 4px; background: var(--bx-grad-cta); padding: 2px 8px; font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; color: var(--bx-ink);">最受欢迎</span>
+          <span style="font-family: var(--bx-font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-brand);">专业</span>
+          <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 30px; font-weight: 600; letter-spacing: -0.02em;">¥99<span style="font-size: 13px; color: var(--bx-text-dim);">/月</span></p>
+          <p style="margin: 8px 0 0; flex: 1; font-size: 12.5px; line-height: 1.65; color: var(--bx-text-muted);">更高并发、更划算的订阅配额与优先模型路由。</p>
+          <a href="#" style="margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--bx-brand);" style-hover="color: var(--bx-brand-bright);">立即订阅 →</a>
+        </div>
+        <div style="display: flex; flex-direction: column; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 22px; transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-3px);">
+          <span style="font-family: var(--bx-font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">企业</span>
+          <p style="margin: 10px 0 0; font-family: var(--bx-font-mono); font-size: 30px; font-weight: 600; letter-spacing: -0.02em;">定制</p>
+          <p style="margin: 8px 0 0; flex: 1; font-size: 12.5px; line-height: 1.65; color: var(--bx-text-muted);">专属配额与路由、SLA 保障、私有化与定制接入。</p>
+          <a href="#" style="margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--bx-text-soft);" style-hover="color: var(--bx-brand-bright);">联系我们 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ FAQ ═══ -->
+    <section data-screen-label="FAQ" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 0 24px 88px;">
+      <div style="display: grid; grid-template-columns: 0.8fr 2.2fr; gap: 40px;">
+        <div>
+          <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+            <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+            FAQ
+          </p>
+          <h2 style="margin: 14px 0 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em;">常见问题</h2>
+        </div>
+        <div style="border-top: 1px solid var(--bx-border);">
+          <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
+            <div style="border-bottom: 1px solid var(--bx-border);">
+              <button onClick="{{ item.toggle }}" aria-expanded="{{ item.open }}" style="display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 4px; text-align: left; background: transparent; border: none; cursor: pointer; color: var(--bx-text); font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; transition: color var(--bx-dur-fast) ease;" style-hover="color: var(--bx-brand-bright);">
+                <span style="display: flex; align-items: baseline; gap: 14px;"><span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">{{ item.num }}</span>{{ item.q }}</span>
+                <span style="flex-shrink: 0; color: var(--bx-text-dim); display: inline-flex; transition: transform var(--bx-dur) var(--bx-ease); transform: {{ item.chev }};">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                </span>
+              </button>
+              <div style="overflow: hidden; transition: max-height var(--bx-dur-med) var(--bx-ease), opacity var(--bx-dur-med) var(--bx-ease); max-height: {{ item.maxH }}; opacity: {{ item.opacity }};">
+                <p style="margin: 0; padding: 0 32px 20px 33px; font-size: 13.5px; line-height: 1.75; color: var(--bx-text-muted); max-width: 640px;">{{ item.a }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Final CTA ═══ -->
+    <section data-screen-label="CTA" data-reveal="1" style="animation: bx-rise 0.9s var(--bx-ease) both; animation-timeline: view(); animation-range: entry 0% entry 30%; margin-inline: auto; max-width: 1200px; padding: 0 24px 96px;">
+      <div style="border-radius: var(--bx-radius-xl); padding: 1.5px; background: var(--bx-grad-border); background-size: 300% auto; animation: bx-borderflow 8s linear infinite;">
+        <div style="position: relative; overflow: hidden; border-radius: 15px; background: var(--bx-bg-deep);">
+          <div aria-hidden="true" style="pointer-events: none; position: absolute; inset: 0; background: radial-gradient(70% 130% at 50% 0%, var(--bx-brand-soft), transparent 70%);"></div>
+          <div aria-hidden="true" style="pointer-events: none; position: absolute; inset: 0; background-image: linear-gradient(var(--bx-line) 1px, transparent 1px), linear-gradient(90deg, var(--bx-line) 1px, transparent 1px); background-size: 40px 40px; -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, #000 20%, transparent 80%); mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, #000 20%, transparent 80%);"></div>
+          <div style="position: relative; display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 52px 56px;">
+            <div>
+              <h2 style="margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -0.03em;">现在就把 AI <span style="background: var(--bx-grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent;">装进盒子</span></h2>
+              <p style="margin: 10px 0 0; font-size: 14.5px; color: var(--bx-text-muted);">注册即可获得完整体验，几分钟内完成第一次生成。</p>
+            </div>
+            <div style="display: flex; flex-shrink: 0; align-items: center; gap: 12px;">
+              <a href="#" style="display: inline-flex; align-items: center; gap: 8px; border-radius: var(--bx-radius-btn); padding: 12px 26px; font-weight: 700; font-size: 15px; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta); transition: transform var(--bx-dur-fast) var(--bx-ease);" style-hover="color: var(--bx-ink); transform: translateY(-2px);">免费注册</a>
+              <a href="#" style="display: inline-flex; align-items: center; gap: 8px; border-radius: var(--bx-radius-btn); padding: 12px 26px; font-weight: 700; font-size: 15px; border: 1px solid var(--bx-border-strong); color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">查看定价</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <dc-import name="FooterV2" hint-size="100%,360px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;dark&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;dark&quot;, &quot;light&quot;], &quot;section&quot;: &quot;主题&quot;}, &quot;reduceMotion&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;主题&quot;}}">
+class Component extends DCLogic {
+  state = { typed: 0, s0: 0, s1: 0, s2: '0.0', videoPct: 12, genPct: 34, faqOpen: 0, codeTab: 'curl' };
+  fullReply = '好的，已基于参考图排好分镜：产品特写 → 环绕运镜 → 标语收尾。正在提交 kling-2.5 视频任务…';
+
+  startAnims() {
+    this.applyProps();
+    const t0 = performance.now();
+    const step = () => {
+      const p = Math.min(1, (performance.now() - t0) / 1600);
+      const e = 1 - Math.pow(1 - p, 4);
+      this.setState({ s0: Math.round(100 * e), s1: Math.round(3 * e), s2: (99.9 * e).toFixed(1) });
+      if (p < 1) setTimeout(step, 80);
+    };
+    setTimeout(step, 200);
+  }
+  componentDidUpdate() { this.applyProps(); }
+
+  applyProps() {
+    const el = document.documentElement;
+    el.classList.toggle('light', (this.props.theme ?? 'dark') === 'light');
+    el.classList.toggle('reduce-motion', !!(this.props.reduceMotion ?? false));
+  }
+
+  seededTimeline(seed, badRate) {
+    let x = seed;
+    const rnd = () => { x = (x * 9301 + 49297) % 233280; return x / 233280; };
+    const segs = [];
+    for (let i = 0; i < 30; i++) {
+      const r = rnd();
+      let h = '100%', bg = 'var(--bx-success)';
+      if (r < badRate * 0.3) { h = '35%'; bg = 'var(--bx-danger)'; }
+      else if (r < badRate) { h = '62%'; bg = 'var(--bx-warning)'; }
+      segs.push({ h: h, bg: bg, delay: (i * 0.02).toFixed(2) + 's' });
+    }
+    return segs;
+  }
+
+  renderVals() {
+    if (typeof window !== 'undefined') {
+      if (!this._animsStarted) {
+        this._animsStarted = true;
+        setTimeout(() => this.startAnims(), 40);
+      }
+    }
+    const models = ['GPT-5', 'Claude', 'Gemini', 'DeepSeek', 'Qwen', 'Kimi', 'GLM', 'Grok', 'Llama', 'Mistral', 'Doubao', 'Flux', 'Wan', 'Veo', 'Kling'];
+    const icon = (paths) => React.createElement('svg', { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', dangerouslySetInnerHTML: { __html: paths } });
+    const codeSamples = {
+      curl: 'curl https://api.you-box.com/v1/chat/completions \\\n  -H "Authorization: Bearer sk-box-****" \\\n  -H "Content-Type: application/json" \\\n  -d \'{\n    "model": "claude-sonnet-4-5",\n    "stream": true,\n    "messages": [{"role": "user", "content": "你好"}]\n  }\'',
+      python: 'from openai import OpenAI\n\nclient = OpenAI(\n    base_url="https://api.you-box.com/v1",\n    api_key="sk-box-****",\n)\n\nresp = client.chat.completions.create(\n    model="gpt-5",\n    messages=[{"role": "user", "content": "你好"}],\n)',
+      claude: '# Claude Code 直接接入\nexport ANTHROPIC_BASE_URL="https://api.you-box.com"\nexport ANTHROPIC_AUTH_TOKEN="sk-box-****"\n\nclaude\n# ✓ 使用 BoxAI 网关中的 Claude 订阅额度',
+    };
+    const tabBase = 'border: none; cursor: pointer; border-radius: 6px; padding: 5px 12px; font-family: var(--bx-font-mono); font-size: 11.5px; font-weight: 500; font-family: var(--bx-font-mono); transition: color 0.12s, background 0.12s; background: transparent; color: var(--bx-text-dim);';
+    const tabActive = 'border: none; cursor: pointer; border-radius: 6px; padding: 5px 12px; font-family: var(--bx-font-mono); font-size: 11.5px; font-weight: 600; background: var(--bx-active); color: var(--bx-brand-bright);';
+    const faqs = [
+      { q: 'BoxAI 是什么？', a: 'BoxAI 是一个统一 AI 服务平台：一个账户即可使用在线创作台（图像/视频）、Studio 桌面 Agent 工作台，以及 OpenAI 兼容的模型网关 API。' },
+      { q: '支持哪些模型？', a: '网关聚合了主流上游模型，覆盖对话、图像与视频等模态。具体可用列表以创作台中的模型选择器与控制台展示为准。' },
+      { q: '如何计费？', a: '按实际用量从账户余额中扣费，也可以订阅套餐获得更高配额。创作台、Studio 与 API 共享同一份余额。' },
+      { q: '我的创作数据保存在哪里？', a: '创作台的生成历史保存在你自己的浏览器（IndexedDB）中，不会上传服务器；账单与密钥等账户数据存于控制台。' },
+      { q: '创作台和 Studio 有什么区别？', a: '创作台在浏览器中生成图像与视频，即开即用；Studio 是桌面 Agent 工作台，可访问本地文件与工具链，并将支持浏览器远程接管。两者共用同一账户与余额。' },
+    ];
+    return {
+      typedReply: this.fullReply.slice(0, this.state.typed),
+      typing: this.state.typed < this.fullReply.length,
+      stat0: this.state.s0, stat1: this.state.s1, stat2: this.state.s2,
+      videoPct: this.state.videoPct + '%',
+      videoPctLabel: this.state.videoPct + '%',
+      genPctLabel: this.state.genPct + '%',
+      marquee: [...models, ...models],
+      upstreams: ['anthropic', 'openai', 'gemini', 'grok / xai', 'antigravity', 'open-source'],
+      products: [
+        { title: '在线创作台', desc: '图像 · 视频 · 资产', icon: icon('<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>') },
+        { title: 'Studio 工作台', desc: '本地 Agent · 远程接管', icon: icon('<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>') },
+        { title: '账户中心', desc: '余额 · 密钥 · 用量', icon: icon('<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>') },
+        { title: '开放 API', desc: 'OpenAI 兼容 /v1', icon: icon('<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>') },
+      ],
+      miniBars: [42, 58, 35, 70, 52, 88, 64, 45, 76, 58, 92, 68, 50, 80, 62, 95, 74, 100].map((v, i) => ({
+        h: v + '%',
+        bg: i === 17 ? 'var(--bx-brand)' : 'color-mix(in srgb, var(--bx-brand) 45%, transparent)',
+        delay: (i * 0.04).toFixed(2) + 's',
+      })),
+      codeTabs: [
+        { key: 'curl', label: 'curl' },
+        { key: 'python', label: 'Python · OpenAI SDK' },
+        { key: 'claude', label: 'Claude Code' },
+      ].map((t) => ({
+        label: t.label,
+        style: this.state.codeTab === t.key ? tabActive : tabBase,
+        pick: () => this.setState({ codeTab: t.key }),
+      })),
+      codeBody: codeSamples[this.state.codeTab],
+      statusRows: [
+        { name: 'Claude 主力池', provider: 'anthropic', latency: '842', avail: '99.98', availColor: 'var(--bx-success)', dot: 'var(--bx-success)', timeline: this.seededTimeline(7, 0.04) },
+        { name: 'GPT-5 网关', provider: 'openai', latency: '730', avail: '99.92', availColor: 'var(--bx-success)', dot: 'var(--bx-success)', timeline: this.seededTimeline(51, 0.05) },
+        { name: 'Gemini 渠道', provider: 'gemini', latency: '655', avail: '99.87', availColor: 'var(--bx-success)', dot: 'var(--bx-success)', timeline: this.seededTimeline(64, 0.06) },
+        { name: 'Grok 渠道', provider: 'grok', latency: '1010', avail: '98.40', availColor: 'var(--bx-warning)', dot: 'var(--bx-warning)', timeline: this.seededTimeline(87, 0.16) },
+      ],
+      faqItems: faqs.map((f, i) => {
+        const open = this.state.faqOpen === i;
+        return {
+          num: '0' + (i + 1), q: f.q, a: f.a, open: open,
+          chev: open ? 'rotate(45deg)' : 'rotate(0deg)',
+          maxH: open ? '200px' : '0px',
+          opacity: open ? '1' : '0',
+          toggle: () => this.setState({ faqOpen: open ? -1 : i }),
+        };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import {
+  ArrowRight,
+  ChevronDown,
   LogOut,
   Menu,
   Moon,
-  Sparkles,
   Sun,
   User,
   X,
@@ -16,18 +17,32 @@ import { useAuth } from '@/lib/use-auth'
 import { useTheme } from '@/lib/theme'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { RELEASES_PAGE_URL } from '@/lib/releases'
+import { WORKSPACE_PATHS } from '@/lib/workspace-navigation'
 import { BX_EASE } from '@/components/motion/Reveal'
 import { LangSwitcher } from './LangSwitcher'
+
+type MenuKey = 'products' | 'solutions' | 'resources' | ''
+
+type MegaLink = {
+  t: string
+  d: string
+  to?: string
+  href?: string
+}
 
 export function Header() {
   const { d } = useI18n()
   const { authed, user } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [mega, setMega] = useState<MenuKey>('')
   const location = useLocation()
+  const megaCopy = d.nav.mega
 
   useEffect(() => {
     setMenuOpen(false)
+    setMega('')
   }, [location.pathname])
 
   useEffect(() => {
@@ -39,12 +54,66 @@ export function Header() {
     }
   }, [menuOpen])
 
-  const nav = [
-    { to: '/create', label: d.nav.creator, match: (p: string) => p.startsWith('/create') },
-    { to: '/studio', label: d.nav.studio, match: (p: string) => p.startsWith('/studio') },
-    { to: '/pricing', label: d.nav.pricing, match: (p: string) => p.startsWith('/pricing') },
-    { to: '/status', label: d.nav.status, match: (p: string) => p.startsWith('/status') },
-  ]
+  const path = location.pathname
+  const activeCreator = path.startsWith(WORKSPACE_PATHS.create)
+  const activeStudio = path.startsWith('/studio')
+  const activePricing = path.startsWith('/pricing')
+  const activeStatus = path.startsWith('/status')
+
+  const menus: Record<
+    Exclude<MenuKey, ''>,
+    { links: MegaLink[]; feat: { k: string; t: string; d: string; to: string } }
+  > = {
+    products: {
+      links: [
+        { t: megaCopy.products.creator.t, d: megaCopy.products.creator.d, to: WORKSPACE_PATHS.createImage },
+        { t: megaCopy.products.studio.t, d: megaCopy.products.studio.d, to: '/studio' },
+        { t: megaCopy.products.api.t, d: megaCopy.products.api.d, to: WORKSPACE_PATHS.developerKeys },
+        { t: megaCopy.products.account.t, d: megaCopy.products.account.d, to: WORKSPACE_PATHS.home },
+      ],
+      feat: {
+        k: megaCopy.products.feat.k,
+        t: megaCopy.products.feat.t,
+        d: megaCopy.products.feat.d,
+        to: WORKSPACE_PATHS.developerKeys,
+      },
+    },
+    solutions: {
+      links: [
+        { t: megaCopy.solutions.image.t, d: megaCopy.solutions.image.d, to: WORKSPACE_PATHS.createImage },
+        { t: megaCopy.solutions.video.t, d: megaCopy.solutions.video.d, to: WORKSPACE_PATHS.createVideo },
+        { t: megaCopy.solutions.agent.t, d: megaCopy.solutions.agent.d, to: '/studio' },
+        { t: megaCopy.solutions.dev.t, d: megaCopy.solutions.dev.d, to: WORKSPACE_PATHS.developerKeys },
+      ],
+      feat: {
+        k: megaCopy.solutions.feat.k,
+        t: megaCopy.solutions.feat.t,
+        d: megaCopy.solutions.feat.d,
+        to: WORKSPACE_PATHS.home,
+      },
+    },
+    resources: {
+      links: [
+        { t: megaCopy.resources.status.t, d: megaCopy.resources.status.d, to: '/status' },
+        // No public docs route — label matches destination (API keys), not "docs".
+        { t: megaCopy.resources.docs.t, d: megaCopy.resources.docs.d, to: WORKSPACE_PATHS.developerKeys },
+        {
+          t: megaCopy.resources.changelog.t,
+          d: megaCopy.resources.changelog.d,
+          href: RELEASES_PAGE_URL,
+        },
+        { t: megaCopy.resources.faq.t, d: megaCopy.resources.faq.d, to: '/#faq' },
+      ],
+      feat: {
+        k: megaCopy.resources.feat.k,
+        t: megaCopy.resources.feat.t,
+        d: megaCopy.resources.feat.d,
+        to: '/status',
+      },
+    },
+  }
+
+  const openMenu = mega ? menus[mega] : null
 
   const email = (user?.email as string) || (user?.username as string) || ''
 
@@ -53,61 +122,139 @@ export function Header() {
     window.location.href = '/'
   }
 
+  // Spacing/type match design-source/Header.dc.html (Nebius-style mega).
+  const navBtn = (active: boolean, open: boolean) =>
+    cx(
+      'relative inline-flex items-center gap-[5px] rounded-[6px] px-[11px] py-1.5 text-[13.5px] font-semibold tracking-[-0.01em] transition-colors',
+      active || open
+        ? 'text-[var(--bx-text)]'
+        : 'text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
+    )
+
+  function MegaLinkItem({ l }: { l: MegaLink }) {
+    const body = (
+      <>
+        <span className="inline-flex items-center gap-[7px] text-sm font-bold tracking-[-0.01em]">
+          {l.t}
+          <ArrowRight size={12} className="text-[var(--bx-brand)]" strokeWidth={2.5} />
+        </span>
+        <span className="line-clamp-2 text-[12.5px] leading-[1.55] text-[var(--bx-text-muted)]">
+          {l.d}
+        </span>
+      </>
+    )
+    const className =
+      'flex flex-col gap-[3px] rounded-[10px] px-3.5 py-3 text-[var(--bx-text)] transition-colors hover:bg-[var(--bx-hover)]'
+    if (l.href) {
+      return (
+        <a
+          key={l.href + l.t}
+          href={l.href}
+          className={className}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {body}
+        </a>
+      )
+    }
+    return (
+      <Link key={(l.to ?? '') + l.t} to={l.to ?? '/'} className={className}>
+        {body}
+      </Link>
+    )
+  }
+
   return (
-    <header className="bx-nav">
-      <div className="bx-nav-inner">
-        {/* Brand */}
-        <Link to="/" className="bx-nav-brand group">
-          <img
-            src={BRAND_LOGO_SVG}
-            alt=""
-            className="h-8 w-8 transition-transform duration-bx ease-expo group-hover:scale-105"
-          />
-          <span className="bx-display text-[15px] font-semibold tracking-tight">{BRAND_NAME}</span>
+    <header
+      className="sticky top-0 z-50 border-b border-[var(--bx-border)] bg-[color-mix(in_srgb,var(--bx-bg)_86%,transparent)] backdrop-blur-[16px] backdrop-saturate-[1.2]"
+      onMouseLeave={() => setMega('')}
+    >
+      <div className="mx-auto flex h-[var(--bx-nav-h)] max-w-[1200px] items-center gap-5 px-6">
+        <Link to="/" className="flex shrink-0 items-center gap-[9px] text-[var(--bx-text)]">
+          <img src={BRAND_LOGO_SVG} alt="" className="h-[26px] w-[26px]" />
+          <span className="text-[15px] font-extrabold tracking-[-0.02em]">{BRAND_NAME}</span>
         </Link>
 
-        {/* Desktop center nav */}
-        <nav className="bx-nav-links" aria-label="Primary">
-          <div className="bx-nav-track">
-            {nav.map((item) => {
-              const active = item.match(location.pathname)
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={cx('bx-nav-link', active && 'is-active')}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {item.label}
-                </NavLink>
-              )
-            })}
-          </div>
+        <nav aria-label="Primary" className="hidden flex-1 items-center gap-0.5 md:flex">
+          <button
+            type="button"
+            className={navBtn(activeCreator || activeStudio, mega === 'products')}
+            onMouseEnter={() => setMega('products')}
+          >
+            {d.footer.product}
+            <ChevronDown
+              size={11}
+              className={cx('opacity-55 transition-transform duration-200', mega === 'products' && 'rotate-180')}
+            />
+            {(activeCreator || activeStudio) && (
+              <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />
+            )}
+          </button>
+          <button
+            type="button"
+            className={navBtn(false, mega === 'solutions')}
+            onMouseEnter={() => setMega('solutions')}
+          >
+            {d.nav.solutions}
+            <ChevronDown
+              size={11}
+              className={cx('opacity-55 transition-transform duration-200', mega === 'solutions' && 'rotate-180')}
+            />
+          </button>
+          <NavLink
+            to="/pricing"
+            className={navBtn(activePricing, false)}
+            onMouseEnter={() => setMega('')}
+          >
+            {d.nav.pricing}
+            {activePricing && (
+              <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />
+            )}
+          </NavLink>
+          <button
+            type="button"
+            className={navBtn(activeStatus, mega === 'resources')}
+            onMouseEnter={() => setMega('resources')}
+          >
+            {d.footer.resources}
+            <ChevronDown
+              size={11}
+              className={cx('opacity-55 transition-transform duration-200', mega === 'resources' && 'rotate-180')}
+            />
+            {activeStatus && (
+              <span className="absolute inset-x-2.5 -bottom-px h-0.5 rounded-sm bg-[var(--bx-grad-cta)]" />
+            )}
+          </button>
         </nav>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="ml-auto flex items-center gap-2.5 md:ml-0">
+          <div className="hidden sm:block">
+            <LangSwitcher variant="segmented" />
+          </div>
           <button
             type="button"
             onClick={toggleTheme}
-            className="rounded-[var(--bx-radius-sm)] p-2 text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+            className="inline-flex rounded-[6px] border border-[var(--bx-border)] p-[5px] text-[var(--bx-text-muted)] transition-colors hover:border-[var(--bx-border-strong)] hover:text-[var(--bx-brand-bright)]"
             aria-label={isDark ? d.nav.themeDark : d.nav.themeLight}
             title={isDark ? d.nav.themeDark : d.nav.themeLight}
           >
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
-          <LangSwitcher />
 
           {authed ? (
             <div className="hidden items-center gap-1.5 md:flex">
-              <Link to="/account" className="bx-nav-account" title={email || d.nav.account}>
-                <span className="bx-nav-avatar">{(email || 'U').charAt(0).toUpperCase()}</span>
-                <span className="max-w-[120px] truncate text-sm">{email || d.nav.account}</span>
+              <Link
+                to={WORKSPACE_PATHS.home}
+                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-[-0.01em] whitespace-nowrap text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_rgba(31,213,185,0.7)]"
+              >
+                {d.nav.console}
+                <ArrowRight size={13} strokeWidth={2.5} />
               </Link>
               <button
                 type="button"
                 onClick={onLogout}
-                className="rounded-[var(--bx-radius-sm)] p-2 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
+                className="rounded-[6px] p-2 text-[var(--bx-text-dim)] transition-colors hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]"
                 aria-label={d.nav.logout}
                 title={d.nav.logout}
               >
@@ -122,16 +269,19 @@ export function Header() {
               >
                 {d.nav.login}
               </Link>
-              <Link to="/signup" className="bx-btn bx-btn-primary bx-btn-sm">
-                <Sparkles size={13} />
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-1.5 rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3.5 py-1.5 text-[13px] font-bold tracking-[-0.01em] whitespace-nowrap text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px hover:shadow-[0_12px_32px_-8px_rgba(31,213,185,0.7)]"
+              >
                 {d.nav.signup}
+                <ArrowRight size={13} strokeWidth={2.5} />
               </Link>
             </div>
           )}
 
           <button
             type="button"
-            className="rounded-[var(--bx-radius-sm)] p-2 text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] md:hidden"
+            className="rounded-[6px] p-2 text-[var(--bx-text-muted)] transition-colors hover:bg-[var(--bx-hover)] md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={d.nav.menu}
             aria-expanded={menuOpen}
@@ -139,6 +289,46 @@ export function Header() {
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
+      </div>
+
+      {/* Mega menu — layout/copy from design-source/Header.dc.html */}
+      <div
+        className={cx(
+          'absolute inset-x-0 top-full border-b border-[var(--bx-border)] bg-[color-mix(in_srgb,var(--bx-bg)_94%,transparent)] shadow-[0_36px_70px_-28px_rgba(0,0,0,0.55)] backdrop-blur-[20px] backdrop-saturate-[1.2] transition-[opacity,transform,visibility] duration-[240ms]',
+          openMenu
+            ? 'pointer-events-auto visible translate-y-0 opacity-100'
+            : 'pointer-events-none invisible -translate-y-2.5 opacity-0',
+        )}
+        style={{ transitionTimingFunction: 'var(--bx-ease)' }}
+      >
+        {openMenu ? (
+          <div className="mx-auto grid max-w-[1200px] grid-cols-[2.1fr_1fr] gap-7 px-6 py-[22px] pb-[26px]">
+            <div className="grid grid-cols-2 content-start gap-1">
+              {openMenu.links.map((l) => (
+                <MegaLinkItem key={(l.to ?? l.href ?? '') + l.t} l={l} />
+              ))}
+            </div>
+            <Link
+              to={openMenu.feat.to}
+              className="relative flex min-h-[148px] flex-col justify-end gap-1 overflow-hidden rounded-[var(--bx-radius-lg)] border border-[var(--bx-border)] p-[18px] text-[var(--bx-text)] transition hover:-translate-y-0.5 hover:border-[var(--bx-brand-ring)]"
+              style={{
+                background:
+                  'linear-gradient(150deg, color-mix(in srgb, var(--bx-brand) 16%, var(--bx-bg-card)), var(--bx-bg-card) 70%)',
+              }}
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -top-10 -right-10 h-[150px] w-[150px] rounded-full blur-[30px]"
+                style={{ background: 'radial-gradient(circle, var(--bx-brand-soft), transparent 70%)' }}
+              />
+              <span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[var(--bx-brand)] uppercase">
+                {openMenu.feat.k}
+              </span>
+              <span className="text-[15px] font-extrabold tracking-[-0.015em]">{openMenu.feat.t}</span>
+              <span className="text-xs leading-[1.55] text-[var(--bx-text-muted)]">{openMenu.feat.d}</span>
+            </Link>
+          </div>
+        ) : null}
       </div>
 
       {/* Mobile sheet */}
@@ -160,37 +350,48 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.28, ease: BX_EASE }}
-              className="bx-nav-sheet md:hidden"
+              className="absolute inset-x-0 top-full z-50 border-b border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] p-4 shadow-[var(--bx-shadow-pop)] md:hidden"
             >
               <nav className="space-y-1" aria-label="Mobile">
-                {nav.map((item) => {
-                  const active = item.match(location.pathname)
-                  return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={cx('bx-nav-sheet-link', active && 'is-active')}
-                    >
-                      {item.label}
-                    </NavLink>
-                  )
-                })}
+                {[
+                  { to: WORKSPACE_PATHS.createImage, label: d.nav.creator },
+                  { to: '/studio', label: d.nav.studio },
+                  { to: '/pricing', label: d.nav.pricing },
+                  { to: '/status', label: d.nav.status },
+                ].map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) =>
+                      cx(
+                        'flex rounded-[var(--bx-radius)] px-3 py-2.5 text-sm font-semibold transition-colors',
+                        isActive
+                          ? 'bg-[var(--bx-active)] text-[var(--bx-brand-bright)]'
+                          : 'text-[var(--bx-text-soft)] hover:bg-[var(--bx-hover)]',
+                      )
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
               </nav>
-
+              <div className="mt-3 flex items-center gap-2">
+                <LangSwitcher variant="segmented" />
+              </div>
               <div className="mt-4 border-t border-[var(--bx-border)] pt-4">
                 {authed ? (
                   <div className="space-y-1">
-                    <Link to="/account" className="bx-nav-sheet-link">
+                    <Link
+                      to={WORKSPACE_PATHS.settingsProfile}
+                      className="flex items-center gap-2 rounded-[var(--bx-radius)] px-3 py-2.5 text-sm font-semibold hover:bg-[var(--bx-hover)]"
+                    >
                       <User size={16} />
                       {email || d.nav.account}
-                    </Link>
-                    <Link to="/account/keys" className="bx-nav-sheet-link">
-                      {d.footer.apiKeys}
                     </Link>
                     <button
                       type="button"
                       onClick={onLogout}
-                      className="bx-nav-sheet-link w-full text-left"
+                      className="flex w-full items-center gap-2 rounded-[var(--bx-radius)] px-3 py-2.5 text-left text-sm font-semibold hover:bg-[var(--bx-hover)]"
                     >
                       <LogOut size={16} />
                       {d.nav.logout}
@@ -198,10 +399,16 @@ export function Header() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
-                    <Link to="/login" className="bx-btn bx-btn-ghost">
+                    <Link
+                      to="/login"
+                      className="rounded-[var(--bx-radius-btn)] border border-[var(--bx-border)] px-3 py-2 text-center text-sm font-semibold"
+                    >
                       {d.nav.login}
                     </Link>
-                    <Link to="/signup" className="bx-btn bx-btn-primary">
+                    <Link
+                      to="/signup"
+                      className="rounded-[var(--bx-radius-btn)] bg-[var(--bx-grad-cta)] px-3 py-2 text-center text-sm font-bold text-[var(--bx-ink)]"
+                    >
                       {d.nav.signup}
                     </Link>
                   </div>

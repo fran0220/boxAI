@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font);">
+  <dc-import name="HeaderV2" active="pricing" hint-size="100%,56px"></dc-import>
+
+  <div style="margin-inline: auto; max-width: 1200px; padding: 64px 24px 96px;">
+
+    <!-- Hero -->
+    <header data-screen-label="定价头部" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 40px;">
+      <div>
+        <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+          <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+          Pricing
+        </p>
+        <h1 style="margin: 16px 0 0; font-size: 44px; font-weight: 800; letter-spacing: -0.035em;">简单透明的定价</h1>
+        <p style="margin: 14px 0 0; max-width: 560px; font-size: 15px; line-height: 1.7; color: var(--bx-text-muted);">免费开始，按量付费；需要更高配额时订阅套餐。余额与密钥在创作台、Studio 与 API 间通用。</p>
+      </div>
+      <div style="display: inline-flex; flex-shrink: 0; padding: 3px; border-radius: 8px; border: 1px solid var(--bx-border); background: var(--bx-bg-elevated); gap: 2px;">
+        <button onClick="{{ pickMonthly }}" style="{{ monthlyStyle }}">月付</button>
+        <button onClick="{{ pickYearly }}" style="{{ yearlyStyle }}">年付 <span style="font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-success);">-20%</span></button>
+      </div>
+    </header>
+
+    <!-- Plans -->
+    <section data-screen-label="套餐" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+      <sc-for list="{{ plans }}" as="plan" hint-placeholder-count="4">
+        <div style="{{ plan.cardStyle }}">
+          <sc-if value="{{ plan.highlighted }}" hint-placeholder-val="{{ false }}">
+            <span style="position: absolute; top: -9px; right: 16px; border-radius: 4px; background: var(--bx-grad-cta); padding: 2px 8px; font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; color: var(--bx-ink);">最受欢迎</span>
+          </sc-if>
+          <span style="font-family: var(--bx-font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: {{ plan.nameColor }};">{{ plan.name }}</span>
+          <p style="margin: 12px 0 0; font-family: var(--bx-font-mono); font-size: 32px; font-weight: 600; letter-spacing: -0.02em;">{{ plan.price }}<span style="font-size: 13px; color: var(--bx-text-dim);">{{ plan.period }}</span></p>
+          <p style="margin: 6px 0 0; font-size: 12.5px; color: var(--bx-text-dim);">{{ plan.desc }}</p>
+          <ul style="margin: 18px 0 0; padding: 18px 0 0; border-top: 1px solid var(--bx-line); list-style: none; flex: 1; display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ plan.features }}" as="f" hint-placeholder-count="4">
+              <li style="display: flex; align-items: flex-start; gap: 9px; font-size: 13px; line-height: 1.5; color: var(--bx-text-soft);">
+                <span style="display: flex; height: 17px; width: 17px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 4px; background: var(--bx-brand-soft); color: var(--bx-brand); margin-top: 1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                {{ f }}
+              </li>
+            </sc-for>
+          </ul>
+          <a href="#" style="{{ plan.ctaStyle }}" style-hover="{{ plan.ctaHover }}">{{ plan.cta }}</a>
+        </div>
+      </sc-for>
+    </section>
+    <p style="margin: 18px 0 0; font-size: 12px; color: var(--bx-text-dim); font-family: var(--bx-font-mono);">* 套餐开通与充值在 you-box.com 结账完成；以上为方案说明，实际以结账页为准。</p>
+
+    <!-- Compare -->
+    <section data-screen-label="方案对比" style="margin-top: 80px;">
+      <h2 style="margin: 0 0 24px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em;">方案对比</h2>
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; padding: 12px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">
+          <span></span><span style="text-align: center;">入门</span><span style="text-align: center; color: var(--bx-brand);">专业</span><span style="text-align: center;">团队</span><span style="text-align: center;">企业</span>
+        </div>
+        <sc-for list="{{ compareRows }}" as="row" hint-placeholder-count="7">
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; align-items: center; padding: 12px 20px; border-top: 1px solid var(--bx-line); font-size: 13px; transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+            <span style="color: var(--bx-text-soft);">{{ row.label }}</span>
+            <span style="text-align: center; color: var(--bx-text-muted);">{{ row.v0 }}</span>
+            <span style="text-align: center; color: var(--bx-text-soft); background: var(--bx-brand-soft); border-radius: 6px; padding: 4px 0; margin: -4px 8px;">{{ row.v1 }}</span>
+            <span style="text-align: center; color: var(--bx-text-muted);">{{ row.v2 }}</span>
+            <span style="text-align: center; color: var(--bx-text-muted);">{{ row.v3 }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- FAQ + CTA -->
+    <section data-screen-label="定价FAQ" style="margin-top: 80px; display: grid; grid-template-columns: 0.8fr 2.2fr; gap: 40px;">
+      <div>
+        <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+          <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+          FAQ
+        </p>
+        <h2 style="margin: 14px 0 0; font-size: 30px; font-weight: 800; letter-spacing: -0.03em;">定价常见问题</h2>
+        <a href="#" style="margin-top: 20px; display: inline-flex; align-items: center; gap: 8px; border-radius: var(--bx-radius-btn); padding: 11px 24px; font-weight: 700; font-size: 14px; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta); transition: transform var(--bx-dur-fast) var(--bx-ease);" style-hover="color: var(--bx-ink); transform: translateY(-2px);">前往结账 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+      </div>
+      <div style="border-top: 1px solid var(--bx-border);">
+        <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="3">
+          <div style="border-bottom: 1px solid var(--bx-border);">
+            <button onClick="{{ item.toggle }}" aria-expanded="{{ item.open }}" style="display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 4px; text-align: left; background: transparent; border: none; cursor: pointer; color: var(--bx-text); font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -0.01em;" style-hover="color: var(--bx-brand-bright);">
+              <span style="display: flex; align-items: baseline; gap: 14px;"><span style="font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">{{ item.num }}</span>{{ item.q }}</span>
+              <span style="flex-shrink: 0; color: var(--bx-text-dim); display: inline-flex; transition: transform var(--bx-dur) var(--bx-ease); transform: {{ item.chev }};">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              </span>
+            </button>
+            <div style="overflow: hidden; transition: max-height var(--bx-dur-med) var(--bx-ease), opacity var(--bx-dur-med) var(--bx-ease); max-height: {{ item.maxH }}; opacity: {{ item.opacity }};">
+              <p style="margin: 0; padding: 0 32px 20px 33px; font-size: 13.5px; line-height: 1.75; color: var(--bx-text-muted); max-width: 640px;">{{ item.a }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <dc-import name="FooterV2" hint-size="100%,360px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { faqOpen: 0, yearly: false };
+  renderVals() {
+    const y = this.state.yearly;
+    const tabBase = 'border: none; cursor: pointer; border-radius: 6px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; transition: color 0.12s, background 0.12s; background: transparent; color: var(--bx-text-dim);';
+    const tabActive = 'border: none; cursor: pointer; border-radius: 6px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; background: var(--bx-active); color: var(--bx-brand-bright);';
+    const cardBase = 'position: relative; display: flex; flex-direction: column; padding: 24px; box-sizing: border-box; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);';
+    const cardHi = 'position: relative; display: flex; flex-direction: column; padding: 24px; box-sizing: border-box; border-radius: var(--bx-radius-xl); background: linear-gradient(var(--bx-bg-elevated), var(--bx-bg-elevated)) padding-box, var(--bx-grad-border) border-box; border: 1px solid transparent; box-shadow: var(--bx-shadow-card);';
+    const ctaGhost = 'margin-top: 20px; display: inline-flex; width: 100%; box-sizing: border-box; align-items: center; justify-content: center; gap: 6px; border-radius: var(--bx-radius-btn); padding: 9px 18px; font-weight: 700; font-size: 13.5px; border: 1px solid var(--bx-border-strong); color: var(--bx-text); background: transparent; transition: border-color var(--bx-dur-fast) ease, color var(--bx-dur-fast) ease;';
+    const ctaPrim = 'margin-top: 20px; display: inline-flex; width: 100%; box-sizing: border-box; align-items: center; justify-content: center; gap: 6px; border-radius: var(--bx-radius-btn); padding: 9px 18px; font-weight: 700; font-size: 13.5px; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta); transition: transform var(--bx-dur-fast) var(--bx-ease);';
+    const faqs = [
+      { q: '余额可以在不同产品间通用吗？', a: '可以。创作台、Studio 与 API 网关共用同一账户余额与密钥。' },
+      { q: '如何充值或开通套餐？', a: '在 you-box.com 登录后，于「结账」页完成充值或订阅，支持多种支付方式。' },
+      { q: '可以随时取消吗？', a: '订阅可在「账户 → 订阅」自助管理；按量余额长期有效，用完为止。' },
+    ];
+    return {
+      pickMonthly: () => this.setState({ yearly: false }),
+      pickYearly: () => this.setState({ yearly: true }),
+      monthlyStyle: y ? tabBase : tabActive,
+      yearlyStyle: y ? tabActive : tabBase,
+      plans: [
+        { name: '入门', nameColor: 'var(--bx-text-dim)', price: '¥0', period: '', desc: '注册即用，按量充值', features: ['全部模型按量计费', '在线创作台', 'Studio 工作台', 'API 网关访问'], cta: '免费注册', highlighted: false, cardStyle: cardBase, ctaStyle: ctaGhost, ctaHover: 'border-color: var(--bx-brand); color: var(--bx-brand-bright);' },
+        { name: '专业', nameColor: 'var(--bx-brand)', price: y ? '¥79' : '¥99', period: '/月', desc: y ? '年付按月折算，面向重度创作者' : '面向重度个人创作者', features: ['包含入门全部能力', '更高请求并发', '订阅配额更划算', '优先模型路由'], cta: '立即订阅', highlighted: true, cardStyle: cardHi, ctaStyle: ctaPrim, ctaHover: 'color: var(--bx-ink); transform: translateY(-1px);' },
+        { name: '团队', nameColor: 'var(--bx-text-dim)', price: y ? '¥399' : '¥499', period: '/月', desc: '小团队协作与分组管理', features: ['包含专业全部能力', '多密钥与分组管理', '用量报表', '优先支持'], cta: '立即订阅', highlighted: false, cardStyle: cardBase, ctaStyle: ctaGhost, ctaHover: 'border-color: var(--bx-brand); color: var(--bx-brand-bright);' },
+        { name: '企业', nameColor: 'var(--bx-text-dim)', price: '定制', period: '', desc: '私有化与定制需求', features: ['专属配额与路由', 'SLA 保障', '定制接入支持'], cta: '联系我们', highlighted: false, cardStyle: cardBase, ctaStyle: ctaGhost, ctaHover: 'border-color: var(--bx-brand); color: var(--bx-brand-bright);' },
+      ],
+      compareRows: [
+        { label: '全部模型访问', v0: '✓', v1: '✓', v2: '✓', v3: '✓' },
+        { label: '在线创作台 / Studio', v0: '✓', v1: '✓', v2: '✓', v3: '✓' },
+        { label: 'API 网关', v0: '✓', v1: '✓', v2: '✓', v3: '✓' },
+        { label: '请求并发', v0: '标准', v1: '更高', v2: '更高', v3: '定制' },
+        { label: '订阅配额', v0: '—', v1: '✓', v2: '✓', v3: '定制' },
+        { label: '分组与多密钥管理', v0: '—', v1: '—', v2: '✓', v3: '✓' },
+        { label: '专属支持', v0: '—', v1: '—', v2: '优先', v3: 'SLA' },
+      ],
+      faqItems: faqs.map((f, i) => {
+        const open = this.state.faqOpen === i;
+        return {
+          num: '0' + (i + 1), q: f.q, a: f.a, open: open,
+          chev: open ? 'rotate(45deg)' : 'rotate(0deg)',
+          maxH: open ? '160px' : '0px',
+          opacity: open ? '1' : '0',
+          toggle: () => this.setState({ faqOpen: open ? -1 : i }),
+        };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>

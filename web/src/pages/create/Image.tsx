@@ -10,8 +10,8 @@ const PlaygroundApp = lazy(() =>
 )
 
 /**
- * Image panel inside Creator workspace (site Layout + panel tabs).
- * Full gpt_image_playground embed under `@/image-playground`.
+ * Image panel inside Creator workspace.
+ * Playground store/API with create-shell chrome matching design-source/新版-创作台.dc.html.
  */
 export function ImageGen() {
   const { d } = useI18n()
@@ -42,6 +42,7 @@ export function ImageGen() {
         }
       >
         <PlaygroundApp
+          variant="create-shell"
           locationState={location.state}
           clearState={() => navigate(location.pathname, { replace: true })}
         />

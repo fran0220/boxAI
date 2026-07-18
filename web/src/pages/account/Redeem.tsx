@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { getRedeemHistory, redeemCode, type RedeemHistoryItem } from '@/lib/customer-api'
+import { getProfile, getRedeemHistory, redeemCode, type RedeemHistoryItem } from '@/lib/customer-api'
 import { ApiError } from '@/lib/api'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
+import { Spinner } from '@/components/ui/Spinner'
 
 export function AccountRedeem() {
   const { d } = useI18n()
@@ -11,21 +12,38 @@ export function AccountRedeem() {
 
   const [code, setCode] = useState('')
   const [history, setHistory] = useState<RedeemHistoryItem[]>([])
+  const [balance, setBalance] = useState<number | null>(null)
+  const [historyReady, setHistoryReady] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  async function loadHistory() {
+  async function loadHistory(isBoot = false) {
     try {
       const h = await getRedeemHistory()
       setHistory(h || [])
+    } catch (err) {
+      if (isBoot) {
+        setError(err instanceof ApiError ? err.message : t.historyLoadFailed)
+      }
+      // keep previous history on subsequent failures
+    } finally {
+      setHistoryReady(true)
+    }
+  }
+
+  async function loadBalance() {
+    try {
+      const p = await getProfile()
+      if (typeof p.balance === 'number') setBalance(p.balance)
     } catch {
-      // history is secondary
+      /* optional */
     }
   }
 
   useEffect(() => {
-    void loadHistory()
+    void loadHistory(true)
+    void loadBalance()
   }, [])
 
   async function onSubmit(e: React.FormEvent) {
@@ -38,7 +56,7 @@ export function AccountRedeem() {
       const res = await redeemCode(code.trim())
       setMessage(res.message || t.success)
       setCode('')
-      await loadHistory()
+      await Promise.all([loadHistory(false), loadBalance()])
     } catch (err) {
       setError(err instanceof ApiError ? err.message : t.failed)
     } finally {
@@ -47,46 +65,83 @@ export function AccountRedeem() {
   }
 
   return (
-    <div className="max-w-lg">
-      <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-      <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+    <div>
+      <h1 className="bx-account-page-title">{t.title}</h1>
+      <p className="bx-account-page-sub">{t.subtitle}</p>
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
       {message ? <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
 
-      <form onSubmit={onSubmit} className="bx-card mt-6 flex flex-col gap-3 p-5 sm:flex-row">
-        <input
-          className="bx-input flex-1"
-          placeholder={t.placeholder}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
-        <button type="submit" className="bx-btn bx-btn-primary" disabled={busy}>
-          {busy ? d.common.loading : t.submit}
-        </button>
-      </form>
+      <div className="mt-5 grid gap-3 lg:grid-cols-[1.4fr_1fr]">
+        <form onSubmit={onSubmit} className="bx-account-panel px-6 py-[22px]">
+          <p className="bx-account-mono-label">{t.codeLabel}</p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <input
+              className="bx-account-input-muted flex-1 font-mono text-[15px] tracking-[0.12em]"
+              placeholder={t.placeholder}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+            />
+            <button type="submit" className="bx-btn bx-btn-primary px-[22px] text-[14px]" disabled={busy}>
+              {busy ? d.common.loading : t.submit}
+            </button>
+          </div>
+          <p className="mt-3.5 mb-0 text-xs leading-relaxed text-[var(--bx-text-dim)]">{t.helpText}</p>
+        </form>
 
-      <h3 className="mt-8 text-sm font-semibold">{t.history}</h3>
-      {history.length === 0 ? (
-        <p className="mt-3 text-sm text-[var(--bx-text-dim)]">{t.empty}</p>
-      ) : (
-        <ul className="mt-3 space-y-2">
-          {history.map((item) => (
-            <li key={item.id} className="bx-card flex justify-between gap-3 p-3 text-sm">
-              <div>
-                <p className="font-mono text-xs">{item.code}</p>
-                <p className="text-xs text-[var(--bx-text-dim)]">
-                  {item.type} · {item.value}
-                  {item.group?.name ? ` · ${item.group.name}` : ''}
-                </p>
-              </div>
-              <span className="shrink-0 text-xs text-[var(--bx-text-muted)]">
-                {item.used_at ? new Date(item.used_at).toLocaleDateString() : ''}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+        <div className="bx-account-panel-grad flex flex-col justify-center !px-6 !py-[22px]">
+          <p className="bx-account-mono-label">{t.currentBalance}</p>
+          <p className="mt-2.5 font-mono text-[32px] font-semibold tabular-nums tracking-tight">
+            {balance != null ? `$${balance.toFixed(2)}` : '—'}
+          </p>
+          <p className="bx-account-stat-hint" style={{ color: 'var(--bx-success)' }}>
+            {historyReady
+              ? t.historyCount.replace('{n}', String(history.length))
+              : d.common.loading}
+          </p>
+        </div>
+      </div>
+
+      <div className="bx-account-table-wrap mt-3">
+        <p className="m-0 px-5 pb-2.5 pt-3.5 text-[13.5px] font-bold">{t.history}</p>
+        {!historyReady ? (
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
+        ) : history.length === 0 ? (
+          <p className="bx-account-empty">{t.empty}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="bx-account-table min-w-[480px]">
+              <thead>
+                <tr>
+                  <th>{t.colCode}</th>
+                  <th>{t.colType}</th>
+                  <th className="text-right">{t.colValue}</th>
+                  <th>{t.colTime}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((item) => (
+                  <tr key={item.id}>
+                    <td className="font-mono text-[11.5px] text-[var(--bx-text-soft)]">{item.code}</td>
+                    <td className="text-[var(--bx-text-muted)]">
+                      {item.type}
+                      {item.group?.name ? ` · ${item.group.name}` : ''}
+                    </td>
+                    <td className="num text-right font-semibold text-[var(--bx-success)]">
+                      +{item.value}
+                    </td>
+                    <td className="font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+                      {item.used_at ? new Date(item.used_at).toLocaleString() : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

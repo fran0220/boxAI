@@ -6,8 +6,9 @@ import { safeReturnPath } from '@/lib/safe-return'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
 import { useAuth } from '@/lib/use-auth'
-import { BRAND_LOGO_SVG } from '@/lib/brand'
+import { consoleOrigin } from '@/lib/brand'
 import { Spinner } from '@/components/ui/Spinner'
+import { AuthSplitLayout } from './AuthSplitLayout'
 
 export function Signup() {
   const { d } = useI18n()
@@ -16,7 +17,7 @@ export function Signup() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const { status } = useAuth()
-  const returnTo = safeReturnPath(params.get('return_to'), '/account')
+  const returnTo = safeReturnPath(params.get('return_to'), '/app')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,7 +34,7 @@ export function Signup() {
 
   if (status === 'bootstrapping' || status === 'authenticated') {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--bx-bg)]">
         <Spinner />
       </div>
     )
@@ -68,69 +69,89 @@ export function Signup() {
     }
   }
 
-  return (
-    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center px-4 py-14 sm:px-6">
-      <div className="mb-8 text-center">
-        <img src={BRAND_LOGO_SVG} alt="" className="mx-auto h-10 w-10" />
-        <h1 className="bx-display mt-4 text-2xl font-bold">{d.auth.signupTitle}</h1>
-        <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.signupSubtitle}</p>
-      </div>
+  const loginHref =
+    returnTo && returnTo !== '/app'
+      ? `/login?return_to=${encodeURIComponent(returnTo)}`
+      : '/login'
 
+  const termsHref = `${consoleOrigin()}/legal/terms`
+  const privacyHref = `${consoleOrigin()}/legal/privacy`
+
+  return (
+    <AuthSplitLayout
+      activeTab="signup"
+      title={txId ? t.verifyEmailTitle : t.createAccount}
+      subtitle={txId ? t.codeSent.replace('{email}', email) : t.signupSubtitle}
+      returnTo={returnTo}
+    >
       {!txId ? (
-        <form onSubmit={onPrepare} className="bx-card space-y-4 p-6">
-          <label className="block text-sm">
-            <span className="text-[var(--bx-text-muted)]">{t.email}</span>
+        <form onSubmit={onPrepare} className="bx-auth-fields">
+          <label className="bx-auth-label">
+            <span className="bx-auth-label-text">{t.email}</span>
             <input
               type="email"
-              className="bx-input mt-1 w-full"
+              className="bx-auth-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              placeholder="you@example.com"
             />
           </label>
-          <label className="block text-sm">
-            <span className="text-[var(--bx-text-muted)]">{t.password}</span>
+          <label className="bx-auth-label">
+            <span className="bx-auth-label-text">{t.password}</span>
             <input
               type="password"
-              className="bx-input mt-1 w-full"
+              className="bx-auth-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
               autoComplete="new-password"
+              placeholder="••••••••"
             />
           </label>
-          {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
-          <button type="submit" className="bx-btn bx-btn-primary w-full" disabled={busy}>
+          {error ? <p className="bx-auth-error">{error}</p> : null}
+          <button type="submit" className="bx-auth-cta" disabled={busy}>
             {busy ? d.common.loading : t.sendCode}
           </button>
+          <p className="bx-auth-terms">
+            {t.signupTermsBefore}
+            <a href={termsHref} target="_blank" rel="noreferrer">
+              {d.footer.terms}
+            </a>
+            {t.signupTermsMid}
+            <a href={privacyHref} target="_blank" rel="noreferrer">
+              {d.footer.privacy}
+            </a>
+            {t.signupTermsAfter}
+          </p>
         </form>
       ) : (
-        <form onSubmit={onComplete} className="bx-card space-y-4 p-6">
-          <p className="text-sm text-[var(--bx-text-muted)]">{t.codeSent.replace('{email}', email)}</p>
-          <label className="block text-sm">
-            <span className="text-[var(--bx-text-muted)]">{t.verifyCode}</span>
+        <form onSubmit={onComplete} className="bx-auth-fields">
+          <label className="bx-auth-label">
+            <span className="bx-auth-label-text">{t.verifyCode}</span>
             <input
-              className="bx-input mt-1 w-full tracking-widest"
+              className="bx-auth-input tracking-widest"
               value={code}
               onChange={(e) => setCode(e.target.value)}
               required
               autoFocus
+              placeholder="000000"
+              inputMode="numeric"
             />
           </label>
-          {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
-          <button type="submit" className="bx-btn bx-btn-primary w-full" disabled={busy}>
+          {error ? <p className="bx-auth-error">{error}</p> : null}
+          <button type="submit" className="bx-auth-cta" disabled={busy}>
             {busy ? d.common.loading : t.completeSignup}
           </button>
         </form>
       )}
 
-      <p className="mt-6 text-center text-sm text-[var(--bx-text-muted)]">
-        <Link to={`/login?return_to=${encodeURIComponent(returnTo)}`} className="hover:text-[var(--bx-text)]">
-          {t.toLogin}
-        </Link>
+      <p className="bx-auth-switch">
+        {t.switchHaveAccount}{' '}
+        <Link to={loginHref}>{t.switchDirectLogin}</Link>
       </p>
-    </div>
+    </AuthSplitLayout>
   )
 }

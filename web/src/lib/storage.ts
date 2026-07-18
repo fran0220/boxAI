@@ -10,7 +10,7 @@ export function saveReturnTo(path: string): void {
   }
 }
 
-export function takeReturnTo(fallback = '/account'): string {
+export function takeReturnTo(fallback = '/app'): string {
   try {
     const v = sessionStorage.getItem(RETURN_KEY)
     sessionStorage.removeItem(RETURN_KEY)

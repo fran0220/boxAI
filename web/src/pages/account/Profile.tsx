@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   bindEmailIdentity,
   buildOAuthBindingStartURL,
-  changePassword,
   getMyPlatformQuotas,
   getProfile,
   emailOAuthEnabledForHost,
@@ -167,19 +166,16 @@ function errMsg(err: unknown, fallback: string): string {
   return err instanceof ApiError ? err.message : fallback
 }
 
-export function AccountProfile() {
+export function AccountProfile({ notificationsOnly = false }: { notificationsOnly?: boolean }) {
   const { d } = useI18n()
   const t = d.accountProfile
-  usePageMeta(t.metaTitle)
+  usePageMeta(notificationsOnly ? t.balanceNotify : t.metaTitle)
 
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [settings, setSettings] = useState<PublicProfileSettings>(DEFAULT_SETTINGS)
   const [quotas, setQuotas] = useState<PlatformQuotaItem[] | null>(null)
 
   const [username, setUsername] = useState('')
-  const [oldPw, setOldPw] = useState('')
-  const [newPw, setNewPw] = useState('')
-  const [confirmPw, setConfirmPw] = useState('')
 
   const [bindEmail, setBindEmail] = useState('')
   const [bindCode, setBindCode] = useState('')
@@ -323,36 +319,14 @@ export function AccountProfile() {
     }
   }
 
-  async function savePassword(e: React.FormEvent) {
-    e.preventDefault()
-    setSaving(true)
-    setError('')
-    setMessage('')
-    try {
-      if (newPw !== confirmPw) {
-        setError(t.passwordFailed)
-        setSaving(false)
-        return
-      }
-      if (newPw.length < 8) {
-        setError(t.passwordFailed)
-        setSaving(false)
-        return
-      }
-      await changePassword(oldPw, newPw)
-      setOldPw('')
-      setNewPw('')
-      setConfirmPw('')
-      setMessage(t.passwordChanged)
-    } catch (err) {
-      setError(errMsg(err, t.passwordFailed))
-    } finally {
-      setSaving(false)
+  function resetForm() {
+    if (profile) {
+      setUsername(profile.username || '')
     }
   }
 
   function startOAuthBind(provider: BindableOAuthProvider) {
-    window.location.href = buildOAuthBindingStartURL(provider, '/account/profile')
+    window.location.href = buildOAuthBindingStartURL(provider, '/app/settings/profile')
   }
 
   async function onUnbind(provider: BindableOAuthProvider, label: string) {
@@ -562,111 +536,170 @@ export function AccountProfile() {
   const canAddNotifyEmail =
     extraEmails.length + (pendingEmail ? 1 : 0) < MAX_EXTRA_EMAILS
 
+  const initial = (username || primaryEmail || 'U').charAt(0).toUpperCase()
+  const joinedAt = profile?.created_at
+    ? new Date(profile.created_at).toLocaleDateString()
+    : null
+
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
-      <div>
-        <h2 className="bx-display text-2xl font-bold tracking-tight">{t.title}</h2>
-        <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
+    <div>
+      {notificationsOnly ? (
+        <>
+          <h1 className="bx-account-page-title">{t.balanceNotify}</h1>
+          <p className="bx-account-page-sub">{t.balanceNotifyHint}</p>
+          {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
+          {message ? (
+            <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <h1 className="bx-account-page-title">{t.title}</h1>
+          <p className="bx-account-page-sub">{t.subtitle}</p>
+
+          {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
+          {message ? <p className="mt-3 text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
+
+      {/* 2-col: avatar card + multi-field form (design) */}
+      <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_1.8fr] lg:items-start">
+        <div className="bx-account-panel flex flex-col items-center px-6 py-[26px] text-center">
+          <div className="flex h-[76px] w-[76px] items-center justify-center rounded-[18px] bg-[var(--bx-grad-cta)] text-[30px] font-extrabold text-[var(--bx-ink)]">
+            {profile?.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt=""
+                className="h-full w-full rounded-[18px] object-cover"
+              />
+            ) : (
+              initial
+            )}
+          </div>
+          <p className="mt-3.5 mb-0 text-[15px] font-extrabold">
+            {username || '—'}
+          </p>
+          <p className="mt-0.5 mb-0 font-mono text-[11px] text-[var(--bx-text-dim)]">
+            {primaryEmail || profile?.email || '—'}
+          </p>
+          <button
+            type="button"
+            className="bx-btn bx-btn-ghost bx-btn-sm mt-4 opacity-70"
+            disabled
+            title={t.avatarUnavailable}
+          >
+            {t.changeAvatar}
+          </button>
+          {joinedAt || profile?.id ? (
+            <p className="mt-4 w-full border-t border-[var(--bx-line)] pt-4 font-mono text-[10.5px] text-[var(--bx-text-dim)]">
+              {joinedAt ? `${t.joinedAt} ${joinedAt}` : ''}
+              {joinedAt && profile?.id ? ' · ' : ''}
+              {profile?.id != null ? `UID ${profile.id}` : ''}
+            </p>
+          ) : null}
+        </div>
+
+        <form onSubmit={saveProfile} className="bx-account-panel px-6 py-[22px]">
+          <div className="grid gap-3.5 sm:grid-cols-2">
+            <label className="block">
+              <span className="bx-account-field-label">{t.username}</span>
+              <input
+                className="bx-account-input-muted"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+              />
+            </label>
+            <label className="block">
+              <span className="bx-account-field-label">
+                {t.displayName}
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
+                  {t.fieldComingSoon}
+                </span>
+              </span>
+              <input
+                className="bx-account-input-muted opacity-70"
+                value=""
+                disabled
+                readOnly
+                placeholder={t.fieldComingSoon}
+                title={t.fieldComingSoon}
+              />
+            </label>
+            <label className="block">
+              <span className="bx-account-field-label">{t.email}</span>
+              <input
+                className="bx-account-input-muted opacity-70"
+                value={primaryEmail || profile?.email || ''}
+                disabled
+                readOnly
+              />
+            </label>
+            <label className="block">
+              <span className="bx-account-field-label">
+                {t.region}
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
+                  {t.fieldComingSoon}
+                </span>
+              </span>
+              <input
+                className="bx-account-input-muted opacity-70"
+                value=""
+                disabled
+                readOnly
+                placeholder={t.fieldComingSoon}
+                title={t.fieldComingSoon}
+              />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="bx-account-field-label">
+                {t.bio}
+                <span className="ml-1.5 font-mono text-[10px] font-normal text-[var(--bx-text-dim)]">
+                  {t.fieldComingSoon}
+                </span>
+              </span>
+              <textarea
+                rows={3}
+                className="bx-account-input-muted opacity-70"
+                value=""
+                disabled
+                readOnly
+                placeholder={t.fieldComingSoon}
+                title={t.fieldComingSoon}
+              />
+            </label>
+          </div>
+          <p className="bx-account-stat-hint mt-3">
+            {t.balance}: ${profile?.balance?.toFixed(2) ?? '—'} · {t.concurrency}:{' '}
+            {profile?.concurrency ?? '—'}
+            {typeof profile?.frozen_balance === 'number' && profile.frozen_balance > 0
+              ? ` · ${t.frozenBalance}: $${profile.frozen_balance.toFixed(2)}`
+              : ''}
+          </p>
+          <div className="mt-[18px] flex justify-end gap-2">
+            <button type="button" className="bx-btn bx-btn-ghost bx-btn-sm" onClick={resetForm}>
+              {t.reset}
+            </button>
+            <button type="submit" className="bx-btn bx-btn-primary bx-btn-sm" disabled={saving}>
+              {t.saveChanges}
+            </button>
+          </div>
+        </form>
       </div>
 
-      {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
-      {message ? <p className="text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
-
-      {/* Basic profile */}
-      <form onSubmit={saveProfile} className="bx-card space-y-3 p-5">
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.email}</span>
-          <input
-            className="bx-input mt-1 w-full opacity-70"
-            value={primaryEmail || profile?.email || ''}
-            disabled
-            readOnly
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.username}</span>
-          <input
-            className="bx-input mt-1 w-full"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoComplete="username"
-          />
-        </label>
-        <div className="grid grid-cols-2 gap-2 text-xs text-[var(--bx-text-dim)] sm:grid-cols-3">
-          <p>
-            {t.balance}: ${profile?.balance?.toFixed(2) ?? '—'}
-          </p>
-          <p>
-            {t.frozenBalance}: ${profile?.frozen_balance?.toFixed(2) ?? '0.00'}
-          </p>
-          <p>
-            {t.concurrency}: {profile?.concurrency ?? '—'}
-          </p>
-        </div>
-        <button type="submit" className="bx-btn bx-btn-primary bx-btn-sm" disabled={saving}>
-          {d.common.save}
-        </button>
-      </form>
-
-      {/* Contact support */}
       {settings.contact_info ? (
-        <div className="bx-card border border-[var(--bx-brand)]/30 bg-[var(--bx-brand)]/5 p-5">
-          <h3 className="font-semibold text-[var(--bx-brand-bright)]">{t.contactSupport}</h3>
-          <p className="mt-1 text-sm font-medium whitespace-pre-wrap">{settings.contact_info}</p>
+        <div className="bx-account-panel bx-account-panel-pad mt-3 border-[var(--bx-brand-ring)]">
+          <h3 className="m-0 font-semibold text-[var(--bx-brand-bright)]">{t.contactSupport}</h3>
+          <p className="mt-1 mb-0 text-sm font-medium whitespace-pre-wrap">{settings.contact_info}</p>
         </div>
       ) : null}
 
-      {/* Change password */}
-      <form onSubmit={savePassword} className="bx-card space-y-3 p-5">
-        <h3 className="font-semibold">{t.changePassword}</h3>
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.oldPassword}</span>
-          <input
-            type="password"
-            className="bx-input mt-1 w-full"
-            value={oldPw}
-            onChange={(e) => setOldPw(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.newPassword}</span>
-          <input
-            type="password"
-            className="bx-input mt-1 w-full"
-            value={newPw}
-            onChange={(e) => setNewPw(e.target.value)}
-            required
-            minLength={8}
-            autoComplete="new-password"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.newPassword}</span>
-          <input
-            type="password"
-            className="bx-input mt-1 w-full"
-            value={confirmPw}
-            onChange={(e) => setConfirmPw(e.target.value)}
-            required
-            minLength={8}
-            autoComplete="new-password"
-          />
-        </label>
-        <button type="submit" className="bx-btn bx-btn-primary bx-btn-sm" disabled={saving}>
-          {t.updatePassword}
-        </button>
-      </form>
-
       {/* Account bindings */}
-      <section className="bx-card space-y-4 p-5">
+      <section className="bx-account-panel bx-account-panel-pad mt-3 space-y-4">
         <div>
-          <h3 className="font-semibold">{t.bindings}</h3>
-          <p className="mt-1 text-sm text-[var(--bx-text-dim)]">{t.bindingsHint}</p>
+          <h3 className="m-0 font-semibold">{t.bindings}</h3>
+          <p className="mt-1 mb-0 text-sm text-[var(--bx-text-dim)]">{t.bindingsHint}</p>
         </div>
 
-        <ul className="space-y-3">
+        <ul className="m-0 space-y-3 p-0 list-none">
           {bindingProviders.map((item) => (
             <li
               key={item.provider}
@@ -678,18 +711,20 @@ export function AccountProfile() {
                   <span
                     className={
                       item.bound
-                        ? 'rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-600 dark:text-emerald-400'
-                        : 'rounded-full bg-[var(--bx-bg-elevated)] px-2 py-0.5 text-xs text-[var(--bx-text-dim)]'
+                        ? 'bx-account-status bx-account-status--ok text-xs'
+                        : 'bx-account-status bx-account-status--muted text-xs'
                     }
                   >
                     {item.bound ? t.bound : t.unbound}
                   </span>
                 </div>
                 {item.details?.display_name ? (
-                  <p className="mt-1 text-sm text-[var(--bx-text-muted)]">{item.details.display_name}</p>
+                  <p className="mt-1 mb-0 text-sm text-[var(--bx-text-muted)]">
+                    {item.details.display_name}
+                  </p>
                 ) : null}
                 {item.details?.note ? (
-                  <p className="mt-0.5 text-xs text-[var(--bx-text-dim)]">{item.details.note}</p>
+                  <p className="mt-0.5 mb-0 text-xs text-[var(--bx-text-dim)]">{item.details.note}</p>
                 ) : null}
               </div>
               <div className="flex shrink-0 flex-wrap gap-2">
@@ -705,7 +740,7 @@ export function AccountProfile() {
                 {item.canUnbind ? (
                   <button
                     type="button"
-                    className="bx-btn bx-btn-secondary bx-btn-sm"
+                    className="bx-btn bx-btn-ghost bx-btn-sm"
                     disabled={unbinding === item.provider}
                     onClick={() => void onUnbind(item.provider, item.label)}
                   >
@@ -717,15 +752,17 @@ export function AccountProfile() {
           ))}
         </ul>
 
-        {/* Email bind when not bound */}
         {!emailBound ? (
-          <form onSubmit={onBindEmail} className="space-y-3 rounded-xl border border-[var(--bx-border)] p-4">
-            <h4 className="text-sm font-semibold">{t.bindEmail}</h4>
-            <label className="block text-sm">
-              <span className="text-[var(--bx-text-muted)]">{t.email}</span>
+          <form
+            onSubmit={onBindEmail}
+            className="space-y-3 rounded-xl border border-[var(--bx-border)] p-4"
+          >
+            <h4 className="m-0 text-sm font-semibold">{t.bindEmail}</h4>
+            <label className="block">
+              <span className="bx-account-field-label">{t.email}</span>
               <input
                 type="email"
-                className="bx-input mt-1 w-full"
+                className="bx-account-input-muted"
                 value={bindEmail}
                 onChange={(e) => setBindEmail(e.target.value)}
                 required
@@ -733,13 +770,13 @@ export function AccountProfile() {
               />
             </label>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-              <label className="block flex-1 text-sm">
-                <span className="text-[var(--bx-text-muted)]">{t.emailCode}</span>
+              <label className="block flex-1">
+                <span className="bx-account-field-label">{t.emailCode}</span>
                 <input
                   type="text"
                   inputMode="numeric"
                   maxLength={6}
-                  className="bx-input mt-1 w-full"
+                  className="bx-account-input-muted"
                   value={bindCode}
                   onChange={(e) => setBindCode(e.target.value)}
                   required
@@ -747,18 +784,18 @@ export function AccountProfile() {
               </label>
               <button
                 type="button"
-                className="bx-btn bx-btn-secondary bx-btn-sm"
+                className="bx-btn bx-btn-ghost bx-btn-sm"
                 disabled={sendingBindCode || !bindEmail.trim()}
                 onClick={() => void onSendBindCode()}
               >
                 {sendingBindCode ? d.common.loading : t.sendCode}
               </button>
             </div>
-            <label className="block text-sm">
-              <span className="text-[var(--bx-text-muted)]">{t.oldPassword}</span>
+            <label className="block">
+              <span className="bx-account-field-label">{t.setPassword}</span>
               <input
                 type="password"
-                className="bx-input mt-1 w-full"
+                className="bx-account-input-muted"
                 value={bindPassword}
                 onChange={(e) => setBindPassword(e.target.value)}
                 required
@@ -771,16 +808,13 @@ export function AccountProfile() {
             </button>
           </form>
         ) : null}
-      </section>
+          </section>
+        </>
+      )}
 
       {/* Balance notify */}
-      {settings.balance_low_notify_enabled ? (
-        <section className="bx-card space-y-4 p-5">
-          <div>
-            <h3 className="font-semibold">{t.balanceNotify}</h3>
-            <p className="mt-1 text-sm text-[var(--bx-text-dim)]">{t.balanceNotifyHint}</p>
-          </div>
-
+      {notificationsOnly && settings.balance_low_notify_enabled ? (
+        <section className="bx-account-panel bx-account-panel-pad mt-3 space-y-4">
           <label className="flex items-center justify-between gap-3 text-sm">
             <span>{t.balanceNotifyEnabled}</span>
             <input
@@ -795,13 +829,13 @@ export function AccountProfile() {
           {notifyEnabled ? (
             <>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-                <label className="block flex-1 text-sm">
-                  <span className="text-[var(--bx-text-muted)]">{t.threshold}</span>
+                <label className="block flex-1">
+                  <span className="bx-account-field-label">{t.threshold}</span>
                   <input
                     type="number"
                     min={0}
                     step={0.01}
-                    className="bx-input mt-1 w-full"
+                    className="bx-account-input-muted"
                     value={threshold}
                     placeholder={
                       settings.balance_low_notify_threshold > 0
@@ -825,7 +859,7 @@ export function AccountProfile() {
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm text-[var(--bx-text-muted)]">{t.extraEmails}</p>
+                <p className="mb-0 text-sm text-[var(--bx-text-muted)]">{t.extraEmails}</p>
                 {extraEmails.map((entry) => (
                   <div
                     key={entry.email}
@@ -852,7 +886,7 @@ export function AccountProfile() {
                             <input
                               type="text"
                               maxLength={6}
-                              className="bx-input w-20 py-1 text-xs"
+                              className="bx-account-input-muted w-20 py-1 text-xs"
                               value={verifyCodeSaved}
                               onChange={(e) => setVerifyCodeSaved(e.target.value)}
                               placeholder={t.emailCode}
@@ -900,7 +934,7 @@ export function AccountProfile() {
                 ))}
 
                 {pendingEmail ? (
-                  <div className="flex flex-col gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-2 rounded-lg border border-[var(--bx-warning)]/30 bg-[var(--bx-warning-soft)] px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                     <span className="text-sm">{pendingEmail}</span>
                     <div className="flex flex-wrap items-center gap-2 text-xs">
                       {!pendingCodeSent ? (
@@ -917,7 +951,7 @@ export function AccountProfile() {
                           <input
                             type="text"
                             maxLength={6}
-                            className="bx-input w-20 py-1 text-xs"
+                            className="bx-account-input-muted w-20 py-1 text-xs"
                             value={pendingCode}
                             onChange={(e) => setPendingCode(e.target.value)}
                             placeholder={t.emailCode}
@@ -929,14 +963,6 @@ export function AccountProfile() {
                             onClick={() => void verifyPending()}
                           >
                             {t.verify}
-                          </button>
-                          <button
-                            type="button"
-                            className="text-[var(--bx-text-dim)]"
-                            disabled={notifyBusy}
-                            onClick={() => void sendPendingCode()}
-                          >
-                            {t.sendCode}
                           </button>
                         </>
                       )}
@@ -959,7 +985,7 @@ export function AccountProfile() {
                   <div className="flex gap-2">
                     <input
                       type="email"
-                      className="bx-input flex-1"
+                      className="bx-account-input-muted flex-1"
                       value={newNotifyEmail}
                       onChange={(e) => setNewNotifyEmail(e.target.value)}
                       placeholder={t.addEmail}
@@ -972,7 +998,7 @@ export function AccountProfile() {
                     />
                     <button
                       type="button"
-                      className="bx-btn bx-btn-secondary bx-btn-sm"
+                      className="bx-btn bx-btn-ghost bx-btn-sm"
                       disabled={!newNotifyEmail.trim()}
                       onClick={startPendingEmail}
                     >
@@ -986,11 +1012,18 @@ export function AccountProfile() {
         </section>
       ) : null}
 
-      {/* Platform quotas */}
-      {quotas && quotas.length > 0 ? (
-        <section className="bx-card space-y-3 p-5">
-          <h3 className="font-semibold">{t.platformQuotas}</h3>
-          <ul className="space-y-2 text-sm">
+      {notificationsOnly && !settings.balance_low_notify_enabled ? (
+        <div className="bx-account-panel bx-account-panel-pad mt-4">
+          <p className="m-0 text-sm text-[var(--bx-text-muted)]">
+            {d.workspace.notificationsUnavailable}
+          </p>
+        </div>
+      ) : null}
+
+      {!notificationsOnly && quotas && quotas.length > 0 ? (
+        <section className="bx-account-panel bx-account-panel-pad mt-3 space-y-3">
+          <h3 className="m-0 font-semibold">{t.platformQuotas}</h3>
+          <ul className="m-0 space-y-2 p-0 list-none text-sm">
             {quotas.map((q, i) => {
               const name = q.name || q.platform || `quota-${i}`
               const limit = typeof q.limit === 'number' ? q.limit : null
@@ -1002,11 +1035,11 @@ export function AccountProfile() {
                   className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-[var(--bx-bg-muted)] px-3 py-2"
                 >
                   <span className="font-medium">{name}</span>
-                  <span className="text-xs text-[var(--bx-text-dim)]">
+                  <span className="font-mono text-xs text-[var(--bx-text-dim)]">
                     {used != null && limit != null
                       ? `${used} / ${limit}`
                       : remaining != null
-                        ? `${remaining}`
+                        ? String(remaining)
                         : limit != null
                           ? String(limit)
                           : '—'}

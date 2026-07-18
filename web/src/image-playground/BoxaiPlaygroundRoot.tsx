@@ -5,20 +5,30 @@ import './index.css'
 import App from './App'
 import { startAssetMirrorSubscription, injectReferenceDataUrl } from './lib/boxaiBridge'
 import { installMobileViewportGuards } from './lib/viewport'
+import { PlaygroundShellProvider, type PlaygroundVariant } from './shellContext'
+import { cx } from '@/lib/cx'
 
 export interface BoxaiPlaygroundRootProps {
   locationState?: unknown
   clearState?: () => void
+  /** `create-shell` restyles IA to match Creator design under /create/image */
+  variant?: PlaygroundVariant
 }
 
 /**
  * BoxAI shell around the vendored gpt_image_playground App.
- * - Forces dark theme class for Tailwind dark: variants
+ * - Theme follows site ThemeProvider
  * - Mirrors completed tasks into Creator assets-db
  * - Accepts cross-route reference handoff from /create/assets
+ * - variant=create-shell: design toolbar / 5-col gallery / floating composer
  */
-export function BoxaiPlaygroundRoot({ locationState, clearState }: BoxaiPlaygroundRootProps) {
+export function BoxaiPlaygroundRoot({
+  locationState,
+  clearState,
+  variant = 'default',
+}: BoxaiPlaygroundRootProps) {
   const handoffDone = useRef(false)
+  const isCreateShell = variant === 'create-shell'
 
   useEffect(() => {
     // Theme follows site ThemeProvider (html.dark); do not force dark here.
@@ -40,8 +50,17 @@ export function BoxaiPlaygroundRoot({ locationState, clearState }: BoxaiPlaygrou
   }, [locationState, clearState])
 
   return (
-    <div className="image-playground dark flex h-full min-h-0 flex-1 flex-col overflow-y-auto bg-[var(--bx-bg)] text-[var(--bx-text)]">
-      <App />
-    </div>
+    <PlaygroundShellProvider variant={variant}>
+      <div
+        className={cx(
+          'image-playground dark flex h-full min-h-0 flex-1 flex-col bg-[var(--bx-bg)] text-[var(--bx-text)]',
+          isCreateShell
+            ? 'bx-create-image-shell relative overflow-hidden'
+            : 'overflow-y-auto',
+        )}
+      >
+        <App />
+      </div>
+    </PlaygroundShellProvider>
   )
 }
