@@ -53,4 +53,4 @@ main            → upstream baseline + BoxAI delta
 
 - Publish tag when shipping: `vX.Y.Z-box.N`.
 - Set `FORK_DELTA.md` baseline to the merged upstream tag.
-- If only image changes: pin `BOXAI_IMAGE`. If `web/` also changed this cycle: run `deploy/scripts/deploy-web-static.sh`.
+- If only image changes: Deploy production `mode=app` with the new tag. If `web/` also changed: `mode=full` (or `web`).

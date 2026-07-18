@@ -1,3 +1,5 @@
+# Builds and pushes GHCR images. Production rollout is workflow "Deploy production"
+# (workflow_run after success, or manual workflow_dispatch). See docs/agents/deploy-release.md.
 name: Release
 
 on:

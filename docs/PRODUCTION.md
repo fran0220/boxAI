@@ -16,10 +16,10 @@ Internet
    ├─ you-box.com      React 静态 + 浏览器 API 白名单 + /v1 /health → :8080
    ├─ www.you-box.com  301 → you-box.com
    ├─ console.you-box.com  反代全部 → :8080（Go 内嵌 Vue 控制台）
-   └─ api.you-box.com  仅 /v1/*、SSO/desktop token、refresh、public settings、/health
+   └─ api.you-box.com  /v1 + desktop token → :8080；Agent WebUI/WS → :8081；gRPC → :50051
           │
-          ▼
-   127.0.0.1:8080  Docker sub2api (ghcr.io/fran0220/boxai:<pin>)
+          ├─ 127.0.0.1:8080  Docker sub2api (ghcr.io/fran0220/boxai:<pin>)
+          └─ 127.0.0.1:8081 + :50051  hosted Agent Relay (per-account)
           │
    Postgres 18 + Redis 8  (compose 同项目)
 ```
@@ -29,14 +29,14 @@ Internet
 | SSH | `ssh youbox` → `root@160.187.1.155` |
 | 产品面 | `https://you-box.com`（营销 / Creator） |
 | 控制台 | `https://console.you-box.com`（用户台 + 管理台） |
-| 开发者 API | `https://api.you-box.com/v1` |
+| 开发者 API / Agent Relay | `https://api.you-box.com/v1` / `https://api.you-box.com`（WebUI、WSS、gRPC TLS） |
 | 应用目录 | `/opt/boxAI` |
 | React 静态 | `/var/www/you-box.com`（`web/dist`） |
 | Compose | `/opt/boxAI/docker-compose.yml` |
 | 环境文件 | `/opt/boxAI/.env`（`chmod 600`，**勿提交 Git**） |
 | 公开镜像 | `ghcr.io/fran0220/boxai:<pin-tag>`（当前示例 `0.1.155-box.10`） |
 | 应用监听 | 仅本机 `127.0.0.1:8080` |
-| 健康检查 | `GET /health` → `{"status":"ok"}`（apex / console / api 均应可达） |
+| 健康检查 | 主服务 `GET /health`；Agent Relay `GET /healthz`（应为 hosted + multi_tenant ready） |
 | Nginx 关键项 | **`http` 块**必须有 `underscores_in_headers on;` |
 | 管理员 | `.env` 的 `ADMIN_EMAIL`；初始密码见 `/root/.boxai-admin-password` |
 | **管理 API** | **仅** `https://console.you-box.com/api/v1/admin/*`（apex `you-box.com` 会 404 管理接口） |
@@ -58,30 +58,65 @@ curl -sS "$SUB2API_BASE_URL/api/v1/admin/settings" -H "x-api-key: $SUB2API_ADMIN
 
 邮件发信：Cloudflare Email Sending（域名 `you-box.com`）。SMTP 见后台 settings（`smtp.mx.cloudflare.net:465`，用户名字面量 `api_token`，密码为 `CLOUDFLARE_API_TOKEN`）。
 
-### 1.0 发布与验证
+### 1.0 发布与验证（主路径：GitHub Actions）
+
+**日常上线只走 CI**，不要本机拼装 `rsync` + SSH `sed` 镜像 pin。
+
+| 步骤 | 做什么 |
+|------|--------|
+| 1 | `main` CI 绿（`backend-ci` + `fork-gates`） |
+| 2 | 打产品 tag：`vX.Y.Z-box.N` 并 push |
+| 3 | **Release** workflow 推送 `ghcr.io/fran0220/boxai:<version>`（version **无** `v` 前缀） |
+| 4 | **Deploy production** 自动跟跑（或手动 `workflow_dispatch`）→ pin 镜像 + 构建/发布 `web/` + `verify-topology` |
 
 ```bash
-# React 产品面静态资源
-./deploy/scripts/deploy-web-static.sh
+# 正常发版
+git tag v0.1.155-box.11 && git push origin v0.1.155-box.11
+# 打开 Actions：Release → Deploy production
 
-# Nginx 多主机 + 证书
-./deploy/scripts/apply-nginx-topology.sh
+# 只更新 apex React（不换 API 镜像）
+gh workflow run deploy-production.yml -R fran0220/boxAI -f mode=web
 
-# HTTP 冒烟
-./deploy/scripts/verify-topology.sh
+# 只升 API / Agent（已有镜像）
+gh workflow run deploy-production.yml -R fran0220/boxAI \
+  -f mode=app -f image_tag=0.1.155-box.11
 
-# 应用镜像
-ssh youbox 'cd /opt/boxAI && sed -i "s|^BOXAI_IMAGE=.*|BOXAI_IMAGE=ghcr.io/fran0220/boxai:<tag>|" .env \
-  && docker compose pull sub2api && docker compose up -d --no-deps sub2api'
+# 回滚：对上一个绿 tag 再跑一次 full/app
+gh workflow run deploy-production.yml -R fran0220/boxAI \
+  -f mode=full -f image_tag=0.1.155-box.10
 ```
+
+**GitHub 配置（一次性）**
+
+| 类型 | 名 | 说明 |
+|------|-----|------|
+| Environment | `production` | Deploy job 使用；可开审批 |
+| Secret | `DEPLOY_SSH_KEY` | 部署专用私钥 |
+| Secret | `DEPLOY_HOST` | 如 `160.187.1.155` |
+| Secret | `DEPLOY_USER` | 如 `root` 或 `deploy` |
+| Var（可选） | `DEPLOY_APP_DIR` | 默认 `/opt/boxAI` |
+| Var（可选） | `DEPLOY_DOCROOT` | 默认 `/var/www/you-box.com` |
+
+编排脚本：[`deploy/scripts/ci-deploy.sh`](../deploy/scripts/ci-deploy.sh) · 工作流：[`.github/workflows/deploy-production.yml`](../.github/workflows/deploy-production.yml)。
+
+**禁止**：生产 `BOXAI_IMAGE=:latest`；Deploy **不** `compose down -v`、**不**动 Postgres/Redis 数据卷。
+
+**低频 / 急救（非主路径）**
+
+| 场景 | 命令 |
+|------|------|
+| Nginx / 证书 | `./deploy/scripts/apply-nginx-topology.sh` |
+| 本机急救静态站 | `./deploy/scripts/deploy-web-static.sh`（会打印警告） |
+| 本机冒烟 | `./deploy/scripts/verify-topology.sh` |
 
 ### 1.1 Compose 服务
 
-三类服务同项目，状态应为 `healthy`：
+四类服务同项目，状态应为 `healthy`：
 
 | 服务 | 容器名 | 镜像 | 数据目录（宿主机） | 宿主机端口 |
 |------|--------|------|-------------------|------------|
 | 应用 | `sub2api` | `ghcr.io/fran0220/boxai:<tag>` | `/opt/boxAI/data` → 容器 `/app/data` | `127.0.0.1:8080` |
+| Agent Relay | `boxai-agent-gateway` | `ghcr.io/fran0220/boxai-agent-gateway:<tag>` | 无持久卷（有界 replay） | `127.0.0.1:8081` + `127.0.0.1:50051` |
 | PostgreSQL | `sub2api-postgres` | `postgres:18-alpine` | `/opt/boxAI/postgres_data` | **不映射**（仅 Docker 网络） |
 | Redis | `sub2api-redis` | `redis:8-alpine` | `/opt/boxAI/redis_data` | **不映射** |
 
@@ -92,6 +127,7 @@ ssh youbox
 cd /opt/boxAI
 docker compose ps
 curl -fsS http://127.0.0.1:8080/health
+curl -fsS http://127.0.0.1:8081/healthz
 curl -fsS https://you-box.com/health
 docker exec sub2api-postgres pg_isready -U sub2api -d sub2api
 docker exec sub2api-redis redis-cli ping   # 期望 PONG
@@ -125,6 +161,8 @@ BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.10
 BIND_HOST=127.0.0.1
 SERVER_PORT=8080
 SERVER_MODE=release
+# Only the private Docker bridge may supply X-Forwarded-For to the backend.
+SERVER_TRUSTED_PROXIES=172.16.0.0/12
 
 POSTGRES_USER=sub2api
 POSTGRES_PASSWORD=<强随机>
@@ -143,11 +181,26 @@ BOXAI_BROWSER_SESSION=true
 # 仅在仍有旧 localStorage refresh 需要一次性 adopt 时设 true；默认 false
 BOXAI_LEGACY_BROWSER_ADOPTION=false
 # BOXAI_WEB_SSO 已退役，忽略
+
+# Creator cloud: metadata in Postgres, binary objects in private R2
+BOXAI_CREATOR_CLOUD_ENABLED=true
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+R2_REGION=auto
+R2_BUCKET=<private-bucket>
+R2_ACCESS_KEY_ID=<r2-access-key>
+R2_SECRET_ACCESS_KEY=<r2-secret-key>
+
+# Hosted Agent Relay (identity remains in the BoxAI backend)
+BOXAI_AGENT_GATEWAY_IMAGE=ghcr.io/fran0220/boxai-agent-gateway:<pin-tag>
+BOXAI_AGENT_GATEWAY_AUTH_URL=http://sub2api:8080
+BOXAI_GATEWAY_AUTH_RECHECK_PERIOD=1m
+LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS=120
 ```
 
 | 变量 | 说明 |
 |------|------|
 | `BOXAI_IMAGE` | **生产禁止** `:latest`，pin 到具体 release tag |
+| `SERVER_TRUSTED_PROXIES` | 仅信任 Docker 私网代理链，避免所有公网用户共享宿主机限流桶；Nginx 会校验并规范化 Cloudflare 真实 IP |
 | `JWT_SECRET` | 固定后勿随意轮换，否则全站登录失效 |
 | `TOTP_ENCRYPTION_KEY` | 固定后勿随意轮换，否则 TOTP 密文不可解密 |
 | `POSTGRES_PASSWORD` | DB 密码；与数据目录绑定 |
@@ -155,6 +208,8 @@ BOXAI_LEGACY_BROWSER_ADOPTION=false
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES=15` | 浏览器内存 access JWT 的短有效期；优先于 `JWT_EXPIRE_HOUR` |
 | `BOXAI_BROWSER_SESSION` | 启用每个 UI host 独立的 `__Host-boxai_session` |
 | `BOXAI_LEGACY_BROWSER_ADOPTION` | 迁移期一次性接收旧 localStorage refresh token；compose/example 与 Go 进程在 **未设置** 时均默认 `false`，仅排水期显式写 `true` |
+| `BOXAI_CREATOR_CLOUD_ENABLED` + `R2_*` | Creator 元数据启用 Postgres 权威源；二进制仅进 private R2，不公开 bucket |
+| `BOXAI_AGENT_GATEWAY_IMAGE` | Hosted Relay 固定镜像；按用户 ID 隔离，生产禁止静态共享 token |
 
 完整变量表见仓库 `deploy/.env.example`。
 
@@ -236,9 +291,10 @@ http {
 完整配置见仓库 **`deploy/nginx-you-box.com.conf`**（apex React + console Vue + api 过滤）。
 
 ```bash
-# 本机执行
+# 首次上机：Nginx + 证书（低频）
+./deploy/scripts/apply-nginx-topology.sh   # certbot expand: you-box.com www console api
+# React 首发或急救（生产日常请用 Actions Deploy production → mode=web|full）
 ./deploy/scripts/deploy-web-static.sh
-./deploy/scripts/apply-nginx-topology.sh   # 含 certbot expand: you-box.com www console api
 ./deploy/scripts/verify-topology.sh
 ```
 
@@ -273,20 +329,21 @@ docker compose logs --tail=100 postgres redis
 
 ### 5.2 升级
 
-Docker 部署**禁止**使用管理后台「在线升级」替换二进制。只通过镜像 pin 升级：
+Docker 部署**禁止**使用管理后台「在线升级」替换二进制。
+
+**主路径（推荐）**：打 tag → Actions **Release** → **Deploy production**（见 §1.0）。
+
+**急救（SSH，仅当 Actions 不可用）**：
 
 ```bash
-cd /opt/boxAI
 # 1) 备份（见 §6）
-# 2) .env：BOXAI_IMAGE=ghcr.io/fran0220/boxai:<新 tag>
-docker compose pull
-docker compose up -d
-curl -fsS http://127.0.0.1:8080/health
-curl -fsS https://you-box.com/health
-docker exec sub2api /app/sub2api -version | head -1
+# 2) 在有仓库检出的机器上：
+export DEPLOY_HOST=… DEPLOY_USER=… DEPLOY_SSH_KEY_PATH=…
+MODE=full IMAGE_TAG=0.1.155-box.11 ./deploy/scripts/ci-deploy.sh
+# 或 MODE=app / MODE=web
 ```
 
-若只更新营销/Creator UI：`./deploy/scripts/deploy-web-static.sh`（不必换镜像）。
+不要手改生产 `.env` 的镜像 pin 后忘记 `pull`；**不要** `docker compose down -v`。
 
 环境变量（compose 默认已设）：
 
@@ -388,7 +445,8 @@ gh workflow run release.yml -R fran0220/boxAI \
 
 注意：`simple_release` 推送的 `ghcr.io/fran0220/boxai:latest` 与 version tag **只有 amd64**；若还要 arm64，再跑一次 full（同 tag 需删掉后重发，或打新 tag）。
 
-发布后把生产 `.env` 的 `BOXAI_IMAGE` 改为新 tag，再 `pull && up -d`。
+Release 成功后由 **Deploy production** 自动 pin 并上线；也可 `workflow_dispatch` 指定 `image_tag`。  
+**不要**再以「手改 `.env` + pull」作为文档主路径。
 
 工程门禁与分支策略见：
 
@@ -415,7 +473,7 @@ gh workflow run release.yml -R fran0220/boxAI \
 |------|------|
 | 公网 502 | `docker compose ps`；Nginx 是否指向 `127.0.0.1:8080`；`nginx -t && systemctl reload nginx` |
 | `/health` 失败 | `docker compose logs sub2api`；postgres/redis 是否 healthy |
-| apex 不是 React | `/var/www/you-box.com` 是否有 `index.html`；`deploy-web-static.sh` |
+| apex 不是 React | `/var/www/you-box.com` 是否有 `index.html`；重跑 Deploy `mode=web` 或急救 `deploy-web-static.sh` |
 | 控制台打不开 | DNS `console.you-box.com`；证书是否含 console |
 | 登录全失效 | 是否改过 `JWT_SECRET` |
 | 迁移失败 | 日志中 migration 错误；先备份再处理 |
@@ -444,18 +502,21 @@ gh workflow run release.yml -R fran0220/boxAI \
 
 ---
 
-## 11. 一页命令卡（线上常用）
+## 11. 一页命令卡
 
 ```bash
+# —— 发布（本机 / CI）——
+git tag v0.1.x-box.N && git push origin v0.1.x-box.N
+# Actions: Release → Deploy production
+
+gh workflow run deploy-production.yml -R fran0220/boxAI -f mode=web
+gh workflow run deploy-production.yml -R fran0220/boxAI -f mode=app -f image_tag=0.1.x-box.N
+
+# —— 线上查看（SSH）——
 ssh youbox
 cd /opt/boxAI
-
 docker compose ps
 docker compose logs -f --tail=100 sub2api
-
-# 升级
-# vi .env   # BOXAI_IMAGE=...
-docker compose pull && docker compose up -d
 curl -fsS https://you-box.com/health
 
 # 备份
@@ -472,4 +533,3 @@ docker exec sub2api-postgres pg_dump -U sub2api -d sub2api -Fc > /root/boxai-$(d
 | `BOXAI_CONSOLE_ADMIN_SESSION_ONLY` | off | When on, non-admin cannot mint console cookies (breaks WeChat MP console re-login) |
 | `BOXAI_AUTH_TX` | off | Experimental auth transaction continue API |
 | `VITE_CUSTOMER_SHELL_REDIRECT` | on for console host | Non-admin console routes → apex |
-

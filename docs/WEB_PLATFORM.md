@@ -11,9 +11,10 @@ Canonical product architecture for **you-box.com**: **customer shell on apex Rea
 | `you-box.com` | Marketing, Studio, Creator, **customer account/auth/checkout** | React static (`web/dist` → `/var/www/you-box.com`); edge allowlists browser APIs and proxies `/v1/*`, `/health` |
 | `www.you-box.com` | Permanent redirect | → `https://you-box.com` |
 | `console.you-box.com` | **Admin** (+ WeChat MP payment exception paths); Desktop browser login (legacy URL) | Go binary embeds Vue (`frontend/` build) |
-| `api.you-box.com` | Public model API + token exchange | Same Go process; **edge-filtered** paths only |
+| `api.you-box.com` | Public model API + desktop token exchange + hosted Agent WebUI/WebSocket/gRPC | Edge routes model/auth calls to Go and account-isolated remote-agent traffic to the dedicated Relay |
 
 One Docker image (`ghcr.io/fran0220/boxai:<pin>`) runs the Go server (Vue embed + API). React is **never** embedded in that binary.
+The Agent Relay is a separate pinned image (`ghcr.io/fran0220/boxai-agent-gateway:<pin>`): it validates BoxAI JWTs through the apex identity API and isolates all in-memory sessions by user ID. It does not own identity, billing, Creator metadata, or local file execution.
 
 ## Auth
 
@@ -160,6 +161,12 @@ under `web/src/image-playground/`:
 
 Video generation stays on the simpler Creator page. Desktop Studio agent chat is separate.
 
+Creator metadata (`image_task`, `agent_conversation`, `video_job`, `asset`, `project`) is authoritative in Postgres. Private binary objects use presigned PUT/GET against Cloudflare R2; the browser keeps per-account IndexedDB/localStorage only as cache and durable outbox. Deletes are tombstones, so a stale offline upsert cannot revive newer deleted metadata.
+
+## Hosted Agent
+
+`/app/agent` embeds the Relay WebUI from `https://api.you-box.com`. The apex parent passes its current short-lived access JWT via exact-origin/source-checked `postMessage`; the child verifies it through `/api/status` and keeps injected credentials in memory only. Desktop PKCE login automatically configures the same host for HTTPS gRPC and refreshes the Relay token with the account session. Terminal, SSH, git, and tunnel permissions remain explicit desktop settings and are not auto-enabled.
+
 Calls:
 
 ```http
@@ -202,12 +209,17 @@ Console continues to proxy the complete backend surface.
 | `backend/internal/handler/boxai_*.go` | Browser session, desktop auth, Creator key, JWT bridge |
 | `backend/internal/server/routes/boxai_code_store.go` | Redis store adapter |
 | `desktop/` | Tauri client |
-| `deploy/scripts/` | Static deploy, nginx apply, topology verify |
+| `deploy/scripts/ci-deploy.sh` | Production deploy orchestrator (CI primary) |
+| `deploy/scripts/` | nginx apply, topology verify, emergency static |
 
 ## Ops
 
+**Primary:** GitHub Actions **Deploy production** (after Release tag, or `workflow_dispatch` `mode=app|web|full`). See [PRODUCTION.md](./PRODUCTION.md) §1.0 and [agents/deploy-release.md](./agents/deploy-release.md).
+
 ```bash
-./deploy/scripts/deploy-web-static.sh
+# Emergency / local only — not the normal ship path
+./deploy/scripts/ci-deploy.sh          # requires DEPLOY_* env
+./deploy/scripts/deploy-web-static.sh  # web-only emergency
 ./deploy/scripts/apply-nginx-topology.sh
 ./deploy/scripts/verify-topology.sh
 ```

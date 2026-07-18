@@ -1,0 +1,204 @@
+# Production deploy — single entry for app image pin + React static.
+#
+# Triggers:
+#   1) After successful "Release" workflow (tag builds) → MODE=full
+#   2) workflow_dispatch → MODE=app|web|full, optional image_tag
+#
+# Secrets (repo or environment "production"):
+#   DEPLOY_SSH_KEY   private key for DEPLOY_USER@DEPLOY_HOST
+#   DEPLOY_HOST      e.g. 160.187.1.155
+#   DEPLOY_USER      e.g. root or deploy
+#
+# Optional vars:
+#   DEPLOY_APP_DIR   default /opt/boxAI
+#   DEPLOY_DOCROOT   default /var/www/you-box.com
+#
+# Postgres/Redis stay on the host; this workflow never recreates data volumes.
+name: Deploy production
+
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Deploy mode
+        type: choice
+        options: [full, app, web]
+        default: full
+      image_tag:
+        description: Image tag without registry (e.g. 0.1.155-box.10). Required for app/full. Leading v stripped.
+        required: false
+        type: string
+      pin_agent:
+        description: Also pin agent-gateway to the same tag when the image exists
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: read
+  actions: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.decide.outputs.should_deploy }}
+      mode: ${{ steps.decide.outputs.mode }}
+      image_tag: ${{ steps.decide.outputs.image_tag }}
+      pin_agent: ${{ steps.decide.outputs.pin_agent }}
+    steps:
+      - name: Decide deploy parameters
+        id: decide
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MODE="${{ inputs.mode }}"
+            TAG="${{ inputs.image_tag }}"
+            PIN="${{ inputs.pin_agent }}"
+            echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+            echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+            echo "image_tag=$TAG" >> "$GITHUB_OUTPUT"
+            if [ "$PIN" = "true" ]; then echo "pin_agent=1" >> "$GITHUB_OUTPUT"; else echo "pin_agent=0" >> "$GITHUB_OUTPUT"; fi
+            exit 0
+          fi
+
+          # workflow_run path: only on successful Release
+          if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+            echo "Release did not succeed; skip deploy"
+            echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            echo "image_tag=" >> "$GITHUB_OUTPUT"
+            echo "pin_agent=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Prefer tag from the releasing ref (head_branch is the tag name for tag pushes)
+          REF="${{ github.event.workflow_run.head_branch }}"
+          echo "workflow_run head_branch=$REF"
+          case "$REF" in
+            v*)
+              TAG="${REF#v}"
+              echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+              echo "mode=full" >> "$GITHUB_OUTPUT"
+              echo "image_tag=$TAG" >> "$GITHUB_OUTPUT"
+              echo "pin_agent=1" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Not a version tag release ($REF); skip auto deploy"
+              echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+              echo "mode=full" >> "$GITHUB_OUTPUT"
+              echo "image_tag=" >> "$GITHUB_OUTPUT"
+              echo "pin_agent=1" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+  deploy:
+    needs: guard
+    if: needs.guard.outputs.should_deploy == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Validate inputs
+        run: |
+          set -euo pipefail
+          MODE="${{ needs.guard.outputs.mode }}"
+          TAG="${{ needs.guard.outputs.image_tag }}"
+          echo "MODE=$MODE IMAGE_TAG=$TAG"
+          if [ "$MODE" = "app" ] || [ "$MODE" = "full" ]; then
+            if [ -z "$TAG" ]; then
+              echo "image_tag required for mode=$MODE" >&2
+              exit 1
+            fi
+            if [ "$TAG" = "latest" ]; then
+              echo "refusing :latest" >&2
+              exit 1
+            fi
+          fi
+
+      - name: Wait for GHCR app image (app/full)
+        if: needs.guard.outputs.mode == 'app' || needs.guard.outputs.mode == 'full'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_TAG: ${{ needs.guard.outputs.image_tag }}
+        run: |
+          set -euo pipefail
+          TAG="${IMAGE_TAG#v}"
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          URL="https://ghcr.io/v2/${OWNER}/boxai/manifests/${TAG}"
+          echo "Waiting for $URL"
+          for i in $(seq 1 60); do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' \
+              -H "Authorization: Bearer ${GHCR_TOKEN}" \
+              -H "Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json" \
+              "$URL" || echo 000)
+            echo "attempt $i → HTTP $code"
+            if [ "$code" = "200" ]; then
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Timed out waiting for GHCR image ${TAG}" >&2
+          exit 1
+
+      - name: Setup pnpm
+        if: needs.guard.outputs.mode == 'web' || needs.guard.outputs.mode == 'full'
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        if: needs.guard.outputs.mode == 'web' || needs.guard.outputs.mode == 'full'
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install SSH key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_SSH_KEY:-}" ]; then
+            echo "DEPLOY_SSH_KEY secret is required" >&2
+            exit 1
+          fi
+          install -m 700 -d ~/.ssh
+          umask 077
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "DEPLOY_SSH_KEY_PATH=$HOME/.ssh/deploy_key" >> "$GITHUB_ENV"
+
+      - name: Deploy
+        env:
+          MODE: ${{ needs.guard.outputs.mode }}
+          IMAGE_TAG: ${{ needs.guard.outputs.image_tag }}
+          PIN_AGENT: ${{ needs.guard.outputs.pin_agent }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_APP_DIR_VAR: ${{ vars.DEPLOY_APP_DIR }}
+          DOCROOT_VAR: ${{ vars.DEPLOY_DOCROOT }}
+          VITE_AGENT_REMOTE_URL_VAR: ${{ vars.VITE_AGENT_REMOTE_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_HOST:-}" ] || [ -z "${DEPLOY_USER:-}" ]; then
+            echo "DEPLOY_HOST and DEPLOY_USER secrets are required" >&2
+            exit 1
+          fi
+          export DEPLOY_APP_DIR="${DEPLOY_APP_DIR_VAR:-/opt/boxAI}"
+          export DOCROOT="${DOCROOT_VAR:-/var/www/you-box.com}"
+          export VITE_AGENT_REMOTE_URL="${VITE_AGENT_REMOTE_URL_VAR:-https://api.you-box.com}"
+          chmod +x deploy/scripts/ci-deploy.sh deploy/scripts/verify-topology.sh
+          ./deploy/scripts/ci-deploy.sh

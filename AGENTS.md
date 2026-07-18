@@ -29,7 +29,7 @@ Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL
 | Image | `ghcr.io/fran0220/boxai` (pin tag; never prod `:latest`) |
 | Release tag | `vX.Y.Z-box.N` (`X.Y.Z` = upstream baseline) |
 | Docker image embeds | **Vue only** (`frontend/` → `backend/internal/web/dist`) |
-| React ship path | `web/dist` → `/var/www/you-box.com` via `deploy/scripts/deploy-web-static.sh` |
+| React ship path | `web/dist` → `/var/www/you-box.com` via Actions **Deploy production** (`deploy/scripts/ci-deploy.sh`) |
 
 ## Agent docs
 
@@ -53,7 +53,7 @@ Architecture: [docs/WEB_PLATFORM.md](docs/WEB_PLATFORM.md) · Local: [docs/LOCAL
 4. **Compliance freeze** — `frontend/src/stores/adminCompliance.ts` and `docs/legal/*` are byte-stable (CI hashes). Product UI says BoxAI; legal ack copy keeps Sub2API wording.
 5. **Upstream sync** — merge by upstream **release tag**; **merge not rebase** on published `main`; sync PRs contain no feature work.
 6. **No full-repo rebrand** — do not mass-rename binary, env keys, embed path, ports, `/health`, or DB names.
-7. **Do not embed React in Go** — apex HTML is edge-static; image rebuild does not update `you-box.com` without `deploy-web-static.sh`.
+7. **Do not embed React in Go** — apex HTML is edge-static; image rebuild does not update `you-box.com` without Deploy `mode=web|full` (`ci-deploy.sh`).
 
 ## Ownership (summary)
 
@@ -106,5 +106,5 @@ Full table: [ownership-zones.md](docs/agents/ownership-zones.md).
 | Console | `frontend/` + pnpm (`pnpm-lock.yaml`) |
 | Product web | `web/` + pnpm (own lockfile) |
 | Backend | Go — see `backend/go.mod` (CI **1.26.5**) |
-| Edge publish | `deploy/scripts/deploy-web-static.sh`, `apply-nginx-topology.sh`, `verify-topology.sh` |
+| Edge / prod ship | Actions `deploy-production.yml` → `deploy/scripts/ci-deploy.sh`; nginx: `apply-nginx-topology.sh`; smoke: `verify-topology.sh` |
 | Local three-process | [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) |

@@ -1,14 +1,16 @@
 #!/bin/bash
 # =============================================================================
-# Sub2API Docker Deployment Preparation Script
+# Sub2API / BoxAI Docker Deployment Preparation Script (bootstrap only)
 # =============================================================================
-# This script prepares deployment files for Sub2API:
+# Prepares a NEW host directory:
 #   - Downloads docker-compose.local.yml and .env.example
 #   - Generates secure secrets (JWT_SECRET, TOTP_ENCRYPTION_KEY, POSTGRES_PASSWORD)
-#   - Creates necessary data directories
+#   - Creates data directories
 #
-# After running this script, you can start services with:
-#   docker-compose up -d
+# After bootstrap: docker compose up -d
+#
+# BoxAI production day-2 ship path is GitHub Actions (Release + Deploy production),
+# NOT repeated runs of this script. See docs/PRODUCTION.md §1.0.
 # =============================================================================
 
 set -e

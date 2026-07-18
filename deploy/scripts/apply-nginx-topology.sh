@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Infrequent ops: install multi-host nginx conf + certs on the edge host.
+# Not part of the routine app/web release path (see deploy/scripts/ci-deploy.sh).
 # Install dual-frontend nginx config on youbox and expand TLS certs.
 # Run from repo root or any cwd; uses SSH_HOST=youbox by default.
 set -euo pipefail
