@@ -388,10 +388,15 @@ export function AccountSecurity() {
             ) : null}
           </div>
 
-          {/* Login alert email toggle card (design chrome) */}
+          {/* Login alert — client-only preference (localStorage), not a server switch */}
           <div className="bx-account-panel flex items-center justify-between gap-3.5 px-[22px] py-[18px]">
             <div className="min-w-0">
-              <p className="m-0 text-[13.5px] font-bold">{t.loginAlert}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="m-0 text-[13.5px] font-bold">{t.loginAlert}</p>
+                <span className="bx-account-status bx-account-status--muted text-[10px]">
+                  {t.loginAlertLocalBadge}
+                </span>
+              </div>
               <p className="mt-1.5 mb-0 text-xs text-[var(--bx-text-muted)]">{t.loginAlertHint}</p>
             </div>
             <button
@@ -406,9 +411,22 @@ export function AccountSecurity() {
         </div>
       </div>
 
-      {/* Sessions — no multi-device list API; simple current session + revoke-all */}
+      {/* Sessions — single card: current session + revoke all (no empty device table) */}
       <div className="bx-account-panel mt-3 px-[22px] py-5">
-        <p className="m-0 text-[13.5px] font-bold">{t.sessions}</p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="m-0 text-[13.5px] font-bold">{t.sessions}</p>
+            <p className="mt-1.5 mb-0 text-xs text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
+          </div>
+          <button
+            type="button"
+            className="bx-btn bx-btn-ghost bx-btn-sm shrink-0"
+            disabled={busy}
+            onClick={() => void onRevoke()}
+          >
+            {t.revokeAll}
+          </button>
+        </div>
         <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--bx-border)] bg-[var(--bx-bg-muted)] px-4 py-3.5">
           <div className="min-w-0">
             <p className="m-0 text-sm font-bold text-[var(--bx-text)]">
@@ -418,16 +436,6 @@ export function AccountSecurity() {
             <p className="mt-1 mb-0 font-mono text-[11px] text-[var(--bx-text-dim)]">{t.now}</p>
           </div>
         </div>
-        <p className="mt-3 mb-1 text-sm text-[var(--bx-text-muted)]">{t.sessionsBody}</p>
-        <p className="m-0 mb-3 text-xs text-[var(--bx-text-dim)]">{t.deviceListUnavailable}</p>
-        <button
-          type="button"
-          className="bx-btn bx-btn-ghost bx-btn-sm"
-          disabled={busy}
-          onClick={() => void onRevoke()}
-        >
-          {t.revokeAll}
-        </button>
       </div>
 
       {/* Danger zone — no user delete API; support contact only */}

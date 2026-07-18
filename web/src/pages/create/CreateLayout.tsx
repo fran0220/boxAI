@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { ensureCreatorKey } from '@/lib/api'
 import { usePageMeta } from '@/lib/meta'
@@ -14,6 +14,9 @@ export function CreateLayout() {
   const { d } = useI18n()
   const [keyReady, setKeyReady] = useState(false)
   const [keyError, setKeyError] = useState('')
+  // Keep generic fallback current without re-running ensure on locale change.
+  const keyFailedGenericRef = useRef(d.create.keyFailedGeneric)
+  keyFailedGenericRef.current = d.create.keyFailedGeneric
 
   usePageMeta(d.create.metaTitle)
 
@@ -21,11 +24,13 @@ export function CreateLayout() {
     let cancelled = false
     ensureCreatorKey()
       .then(() => {
-        if (!cancelled) setKeyReady(true)
+        if (cancelled) return
+        setKeyError('')
+        setKeyReady(true)
       })
       .catch((error: unknown) => {
         if (cancelled) return
-        setKeyError(error instanceof Error ? error.message : 'ensure-key failed')
+        setKeyError(error instanceof Error ? error.message : keyFailedGenericRef.current)
         setKeyReady(true)
       })
     return () => {
@@ -34,7 +39,7 @@ export function CreateLayout() {
   }, [])
 
   return (
-    <div className="bx-create-workspace !min-h-0">
+    <div className="bx-create-workspace">
       {!keyReady ? (
         <div className="bx-create-banner">{d.create.keyPreparing}</div>
       ) : keyError ? (

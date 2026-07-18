@@ -1,86 +1,49 @@
-# BoxAI / Sub2API deployment files
+# BoxAI deployment files
 
-Docker and edge configs for **BoxAI** (product) built on the Sub2API gateway stack.
+Production architecture and operations: [`docs/PRODUCTION.md`](../docs/PRODUCTION.md).
 
-**Production dual-frontend (you-box.com):** [docs/PRODUCTION.md](../docs/PRODUCTION.md) · [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md) · [docs/agents/deploy-release.md](../docs/agents/deploy-release.md).
+## Production path
 
-| Host | Serves |
-|------|--------|
-| `you-box.com` | React static (`web/dist`) + proxy `/api` `/v1` |
-| `console.you-box.com` | Go image (Vue console embed) |
-| `api.you-box.com` | Edge-filtered gateway + Agent relay |
-
-## Production ship (single path)
-
-```
-tag vX.Y.Z-box.N → Release (GHCR) → Deploy production (pin images + web + smoke)
+```text
+manual Deploy production(ref)
+  → immutable commit
+  → React build in Actions
+  → local Docker builds on youbox
+  → update sub2api + agent-gateway
+  → React/Nginx publish
+  → topology smoke
 ```
 
-| Artifact | Path |
-|----------|------|
-| Workflow | `.github/workflows/deploy-production.yml` |
-| Orchestrator | `scripts/ci-deploy.sh` |
-| Smoke | `scripts/verify-topology.sh` |
+No production GHCR image/tag is required. Postgres, Redis, `/opt/boxAI/data`, and the host-only `.env` remain in place.
 
-Postgres + Redis stay in the host compose project; Deploy never recreates data volumes.
+| Artifact | Purpose |
+|---|---|
+| `.github/workflows/deploy-production.yml` | Sole production entry |
+| `scripts/ci-deploy.sh` | Commit staging, host build, backup, activation, rollback |
+| `docker-compose.local.yml` | Shared services/environment/network definition |
+| `docker-compose.production.yml` | Host-local build and absolute data-path override |
+| `scripts/production-compose.sh` | Operate the active release without forgetting the override |
+| `scripts/verify-topology.sh` | Public edge smoke |
+| `nginx-you-box.com.conf` | Production host routing |
 
-### Modes
+## Runtime layout
 
-| Mode | Effect |
-|------|--------|
-| `full` | App + agent pin/up + React rsync |
-| `app` | Image pin/up only |
-| `web` | React build + rsync only |
+| Component | Runtime |
+|---|---|
+| React product/customer workspace | Nginx static docroot |
+| Go API/model gateway + embedded Vue admin | `sub2api` container |
+| Hosted Agent HTTP/WebSocket/gRPC relay | `boxai-agent-gateway` container |
+| Postgres + Redis | Same host Compose project |
+| Creator objects | External private Cloudflare R2 |
 
-## Local / emergency helpers (not primary)
+## Helpers
 
-| Script | When |
-|--------|------|
-| `scripts/ci-deploy.sh` | Same as CI, with local `DEPLOY_*` env (break-glass) |
-| `scripts/deploy-web-static.sh` | Emergency static only (prints warning) |
-| `scripts/apply-nginx-topology.sh` | Infrequent nginx/cert changes |
+| Script | Use |
+|---|---|
+| `scripts/ci-deploy.sh` | Actions or break-glass full commit deploy |
+| `scripts/production-compose.sh` | `ps`, `logs`, `restart` for active production |
+| `scripts/apply-nginx-topology.sh` | First-time certificate/topology setup |
+| `scripts/deploy-web-static.sh` | Emergency static-only repair |
 | `scripts/verify-topology.sh` | Manual smoke |
 
-## Runtime methods
-
-| Method | Best for |
-|--------|----------|
-| **Docker Compose on VPS** | Production app + Postgres + Redis (youbox) |
-| **Nginx / Caddy dual-frontend** | Product hosts |
-| **Apple container** | Local macOS 26 stack only |
-| **Binary + systemd** | Optional non-Docker app process (not the default prod path) |
-
-## Files
-
-| File | Description |
-|------|-------------|
-| `docker-compose.local.yml` | **Production compose template** (local dirs) |
-| `docker-compose.yml` | Named-volume variant |
-| `docker-compose.standalone.yml` | Standalone experiments |
-| `docker-compose.dev.yml` | Dev |
-| `nginx-you-box.com.conf` | Production multi-host nginx |
-| `Caddyfile.you-box.com` | Caddy alternative |
-| `scripts/ci-deploy.sh` | **CI/production deploy orchestrator** |
-| `.env.example` | Env template (pin `BOXAI_IMAGE`) |
-| `DOCKER.md` | Image notes |
-| `docker-deploy.sh` | **Bootstrap / legacy one-click prepare** — not the BoxAI production release path |
-| `apple-container.sh` | Local Apple container lifecycle |
-| `install.sh` / `*.service` | Binary install (optional) |
-
-## Bootstrap a new host (once)
-
-1. Install Docker Engine + Compose v2, nginx, certbot.  
-2. Copy compose + `.env` to `/opt/boxAI` (see PRODUCTION.md §4).  
-3. `docker compose up -d` (includes Postgres/Redis).  
-4. `apply-nginx-topology.sh` for TLS hosts.  
-5. Configure GitHub `production` secrets and run **Deploy production** `mode=full`.
-
-Do not use `curl … \| bash` upstream `docker-deploy.sh` as the ongoing BoxAI release process.
-
-## Apple container (local only)
-
-```bash
-./apple-container.sh init && ./apple-container.sh up
-```
-
-See [APPLE_CONTAINER.md](./APPLE_CONTAINER.md). Production remains Docker Compose on youbox + Actions Deploy.
+Public image deployment (`DOCKER.md`, `docker-deploy.sh`, other Compose variants) remains available to downstream/self-hosted users, but it is not the youbox production release process.

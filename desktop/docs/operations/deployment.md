@@ -1,14 +1,20 @@
 # CI/CD 与发布
 
-本文档描述当前自动化发布链路：CI 检查、Gateway Docker 镜像、用户自部署 Gateway、桌面端 macOS/Windows Release。
+本文档描述 **Desktop / Agent Gateway** 自动化发布链路，以及与 **BoxAI 生产托管 Relay** 的关系。
+
+> BoxAI youbox 整站（Go 控制面 + React + compose 内 agent-gateway）的日常发版见仓库根文档：
+> [`docs/PRODUCTION.md`](../../../docs/PRODUCTION.md) · [`docs/agents/deploy-release.md`](../../../docs/agents/deploy-release.md)
+> （手动 **Deploy production** 选择 commit，生产机本地构建；与公开 Release/GHCR 分离。）
 
 ## 自动化入口
 
 | 入口 | Workflow | 动作 |
 |---|---|---|
-| PR / `main` push | `.github/workflows/ci.yml` | 跑 Gateway、WebUI、GUI、Tauri Rust 测试和 proto 一致性检查。 |
-| `v*` tag / 手动指定 tag | `.github/workflows/gateway-docker.yml` | 构建并推送 `vX.Y.Z` 与 `latest` Gateway 镜像。 |
-| `v*` tag / 手动指定 tag | `.github/workflows/desktop-release.yml` | 并行构建 macOS Intel、macOS Apple Silicon、Windows x64 和 Linux x64 桌面包，并上传到 GitHub Release。 |
+| PR / `main` push | 仓库根 CI / desktop 相关 jobs | Gateway、WebUI、GUI、Tauri 测试等（以当前 `.github/workflows/*` 为准）。 |
+| 手动选择 branch/tag/SHA | `deploy-production.yml` | youbox 从同一 commit 本地构建 Go API + hosted Relay，并发布 React。 |
+| `v*` tag（BoxAI 产品） | `release.yml` | 发布公开 GHCR/Go artifacts；不触发生产部署。 |
+| `v*` tag / 手动 | `desktop-release.yml` | 并行构建 macOS / Windows / Linux 桌面包，上传 GitHub Release。 |
+| 用户自部署 Gateway | 根目录 `desktop/Dockerfile` 或独立镜像流 | 用户自有平台；与 youbox 托管 Relay 分离。 |
 
 ## Gateway 镜像
 
@@ -24,11 +30,14 @@
 
 | 变量 | 必填 | 说明 |
 |---|---|---|
-| `LIVEAGENT_GATEWAY_TOKEN` | 是 | WebUI、HTTP API、桌面 gRPC 的共享访问 token。 |
+| `LIVEAGENT_GATEWAY_TOKEN` | Standalone 必填 | Standalone 的 WebUI、HTTP API、桌面 gRPC 共享 token；Hosted multi-tenant 且静态认证关闭时无需设置。 |
 | `PORT` | Railway 自动提供 | HTTP/WebUI 监听端口，未提供时 Dockerfile 默认 `8080`。 |
 | `LIVEAGENT_GATEWAY_GRPC_ADDR` | 否 | gRPC 监听地址，默认 `:50051`。 |
+| `BOXAI_GATEWAY_AUTH_RECHECK_PERIOD` | 否 | Hosted JWT 长连接重验证周期，默认 `1m`；过期、撤销或用户归属变化后关闭 WS/gRPC 并要求客户端重连。 |
 | `BOXAI_SERVER_URL` | 否 | boxAI 服务端地址；设置后接受 boxAI 账号 JWT（经 `/api/v1/auth/me` 校验）。 |
-| `BOXAI_GATEWAY_MULTI_TENANT` | 否 | `true` 时按 boxAI 账号隔离会话（托管 Studio WebUI 模式，需同时设置 `BOXAI_SERVER_URL`）；静态 token 落入保留的 `local` 租户。默认关闭（单租户桌面模式）。 |
+| `BOXAI_GATEWAY_MULTI_TENANT` | 否 | `true` 时按 boxAI 账号隔离会话（Hosted Relay，需同时设置 `BOXAI_SERVER_URL`）；静态 token 默认拒绝。默认关闭，Standalone 行为不变。 |
+| `BOXAI_GATEWAY_ALLOW_HOSTED_STATIC_TOKEN` | 否 | 高风险 break-glass 开关；仅明确设为 `true` 才允许 Hosted 模式静态 token 进入共享 `local` 租户。默认 `false`。 |
+| `LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS` | 否 | conversation replay 的按时间保留窗口，默认 `30` 秒；4096 条与约 8 MiB 上限始终同时生效。 |
 | `LIVEAGENT_GATEWAY_CHAT_PREPARE_TIMEOUT` | 否 | `chat.prepare` 与 command accepted 前关联原生 Ping/Pong 的最大等待时间，默认 `2s`。 |
 | `LIVEAGENT_GATEWAY_CHAT_DELIVERY_TIMEOUT` | 否 | accepted 后把 `ChatCommandRequest` 投递到当前桌面 Agent stream 的最大等待时间，默认 `5s`。 |
 | `LIVEAGENT_GATEWAY_CHAT_START_TIMEOUT` | 否 | Chat command 进入桌面运行态的第一段 watchdog，默认 `5s`。 |
@@ -42,9 +51,28 @@ make gateway-docker-smoke
 
 CI 中的 `Gateway Docker Smoke` job 会执行同等检查：构建镜像、启动容器、访问 `/healthz`。
 
-## 用户自部署 Gateway
+生产容器同时监听明文 HTTP/WebSocket `8080` 与明文 gRPC `50051`。TLS 应由可信反向代理/负载均衡器终止，并分别将 HTTP/1.1 Upgrade 流量转发到 `8080`、HTTP/2 gRPC 流量转发到 `50051`；不要把这两个容器端口直接暴露到公网。
 
-BoxAI 不提供托管 Gateway 服务。需要公网 Remote Gateway 的用户可以用自己的 Railway 账号部署本仓库，或在其他 Docker 平台部署 `ghcr.io/<owner>/liveagent-gateway:vX.Y.Z` / `latest` 镜像。
+Hosted Relay 最小环境（youbox compose 已注入等价变量）：
+
+```dotenv
+PORT=8080
+LIVEAGENT_GATEWAY_GRPC_ADDR=:50051
+BOXAI_SERVER_URL=http://sub2api:8080
+# 公网身份校验走内网控制面，勿 hairpin 公网 apex
+BOXAI_GATEWAY_MULTI_TENANT=true
+BOXAI_GATEWAY_ALLOW_HOSTED_STATIC_TOKEN=false
+BOXAI_GATEWAY_AUTH_RECHECK_PERIOD=1m
+LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS=120
+```
+
+`/healthz` 仅返回 `ok`、`ready`、`hosted`、`multi_tenant` 布尔信号，不返回 token、服务端 URL 或租户信息。Hosted 部署应要求 `ready=true`、`hosted=true`、`multi_tenant=true`。
+
+## BoxAI 托管 Relay 与用户自部署 Gateway
+
+BoxAI 生产在 **youbox compose** 运行 `boxai-agent-gateway`，边缘由 `api.you-box.com` 终止 TLS（WebUI/WS → `:8081`，gRPC → `:50051`）。Relay 与主 Go API 从同一个部署 commit 在生产机本地构建，不依赖 `BOXAI_AGENT_GATEWAY_IMAGE` 或 GHCR。
+
+需要独立部署或自定义域名的用户仍可用自己的 Railway 账号部署本仓库，或在其他 Docker 平台部署固定版本镜像（Standalone + `LIVEAGENT_GATEWAY_TOKEN`）。
 
 Railway 自部署路径：
 
@@ -75,7 +103,7 @@ Gateway 运行时变量由用户在自己的平台配置：
 | `LIVEAGENT_GATEWAY_CHAT_START_TIMEOUT` | 默认 `5s`；控制远程 command 启动 watchdog 的第一阶段。 |
 | `LIVEAGENT_GATEWAY_CHAT_RENDER_START_TIMEOUT` | 默认 `10s`；控制启动 watchdog 的附加阶段。 |
 
-Gateway 的 conversation stream replay 与 `client_request_id` 去重当前都是进程内有界状态，不需要 SQLite 持久卷。事件窗口默认保留最近 10 分钟、最多 4096 条或约 8 MiB；command 去重记录保留 24 小时，但 Gateway 进程重启后不会保留。
+Gateway 的 conversation stream replay 与 `client_request_id` 去重当前都是进程内有界状态，不需要 SQLite 持久卷。事件窗口按 `LIVEAGENT_GATEWAY_RELAY_BUFFER_SECONDS`（默认 30 秒）保留，并始终限制为最多 4096 条或约 8 MiB；command 去重记录保留 24 小时，但 Gateway 进程重启后不会保留。
 
 ## GitHub Secrets
 

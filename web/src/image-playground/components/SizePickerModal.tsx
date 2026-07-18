@@ -3,6 +3,8 @@ import { calculateImageSize, normalizeImageSize, parseRatio, type SizeTier } fro
 import { usePreventBackgroundScroll } from '../hooks/usePreventBackgroundScroll'
 import ViewportTooltip from './ViewportTooltip'
 import { usePg, getPg } from '../lib/pgI18n'
+import { useIsCreateShell } from '../shellContext'
+import { cx } from '@/lib/cx'
 
 const TIERS: SizeTier[] = ['1K', '2K', '4K']
 const SIZE_LIMIT_TEXT = () => getPg().sizeLimitText
@@ -46,6 +48,7 @@ function findPresetForSize(size: string) {
 
 export default function SizePickerModal({ currentSize, onSelect, onClose, allowAuto = true }: Props) {
   const { pg, t } = usePg()
+  const isCreateShell = useIsCreateShell()
   usePreventBackgroundScroll(true)
 
   const modalRef = useRef<HTMLDivElement>(null)
@@ -162,6 +165,14 @@ export default function SizePickerModal({ currentSize, onSelect, onClose, allowA
   }
 
   const buttonClass = (active: boolean) => {
+    if (isCreateShell) {
+      return cx(
+        'rounded-xl border px-3 py-2 text-sm transition',
+        active
+          ? 'border-[var(--bx-brand)] bg-[var(--bx-brand-soft)] text-[var(--bx-brand-bright)]'
+          : 'border-[var(--bx-border)] bg-[var(--bx-bg-muted)] text-[var(--bx-text-muted)] hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]',
+      )
+    }
     return `rounded-xl border px-3 py-2 text-sm transition ${active
       ? 'border-teal-400 bg-teal-50 text-teal-600 dark:border-teal-500/50 dark:bg-teal-500/10 dark:text-teal-300'
       : 'border-gray-200/70 bg-white/60 text-gray-600 hover:bg-gray-50 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-gray-300 dark:hover:bg-white/[0.06]'
@@ -171,14 +182,21 @@ export default function SizePickerModal({ currentSize, onSelect, onClose, allowA
   return (
     <div
       data-no-drag-select
-      className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+      className={cx(
+        'fixed inset-0 z-[70] flex items-center justify-center p-4',
+        isCreateShell && 'bx-create-image-modal',
+      )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm animate-overlay-in" />
       <div
         ref={modalRef}
-        className="relative z-10 w-full max-w-md rounded-[var(--bx-radius-xl)] border border-white/50 bg-white/95 p-5 shadow-2xl ring-1 ring-black/5 animate-modal-in dark:border-white/[0.08] dark:bg-[var(--bx-bg-elevated)]/95 dark:ring-white/10"
+        className={
+          isCreateShell
+            ? 'relative z-10 w-full max-w-md rounded-[var(--bx-radius-xl)] border border-[var(--bx-border-strong,var(--bx-border))] bg-[var(--bx-bg-elevated)] p-5 shadow-[var(--bx-shadow-pop)] animate-modal-in'
+            : 'relative z-10 w-full max-w-md rounded-[var(--bx-radius-xl)] border border-white/50 bg-white/95 p-5 shadow-2xl ring-1 ring-black/5 animate-modal-in dark:border-white/[0.08] dark:bg-[var(--bx-bg-elevated)]/95 dark:ring-white/10'
+        }
       >
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
@@ -224,7 +242,13 @@ export default function SizePickerModal({ currentSize, onSelect, onClose, allowA
             {mode === 'auto' && (
               <div className="flex h-full animate-fade-in items-center justify-center pt-8 pb-4 text-center">
                 <div>
-                  <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-teal-50 text-teal-500 dark:bg-teal-500/10">
+                  <div
+                    className={
+                      isCreateShell
+                        ? 'mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[var(--bx-brand-soft)] text-[var(--bx-brand-bright)]'
+                        : 'mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-teal-50 text-teal-500 dark:bg-teal-500/10'
+                    }
+                  >
                     <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
@@ -336,7 +360,16 @@ export default function SizePickerModal({ currentSize, onSelect, onClose, allowA
                 </section>
                 <div className="rounded-xl border border-gray-200/80 bg-gray-50/80 p-3 text-xs text-gray-600 dark:border-white/[0.05] dark:bg-white/[0.02] dark:text-gray-400">
                   <div className="flex items-start gap-2">
-                    <svg className="mt-[2px] h-4 w-4 flex-shrink-0 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className={
+                        isCreateShell
+                          ? 'mt-[2px] h-4 w-4 flex-shrink-0 text-[var(--bx-brand-bright)]'
+                          : 'mt-[2px] h-4 w-4 flex-shrink-0 text-teal-500'
+                      }
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div className="whitespace-pre-line leading-relaxed">{SIZE_LIMIT_TEXT()}</div>
@@ -377,14 +410,22 @@ export default function SizePickerModal({ currentSize, onSelect, onClose, allowA
         <div className="mt-5 flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl bg-gray-100 px-4 py-2.5 text-sm text-gray-600 transition hover:bg-gray-200 dark:bg-white/[0.06] dark:text-gray-300 dark:hover:bg-white/[0.1]"
+            className={
+              isCreateShell
+                ? 'flex-1 rounded-xl border border-[var(--bx-border)] bg-[var(--bx-bg-muted)] px-4 py-2.5 text-sm text-[var(--bx-text-muted)] transition hover:bg-[var(--bx-hover)] hover:text-[var(--bx-text)]'
+                : 'flex-1 rounded-xl bg-gray-100 px-4 py-2.5 text-sm text-gray-600 transition hover:bg-gray-200 dark:bg-white/[0.06] dark:text-gray-300 dark:hover:bg-white/[0.1]'
+            }
           >
             {pg.cancel}
           </button>
           <button
             onClick={applySize}
             disabled={!previewSize}
-            className="flex-1 rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className={
+              isCreateShell
+                ? 'flex-1 rounded-xl bg-[var(--bx-grad-cta)] px-4 py-2.5 text-sm font-bold text-[var(--bx-ink)] shadow-[var(--bx-shadow-cta)] transition hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-50'
+                : 'flex-1 rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-600 disabled:cursor-not-allowed disabled:opacity-50'
+            }
           >
             {pg.confirmOk}
           </button>

@@ -5,6 +5,8 @@ import { ChevronDownIcon, EditIcon, PlusIcon, TrashIcon, DragHandleIcon } from '
 import ViewportTooltip from './ViewportTooltip'
 import { useTooltip } from '../hooks/useTooltip'
 import { usePg } from '../lib/pgI18n'
+import { useIsCreateShell } from '../shellContext'
+import { cx } from '@/lib/cx'
 
 interface Option {
   label: string
@@ -31,6 +33,7 @@ interface SelectProps {
 
 export default function Select({ value, onChange, onReorder, options, disabled, className, onOpenChange, showValueTooltips = true }: SelectProps) {
   const { pg } = usePg()
+  const isCreateShell = useIsCreateShell()
 
   const [isOpen, setIsOpen] = useState(false)
   const [menuMaxHeight, setMenuMaxHeight] = useState(DEFAULT_DROPDOWN_MAX_HEIGHT)
@@ -206,9 +209,13 @@ export default function Select({ value, onChange, onReorder, options, disabled, 
 
       {isOpen && (
         <div
-          className={`absolute z-50 w-full overflow-hidden overflow-y-auto rounded-xl border border-gray-200/60 bg-white/95 py-1 shadow-[0_8px_30px_rgb(0,0,0,0.12)] ring-1 ring-black/5 backdrop-blur-xl dark:border-white/[0.08] dark:bg-[var(--bx-bg-elevated)]/95 dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] dark:ring-white/10 custom-scrollbar ${
-            placement === 'top' ? 'bottom-full mb-1.5 animate-dropdown-up' : 'top-full mt-1.5 animate-dropdown-down'
-          }`}
+          className={cx(
+            'absolute z-50 w-full overflow-hidden overflow-y-auto rounded-xl py-1 custom-scrollbar',
+            isCreateShell
+              ? 'border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)] shadow-[var(--bx-shadow-pop)]'
+              : 'border border-gray-200/60 bg-white/95 shadow-[0_8px_30px_rgb(0,0,0,0.12)] ring-1 ring-black/5 backdrop-blur-xl dark:border-white/[0.08] dark:bg-[var(--bx-bg-elevated)]/95 dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] dark:ring-white/10',
+            placement === 'top' ? 'bottom-full mb-1.5 animate-dropdown-up' : 'top-full mt-1.5 animate-dropdown-down',
+          )}
           style={{ maxHeight: menuMaxHeight }}
         >
           {options.map((option) => (
@@ -405,23 +412,44 @@ export default function Select({ value, onChange, onReorder, options, disabled, 
                 clearOptionTooltipTimer()
                 setHoveredOptionTooltip(null)
               }}
-              className={`relative flex cursor-pointer items-center justify-between gap-2 px-3 py-2 text-xs transition-colors ${
+              className={cx(
+                'relative flex cursor-pointer items-center justify-between gap-2 px-3 py-2 text-xs transition-colors',
                 draggedValue === option.value
-                  ? 'opacity-40 bg-gray-100 dark:bg-white/[0.04]'
+                  ? isCreateShell
+                    ? 'opacity-40 bg-[var(--bx-bg-muted)]'
+                    : 'opacity-40 bg-gray-100 dark:bg-white/[0.04]'
                   : option.variant === 'action'
-                  ? 'font-semibold text-teal-600 hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-500/10'
-                  : option.variant === 'danger'
-                  ? 'font-semibold text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10'
-                  : option.value === value
-                  ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 font-medium'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.06]'
-              }`}
+                    ? isCreateShell
+                      ? 'font-semibold text-[var(--bx-brand-bright)] hover:bg-[var(--bx-brand-soft)]'
+                      : 'font-semibold text-teal-600 hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-500/10'
+                    : option.variant === 'danger'
+                      ? 'font-semibold text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10'
+                      : option.value === value
+                        ? isCreateShell
+                          ? 'bg-[var(--bx-brand-soft)] font-medium text-[var(--bx-brand-bright)]'
+                          : 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 font-medium'
+                        : isCreateShell
+                          ? 'text-[var(--bx-text)] hover:bg-[var(--bx-hover)]'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.06]',
+              )}
             >
               {dragOverValue === option.value && dragDropPosition === 'before' && draggedValue !== option.value && (
-                <div className="absolute -top-[1px] left-0 right-0 h-[2px] bg-teal-500 rounded-full z-40 shadow-sm pointer-events-none" />
+                <div
+                  className={
+                    isCreateShell
+                      ? 'absolute -top-[1px] left-0 right-0 z-40 h-[2px] rounded-full bg-[var(--bx-brand)] shadow-sm pointer-events-none'
+                      : 'absolute -top-[1px] left-0 right-0 h-[2px] bg-teal-500 rounded-full z-40 shadow-sm pointer-events-none'
+                  }
+                />
               )}
               {dragOverValue === option.value && dragDropPosition === 'after' && draggedValue !== option.value && (
-                <div className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-teal-500 rounded-full z-40 shadow-sm pointer-events-none" />
+                <div
+                  className={
+                    isCreateShell
+                      ? 'absolute -bottom-[1px] left-0 right-0 z-40 h-[2px] rounded-full bg-[var(--bx-brand)] shadow-sm pointer-events-none'
+                      : 'absolute -bottom-[1px] left-0 right-0 h-[2px] bg-teal-500 rounded-full z-40 shadow-sm pointer-events-none'
+                  }
+                />
               )}
               {showValueTooltips && hoveredOptionTooltip === option.value && (
                 <ViewportTooltip visible={true} className="max-w-[300px] break-words whitespace-pre-wrap">

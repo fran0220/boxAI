@@ -34,6 +34,7 @@ import {
 } from '@/lib/public-status'
 import { useAuth } from '@/lib/use-auth'
 import { cx } from '@/lib/cx'
+import { WORKSPACE_PATHS } from '@/lib/workspace-navigation'
 
 function HeroBackdrop() {
   return (
@@ -334,9 +335,13 @@ export function Home() {
       .catch(() => {})
   }
 
-  const createHref = authed ? '/create' : '/signup?return_to=/create'
-  const keysHref = authed ? '/account/keys' : '/login?return_to=/account/keys'
-  const accountHref = authed ? '/account' : '/login?return_to=/account'
+  const createHref = authed
+    ? WORKSPACE_PATHS.createImage
+    : `/signup?return_to=${WORKSPACE_PATHS.createImage}`
+  const keysHref = authed
+    ? WORKSPACE_PATHS.developerKeys
+    : `/login?return_to=${WORKSPACE_PATHS.developerKeys}`
+  const accountHref = authed ? WORKSPACE_PATHS.home : `/login?return_to=${WORKSPACE_PATHS.home}`
 
   const valueCards = d.home.value.cards.map((card, i) => ({
     key: VALUE_KEYS[i] ?? `v-${i}`,
@@ -355,7 +360,7 @@ export function Home() {
 
   function teaserHref(ctaKind: 'signup' | 'subscribe' | 'contact') {
     if (ctaKind === 'contact') return d.pricing.contactHref
-    if (ctaKind === 'signup') return authed ? '/create' : '/signup'
+    if (ctaKind === 'signup') return authed ? WORKSPACE_PATHS.createImage : '/signup'
     return '/pricing'
   }
 
@@ -1228,7 +1233,7 @@ export function Home() {
             actions={[
               {
                 kind: 'link',
-                to: authed ? '/create' : '/signup',
+                to: authed ? WORKSPACE_PATHS.createImage : '/signup',
                 label: d.home.cta.primary,
                 primary: true,
               },

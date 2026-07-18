@@ -33,9 +33,10 @@ func main() {
 		log.Printf("boxAI account token validation enabled against %s", cfg.BoxAIServerURL)
 	}
 	// BOXAI: hosted deployments isolate sessions per boxAI account.
-	tenants := session.SingleTenant(session.NewManager())
+	relayRetention := time.Duration(cfg.RelayBufferSeconds) * time.Second
+	tenants := session.SingleTenant(session.NewManagerWithRelayRetention(relayRetention))
 	if cfg.MultiTenant {
-		tenants = session.NewTenants()
+		tenants = session.NewTenantsWithRelayRetention(relayRetention)
 		log.Printf("multi-tenant mode enabled: sessions are isolated per boxAI account")
 	}
 
@@ -108,8 +109,8 @@ func newGRPCServer(cfg *config.Config, tenants *session.Tenants) (*grpc.Server, 
 	options := []grpc.ServerOption{
 		grpc.MaxRecvMsgSize(cfg.GRPCMaxMessageBytes),
 		grpc.MaxSendMsgSize(cfg.GRPCMaxMessageBytes),
-		grpc.UnaryInterceptor(auth.GRPCUnaryInterceptor(cfg.Token)),
-		grpc.StreamInterceptor(auth.GRPCStreamInterceptor(cfg.Token)),
+		grpc.UnaryInterceptor(auth.GRPCUnaryInterceptorWithPolicy(cfg.Token, cfg.AllowStaticToken())),
+		grpc.StreamInterceptor(auth.GRPCStreamInterceptorWithPolicy(cfg.Token, cfg.AllowStaticToken())),
 		// Transport-level liveness: h2 PINGs are not subject to application
 		// queue congestion, so dead links are detected even mid-stream.
 		grpc.KeepaliveParams(keepalive.ServerParameters{

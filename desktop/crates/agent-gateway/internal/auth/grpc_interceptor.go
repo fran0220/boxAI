@@ -12,13 +12,17 @@ import (
 const authenticateMethod = "/liveagent.gateway.v1.AgentGateway/Authenticate"
 
 func GRPCUnaryInterceptor(expectedToken string) grpc.UnaryServerInterceptor {
+	return GRPCUnaryInterceptorWithPolicy(expectedToken, true)
+}
+
+func GRPCUnaryInterceptorWithPolicy(expectedToken string, allowStatic bool) grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req any,
 		info *grpc.UnaryServerInfo,
 		handler grpc.UnaryHandler,
 	) (any, error) {
-		if info.FullMethod != authenticateMethod && !validateMetadataToken(ctx, expectedToken) {
+		if info.FullMethod != authenticateMethod && !validateMetadataToken(ctx, expectedToken, allowStatic) {
 			return nil, status.Error(codes.Unauthenticated, "invalid token")
 		}
 		return handler(ctx, req)
@@ -26,34 +30,38 @@ func GRPCUnaryInterceptor(expectedToken string) grpc.UnaryServerInterceptor {
 }
 
 func GRPCStreamInterceptor(expectedToken string) grpc.StreamServerInterceptor {
+	return GRPCStreamInterceptorWithPolicy(expectedToken, true)
+}
+
+func GRPCStreamInterceptorWithPolicy(expectedToken string, allowStatic bool) grpc.StreamServerInterceptor {
 	return func(
 		srv any,
 		stream grpc.ServerStream,
 		info *grpc.StreamServerInfo,
 		handler grpc.StreamHandler,
 	) error {
-		if !validateMetadataToken(stream.Context(), expectedToken) {
+		if !validateMetadataToken(stream.Context(), expectedToken, allowStatic) {
 			return status.Error(codes.Unauthenticated, "invalid token")
 		}
 		return handler(srv, stream)
 	}
 }
 
-func validateMetadataToken(ctx context.Context, expectedToken string) bool {
+func validateMetadataToken(ctx context.Context, expectedToken string, allowStatic bool) bool {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return false
 	}
 	if values := md.Get("authorization"); len(values) > 0 {
 		for _, value := range values {
-			if ValidateBearerHeader(value, expectedToken) {
+			if _, ok := ResolveBearerHeaderWithPolicy(value, expectedToken, allowStatic); ok {
 				return true
 			}
 		}
 	}
 	if values := md.Get("token"); len(values) > 0 {
 		for _, value := range values {
-			if ValidateToken(value, expectedToken) {
+			if _, ok := ResolveTokenWithPolicy(value, expectedToken, allowStatic); ok {
 				return true
 			}
 		}

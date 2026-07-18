@@ -47,6 +47,15 @@ export type WorkspaceLabelKey =
   | 'notifications'
   | 'announcements'
 
+export type SidebarGroupId = 'product' | 'platform' | 'billing' | 'account'
+
+/** Maps to `accountNav.group*` i18n keys. */
+export type SidebarGroupLabelKey =
+  | 'groupWorkspace'
+  | 'groupPlatform'
+  | 'groupBilling'
+  | 'groupAccount'
+
 export const WORKSPACE_PATHS = {
   home: '/app',
   create: '/app/create',
@@ -71,6 +80,7 @@ export const WORKSPACE_PATHS = {
   settingsNotifications: '/app/settings/notifications',
   settingsAnnouncements: '/app/settings/announcements',
   customPage: '/app/pages',
+  checkout: '/checkout',
 } as const
 
 export interface WorkspaceNavItem {
@@ -89,6 +99,24 @@ export interface WorkspaceModule {
   capability: WorkspaceCapabilityKey
   icon: 'home' | 'create' | 'agent' | 'developer' | 'billing' | 'settings'
   end?: boolean
+}
+
+/** Leaf or parent row in the desktop left rail (full discoverability tree). */
+export interface WorkspaceSidebarLeaf {
+  id: string
+  label: WorkspaceLabelKey
+  path: string
+  capability: WorkspaceCapabilityKey
+  end?: boolean
+  /** Icons only for product entries (create / agent). */
+  icon?: 'create' | 'agent'
+  children?: readonly WorkspaceSidebarLeaf[]
+}
+
+export interface WorkspaceSidebarGroup {
+  id: SidebarGroupId
+  labelKey: SidebarGroupLabelKey
+  items: readonly WorkspaceSidebarLeaf[]
 }
 
 export const WORKSPACE_MODULES: readonly WorkspaceModule[] = [
@@ -180,6 +208,154 @@ export const WORKSPACE_NAV_ITEMS: readonly WorkspaceNavItem[] = [
   },
 ] as const
 
+/** Canonical desktop sidebar: product → platform → billing → account. */
+export const WORKSPACE_SIDEBAR_GROUPS: readonly WorkspaceSidebarGroup[] = [
+  {
+    id: 'product',
+    labelKey: 'groupWorkspace',
+    items: [
+      {
+        id: 'create',
+        label: 'create',
+        // Parent routes to /app/create (index → image); children own exact active state.
+        path: WORKSPACE_PATHS.create,
+        capability: 'create',
+        icon: 'create',
+        children: [
+          {
+            id: 'image',
+            label: 'image',
+            path: WORKSPACE_PATHS.createImage,
+            capability: 'create',
+          },
+          {
+            id: 'video',
+            label: 'video',
+            path: WORKSPACE_PATHS.createVideo,
+            capability: 'create',
+          },
+          {
+            id: 'assets',
+            label: 'assets',
+            path: WORKSPACE_PATHS.createAssets,
+            capability: 'create',
+          },
+          {
+            id: 'batch',
+            label: 'batch',
+            path: WORKSPACE_PATHS.createBatch,
+            capability: 'create',
+          },
+        ],
+      },
+      {
+        id: 'agent',
+        label: 'agent',
+        path: WORKSPACE_PATHS.agent,
+        capability: 'agentRemote',
+        icon: 'agent',
+      },
+    ],
+  },
+  {
+    id: 'platform',
+    labelKey: 'groupPlatform',
+    items: [
+      {
+        id: 'overview',
+        label: 'overview',
+        path: WORKSPACE_PATHS.home,
+        capability: 'workspace',
+        end: true,
+      },
+      {
+        id: 'keys',
+        label: 'keys',
+        path: WORKSPACE_PATHS.developerKeys,
+        capability: 'developer',
+      },
+      {
+        id: 'usage',
+        label: 'usage',
+        path: WORKSPACE_PATHS.developerUsage,
+        capability: 'developer',
+      },
+      {
+        id: 'models',
+        label: 'models',
+        path: WORKSPACE_PATHS.developerModels,
+        capability: 'developer',
+      },
+      {
+        id: 'monitor',
+        label: 'monitor',
+        path: WORKSPACE_PATHS.developerMonitor,
+        capability: 'developer',
+      },
+    ],
+  },
+  {
+    id: 'billing',
+    labelKey: 'groupBilling',
+    items: [
+      {
+        id: 'subscription',
+        label: 'subscription',
+        path: WORKSPACE_PATHS.billingSubscription,
+        capability: 'payment',
+      },
+      {
+        id: 'orders',
+        label: 'orders',
+        path: WORKSPACE_PATHS.billingOrders,
+        capability: 'billing',
+      },
+      {
+        id: 'redeem',
+        label: 'redeem',
+        path: WORKSPACE_PATHS.billingRedeem,
+        capability: 'billing',
+      },
+      {
+        id: 'affiliate',
+        label: 'affiliate',
+        path: WORKSPACE_PATHS.billingAffiliate,
+        capability: 'affiliate',
+      },
+    ],
+  },
+  {
+    id: 'account',
+    labelKey: 'groupAccount',
+    items: [
+      {
+        id: 'profile',
+        label: 'profile',
+        path: WORKSPACE_PATHS.settingsProfile,
+        capability: 'settings',
+      },
+      {
+        id: 'security',
+        label: 'security',
+        path: WORKSPACE_PATHS.settingsSecurity,
+        capability: 'settings',
+      },
+      {
+        id: 'notifications',
+        label: 'notifications',
+        path: WORKSPACE_PATHS.settingsNotifications,
+        capability: 'notifications',
+      },
+      {
+        id: 'announcements',
+        label: 'announcements',
+        path: WORKSPACE_PATHS.settingsAnnouncements,
+        capability: 'settings',
+      },
+    ],
+  },
+] as const
+
 export interface CapabilityInputs {
   authenticated: boolean
   publicSettings?: Record<string, unknown> | null
@@ -235,12 +411,19 @@ export function deriveWorkspaceCapabilities({
 
 export function getWorkspaceModule(pathname: string): WorkspaceModuleId {
   if (pathname === WORKSPACE_PATHS.home) return 'overview'
-  if (pathname.startsWith(`${WORKSPACE_PATHS.create}/`)) return 'create'
+  if (pathname.startsWith(`${WORKSPACE_PATHS.create}/`) || pathname === WORKSPACE_PATHS.create) {
+    return 'create'
+  }
   if (pathname.startsWith(WORKSPACE_PATHS.agent)) return 'agent'
-  if (pathname.startsWith(`${WORKSPACE_PATHS.developer}/`)) return 'developer'
-  if (pathname.startsWith(`${WORKSPACE_PATHS.billing}/`)) return 'billing'
+  if (pathname.startsWith(`${WORKSPACE_PATHS.developer}/`) || pathname === WORKSPACE_PATHS.developer) {
+    return 'developer'
+  }
+  if (pathname.startsWith(`${WORKSPACE_PATHS.billing}/`) || pathname === WORKSPACE_PATHS.billing) {
+    return 'billing'
+  }
   if (
     pathname.startsWith(`${WORKSPACE_PATHS.settings}/`) ||
+    pathname === WORKSPACE_PATHS.settings ||
     pathname.startsWith(`${WORKSPACE_PATHS.customPage}/`)
   ) {
     return 'settings'
@@ -255,6 +438,38 @@ export function getWorkspaceNavItems(
   return WORKSPACE_NAV_ITEMS.filter(
     (item) => item.module === module && capabilities[item.capability] !== 'hidden',
   )
+}
+
+function filterSidebarLeaf(
+  leaf: WorkspaceSidebarLeaf,
+  capabilities: WorkspaceCapabilities,
+): WorkspaceSidebarLeaf | null {
+  if (capabilities[leaf.capability] === 'hidden') return null
+  if (!leaf.children?.length) return leaf
+  const children = leaf.children
+    .map((child) => filterSidebarLeaf(child, capabilities))
+    .filter((child): child is WorkspaceSidebarLeaf => child != null)
+  return { ...leaf, children }
+}
+
+/**
+ * Full left-rail tree with capability filtering (hidden items removed;
+ * locked / offline remain so badges can render).
+ */
+export function getWorkspaceSidebarGroups(
+  capabilities: WorkspaceCapabilities,
+): WorkspaceSidebarGroup[] {
+  return WORKSPACE_SIDEBAR_GROUPS.map((group) => ({
+    id: group.id,
+    labelKey: group.labelKey,
+    items: group.items
+      .map((item) => filterSidebarLeaf(item, capabilities))
+      .filter((item): item is WorkspaceSidebarLeaf => item != null),
+  })).filter((group) => group.items.length > 0)
+}
+
+export function workspaceGroupLabel(d: Dict, key: SidebarGroupLabelKey): string {
+  return d.accountNav[key]
 }
 
 export function workspaceLabel(d: Dict, key: WorkspaceLabelKey): string {

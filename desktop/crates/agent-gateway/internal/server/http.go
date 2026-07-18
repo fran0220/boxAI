@@ -31,7 +31,7 @@ func NewTenantHTTPServer(cfg *config.Config, tenants *session.Tenants) http.Hand
 	rootMux := http.NewServeMux()
 	webSocketServer := newTenantWebSocketServer(cfg, tenants)
 	terminalWebSocketServer := newTenantTerminalWebSocketServer(cfg, tenants)
-	rootMux.HandleFunc("GET /healthz", handler.Health())
+	rootMux.HandleFunc("GET /healthz", handler.Health(cfg))
 	rootMux.Handle("/ws", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if isTerminalWebSocketFallback(r) {
 			terminalWebSocketServer.ServeHTTP(w, r)
@@ -65,7 +65,7 @@ func NewTenantHTTPServer(cfg *config.Config, tenants *session.Tenants) http.Hand
 		}
 		handler.ImportReadableFiles(sm, cfg.RequestTimeout)(w, r)
 	})
-	rootMux.Handle("/api/", auth.HTTPMiddleware(cfg.Token, apiMux))
+	rootMux.Handle("/api/", auth.HTTPMiddlewareWithPolicy(cfg.Token, cfg.AllowStaticToken(), apiMux))
 
 	webFS, err := fs.Sub(gateway.WebUIAssets, "web/dist")
 	if err != nil {

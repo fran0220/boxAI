@@ -19,15 +19,17 @@ function CheckoutInner() {
   const t = d.checkout
   usePageMeta(t.metaTitle)
   const [params] = useSearchParams()
-  const planParam = params.get('plan')
+  // Accept both plan= and plan_id= (Subscription upgrade links use plan_id)
+  const planParam = params.get('plan') ?? params.get('plan_id')
   const typeParam = params.get('type') || 'balance'
+  const planParamId = planParam && Number.isFinite(Number(planParam)) ? Number(planParam) : null
 
   const [info, setInfo] = useState<CheckoutInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [orderType, setOrderType] = useState(typeParam === 'subscription' ? 'subscription' : 'balance')
   const [amount, setAmount] = useState('10')
-  const [planId, setPlanId] = useState<number | null>(planParam ? Number(planParam) : null)
+  const [planId, setPlanId] = useState<number | null>(planParamId)
   const [method, setMethod] = useState('')
   const [busy, setBusy] = useState(false)
   const [qr, setQr] = useState<CreateOrderResult | null>(null)
@@ -41,9 +43,9 @@ function CheckoutInner() {
         setInfo(c)
         const methods = Object.entries(c.methods || {}).filter(([, m]) => m.available)
         if (methods.length) setMethod(methods[0][0])
-        if (planParam && c.plans?.some((p) => p.id === Number(planParam))) {
+        if (planParamId != null && c.plans?.some((p) => p.id === planParamId)) {
           setOrderType('subscription')
-          setPlanId(Number(planParam))
+          setPlanId(planParamId)
         }
       } catch (err) {
         if (!cancelled) setError(err instanceof ApiError ? err.message : t.loadFailed)
@@ -54,7 +56,7 @@ function CheckoutInner() {
     return () => {
       cancelled = true
     }
-  }, [planParam, t.loadFailed])
+  }, [planParamId, t.loadFailed])
 
   const methods = useMemo(
     () => Object.entries(info?.methods || {}).filter(([, m]) => m.available),
@@ -143,7 +145,7 @@ function CheckoutInner() {
       <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.subtitle}</p>
       {error ? <p className="bx-text-danger mt-3 text-sm">{error}</p> : null}
 
-      <form onSubmit={onPay} className="bx-card mt-8 space-y-4 p-6">
+      <form onSubmit={onPay} className="bx-account-panel mt-8 space-y-4 px-6 py-6">
         <div className="flex gap-2">
           <button
             type="button"
@@ -216,10 +218,10 @@ function CheckoutInner() {
       </form>
 
       {qr?.qr_code ? (
-        <div className="bx-card mt-6 p-6 text-center">
-          <p className="text-sm font-medium">{t.scanQr}</p>
-          <img src={qr.qr_code} alt="QR" className="mx-auto mt-4 h-48 w-48 rounded bg-white p-2" />
-          <p className="mt-3 text-xs text-[var(--bx-text-dim)]">{t.scanHint}</p>
+        <div className="bx-account-panel mt-6 px-6 py-6 text-center">
+          <p className="m-0 text-sm font-medium">{t.scanQr}</p>
+          <img src={qr.qr_code} alt="" className="mx-auto mt-4 h-48 w-48 rounded bg-white p-2" />
+          <p className="mt-3 mb-0 text-xs text-[var(--bx-text-dim)]">{t.scanHint}</p>
           {qr.resume_token ? (
             <Link
               to={`/payment/result?resume_token=${encodeURIComponent(qr.resume_token)}`}

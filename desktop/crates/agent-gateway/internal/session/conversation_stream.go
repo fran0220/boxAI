@@ -237,7 +237,7 @@ type conversationStreamStore struct {
 	reaperInterval       time.Duration
 }
 
-func newConversationStreamStore(isOnline func() bool) *conversationStreamStore {
+func newConversationStreamStore(isOnline func() bool, eventRetention time.Duration) *conversationStreamStore {
 	return &conversationStreamStore{
 		streams:              make(map[string]*conversationStream),
 		pendingRuns:          make(map[string]*pendingChatRun),
@@ -247,7 +247,7 @@ func newConversationStreamStore(isOnline func() bool) *conversationStreamStore {
 		commandUpdates:       make(map[string]chatCommandUpdateRecord),
 		activityHub:          newChatActivityHub(),
 		isOnline:             isOnline,
-		eventRetention:       conversationEventRetention,
+		eventRetention:       eventRetention,
 		maxEvents:            conversationMaxEvents,
 		maxEventBytes:        conversationMaxEventBytes,
 		idleRetention:        conversationIdleRetention,

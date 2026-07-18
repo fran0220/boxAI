@@ -68,6 +68,13 @@ type terminalStreamWSConnection struct {
 	mu       sync.RWMutex
 	attached map[string]struct{}
 	streams  map[string]struct{}
+
+	authToken    string
+	authIdentity auth.Identity
+
+	lastInboundAt time.Time
+	lastInboundMu sync.Mutex
+	heartbeatOnce sync.Once
 }
 
 func NewTerminalWebSocketServer(cfg *config.Config, sm *session.Manager) http.Handler {
@@ -96,6 +103,11 @@ func newTenantTerminalWebSocketServer(cfg *config.Config, tenants *session.Tenan
 			attached: make(map[string]struct{}),
 			streams:  make(map[string]struct{}),
 		}
+		conn.SetPongHandler(func(string) error {
+			state.touchInboundActivity()
+			return nil
+		})
+		_ = conn.SetReadDeadline(time.Now().Add(state.idleTimeout()))
 		defer state.close()
 		state.serve()
 	})
@@ -105,6 +117,8 @@ func (c *terminalStreamWSConnection) serve() {
 	if !c.authenticate() {
 		return
 	}
+	c.touchInboundActivity()
+	c.startHeartbeat()
 
 	go c.writeLoop()
 	c.startForwarder()
@@ -114,6 +128,7 @@ func (c *terminalStreamWSConnection) serve() {
 		if err != nil {
 			return
 		}
+		c.touchInboundActivity()
 		if messageType != websocket.BinaryMessage {
 			continue
 		}
@@ -138,7 +153,7 @@ func (c *terminalStreamWSConnection) authenticate() bool {
 	if strings.TrimSpace(authPayload.Type) != "auth" {
 		return false
 	}
-	identity, ok := auth.ResolveToken(authPayload.Token, c.cfg.Token)
+	identity, ok := auth.ResolveTokenWithPolicy(authPayload.Token, c.cfg.Token, c.cfg.AllowStaticToken())
 	if !ok {
 		_ = c.conn.WriteJSON(map[string]any{"type": "error", "error": "unauthorized"})
 		return false
@@ -151,8 +166,107 @@ func (c *terminalStreamWSConnection) authenticate() bool {
 		_ = c.conn.WriteJSON(map[string]any{"type": "error", "error": "unauthorized"})
 		return false
 	}
+	c.authToken = strings.TrimSpace(authPayload.Token)
+	c.authIdentity = identity
 	_ = c.conn.WriteJSON(map[string]any{"type": "ready"})
+	c.startAuthRevalidation()
 	return true
+}
+
+// BOXAI: the binary terminal socket has its own auth handshake and must not
+// bypass the hosted JWT lifecycle enforced by the primary browser socket.
+func (c *terminalStreamWSConnection) startAuthRevalidation() {
+	revalidator := newHostedCredentialRevalidator(c.cfg, c.authToken, c.authIdentity)
+	if revalidator == nil {
+		return
+	}
+	period := c.cfg.AuthRecheckPeriod
+	if period <= 0 {
+		period = time.Minute
+	}
+	go func() {
+		ticker := time.NewTicker(period)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-c.done:
+				return
+			case <-ticker.C:
+				if !revalidator.shouldTerminate() {
+					continue
+				}
+				deadline := time.Now().Add(10 * time.Second)
+				if c.cfg.WebSocketWriteTimeout > 0 {
+					deadline = time.Now().Add(c.cfg.WebSocketWriteTimeout)
+				}
+				_ = c.conn.WriteControl(
+					websocket.CloseMessage,
+					websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "authentication expired"),
+					deadline,
+				)
+				c.close()
+				return
+			}
+		}
+	}()
+}
+
+func (c *terminalStreamWSConnection) startHeartbeat() {
+	c.heartbeatOnce.Do(func() {
+		period := c.cfg.WebSocketHeartbeatPeriod
+		if period <= 0 {
+			period = 15 * time.Second
+		}
+		go func() {
+			ticker := time.NewTicker(period)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-c.done:
+					return
+				case <-ticker.C:
+					c.lastInboundMu.Lock()
+					lastInbound := c.lastInboundAt
+					c.lastInboundMu.Unlock()
+					if time.Since(lastInbound) > c.idleTimeout() {
+						c.close()
+						return
+					}
+					_ = c.conn.WriteControl(
+						websocket.PingMessage,
+						nil,
+						time.Now().Add(c.controlWriteTimeout()),
+					)
+				}
+			}
+		}()
+	})
+}
+
+func (c *terminalStreamWSConnection) touchInboundActivity() {
+	c.lastInboundMu.Lock()
+	c.lastInboundAt = time.Now()
+	c.lastInboundMu.Unlock()
+	_ = c.conn.SetReadDeadline(time.Now().Add(c.idleTimeout()))
+}
+
+func (c *terminalStreamWSConnection) idleTimeout() time.Duration {
+	period := c.cfg.WebSocketHeartbeatPeriod
+	if period <= 0 {
+		period = 15 * time.Second
+	}
+	grace := c.cfg.WebSocketHeartbeatGrace
+	if grace <= 0 {
+		grace = websocketHeartbeatGraceFloor
+	}
+	return period*3 + grace
+}
+
+func (c *terminalStreamWSConnection) controlWriteTimeout() time.Duration {
+	if c.cfg.WebSocketWriteTimeout > 0 {
+		return c.cfg.WebSocketWriteTimeout
+	}
+	return 10 * time.Second
 }
 
 func (c *terminalStreamWSConnection) handleFrame(frame *gatewayv1.TerminalStreamFrame) {

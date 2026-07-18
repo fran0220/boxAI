@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Download, ExternalLink, HardDrive, Laptop, Radio, ShieldCheck } from 'lucide-react'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
@@ -9,6 +9,24 @@ import {
   type DesktopRelease,
 } from '@/lib/releases'
 import { useWorkspace } from '@/components/workspace/WorkspaceContext'
+import { getSessionSnapshot, subscribeSession } from '@/lib/session'
+
+type AgentAuthRequestMessage = { type: 'boxai.agent.auth.request'; version: 1 }
+type AgentAuthTokenMessage = {
+  type: 'boxai.agent.auth.token'
+  version: 1
+  token: string | null
+}
+
+function isAgentAuthRequestMessage(value: unknown): value is AgentAuthRequestMessage {
+  if (!value || typeof value !== 'object') return false
+  const message = value as Partial<AgentAuthRequestMessage>
+  return (
+    message.type === 'boxai.agent.auth.request' &&
+    message.version === 1 &&
+    Object.keys(value).length === 2
+  )
+}
 
 const SELF_HOST_GUIDE_URL = 'https://github.com/fran0220/boxAI/blob/main/docs/OFFICE_MODULE.md'
 
@@ -18,6 +36,7 @@ export function AgentWorkspace() {
   const { capabilities, remoteUrl } = useWorkspace()
   const [release, setRelease] = useState<DesktopRelease | null>(null)
   const [releaseFailed, setReleaseFailed] = useState(false)
+  const remoteFrameRef = useRef<HTMLIFrameElement>(null)
   const platform = detectPlatform()
 
   usePageMeta(t.metaTitle, t.subtitle)
@@ -38,6 +57,45 @@ export function AgentWorkspace() {
 
   const recommended = release?.sections.find((section) => section.title === platform)?.items[0]
   const remoteAvailable = capabilities.agentRemote === 'available' && remoteUrl
+  const remoteOrigin = useMemo(() => {
+    if (!remoteAvailable) return null
+    try {
+      return new URL(remoteUrl).origin
+    } catch {
+      return null
+    }
+  }, [remoteAvailable, remoteUrl])
+
+  useEffect(() => {
+    if (!remoteOrigin) return
+
+    const sendCurrentToken = () => {
+      const target = remoteFrameRef.current?.contentWindow
+      if (!target) return
+      const snapshot = getSessionSnapshot()
+      const message: AgentAuthTokenMessage = {
+        type: 'boxai.agent.auth.token',
+        version: 1,
+        token: snapshot.accessToken,
+      }
+      target.postMessage(message, remoteOrigin)
+    }
+    const receiveRequest = (event: MessageEvent<unknown>) => {
+      if (
+        event.origin !== remoteOrigin ||
+        event.source !== remoteFrameRef.current?.contentWindow ||
+        !isAgentAuthRequestMessage(event.data)
+      ) return
+      sendCurrentToken()
+    }
+
+    window.addEventListener('message', receiveRequest)
+    const unsubscribe = subscribeSession(sendCurrentToken)
+    return () => {
+      window.removeEventListener('message', receiveRequest)
+      unsubscribe()
+    }
+  }, [remoteOrigin])
 
   return (
     <div>
@@ -56,6 +114,27 @@ export function AgentWorkspace() {
           {t.accountConnected}
         </span>
       </div>
+
+      {remoteAvailable && remoteOrigin ? (
+        <section className="mt-6 overflow-hidden rounded-xl border border-[var(--bx-border)] bg-[var(--bx-bg-elevated)]">
+          <iframe
+            ref={remoteFrameRef}
+            src={remoteUrl}
+            title={t.remoteTitle}
+            onLoad={() => {
+              const snapshot = getSessionSnapshot()
+              const message: AgentAuthTokenMessage = {
+                type: 'boxai.agent.auth.token',
+                version: 1,
+                token: snapshot.accessToken,
+              }
+              remoteFrameRef.current?.contentWindow?.postMessage(message, remoteOrigin)
+            }}
+            referrerPolicy="strict-origin-when-cross-origin"
+            className="h-[calc(100vh-12rem)] min-h-[640px] w-full border-0"
+          />
+        </section>
+      ) : null}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <section className="bx-account-panel bx-account-panel-pad flex min-h-[270px] flex-col">

@@ -9,14 +9,16 @@ Public multi-arch image for the BoxAI AI API Gateway (product surface on top of 
 | Visibility | **Public** (no login required to pull) |
 | Tag scheme | `X.Y.Z-box.N` (aligned with git tag `vX.Y.Z-box.N`) |
 | Embeds | **Vue console only** (`frontend/` → Go `embed`) |
-| Does **not** include | React marketing/Creator (`web/` is static on the edge) |
+| Does **not** include | React marketing/workspace (`web/` is static on the edge) |
 
-Production dual-frontend topology: [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md) · [docs/PRODUCTION.md](../docs/PRODUCTION.md) · nginx: [nginx-you-box.com.conf](./nginx-you-box.com.conf).
+**BoxAI production ship path:** manually deploy a selected Git commit; the production host builds local images and does not consume this public image flow. See [PRODUCTION.md](../docs/PRODUCTION.md) and [agents/deploy-release.md](../docs/agents/deploy-release.md). This page is for public/self-hosted Docker use, not the youbox day-2 runbook.
 
-## Quick Start
+Production dual-frontend topology: [docs/WEB_PLATFORM.md](../docs/WEB_PLATFORM.md) · nginx: [nginx-you-box.com.conf](./nginx-you-box.com.conf).
+
+## Quick Start (local / bootstrap only)
 
 ```bash
-# Prefer a pinned release tag in production
+# Prefer a pinned release tag — never production :latest
 docker pull ghcr.io/fran0220/boxai:0.1.155-box.10
 
 docker run -d \
@@ -35,9 +37,11 @@ For a full stack (app + PostgreSQL + Redis), use the compose files in this direc
 
 ```bash
 export BOXAI_IMAGE=ghcr.io/fran0220/boxai:0.1.155-box.10
-cp .env.example .env   # set secrets; pin BOXAI_IMAGE
+cp .env.example .env   # set secrets; pin BOXAI_IMAGE (+ optional R2 / agent-gateway)
 docker compose -f docker-compose.local.yml up -d
 ```
+
+Day-2 upgrades on **youbox** go through the selected-commit Actions Deploy, not hand-edited image pins.
 
 ## Docker Compose snippet
 

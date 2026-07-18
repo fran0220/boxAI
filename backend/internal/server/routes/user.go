@@ -25,6 +25,17 @@ func RegisterUserRoutes(
 		if apiKeyService != nil {
 			authenticated.POST("/boxai/creator/ensure-key", h.Auth.BoxAIEnsureCreatorKey(apiKeyService))
 		}
+		// BOXAI: authenticated, user-isolated Creator cloud persistence.
+		if h.CreatorCloud != nil {
+			creatorCloud := authenticated.Group("/boxai/creator")
+			creatorCloud.GET("/snapshot", h.CreatorCloud.Snapshot)
+			creatorCloud.PUT("/records/:kind/:client_id", h.CreatorCloud.PutRecord)
+			creatorCloud.DELETE("/records/:kind/:client_id", h.CreatorCloud.DeleteRecord)
+			creatorCloud.POST("/objects/:client_id/upload", h.CreatorCloud.Upload)
+			creatorCloud.POST("/objects/:client_id/complete", h.CreatorCloud.Complete)
+			creatorCloud.GET("/objects/:client_id/url", h.CreatorCloud.URL)
+			creatorCloud.DELETE("/objects/:client_id", h.CreatorCloud.DeleteObject)
+		}
 
 		// 用户接口
 		user := authenticated.Group("/user")

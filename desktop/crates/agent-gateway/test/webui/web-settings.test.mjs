@@ -10,20 +10,26 @@ const RIGHT_DOCK_TAB_IDS = settings.RIGHT_DOCK_SINGLETON_TAB_IDS;
 
 function installWindow(origin = "https://gateway.example") {
   const store = new Map();
-  globalThis.window = {
-    location: { origin },
-    localStorage: {
-      getItem(key) {
-        return store.has(key) ? store.get(key) : null;
-      },
-      setItem(key, value) {
-        store.set(key, String(value));
-      },
-      removeItem(key) {
-        store.delete(key);
-      },
+  const localStorage = {
+    getItem(key) {
+      return store.has(key) ? store.get(key) : null;
+    },
+    setItem(key, value) {
+      store.set(key, String(value));
+    },
+    removeItem(key) {
+      store.delete(key);
     },
   };
+  globalThis.window = {
+    location: { origin },
+    localStorage,
+  };
+  Object.defineProperty(globalThis, "localStorage", {
+    configurable: true,
+    value: localStorage,
+    writable: true,
+  });
   return store;
 }
 

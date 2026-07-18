@@ -83,4 +83,4 @@ P0 ops (prod correctness)
 2. Does it revive SSO / dual shell / parent-domain cookie? → Stop.
 3. Prefer IDs from this file in PR description when closing backlog items.
 4. Touch sync-first paths → `// BOXAI:` + [FORK_DELTA.md](../../FORK_DELTA.md).
-5. Ship `web/` via Actions Deploy production (`mode=web|full`); never assume Docker image alone updates apex.
+5. Ship the reviewed commit via Actions Deploy production; never assume a Docker image or public Release updates apex.

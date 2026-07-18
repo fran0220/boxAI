@@ -46,6 +46,7 @@ import {
   clearImages,
   storeImage,
   storeImageWithSize,
+  migrateLocalImagesToCloud,
 } from './lib/db'
 import { callImageApi } from './lib/api'
 import { callAgentConversationTitleApi, callAgentResponsesApi, callBatchImageSingle, parseBatchImageCallArguments, type AgentApiResultImage } from './lib/agentApi'
@@ -2134,6 +2135,8 @@ async function recoverFalTask(taskId: string) {
 
 /** …：… IndexedDB …，…，… */
 export async function initStore() {
+  // Upload-only and concurrency limited; it does not block initial rendering or fetch 4K objects.
+  void migrateLocalImagesToCloud().catch(() => undefined)
   const legacyAgentConversations = normalizeAgentConversations(useStore.getState().agentConversations)
   const storedTasks = await getAllTasks()
   const storedAgentConversations = normalizeAgentConversations(await getAllAgentConversations())
@@ -5691,4 +5694,3 @@ export async function addImageFromUrl(src: string): Promise<void> {
   cacheImage(id, dataUrl)
   useStore.getState().addInputImage({ id, dataUrl })
 }
-

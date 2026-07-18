@@ -28,6 +28,7 @@ import {
 import { fileToDataUrl } from '@/lib/blob'
 import { useI18n } from '@/i18n'
 import { cx } from '@/lib/cx'
+import { flushOutbox, getCloudSnapshot, stageRecord } from '@/lib/creator-cloud'
 import { ModelPicker } from './components/ModelPicker'
 
 type JobStatus = 'queued' | 'processing' | 'succeeded' | 'failed'
@@ -135,6 +136,13 @@ export function VideoGen() {
 
   useEffect(() => {
     void listAssets('video').then(setHistory)
+    void getCloudSnapshot<VideoJob>('video_job').then(({ records }) => {
+      const restored = records.filter((record) => !record.deleted_at).map((record) => ({ ...record.payload, localId: record.client_id }))
+      setJobs(restored)
+      for (const job of restored) {
+        if ((job.status === 'queued' || job.status === 'processing') && job.remoteId) startPolling(job, job.remoteId)
+      }
+    }).catch(() => undefined)
     const timers = timersRef.current
     return () => {
       for (const t of timers.values()) window.clearInterval(t)
@@ -194,12 +202,25 @@ export function VideoGen() {
   }
 
   function updateJob(localId: string, patch: Partial<VideoJob>) {
-    setJobs((prev) => prev.map((j) => (j.localId === localId ? { ...j, ...patch } : j)))
+    setJobs((prev) => prev.map((j) => {
+      if (j.localId !== localId) return j
+      const updated = { ...j, ...patch }
+      persistVideoJob(updated)
+      return updated
+    }))
+  }
+
+  function persistVideoJob(job: VideoJob) {
+    // A selected frame may be a data URL; binary belongs in object storage, never record JSON.
+    const payload = job.frameUrl?.startsWith('data:') ? { ...job, frameUrl: undefined } : job
+    stageRecord({ kind: 'video_job', clientId: job.localId, operation: 'upsert', payload })
+    void flushOutbox()
   }
 
   async function completeJob(job: VideoJob, url: string) {
     updateJob(job.localId, { status: 'succeeded', url })
     const saved = await addAsset({
+      id: `video-${job.localId}`,
       kind: 'video',
       title: job.prompt.slice(0, 80),
       model: job.model,
@@ -211,6 +232,7 @@ export function VideoGen() {
   }
 
   function startPolling(job: VideoJob, remoteId: string) {
+    if (timersRef.current.has(job.localId) || [...timersRef.current.keys()].some((id) => jobs.find((item) => item.localId === id)?.remoteId === remoteId)) return
     let attempts = 0
     const timer = window.setInterval(async () => {
       attempts++
@@ -260,6 +282,7 @@ export function VideoGen() {
       createdAt: Date.now(),
     }
     setJobs((prev) => [job, ...prev])
+    persistVideoJob(job)
     try {
       const payload: Record<string, unknown> = { model: input.model, prompt: input.prompt }
       if (input.frameUrl) payload.image = input.frameUrl

@@ -1,0 +1,28 @@
+# BOXAI: single-host production override. Application images are built from
+# the selected Git commit on the production host and never pushed to a registry.
+services:
+  sub2api:
+    image: boxai-local/sub2api:${BOXAI_COMMIT:?BOXAI_COMMIT is required}
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        COMMIT: ${BOXAI_COMMIT}
+    volumes:
+      - ${DEPLOY_ROOT:-/opt/boxAI}/data:/app/data:Z
+
+  agent-gateway:
+    image: boxai-local/agent-gateway:${BOXAI_COMMIT:?BOXAI_COMMIT is required}
+    build:
+      context: ../desktop
+      dockerfile: Dockerfile
+      args:
+        VITE_BOXAI_PARENT_ORIGIN: ${BOXAI_PUBLIC_ORIGIN:-https://you-box.com}
+
+  postgres:
+    volumes:
+      - ${DEPLOY_ROOT:-/opt/boxAI}/postgres_data:/var/lib/postgresql/data:Z
+
+  redis:
+    volumes:
+      - ${DEPLOY_ROOT:-/opt/boxAI}/redis_data:/data:Z

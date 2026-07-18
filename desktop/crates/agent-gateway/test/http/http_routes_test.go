@@ -57,6 +57,26 @@ func TestHealthRouteIsPublic(t *testing.T) {
 	}
 }
 
+func TestHealthRouteReportsHostedReadinessWithoutConfigurationDetails(t *testing.T) {
+	handler := server.NewTenantHTTPServer(&config.Config{
+		Token:          "do-not-leak",
+		BoxAIServerURL: "https://secret.internal",
+		MultiTenant:    true,
+	}, session.NewTenants())
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "http://gateway.test/healthz", nil))
+	var payload map[string]any
+	if err := json.NewDecoder(rec.Body).Decode(&payload); err != nil {
+		t.Fatal(err)
+	}
+	if payload["ready"] != true || payload["hosted"] != true || payload["multi_tenant"] != true {
+		t.Fatalf("hosted health payload = %#v", payload)
+	}
+	if strings.Contains(rec.Body.String(), "do-not-leak") || strings.Contains(rec.Body.String(), "secret.internal") {
+		t.Fatalf("health payload leaked configuration: %s", rec.Body.String())
+	}
+}
+
 func TestStatusRouteReturnsAuthenticatedSession(t *testing.T) {
 	t.Parallel()
 

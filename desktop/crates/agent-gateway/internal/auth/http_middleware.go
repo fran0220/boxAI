@@ -11,8 +11,12 @@ import (
 // HTTPMiddleware rejects requests without a valid bearer token and annotates
 // accepted requests with the resolved caller identity.
 func HTTPMiddleware(expectedToken string, next http.Handler) http.Handler {
+	return HTTPMiddlewareWithPolicy(expectedToken, true, next)
+}
+
+func HTTPMiddlewareWithPolicy(expectedToken string, allowStatic bool, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		identity, ok := ResolveBearerHeader(r.Header.Get("Authorization"), expectedToken)
+		identity, ok := ResolveBearerHeaderWithPolicy(r.Header.Get("Authorization"), expectedToken, allowStatic)
 		if !ok {
 			writeJSONError(w, http.StatusUnauthorized, "unauthorized")
 			return

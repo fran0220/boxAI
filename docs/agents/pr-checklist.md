@@ -25,7 +25,6 @@
 
 ## Release / production ship
 
-- [ ] Tag `vX.Y.Z-box.N` matches upstream baseline `X.Y.Z`
-- [ ] Ship via Actions: Release → **Deploy production** (not ad-hoc SSH pin)
-- [ ] `web/` changes: Deploy `mode=web` or `full` (image alone does not update apex)
-- [ ] Image-only: Deploy `mode=app`; confirm apex HTML does not need a web rebuild
+- [ ] If publishing public artifacts, tag `vX.Y.Z-box.N` matches upstream baseline `X.Y.Z`
+- [ ] Ship via manual **Deploy production** with the reviewed commit (not Release/GHCR or an ad-hoc SSH pin)
+- [ ] Confirm the workflow publishes matching Go API, Agent Relay, and `web/dist` from one commit

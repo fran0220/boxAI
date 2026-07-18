@@ -817,6 +817,10 @@ export interface BatchImageItem {
   file_extension?: string | null
   image_count: number
   error?: { code: string; message: string; source?: string } | null
+  /** Optional preview fields — only present when gateway returns them. */
+  image_url?: string | null
+  thumbnail_url?: string | null
+  image_urls?: string[] | null
 }
 
 export interface BatchImageModel {

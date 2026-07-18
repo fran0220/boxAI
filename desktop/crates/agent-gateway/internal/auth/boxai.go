@@ -94,8 +94,33 @@ func (v *BoxAIValidator) Resolve(token string) (string, bool) {
 	}
 	v.mu.Unlock()
 
-	userID, ok := v.check(token)
+	userID, result := v.check(token)
+	if result != TokenRevalidationUnavailable {
+		v.cacheResult(key, userID, result == TokenRevalidationValid, now)
+	}
 
+	return userID, result == TokenRevalidationValid
+}
+
+// Revalidate bypasses the positive cache so long-lived hosted connections
+// observe token expiry and server-side revocation instead of remaining valid
+// for the lifetime of the socket or gRPC stream.
+func (v *BoxAIValidator) Revalidate(token string) (string, TokenRevalidationStatus) {
+	if v == nil {
+		return "", TokenRevalidationInvalid
+	}
+	token = strings.TrimSpace(token)
+	if token == "" || !looksLikeJWT(token) {
+		return "", TokenRevalidationInvalid
+	}
+	userID, result := v.check(token)
+	if result != TokenRevalidationUnavailable {
+		v.cacheResult(sha256.Sum256([]byte(token)), userID, result == TokenRevalidationValid, time.Now())
+	}
+	return userID, result
+}
+
+func (v *BoxAIValidator) cacheResult(key [32]byte, userID string, ok bool, now time.Time) {
 	ttl := boxaiNegativeTTL
 	if ok {
 		ttl = boxaiPositiveTTL
@@ -111,25 +136,30 @@ func (v *BoxAIValidator) Resolve(token string) (string, bool) {
 	}
 	v.cache[key] = boxaiCacheEntry{ok: ok, userID: userID, expires: now.Add(ttl)}
 	v.mu.Unlock()
-
-	return userID, ok
 }
 
-func (v *BoxAIValidator) check(token string) (string, bool) {
+func (v *BoxAIValidator) check(token string) (string, TokenRevalidationStatus) {
 	req, err := http.NewRequest(http.MethodGet, v.serverURL+"/api/v1/auth/me", nil)
 	if err != nil {
-		return "", false
+		return "", TokenRevalidationUnavailable
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 	resp, err := v.client.Do(req)
 	if err != nil {
-		return "", false
+		return "", TokenRevalidationUnavailable
 	}
 	defer func() { _ = resp.Body.Close() }()
-	if resp.StatusCode != http.StatusOK {
-		return "", false
+	switch resp.StatusCode {
+	case http.StatusOK:
+		return parseBoxAIProfileUserID(resp.Body), TokenRevalidationValid
+	case http.StatusUnauthorized, http.StatusForbidden:
+		return "", TokenRevalidationInvalid
+	default:
+		// 429, other 4xx, and 5xx are not proof that the credential was
+		// revoked. New auth still fails closed, while long-lived sessions get
+		// a bounded grace period from their transport revalidator.
+		return "", TokenRevalidationUnavailable
 	}
-	return parseBoxAIProfileUserID(resp.Body), true
 }
 
 // parseBoxAIProfileUserID extracts data.id from the /api/v1/auth/me envelope
@@ -179,4 +209,11 @@ func resolveBoxAIToken(token string) (string, bool) {
 	validator := boxaiGlobal
 	boxaiMu.RUnlock()
 	return validator.Resolve(token)
+}
+
+func revalidateBoxAIToken(token string) (string, TokenRevalidationStatus) {
+	boxaiMu.RLock()
+	validator := boxaiGlobal
+	boxaiMu.RUnlock()
+	return validator.Revalidate(token)
 }
