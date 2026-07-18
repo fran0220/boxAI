@@ -1,36 +1,86 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { Layout } from '@/components/Layout'
+import { AuthLayout, PublicLayout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Spinner } from '@/components/ui/Spinner'
-import { Home } from '@/pages/Home'
-import { Studio } from '@/pages/Studio'
-import { Pricing } from '@/pages/Pricing'
-import { Status } from '@/pages/Status'
+import {
+  LEGACY_ROUTE_MAP,
+  LegacyCustomPageRedirect,
+  LegacyRouteRedirect,
+} from '@/components/LegacyRouteRedirect'
+import { WorkspaceProvider } from '@/components/workspace/WorkspaceContext'
+import { WorkspaceLayout } from '@/components/workspace/WorkspaceLayout'
 import { NotFound } from '@/pages/NotFound'
-import { AccountLayout } from '@/pages/account/AccountLayout'
-import { AccountOverview } from '@/pages/account/Overview'
-import { AccountKeys } from '@/pages/account/Keys'
-import { AccountUsage } from '@/pages/account/Usage'
-import { AccountProfile } from '@/pages/account/Profile'
-import { AccountSecurity } from '@/pages/account/Security'
-import { AccountSubscription } from '@/pages/account/Subscription'
-import { AccountOrders } from '@/pages/account/Orders'
-import { AccountRedeem } from '@/pages/account/Redeem'
-import { AccountAffiliate } from '@/pages/account/Affiliate'
-import { AccountChannels } from '@/pages/account/Channels'
-import { AccountMonitor } from '@/pages/account/Monitor'
-import { AccountBatchImage } from '@/pages/account/BatchImage'
-import { AccountAnnouncements } from '@/pages/account/Announcements'
-import { AccountCustomPage } from '@/pages/account/CustomPage'
-import { Login } from '@/pages/auth/Login'
-import { Signup } from '@/pages/auth/Signup'
-import { ForgotPassword } from '@/pages/auth/ForgotPassword'
-import { ResetPassword } from '@/pages/auth/ResetPassword'
-import { OAuthCallback } from '@/pages/auth/OAuthCallback'
-import { Checkout } from '@/pages/Checkout'
-import { PaymentResult } from '@/pages/PaymentResult'
-import { DesktopAuth } from '@/pages/DesktopAuth'
+
+const Home = lazy(() => import('@/pages/Home').then((m) => ({ default: m.Home })))
+const Studio = lazy(() => import('@/pages/Studio').then((m) => ({ default: m.Studio })))
+const Pricing = lazy(() => import('@/pages/Pricing').then((m) => ({ default: m.Pricing })))
+const Status = lazy(() => import('@/pages/Status').then((m) => ({ default: m.Status })))
+const Checkout = lazy(() => import('@/pages/Checkout').then((m) => ({ default: m.Checkout })))
+const PaymentResult = lazy(() =>
+  import('@/pages/PaymentResult').then((m) => ({ default: m.PaymentResult })),
+)
+const DesktopAuth = lazy(() =>
+  import('@/pages/DesktopAuth').then((m) => ({ default: m.DesktopAuth })),
+)
+
+const AccountOverview = lazy(() =>
+  import('@/pages/account/Overview').then((m) => ({ default: m.AccountOverview })),
+)
+const AccountKeys = lazy(() =>
+  import('@/pages/account/Keys').then((m) => ({ default: m.AccountKeys })),
+)
+const AccountUsage = lazy(() =>
+  import('@/pages/account/Usage').then((m) => ({ default: m.AccountUsage })),
+)
+const AccountProfile = lazy(() =>
+  import('@/pages/account/Profile').then((m) => ({ default: m.AccountProfile })),
+)
+const AccountSecurity = lazy(() =>
+  import('@/pages/account/Security').then((m) => ({ default: m.AccountSecurity })),
+)
+const AccountSubscription = lazy(() =>
+  import('@/pages/account/Subscription').then((m) => ({ default: m.AccountSubscription })),
+)
+const AccountOrders = lazy(() =>
+  import('@/pages/account/Orders').then((m) => ({ default: m.AccountOrders })),
+)
+const AccountRedeem = lazy(() =>
+  import('@/pages/account/Redeem').then((m) => ({ default: m.AccountRedeem })),
+)
+const AccountAffiliate = lazy(() =>
+  import('@/pages/account/Affiliate').then((m) => ({ default: m.AccountAffiliate })),
+)
+const AccountChannels = lazy(() =>
+  import('@/pages/account/Channels').then((m) => ({ default: m.AccountChannels })),
+)
+const AccountMonitor = lazy(() =>
+  import('@/pages/account/Monitor').then((m) => ({ default: m.AccountMonitor })),
+)
+const AccountBatchImage = lazy(() =>
+  import('@/pages/account/BatchImage').then((m) => ({ default: m.AccountBatchImage })),
+)
+const AccountAnnouncements = lazy(() =>
+  import('@/pages/account/Announcements').then((m) => ({ default: m.AccountAnnouncements })),
+)
+const AccountCustomPage = lazy(() =>
+  import('@/pages/account/CustomPage').then((m) => ({ default: m.AccountCustomPage })),
+)
+
+const Login = lazy(() => import('@/pages/auth/Login').then((m) => ({ default: m.Login })))
+const Signup = lazy(() => import('@/pages/auth/Signup').then((m) => ({ default: m.Signup })))
+const ForgotPassword = lazy(() =>
+  import('@/pages/auth/ForgotPassword').then((m) => ({ default: m.ForgotPassword })),
+)
+const ResetPassword = lazy(() =>
+  import('@/pages/auth/ResetPassword').then((m) => ({ default: m.ResetPassword })),
+)
+const OAuthCallback = lazy(() =>
+  import('@/pages/auth/OAuthCallback').then((m) => ({ default: m.OAuthCallback })),
+)
+const AgentWorkspace = lazy(() =>
+  import('@/pages/app/Agent').then((m) => ({ default: m.AgentWorkspace })),
+)
 
 const CreateLayout = lazy(() =>
   import('@/pages/create/CreateLayout').then((m) => ({ default: m.CreateLayout })),
@@ -47,88 +97,102 @@ function CreateFallback() {
   )
 }
 
-function AccountFallback() {
-  return (
-    <div className="flex min-h-[40vh] items-center justify-center">
-      <Spinner />
-    </div>
-  )
-}
-
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
+    <Suspense fallback={<CreateFallback />}>
+      <Routes>
+      <Route element={<PublicLayout />}>
         <Route index element={<Home />} />
         <Route path="studio" element={<Studio />} />
         <Route path="desktop" element={<Navigate to="/studio" replace />} />
         <Route path="download" element={<Navigate to="/studio" replace />} />
         <Route path="pricing" element={<Pricing />} />
         <Route path="status" element={<Status />} />
+        <Route path="checkout" element={<Checkout />} />
+        <Route path="payment/result" element={<PaymentResult />} />
+        <Route path="desktop-auth" element={<DesktopAuth />} />
+      </Route>
 
-        {/* Customer auth on apex; console is admin-only (no Web SSO). */}
+      {/* Customer auth on apex; console.you-box.com remains admin-only. */}
+      <Route element={<AuthLayout />}>
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="reset-password" element={<ResetPassword />} />
-        {/* OAuth frontend callbacks (relative FrontendRedirectURL on same host). */}
         <Route path="auth/oauth/callback" element={<OAuthCallback />} />
         <Route path="auth/linuxdo/callback" element={<OAuthCallback />} />
         <Route path="auth/wechat/callback" element={<OAuthCallback />} />
         <Route path="auth/oidc/callback" element={<OAuthCallback />} />
         <Route path="auth/dingtalk/callback" element={<OAuthCallback />} />
-        {/* Legacy SSO URLs → login. Query (e.g. return_to) is dropped by Navigate; clients should use /login. */}
-        <Route path="sso" element={<Navigate to="/login" replace />} />
-        <Route path="sso/callback" element={<Navigate to="/login" replace />} />
-        <Route path="sso/authorize" element={<Navigate to="/login" replace />} />
+      </Route>
 
-        <Route path="checkout" element={<Checkout />} />
-        <Route path="payment/result" element={<PaymentResult />} />
-        <Route path="desktop-auth" element={<DesktopAuth />} />
+      <Route path="sso" element={<LegacyRouteRedirect target="/login" />} />
+      <Route path="sso/callback" element={<LegacyRouteRedirect target="/login" />} />
+      <Route path="sso/authorize" element={<LegacyRouteRedirect target="/login" />} />
 
-        <Route
-          path="account"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<AccountFallback />}>
-                <AccountLayout />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AccountOverview />} />
-          <Route path="keys" element={<AccountKeys />} />
-          <Route path="usage" element={<AccountUsage />} />
-          <Route path="profile" element={<AccountProfile />} />
-          <Route path="security" element={<AccountSecurity />} />
-          <Route path="subscription" element={<AccountSubscription />} />
-          <Route path="orders" element={<AccountOrders />} />
-          <Route path="redeem" element={<AccountRedeem />} />
-          <Route path="affiliate" element={<AccountAffiliate />} />
-          <Route path="channels" element={<AccountChannels />} />
-          <Route path="monitor" element={<AccountMonitor />} />
-          <Route path="batch-image" element={<AccountBatchImage />} />
-          <Route path="announcements" element={<AccountAnnouncements />} />
-          <Route path="pages/:slug" element={<AccountCustomPage />} />
-        </Route>
+      <Route
+        path="app"
+        element={
+          <ProtectedRoute>
+            <WorkspaceProvider>
+              <WorkspaceLayout />
+            </WorkspaceProvider>
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AccountOverview />} />
 
         <Route
           path="create"
           element={
-            <ProtectedRoute>
-              <Suspense fallback={<CreateFallback />}>
-                <CreateLayout />
-              </Suspense>
-            </ProtectedRoute>
+            <Suspense fallback={<CreateFallback />}>
+              <CreateLayout />
+            </Suspense>
           }
         >
           <Route index element={<Navigate to="image" replace />} />
           <Route path="image" element={<ImageGen />} />
           <Route path="video" element={<VideoGen />} />
           <Route path="assets" element={<Assets />} />
+          <Route path="batch" element={<AccountBatchImage />} />
         </Route>
+
+        <Route path="agent" element={<AgentWorkspace />} />
+
+        <Route path="developer" element={<Navigate to="keys" replace />} />
+        <Route path="developer/keys" element={<AccountKeys />} />
+        <Route path="developer/usage" element={<AccountUsage />} />
+        <Route path="developer/models" element={<AccountChannels />} />
+        <Route path="developer/monitor" element={<AccountMonitor />} />
+
+        <Route path="billing" element={<Navigate to="subscription" replace />} />
+        <Route path="billing/subscription" element={<AccountSubscription />} />
+        <Route path="billing/orders" element={<AccountOrders />} />
+        <Route path="billing/redeem" element={<AccountRedeem />} />
+        <Route path="billing/affiliate" element={<AccountAffiliate />} />
+
+        <Route path="settings" element={<Navigate to="profile" replace />} />
+        <Route path="settings/profile" element={<AccountProfile />} />
+        <Route path="settings/security" element={<AccountSecurity />} />
+        <Route path="settings/notifications" element={<AccountProfile notificationsOnly />} />
+        <Route path="settings/announcements" element={<AccountAnnouncements />} />
+        <Route path="pages/:slug" element={<AccountCustomPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
-    </Routes>
+
+      {LEGACY_ROUTE_MAP.map((route) => (
+        <Route
+          key={route.from}
+          path={route.from}
+          element={<LegacyRouteRedirect target={route.to} />}
+        />
+      ))}
+      <Route path="account/pages/:slug" element={<LegacyCustomPageRedirect />} />
+      {/* Root catch-all: after /app + legacy so it cannot steal workspace routes. */}
+      <Route element={<PublicLayout />}>
+        <Route path="*" element={<NotFound />} />
+      </Route>
+      </Routes>
+    </Suspense>
   )
 }

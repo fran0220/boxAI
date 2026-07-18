@@ -15,7 +15,11 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (status !== 'authenticated') {
     if (currentLogoutEpoch !== initialLogoutEpoch) return <Navigate to="/" replace />
     return (
-      <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+      <Navigate
+        to="/login"
+        replace
+        state={{ from: location.pathname + location.search + location.hash }}
+      />
     )
   }
   return <>{children}</>

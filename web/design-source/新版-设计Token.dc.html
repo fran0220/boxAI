@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font);">
+  <dc-import name="HeaderV2" hint-size="100%,56px"></dc-import>
+
+  <div style="margin-inline: auto; max-width: 1200px; padding: 64px 24px 96px;">
+
+    <!-- Intro -->
+    <header data-screen-label="Token 概览" style="max-width: 760px;">
+      <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+        <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+        Design Tokens v2
+      </p>
+      <h1 style="margin: 16px 0 0; font-size: 44px; font-weight: 800; letter-spacing: -0.035em;">Precision Teal <span style="color: var(--bx-text-dim); font-weight: 500;">— BoxAI 设计令牌 v2</span></h1>
+      <p style="margin: 18px 0 0; font-size: 15px; line-height: 1.75; color: var(--bx-text-muted);">在既有青色品牌上演进：更深的底色、更锐利的层次、更紧的圆角与更高的信息密度。变量名与 v1 完全兼容（--bx-*），<code style="font-family: var(--bx-font-mono); font-size: 13px; color: var(--bx-brand);">tokens.css</code> 可直接替换现有 token 层。</p>
+      <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+        <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); padding: 14px 16px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">字体</p>
+          <p style="margin: 6px 0 0; font-size: 13px; font-weight: 700;">Manrope + Noto Sans SC</p>
+          <p style="margin: 2px 0 0; font-size: 11.5px; color: var(--bx-text-muted);">数据用 IBM Plex Mono</p>
+        </div>
+        <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); padding: 14px 16px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">圆角</p>
+          <p style="margin: 6px 0 0; font-size: 13px; font-weight: 700;">10–20px → 4–16px</p>
+          <p style="margin: 2px 0 0; font-size: 11.5px; color: var(--bx-text-muted);">收紧，强调工具感</p>
+        </div>
+        <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); padding: 14px 16px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">动效</p>
+          <p style="margin: 6px 0 0; font-size: 13px; font-weight: 700;">120 / 240 / 420 / 700ms</p>
+          <p style="margin: 2px 0 0; font-size: 11.5px; color: var(--bx-text-muted);">expo-out + spring 强调</p>
+        </div>
+        <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); padding: 14px 16px;">
+          <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bx-text-dim);">主题</p>
+          <p style="margin: 6px 0 0; font-size: 13px; font-weight: 700;">深浅并重</p>
+          <p style="margin: 2px 0 0; font-size: 11.5px; color: var(--bx-text-muted);">html.light 一键切换 ↗ 右上角可试</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══ Color ═══ -->
+    <section data-screen-label="色彩" style="margin-top: 72px;">
+      <h2 style="margin: 0 0 6px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em;">01 · 色彩</h2>
+      <p style="margin: 0 0 24px; font-size: 13.5px; color: var(--bx-text-muted);">品牌青双色系（主青 #1FD5B9 + 电光青 #35D6F4），中性色由蓝灰 hairline 统一。</p>
+      <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;">
+        <sc-for list="{{ brandSwatches }}" as="sw" hint-placeholder-count="6">
+          <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-md); overflow: hidden;">
+            <div style="height: 72px; background: {{ sw.bg }};"></div>
+            <div style="padding: 10px 12px;">
+              <p style="margin: 0; font-size: 12px; font-weight: 700;">{{ sw.name }}</p>
+              <p style="margin: 3px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ sw.token }}</p>
+              <p style="margin: 1px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-muted);">{{ sw.hex }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;">
+        <sc-for list="{{ surfaceSwatches }}" as="sw" hint-placeholder-count="6">
+          <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-md); overflow: hidden;">
+            <div style="height: 72px; background: {{ sw.bg }}; border-bottom: 1px solid var(--bx-border);"></div>
+            <div style="padding: 10px 12px;">
+              <p style="margin: 0; font-size: 12px; font-weight: 700;">{{ sw.name }}</p>
+              <p style="margin: 3px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ sw.token }}</p>
+              <p style="margin: 1px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-muted);">{{ sw.hex }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-md); padding: 12px 14px;"><span style="width: 34px; height: 34px; border-radius: 8px; background: var(--bx-success);"></span><span><span style="display: block; font-size: 12px; font-weight: 700;">Success</span><span style="display: block; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">#3DDC97</span></span></div>
+        <div style="display: flex; align-items: center; gap: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-md); padding: 12px 14px;"><span style="width: 34px; height: 34px; border-radius: 8px; background: var(--bx-warning);"></span><span><span style="display: block; font-size: 12px; font-weight: 700;">Warning</span><span style="display: block; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">#FFC24B</span></span></div>
+        <div style="display: flex; align-items: center; gap: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-md); padding: 12px 14px;"><span style="width: 34px; height: 34px; border-radius: 8px; background: var(--bx-danger);"></span><span><span style="display: block; font-size: 12px; font-weight: 700;">Danger</span><span style="display: block; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">#FF6B6B</span></span></div>
+        <div style="display: flex; align-items: center; gap: 12px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-md); padding: 12px 14px;"><span style="width: 34px; height: 34px; border-radius: 8px; background: var(--bx-grad-hero);"></span><span><span style="display: block; font-size: 12px; font-weight: 700;">Hero Gradient</span><span style="display: block; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">--bx-grad-hero</span></span></div>
+      </div>
+    </section>
+
+    <!-- ═══ Typography ═══ -->
+    <section data-screen-label="字体" style="margin-top: 72px;">
+      <h2 style="margin: 0 0 6px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em;">02 · 字体与字号</h2>
+      <p style="margin: 0 0 24px; font-size: 13.5px; color: var(--bx-text-muted);">单一无衬线家族（Manrope）以字重构建层级；所有数字、代码与标签使用等宽字体，强化工具感。</p>
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+        <sc-for list="{{ typeRows }}" as="row" hint-placeholder-count="7">
+          <div style="display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: baseline; padding: 18px 24px; border-top: 1px solid var(--bx-line);">
+            <div>
+              <p style="margin: 0; font-size: 12.5px; font-weight: 700;">{{ row.name }}</p>
+              <p style="margin: 3px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-dim);">{{ row.spec }}</p>
+            </div>
+            <p style="margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: {{ row.family }}; font-size: {{ row.size }}; font-weight: {{ row.weight }}; letter-spacing: {{ row.tracking }}; color: {{ row.color }};">{{ row.sample }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ═══ Radius / Spacing / Elevation ═══ -->
+    <section data-screen-label="圆角与层级" style="margin-top: 72px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 24px;">
+        <h2 style="margin: 0 0 18px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em;">03 · 圆角</h2>
+        <div style="display: flex; align-items: flex-end; gap: 12px;">
+          <sc-for list="{{ radii }}" as="r" hint-placeholder-count="6">
+            <div style="text-align: center;">
+              <div style="width: 64px; height: 64px; border: 1px solid var(--bx-brand-ring); border-radius: {{ r.px }}; background: var(--bx-brand-soft);"></div>
+              <p style="margin: 8px 0 0; font-family: var(--bx-font-mono); font-size: 10.5px; color: var(--bx-text-muted);">{{ r.label }}</p>
+              <p style="margin: 1px 0 0; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">{{ r.px }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <h2 style="margin: 28px 0 14px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em;">04 · 间距（4pt 网格）</h2>
+        <div style="display: flex; align-items: flex-end; gap: 8px;">
+          <sc-for list="{{ spaces }}" as="s" hint-placeholder-count="9">
+            <div style="text-align: center;">
+              <div style="width: 22px; background: var(--bx-brand); opacity: 0.75; border-radius: 3px 3px 0 0; height: {{ s.h }};"></div>
+              <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">{{ s.label }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); padding: 24px;">
+        <h2 style="margin: 0 0 18px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em;">05 · 动效</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{ motions }}" as="m" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 150px 1fr 90px; align-items: center; gap: 14px; border: 1px solid var(--bx-line); border-radius: var(--bx-radius-md); padding: 10px 14px;">
+              <span>
+                <span style="display: block; font-size: 12.5px; font-weight: 700;">{{ m.name }}</span>
+                <span style="display: block; font-family: var(--bx-font-mono); font-size: 10px; color: var(--bx-text-dim);">{{ m.token }}</span>
+              </span>
+              <span style="position: relative; display: block; height: 6px; border-radius: 999px; background: var(--bx-bg-muted); overflow: hidden;">
+                <span style="position: absolute; inset: 0; width: 40%; border-radius: 999px; background: var(--bx-grad-cta); animation: {{ m.anim }};"></span>
+              </span>
+              <span style="text-align: right; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-muted);">{{ m.dur }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 12px; line-height: 1.7; color: var(--bx-text-muted);">用途约定：<strong style="color: var(--bx-text-soft);">fast</strong> 悬停/按压 · <strong style="color: var(--bx-text-soft);">base</strong> 展开/切换 · <strong style="color: var(--bx-text-soft);">med</strong> 面板/滚动入场 · <strong style="color: var(--bx-text-soft);">slow</strong> 英雄区编排。缓动统一 expo-out；强调性弹入用 spring。</p>
+      </div>
+    </section>
+
+    <!-- ═══ Dual theme components ═══ -->
+    <section data-screen-label="双主题组件" style="margin-top: 72px;">
+      <h2 style="margin: 0 0 6px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em;">06 · 组件 × 双主题</h2>
+      <p style="margin: 0 0 24px; font-size: 13.5px; color: var(--bx-text-muted);">同一套 token 在深浅两个主题下的核心组件表现（右上角切换全站主题实测）。</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <!-- dark island -->
+        <div style="--bx-bg: #06080a; --bx-bg-elevated: #0b0e12; --bx-bg-card: #0d1117; --bx-bg-muted: #11161d; --bx-bg-deep: #030507; --bx-text: #f2f5f6; --bx-text-soft: rgba(238,244,245,0.78); --bx-text-muted: rgba(238,244,245,0.58); --bx-text-dim: rgba(238,244,245,0.38); --bx-border: rgba(151,173,185,0.15); --bx-border-strong: rgba(151,173,185,0.26); --bx-line: rgba(151,173,185,0.09); --bx-brand: #1fd5b9; --bx-brand-bright: #6cf5dd; --bx-cyan: #35d6f4; --bx-ink: #03261f; --bx-brand-soft: rgba(31,213,185,0.12); --bx-brand-ring: rgba(31,213,185,0.38); --bx-grad-cta: linear-gradient(120deg,#1fd5b9,#22c9e0); --bx-success: #3ddc97; --bx-hover: rgba(255,255,255,0.05); --bx-active: rgba(31,213,185,0.12); --bx-shadow-cta: 0 8px 24px -8px rgba(31,213,185,0.55); border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg); color: var(--bx-text); padding: 24px;">
+          <p style="margin: 0 0 16px; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">Dark（默认）</p>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+            <button style="display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; font-family: inherit; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">主按钮</button>
+            <button style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">次按钮</button>
+            <button style="display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; font-family: inherit; background: var(--bx-active); color: var(--bx-brand-bright);">柔和按钮</button>
+            <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid color-mix(in srgb, var(--bx-success) 35%, transparent); border-radius: 6px; padding: 4px 10px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>OPERATIONAL</span>
+          </div>
+          <input placeholder="输入 API 密钥…" style="margin-top: 14px; width: 100%; box-sizing: border-box; border-radius: 8px; border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 9px 13px; font-size: 13.5px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+          <div style="margin-top: 14px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 13px; font-weight: 700;">Claude 主力池</span>
+              <span style="font-family: var(--bx-font-mono); font-size: 15px; font-weight: 600; color: var(--bx-success);">99.98%</span>
+            </div>
+            <p style="margin: 4px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">anthropic · claude-sonnet-4-5 · 842ms</p>
+          </div>
+        </div>
+        <!-- light island -->
+        <div style="--bx-bg: #f5f7f8; --bx-bg-elevated: #ffffff; --bx-bg-card: #ffffff; --bx-bg-muted: #eef1f4; --bx-bg-deep: #e8ecef; --bx-text: #0b1518; --bx-text-soft: rgba(11,21,24,0.8); --bx-text-muted: rgba(11,21,24,0.6); --bx-text-dim: rgba(11,21,24,0.4); --bx-border: rgba(11,33,40,0.12); --bx-border-strong: rgba(11,33,40,0.2); --bx-line: rgba(11,33,40,0.07); --bx-brand: #0eae96; --bx-brand-bright: #0c9f8c; --bx-cyan: #0993b6; --bx-ink: #03261f; --bx-brand-soft: rgba(14,174,150,0.1); --bx-brand-ring: rgba(14,174,150,0.32); --bx-grad-cta: linear-gradient(120deg,#10bda3,#0aa9c9); --bx-success: #0f9d6a; --bx-hover: rgba(11,33,40,0.045); --bx-active: rgba(14,174,150,0.1); --bx-shadow-cta: 0 8px 24px -8px rgba(14,174,150,0.45); border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg); color: var(--bx-text); padding: 24px;">
+          <p style="margin: 0 0 16px; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">Light</p>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+            <button style="display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; font-family: inherit; background: var(--bx-grad-cta); color: #ffffff; box-shadow: var(--bx-shadow-cta);" style-hover="transform: translateY(-1px);">主按钮</button>
+            <button style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; font-family: inherit; border: 1px solid var(--bx-border-strong); background: transparent; color: var(--bx-text);" style-hover="border-color: var(--bx-brand); color: var(--bx-brand-bright);">次按钮</button>
+            <button style="display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; font-family: inherit; background: var(--bx-active); color: var(--bx-brand-bright);">柔和按钮</button>
+            <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid color-mix(in srgb, var(--bx-success) 35%, transparent); border-radius: 6px; padding: 4px 10px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; color: var(--bx-success);"><span style="width: 5px; height: 5px; border-radius: 999px; background: currentColor;"></span>OPERATIONAL</span>
+          </div>
+          <input placeholder="输入 API 密钥…" style="margin-top: 14px; width: 100%; box-sizing: border-box; border-radius: 8px; border: 1px solid var(--bx-border-strong); background: var(--bx-bg-elevated); color: var(--bx-text); padding: 9px 13px; font-size: 13.5px; font-family: inherit; outline: none;" style-focus="border-color: var(--bx-brand); box-shadow: 0 0 0 3px var(--bx-brand-ring);">
+          <div style="margin-top: 14px; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-lg); background: var(--bx-bg-elevated); padding: 16px; box-shadow: 0 6px 20px rgba(11,33,40,0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 13px; font-weight: 700;">Claude 主力池</span>
+              <span style="font-family: var(--bx-font-mono); font-size: 15px; font-weight: 600; color: var(--bx-success);">99.98%</span>
+            </div>
+            <p style="margin: 4px 0 0; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">anthropic · claude-sonnet-4-5 · 842ms</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ v1 → v2 changes ═══ -->
+    <section data-screen-label="迁移对照" style="margin-top: 72px;">
+      <h2 style="margin: 0 0 6px; font-size: 26px; font-weight: 800; letter-spacing: -0.03em;">07 · v1 → v2 关键变化</h2>
+      <p style="margin: 0 0 24px; font-size: 13.5px; color: var(--bx-text-muted);">变量名保持兼容，替换 <code style="font-family: var(--bx-font-mono); font-size: 12px; color: var(--bx-brand);">web/src/index.css</code> 中的 token 层即可全站生效。</p>
+      <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 180px 1fr 1fr 1.2fr; gap: 16px; padding: 10px 20px; border-bottom: 1px solid var(--bx-border); font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">
+          <span>维度</span><span>v1（现状）</span><span>v2（新）</span><span>理由</span>
+        </div>
+        <sc-for list="{{ diffRows }}" as="row" hint-placeholder-count="8">
+          <div style="display: grid; grid-template-columns: 180px 1fr 1fr 1.2fr; gap: 16px; padding: 13px 20px; border-top: 1px solid var(--bx-line); font-size: 12.5px; align-items: baseline;">
+            <span style="font-weight: 700;">{{ row.dim }}</span>
+            <span style="color: var(--bx-text-dim);">{{ row.v1 }}</span>
+            <span style="color: var(--bx-brand);">{{ row.v2 }}</span>
+            <span style="color: var(--bx-text-muted); line-height: 1.6;">{{ row.why }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+  </div>
+  <dc-import name="FooterV2" hint-size="100%,360px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      brandSwatches: [
+        { name: 'Brand', token: '--bx-brand', hex: '#1FD5B9', bg: '#1fd5b9' },
+        { name: 'Brand Bright', token: '--bx-brand-bright', hex: '#6CF5DD', bg: '#6cf5dd' },
+        { name: 'Brand Deep', token: '--bx-brand-deep', hex: '#0C9F8C', bg: '#0c9f8c' },
+        { name: 'Cyan', token: '--bx-cyan', hex: '#35D6F4', bg: '#35d6f4' },
+        { name: 'Sky', token: '--bx-sky', hex: '#7CC7FF', bg: '#7cc7ff' },
+        { name: 'Ink', token: '--bx-ink', hex: '#03261F', bg: '#03261f' },
+      ],
+      surfaceSwatches: [
+        { name: 'BG', token: '--bx-bg', hex: '#06080A / #F5F7F8', bg: 'var(--bx-bg)' },
+        { name: 'BG Elevated', token: '--bx-bg-elevated', hex: '#0B0E12 / #FFFFFF', bg: 'var(--bx-bg-elevated)' },
+        { name: 'BG Card', token: '--bx-bg-card', hex: '#0D1117 / #FFFFFF', bg: 'var(--bx-bg-card)' },
+        { name: 'BG Muted', token: '--bx-bg-muted', hex: '#11161D / #EEF1F4', bg: 'var(--bx-bg-muted)' },
+        { name: 'Border', token: '--bx-border', hex: 'blue-grey α15', bg: 'var(--bx-border)' },
+        { name: 'Line', token: '--bx-line', hex: 'blue-grey α9', bg: 'var(--bx-line)' },
+      ],
+      typeRows: [
+        { name: 'Display / Hero', spec: 'Manrope 800 · clamp(44–68) · -3.5%', family: 'var(--bx-font)', size: '44px', weight: 800, tracking: '-0.035em', color: 'var(--bx-text)', sample: '一个盒子，装下所有 AI' },
+        { name: 'H2 / Section', spec: 'Manrope 800 · 34 · -3%', family: 'var(--bx-font)', size: '34px', weight: 800, tracking: '-0.03em', color: 'var(--bx-text)', sample: '上游接入一次，四个入口同时可用' },
+        { name: 'H3 / Card title', spec: 'Manrope 800 · 17 · -2%', family: 'var(--bx-font)', size: '17px', weight: 800, tracking: '-0.02em', color: 'var(--bx-text)', sample: '在线创作台 Creator Workspace' },
+        { name: 'Body', spec: 'Manrope 400 · 14.5/1.7', family: 'var(--bx-font)', size: '14.5px', weight: 400, tracking: '0', color: 'var(--bx-text-muted)', sample: '所有模型、所有模态，共享同一份余额与同一个账户。' },
+        { name: 'Caption', spec: 'Manrope 500 · 12 · dim', family: 'var(--bx-font)', size: '12px', weight: 500, tracking: '0', color: 'var(--bx-text-dim)', sample: '生成历史保存在你自己的浏览器里，不会上传服务器。' },
+        { name: 'Mono Data', spec: 'IBM Plex Mono 600 · 22 · tabular', family: 'var(--bx-font-mono)', size: '22px', weight: 600, tracking: '-0.02em', color: 'var(--bx-text)', sample: '99.98% · 842ms · $128.50 · 2.4M' },
+        { name: 'Mono Label', spec: 'IBM Plex Mono 600 · 11 · +18% caps', family: 'var(--bx-font-mono)', size: '11px', weight: 600, tracking: '0.18em', color: 'var(--bx-brand)', sample: 'UNIFIED AI PLATFORM · LIVE STATUS · FOR DEVELOPERS' },
+      ],
+      radii: [
+        { label: 'xs', px: '4px' }, { label: 'sm', px: '6px' }, { label: 'base', px: '8px' },
+        { label: 'md', px: '10px' }, { label: 'lg', px: '12px' }, { label: 'xl', px: '16px' },
+      ],
+      spaces: ['4', '8', '12', '16', '24', '32', '48', '72', '88'].map((v) => ({ label: v, h: Math.min(88, Number(v)) + 'px' })),
+      motions: [
+        { name: 'Fast', token: '--bx-dur-fast · ease', dur: '120ms', anim: 'bx-shimmer 1.2s linear infinite' },
+        { name: 'Base', token: '--bx-dur · expo-out', dur: '240ms', anim: 'bx-shimmer 2.4s linear infinite' },
+        { name: 'Medium', token: '--bx-dur-med · expo-out', dur: '420ms', anim: 'bx-shimmer 4.2s linear infinite' },
+        { name: 'Slow', token: '--bx-dur-slow · spring', dur: '700ms', anim: 'bx-shimmer 7s linear infinite' },
+      ],
+      diffRows: [
+        { dim: '品牌色', v1: '#2DD4BF（tailwind teal-400）', v2: '#1FD5B9 + #35D6F4 双色系', why: '脱离 Tailwind 默认色，深浅主题各自校准对比度' },
+        { dim: '底色', v1: '#080A0D + 大面积 aurora 光晕', v2: '#06080A + hairline 网格，光晕收敛为单点', why: '参考 Nebius：结构感来自网格与分隔线，而非发光' },
+        { dim: '字体', v1: 'Space Grotesk + Noto Sans SC', v2: 'Manrope + Noto Sans SC + IBM Plex Mono', why: '单家族多字重更系统；数据/标签统一等宽' },
+        { dim: '卡片', v1: '半透明白 α3.5% + blur', v2: '实底 #0D1117 + inset 高光', why: '实底渲染更快、边界更锐利，密度更高时不糊' },
+        { dim: '圆角', v1: '10–28px', v2: '4–16px', why: '收紧圆角，与高密度表格/工具布局匹配' },
+        { dim: '动效', v1: 'framer 入场 + 光晕呼吸', v2: '编排入场 + 数据动效（计数/柱状/流线）', why: '动效服务信息表达，不只是氛围' },
+        { dim: '主题', v1: '深色为主，浅色为适配', v2: '深浅并重，token 双向校准', why: '企业客户与文档场景大量使用浅色' },
+        { dim: '密度', v1: '营销留白（section 96px）', v2: '紧凑网格（section 72–88px，行高收紧）', why: '信息密度高、工具感强的产品定位' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

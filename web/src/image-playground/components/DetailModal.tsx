@@ -756,7 +756,7 @@ export default function DetailModal() {
                         dismissAllTooltips()
                         setShowRawResponseModal(true)
                       }}
-                      className="inline-flex items-center justify-center rounded-full border border-purple-200/80 bg-purple-50 px-3 py-1.5 text-purple-600 transition hover:bg-purple-100 dark:border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20"
+                      className="inline-flex items-center justify-center rounded-[var(--bx-radius-sm,6px)] border border-[var(--bx-border-strong)] bg-[var(--bx-active)] px-3 py-1.5 text-[var(--bx-brand-bright)] transition hover:border-[var(--bx-brand-ring)]"
                       aria-label="{pg.viewRawResponse}"
                     >
                       <CodeIcon className="h-4 w-4" />

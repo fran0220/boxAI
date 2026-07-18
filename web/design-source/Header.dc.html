@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+<header onMouseLeave="{{ closeMenu }}" style="position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--bx-border); background: color-mix(in srgb, var(--bx-bg) 86%, transparent); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2);">
+  <div style="margin-inline: auto; display: flex; height: 56px; max-width: 1200px; align-items: center; gap: 20px; padding-inline: 24px;">
+    <a href="#" style="display: flex; align-items: center; gap: 9px; flex-shrink: 0; color: var(--bx-text);" style-hover="color: var(--bx-text);">
+      <img src="web/public/logo.svg" alt="" style="height: 26px; width: 26px;">
+      <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.02em;">BoxAI</span>
+    </a>
+    <nav aria-label="Primary" style="display: flex; flex: 1; align-items: center; gap: 2px;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="4">
+        <a href="#" onMouseEnter="{{ item.enter }}" style="{{ item.style }}" style-hover="color: var(--bx-text); background: var(--bx-hover);">
+          {{ item.label }}
+          <sc-if value="{{ item.hasMenu }}" hint-placeholder-val="{{ false }}">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: {{ item.chev }}; transition: transform 0.2s var(--bx-ease); opacity: 0.55;"><path d="m6 9 6 6 6-6"></path></svg>
+          </sc-if>
+          <sc-if value="{{ item.isActive }}" hint-placeholder-val="{{ false }}">
+            <span style="position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--bx-grad-cta);"></span>
+          </sc-if>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div role="group" aria-label="语言" style="display: inline-flex; align-items: center; border: 1px solid var(--bx-border); border-radius: 6px; overflow: hidden;">
+        <button style="border: none; cursor: pointer; padding: 4px 8px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 600; background: var(--bx-active); color: var(--bx-brand-bright);">中</button>
+        <button style="border: none; border-left: 1px solid var(--bx-border); cursor: pointer; padding: 4px 8px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 500; background: transparent; color: var(--bx-text-dim);" style-hover="color: var(--bx-text); background: var(--bx-hover);">EN</button>
+        <button style="border: none; border-left: 1px solid var(--bx-border); cursor: pointer; padding: 4px 8px; font-family: var(--bx-font-mono); font-size: 10.5px; font-weight: 500; background: transparent; color: var(--bx-text-dim);" style-hover="color: var(--bx-text); background: var(--bx-hover);">VI</button>
+      </div>
+      <button onClick="{{ toggleTheme }}" aria-label="切换深浅主题" style="display: inline-flex; border: 1px solid var(--bx-border); cursor: pointer; border-radius: 6px; padding: 5px; background: transparent; color: var(--bx-text-muted); transition: color var(--bx-dur-fast) ease, border-color var(--bx-dur-fast) ease;" style-hover="color: var(--bx-brand-bright); border-color: var(--bx-border-strong);">
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+      </sc-if>
+      </button>
+      <a href="#" style="display: inline-flex; align-items: center; gap: 6px; border-radius: var(--bx-radius-btn); padding: 6px 14px; font-weight: 700; font-size: 13px; letter-spacing: -0.01em; white-space: nowrap; background: var(--bx-grad-cta); color: var(--bx-ink); box-shadow: var(--bx-shadow-cta); transition: transform var(--bx-dur-fast) var(--bx-ease), box-shadow var(--bx-dur) var(--bx-ease);" style-hover="color: var(--bx-ink); transform: translateY(-1px); box-shadow: 0 12px 32px -8px rgba(31,213,185,0.7);">
+        控制台
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </a>
+    </div>
+  </div>
+  <!-- Nebius 式 mega-menu 面板 -->
+  <div style="{{ panelStyle }}">
+    <div style="margin-inline: auto; display: grid; max-width: 1200px; grid-template-columns: 2.1fr 1fr; gap: 28px; padding: 22px 24px 26px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-content: start;">
+        <sc-for list="{{ menuLinks }}" as="l" hint-placeholder-count="4">
+          <a href="#" style="display: flex; flex-direction: column; gap: 3px; border-radius: 10px; padding: 12px 14px; color: var(--bx-text); transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover); color: var(--bx-text);">
+            <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; letter-spacing: -0.01em;">
+              {{ l.t }}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--bx-brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </span>
+            <span style="font-size: 12.5px; line-height: 1.55; color: var(--bx-text-muted);">{{ l.d }}</span>
+          </a>
+        </sc-for>
+      </div>
+      <a href="#" style="position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; overflow: hidden; border-radius: var(--bx-radius-lg); border: 1px solid var(--bx-border); padding: 18px; min-height: 148px; color: var(--bx-text); background: linear-gradient(150deg, color-mix(in srgb, var(--bx-brand) 16%, var(--bx-bg-card)), var(--bx-bg-card) 70%); transition: border-color var(--bx-dur) var(--bx-ease), transform var(--bx-dur) var(--bx-ease);" style-hover="border-color: var(--bx-brand-ring); transform: translateY(-2px); color: var(--bx-text);">
+        <span aria-hidden="true" style="position: absolute; top: -40px; right: -40px; width: 150px; height: 150px; border-radius: 50%; filter: blur(30px); background: radial-gradient(circle, var(--bx-brand-soft), transparent 70%);"></span>
+        <span style="font-family: var(--bx-font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bx-brand);">{{ featK }}</span>
+        <span style="font-size: 15px; font-weight: 800; letter-spacing: -0.015em;">{{ featT }}</span>
+        <span style="font-size: 12px; line-height: 1.55; color: var(--bx-text-muted);">{{ featD }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1280, &quot;height&quot;: 380}, &quot;active&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;&quot;, &quot;creator&quot;, &quot;studio&quot;, &quot;pricing&quot;, &quot;status&quot;]}}">
+class Component extends DCLogic {
+  state = { light: typeof document !== 'undefined' && document.documentElement.classList.contains('light'), menu: '' };
+  menus = {
+    products: {
+      links: [
+        { t: '在线创作台', d: '图像与视频生成，即开即用，历史保存在本地' },
+        { t: 'Studio 工作台', d: '桌面 Agent，访问本地文件与工具链' },
+        { t: '模型网关 API', d: 'OpenAI 兼容 /v1，一个 Key 调用全部模型' },
+        { t: '账户中心', d: '余额、密钥与用量账单，全产品共享' },
+      ],
+      feat: { k: 'New', t: 'Claude Code 直接接入', d: '两行环境变量，把网关额度直接用进 Claude Code。' },
+    },
+    solutions: {
+      links: [
+        { t: '图像创作', d: 'Flux、即梦等主流生图模型一站可用' },
+        { t: '视频创作', d: 'Kling / Veo / Wan，参考图直出成片' },
+        { t: 'Agent 自动化', d: '用 Studio 驱动桌面级自动化任务' },
+        { t: '开发集成', d: '把全部主流模型接进你自己的应用' },
+      ],
+      feat: { k: 'Why BoxAI', t: '一份余额，全部产品', d: '创作台、Studio 与 API 共享同一账户与同一份余额。' },
+    },
+    resources: {
+      links: [
+        { t: '服务状态', d: '各上游渠道实时可用性与延迟' },
+        { t: '开发文档', d: '5 分钟完成第一次 API 调用' },
+        { t: '更新日志', d: '新模型与新功能上线公告' },
+        { t: '常见问题', d: '计费方式、数据与隐私说明' },
+      ],
+      feat: { k: 'Status', t: '99.9% 服务可用性', d: '全渠道实时监控，数据公开透明。' },
+    },
+  };
+  renderVals() {
+    const active = this.props.active ?? '';
+    const open = this.state.menu;
+    const m = this.menus[open] || this.menus.products;
+    const base = 'position: relative; display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 6px 11px; font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; transition: color var(--bx-dur-fast) ease, background var(--bx-dur-fast) ease;';
+    const items = [
+      { key: 'products', label: '产品', hasMenu: true, act: active === 'creator' || active === 'studio' },
+      { key: 'solutions', label: '解决方案', hasMenu: true, act: false },
+      { key: 'pricing', label: '定价', hasMenu: false, act: active === 'pricing' },
+      { key: 'resources', label: '资源', hasMenu: true, act: active === 'status' },
+    ];
+    const panelBase = 'position: absolute; left: 0; right: 0; top: 100%; border-bottom: 1px solid var(--bx-border); background: color-mix(in srgb, var(--bx-bg) 94%, transparent); backdrop-filter: blur(20px) saturate(1.2); -webkit-backdrop-filter: blur(20px) saturate(1.2); box-shadow: 0 36px 70px -28px rgba(0,0,0,0.55); transition: opacity 0.24s var(--bx-ease), transform 0.24s var(--bx-ease), visibility 0.24s;';
+    return {
+      isLight: this.state.light,
+      isDark: !this.state.light,
+      toggleTheme: () => {
+        const el = document.documentElement;
+        el.classList.toggle('light');
+        this.setState({ light: el.classList.contains('light') });
+      },
+      closeMenu: () => { if (this.state.menu) this.setState({ menu: '' }); },
+      navItems: items.map((it) => ({
+        label: it.label,
+        hasMenu: it.hasMenu,
+        isActive: it.act,
+        chev: open === it.key ? 'rotate(180deg)' : 'rotate(0deg)',
+        enter: () => this.setState({ menu: it.hasMenu ? it.key : '' }),
+        style: base + (it.act || open === it.key ? ' color: var(--bx-text);' : ' color: var(--bx-text-muted);'),
+      })),
+      panelStyle: panelBase + (open
+        ? ' opacity: 1; transform: translateY(0); visibility: visible; pointer-events: auto;'
+        : ' opacity: 0; transform: translateY(-10px); visibility: hidden; pointer-events: none;'),
+      menuLinks: m.links,
+      featK: m.feat.k, featT: m.feat.t, featD: m.feat.d,
+    };
+  }
+}
+</script>
+</body>
+</html>

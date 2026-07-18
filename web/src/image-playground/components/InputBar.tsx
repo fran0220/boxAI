@@ -18,6 +18,8 @@ import DragUploadOverlay from './input/dragUploadOverlay'
 import InputBatchBars from './input/inputBatchBars'
 import InputParamsPanel from './input/inputParamsPanel'
 import { usePg } from '../lib/pgI18n'
+import { useIsCreateShell } from '../shellContext'
+import { useI18n } from '@/i18n'
 
 
 function getMentionTagTextLength(el: Element) {
@@ -380,6 +382,8 @@ function AtImageOptionThumb({ option }: { option: AtImageOption }) {
 
 export default function InputBar() {
   const { pg, t } = usePg()
+  const { d } = useI18n()
+  const isCreateShell = useIsCreateShell()
   const prompt = useStore((s) => s.prompt)
   const appMode = useStore((s) => s.appMode)
   const setPrompt = useStore((s) => s.setPrompt)
@@ -745,7 +749,14 @@ export default function InputBar() {
     : hasSubmitApiConfig
       ? pg.generateImage
       : pg.loginRequiredGenerate
-  const promptPlaceholder = pg.promptPlaceholder
+  const isMac =
+    typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
+  const cmdEnter = isMac ? '⌘↵' : 'Ctrl↵'
+  // Create-shell: design placeholder ends with ⌘↵ 生成; never invent pricing
+  const promptPlaceholder = isCreateShell
+    ? `${d.create.image.promptPlaceholder}  ${cmdEnter} ${d.create.image.generate}`
+    : pg.promptPlaceholder
+  const generateCtaLabel = isCreateShell ? d.create.image.generate : pg.generateImage
   const submitCurrentMode = useCallback(() => {
     if (appMode === 'agent') {
       void submitAgentMessage()
@@ -1987,7 +1998,11 @@ export default function InputBar() {
 
       <div
         data-input-bar
-        className={`fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 w-full max-w-4xl px-3 sm:px-4 transition-all duration-300${promptExpanded ? ' flex flex-col' : ''}`}
+        className={
+          isCreateShell
+            ? `bx-create-image-composer z-30 w-full transition-all duration-300${promptExpanded ? ' flex flex-col' : ''}`
+            : `fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 w-full max-w-4xl px-3 sm:px-4 transition-all duration-300${promptExpanded ? ' flex flex-col' : ''}`
+        }
         style={promptExpanded ? { top: `${promptExpandedTop}px`, transitionProperty: 'none' } : undefined}
       >
         <InputBatchBars
@@ -2007,7 +2022,14 @@ export default function InputBar() {
           onDownloadSelected={handleDownloadSelected}
           onDeleteSelected={handleDeleteSelected}
         />
-        <div ref={cardRef} className={`bg-white/70 dark:bg-[var(--bx-bg-elevated)]/70 backdrop-blur-2xl border border-white/50 dark:border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-[var(--bx-radius-lg)] sm:rounded-[var(--bx-radius-xl)] p-3 sm:p-4 ring-1 ring-black/5 dark:ring-white/10${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`}>
+        <div
+          ref={cardRef}
+          className={
+            isCreateShell
+              ? `bx-create-image-composer-card${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`
+              : `bg-white/70 dark:bg-[var(--bx-bg-elevated)]/70 backdrop-blur-2xl border border-white/50 dark:border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-[var(--bx-radius-lg)] sm:rounded-[var(--bx-radius-xl)] p-3 sm:p-4 ring-1 ring-black/5 dark:ring-white/10${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`
+          }
+        >
           {/* … */}
           <div
             ref={handleRef}
@@ -2208,19 +2230,38 @@ export default function InputBar() {
                   <button
                     onClick={() => activeAgentIsRunning ? stopActiveAgentResponse() : hasSubmitApiConfig ? submitCurrentMode() : showToast(pg.loginRequired, 'error')}
                     disabled={activeAgentIsRunning ? false : hasSubmitApiConfig ? !canSubmit : false}
-                    className={`p-2.5 rounded-xl transition-all shadow-sm hover:shadow ${
-                      activeAgentIsRunning
-                        ? 'bg-red-500 text-white hover:bg-red-600'
-                        : !hasSubmitApiConfig
-                        ? 'bg-gray-300 dark:bg-white/[0.06] text-white cursor-pointer'
-                        : 'bg-teal-500 text-white hover:bg-teal-600 disabled:bg-gray-300 dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
-                    }`}
+                    className={
+                      isCreateShell
+                        ? `bx-create-image-generate-btn ${
+                            activeAgentIsRunning
+                              ? 'is-stop'
+                              : !hasSubmitApiConfig
+                                ? 'is-disabled'
+                                : ''
+                          }`
+                        : `p-2.5 rounded-xl transition-all shadow-sm hover:shadow ${
+                            activeAgentIsRunning
+                              ? 'bg-red-500 text-white hover:bg-red-600'
+                              : !hasSubmitApiConfig
+                              ? 'bg-gray-300 dark:bg-white/[0.06] text-white cursor-pointer'
+                              : 'bg-teal-500 text-white hover:bg-teal-600 disabled:bg-gray-300 dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
+                          }`
+                    }
                     aria-label={submitButtonAriaLabel}
                   >
                     {activeAgentIsRunning ? (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <rect x="7" y="7" width="10" height="10" rx="1.5" />
-                      </svg>
+                      isCreateShell ? (
+                        pg.stop
+                      ) : (
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <rect x="7" y="7" width="10" height="10" rx="1.5" />
+                        </svg>
+                      )
+                    ) : isCreateShell ? (
+                      <>
+                        <span>{generateCtaLabel}</span>
+                        <span className="bx-create-image-generate-kbd">{cmdEnter}</span>
+                      </>
                     ) : (
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -2316,24 +2357,46 @@ export default function InputBar() {
                     onClick={() => activeAgentIsRunning ? stopActiveAgentResponse() : hasSubmitApiConfig ? submitCurrentMode() : showToast(pg.loginRequired, 'error')}
                     disabled={activeAgentIsRunning ? false : hasSubmitApiConfig ? !canSubmit : false}
                     aria-label={submitButtonAriaLabel}
-                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm ${
-                      activeAgentIsRunning
-                        ? 'bg-red-500 text-white hover:bg-red-600'
-                        : !hasSubmitApiConfig
-                        ? 'bg-gray-300 dark:bg-white/[0.06] text-white cursor-pointer'
-                        : 'bg-teal-500 text-white hover:bg-teal-600 disabled:bg-gray-300 dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
-                    }`}
+                    className={
+                      isCreateShell
+                        ? `bx-create-image-generate-btn w-full ${
+                            activeAgentIsRunning
+                              ? 'is-stop'
+                              : !hasSubmitApiConfig
+                                ? 'is-disabled'
+                                : ''
+                          }`
+                        : `w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm ${
+                            activeAgentIsRunning
+                              ? 'bg-red-500 text-white hover:bg-red-600'
+                              : !hasSubmitApiConfig
+                              ? 'bg-gray-300 dark:bg-white/[0.06] text-white cursor-pointer'
+                              : 'bg-teal-500 text-white hover:bg-teal-600 disabled:bg-gray-300 dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
+                          }`
+                    }
                   >
                     {activeAgentIsRunning ? (
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <rect x="7" y="7" width="10" height="10" rx="1.5" />
-                      </svg>
+                      <>
+                        {!isCreateShell ? (
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <rect x="7" y="7" width="10" height="10" rx="1.5" />
+                          </svg>
+                        ) : null}
+                        {pg.stop}
+                      </>
                     ) : (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
+                      <>
+                        {!isCreateShell ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                        ) : null}
+                        {maskDraft ? pg.maskEdit : generateCtaLabel}
+                        {isCreateShell && !maskDraft ? (
+                          <span className="bx-create-image-generate-kbd">{cmdEnter}</span>
+                        ) : null}
+                      </>
                     )}
-                    {activeAgentIsRunning ? pg.stop : maskDraft ? pg.maskEdit : pg.generateImage}
                   </button>
                 </div>
               </div>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bx-bg); color: var(--bx-text); font-family: var(--bx-font);">
+  <dc-import name="HeaderV2" active="status" hint-size="100%,56px"></dc-import>
+
+  <div style="margin-inline: auto; max-width: 1200px; padding: 56px 24px 96px;">
+
+    <!-- Header -->
+    <header data-screen-label="状态头部" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+      <div>
+        <p style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bx-brand); margin: 0;">
+          <span style="width: 20px; height: 1px; background: var(--bx-brand);"></span>
+          Live Status
+        </p>
+        <h1 style="margin: 14px 0 0; font-size: 38px; font-weight: 800; letter-spacing: -0.035em;">系统状态</h1>
+        <p style="margin: 10px 0 0; font-size: 14px; color: var(--bx-text-muted);">实时查看各上游渠道可用性、延迟与探测时间线。<span style="font-family: var(--bx-font-mono); font-size: 12px; color: var(--bx-text-dim);">更新于 21:42:00 · 45s 自动刷新</span></p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+        <div role="tablist" aria-label="Period" style="display: inline-flex; padding: 3px; border-radius: 8px; border: 1px solid var(--bx-border); background: var(--bx-bg-elevated); gap: 2px;">
+          <sc-for list="{{ periods }}" as="p" hint-placeholder-count="3">
+            <button onClick="{{ p.pick }}" role="tab" aria-selected="{{ p.selected }}" style="{{ p.style }}">{{ p.label }}</button>
+          </sc-for>
+        </div>
+        <span style="display: inline-flex; align-items: center; gap: 7px; border: 1px solid color-mix(in srgb, var(--bx-success) 35%, transparent); border-radius: 6px; padding: 6px 12px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--bx-success);">
+          <span style="width: 6px; height: 6px; border-radius: 999px; background: currentColor; animation: bx-ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></span>
+          OPERATIONAL
+        </span>
+        <button title="刷新" style="display: inline-flex; height: 32px; width: 32px; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--bx-border); cursor: pointer; background: transparent; color: var(--bx-text-dim);" style-hover="color: var(--bx-brand-bright); border-color: var(--bx-border-strong);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI strip -->
+    <section data-screen-label="状态KPI" style="margin-top: 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+      <div style="padding: 18px 22px;">
+        <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">监控渠道</p>
+        <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums;">6</p>
+      </div>
+      <div style="padding: 18px 22px; border-left: 1px solid var(--bx-border);">
+        <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">平均可用性 · {{ periodLabel }}</p>
+        <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--bx-success);">99.42%</p>
+      </div>
+      <div style="padding: 18px 22px; border-left: 1px solid var(--bx-border);">
+        <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">平均对话延迟</p>
+        <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums;">868<span style="font-size: 13px; color: var(--bx-text-dim);"> ms</span></p>
+      </div>
+      <div style="padding: 18px 22px; border-left: 1px solid var(--bx-border);">
+        <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bx-text-dim);">24h 降级事件</p>
+        <p style="margin: 6px 0 0; font-family: var(--bx-font-mono); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--bx-warning);">2</p>
+      </div>
+    </section>
+
+    <!-- Groups -->
+    <sc-for list="{{ groups }}" as="group" hint-placeholder-count="2">
+      <section style="margin-top: 40px;">
+        <h2 style="display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-family: var(--bx-font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bx-text-dim);">
+          {{ group.name }}
+          <span style="flex: 1; height: 1px; background: var(--bx-border);"></span>
+          <span style="color: var(--bx-text-dim);">{{ group.count }}</span>
+        </h2>
+        <div style="border: 1px solid var(--bx-border); border-radius: var(--bx-radius-xl); background: var(--bx-bg-elevated); box-shadow: var(--bx-shadow-card); overflow: hidden;">
+          <sc-for list="{{ group.items }}" as="mon" hint-placeholder-count="3">
+            <div style="display: grid; grid-template-columns: 250px 1fr 120px 120px 110px; gap: 20px; align-items: center; padding: 16px 22px; border-top: 1px solid var(--bx-line); transition: background var(--bx-dur-fast) ease;" style-hover="background: var(--bx-hover);">
+              <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                <span style="display: grid; height: 34px; width: 34px; flex-shrink: 0; place-items: center; border-radius: 8px; background: var(--bx-brand-soft); font-family: var(--bx-font-mono); font-size: 13px; font-weight: 600; color: var(--bx-brand);">{{ mon.initial }}</span>
+                <span style="min-width: 0;">
+                  <span style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700;">{{ mon.name }}
+                    <span style="border-radius: 4px; padding: 1.5px 7px; font-family: var(--bx-font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; background: {{ mon.badgeBg }}; color: {{ mon.badgeColor }};">{{ mon.statusLabel }}</span>
+                  </span>
+                  <span style="display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--bx-font-mono); font-size: 11px; color: var(--bx-text-dim);">{{ mon.provider }} · {{ mon.model }}</span>
+                </span>
+              </div>
+              <div>
+                <div aria-hidden="true" style="display: flex; align-items: flex-end; gap: 2px; height: 22px;">
+                  <sc-for list="{{ mon.timeline }}" as="seg" hint-placeholder-count="60">
+                    <span style="flex: 1; min-width: 2px; border-radius: 1.5px; height: {{ seg.h }}; background: {{ seg.bg }}; transform-origin: bottom; animation: bx-bar-grow 0.7s var(--bx-ease) both {{ seg.delay }};" title="{{ seg.title }}"></span>
+                  </sc-for>
+                </div>
+                <div style="margin-top: 4px; display: flex; justify-content: space-between; font-family: var(--bx-font-mono); font-size: 8.5px; letter-spacing: 0.18em; color: var(--bx-text-dim);">
+                  <span>PAST</span><span>NOW</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">对话延迟</p>
+                <p style="margin: 3px 0 0; font-family: var(--bx-font-mono); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ mon.latency }}<span style="font-size: 11px; color: var(--bx-text-dim);"> ms</span></p>
+              </div>
+              <div style="text-align: right;">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">PING</p>
+                <p style="margin: 3px 0 0; font-family: var(--bx-font-mono); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ mon.ping }}<span style="font-size: 11px; color: var(--bx-text-dim);"> ms</span></p>
+              </div>
+              <div style="text-align: right;">
+                <p style="margin: 0; font-family: var(--bx-font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bx-text-dim);">可用性</p>
+                <p style="margin: 3px 0 0; font-family: var(--bx-font-mono); font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; color: {{ mon.availColor }};">{{ mon.availability }}<span style="font-size: 12px;">%</span></p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+
+    <p style="margin: 32px 0 0; font-size: 12px; color: var(--bx-text-dim); font-family: var(--bx-font-mono);">图例：<span style="color: var(--bx-success);">■ 正常</span> · <span style="color: var(--bx-warning);">■ 降级</span> · <span style="color: var(--bx-danger);">■ 失败</span> · 每格为一次探测（约 {{ periodLabel }} 内 60 次采样）</p>
+  </div>
+
+  <dc-import name="FooterV2" hint-size="100%,360px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { period: '7d' };
+  seededTimeline(seed, degRate, failRate) {
+    let x = seed;
+    const rnd = () => { x = (x * 9301 + 49297) % 233280; return x / 233280; };
+    const segs = [];
+    for (let i = 0; i < 60; i++) {
+      const r = rnd();
+      let h = '100%', bg = 'var(--bx-success)', st = '正常';
+      if (r < failRate) { h = '35%'; bg = 'var(--bx-danger)'; st = '失败'; }
+      else if (r < failRate + degRate) { h = '62%'; bg = 'var(--bx-warning)'; st = '降级'; }
+      segs.push({ h: h, bg: bg, delay: (i * 0.008).toFixed(3) + 's', title: st + ' · ' + Math.round(400 + rnd() * 900) + 'ms' });
+    }
+    return segs;
+  }
+  monitor(name, provider, model, seed, avail, latency, ping, degraded) {
+    const ok = !degraded;
+    return {
+      name: name, provider: provider, model: model,
+      initial: provider.slice(0, 1).toUpperCase(),
+      statusLabel: ok ? '正常' : '降级',
+      badgeBg: ok ? 'var(--bx-success-soft)' : 'var(--bx-warning-soft)',
+      badgeColor: ok ? 'var(--bx-success)' : 'var(--bx-warning)',
+      latency: latency, ping: ping,
+      availability: avail.toFixed(2),
+      availColor: avail >= 99 ? 'var(--bx-success)' : avail >= 97 ? 'var(--bx-warning)' : 'var(--bx-danger)',
+      timeline: this.seededTimeline(seed, ok ? 0.035 : 0.14, ok ? 0.008 : 0.04),
+    };
+  }
+  renderVals() {
+    const labels = { '7d': '7 天', '15d': '15 天', '30d': '30 天' };
+    const base = 'border: 0; background: transparent; color: var(--bx-text-dim); font-family: var(--bx-font-mono); font-size: 11.5px; font-weight: 500; padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: color 0.12s, background 0.12s;';
+    return {
+      periodLabel: labels[this.state.period],
+      periods: ['7d', '15d', '30d'].map((p) => ({
+        label: labels[p],
+        selected: this.state.period === p,
+        style: this.state.period === p ? base + ' background: var(--bx-active); color: var(--bx-brand-bright); font-weight: 600;' : base,
+        pick: () => this.setState({ period: p }),
+      })),
+      groups: [
+        { name: 'Claude 渠道', count: '3 monitors', items: [
+          this.monitor('Claude 主力池', 'anthropic', 'claude-sonnet-4-5', 7, 99.98, 842, 121, false),
+          this.monitor('Claude 高并发', 'anthropic', 'claude-opus-4-6', 21, 99.72, 1204, 133, false),
+          this.monitor('Claude 备用', 'anthropic', 'claude-haiku-4', 33, 97.65, 968, 158, true),
+        ]},
+        { name: 'OpenAI / 其他', count: '3 monitors', items: [
+          this.monitor('GPT-5 网关', 'openai', 'gpt-5', 51, 99.92, 730, 96, false),
+          this.monitor('Gemini 渠道', 'gemini', 'gemini-3-pro', 64, 99.87, 655, 104, false),
+          this.monitor('Grok 渠道', 'grok', 'grok-4.5', 87, 98.40, 1010, 142, false),
+        ]},
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

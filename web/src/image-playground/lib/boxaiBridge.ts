@@ -4,7 +4,7 @@
  */
 
 import { addAsset, listAssets } from '@/lib/assets-db'
-import { storeImage } from './db'
+import { getImage, storeImage } from './db'
 import { useStore } from '../store'
 import type { TaskRecord } from '../types'
 
@@ -18,7 +18,6 @@ function taskImageKey(taskId: string, imageId: string): string {
 export async function mirrorTaskOutputsToAssets(task: TaskRecord): Promise<void> {
   if (task.status !== 'done' || !task.outputImages?.length) return
   // Skip agent-synced tasks if marked (agent tasks still have useful outputs)
-  const { getImage } = await import('./db')
   for (const imageId of task.outputImages) {
     const key = taskImageKey(task.id, imageId)
     if (mirroredTaskImageKeys.has(key)) continue

@@ -11,19 +11,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Align with console primary (teal)
+        // Precision Teal v2
         primary: {
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
+          400: '#1fd5b9',
+          500: '#0eae96',
+          600: '#0c9f8c',
           DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
           foreground: 'hsl(var(--primary-foreground) / <alpha-value>)',
         },
         brand: {
-          DEFAULT: 'var(--bx-teal)',
-          bright: 'var(--bx-teal-bright)',
-          deep: 'var(--bx-teal-deep)',
-          ink: 'var(--bx-teal-ink)',
+          DEFAULT: 'var(--bx-brand)',
+          bright: 'var(--bx-brand-bright)',
+          deep: 'var(--bx-brand-deep)',
+          ink: 'var(--bx-ink)',
         },
         spark: {
           DEFAULT: 'var(--bx-spark)',
@@ -46,22 +46,16 @@ export default {
       fontFamily: {
         sans: [
           'var(--bx-font)',
+          'Manrope',
           'Noto Sans SC',
-          'Space Grotesk',
           'system-ui',
           '-apple-system',
           'PingFang SC',
           'Microsoft YaHei',
           'sans-serif',
         ],
-        display: [
-          'var(--bx-font-display)',
-          'Space Grotesk',
-          'Noto Sans SC',
-          'system-ui',
-          'sans-serif',
-        ],
-        mono: ['var(--bx-font-mono)', 'SF Mono', 'Menlo', 'Consolas', 'monospace'],
+        display: ['var(--bx-font-display)', 'Manrope', 'Noto Sans SC', 'system-ui', 'sans-serif'],
+        mono: ['var(--bx-font-mono)', 'IBM Plex Mono', 'SF Mono', 'Menlo', 'Consolas', 'monospace'],
       },
       borderRadius: {
         bx: 'var(--bx-radius)',

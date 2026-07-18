@@ -4,6 +4,7 @@ import { forgotPassword } from '@/lib/customer-api'
 import { ApiError } from '@/lib/api'
 import { useI18n } from '@/i18n'
 import { usePageMeta } from '@/lib/meta'
+import { AuthSplitLayout } from './AuthSplitLayout'
 
 export function ForgotPassword() {
   const { d } = useI18n()
@@ -31,31 +32,29 @@ export function ForgotPassword() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-14 sm:px-6">
-      <h1 className="bx-display text-2xl font-bold">{t.forgotTitle}</h1>
-      <p className="mt-2 text-sm text-[var(--bx-text-muted)]">{t.forgotSubtitle}</p>
-      <form onSubmit={onSubmit} className="bx-card mt-6 space-y-4 p-6">
-        <label className="block text-sm">
-          <span className="text-[var(--bx-text-muted)]">{t.email}</span>
+    <AuthSplitLayout title={t.forgotTitle} subtitle={t.forgotSubtitle}>
+      <form onSubmit={onSubmit} className="bx-auth-fields">
+        <label className="bx-auth-label">
+          <span className="bx-auth-label-text">{t.email}</span>
           <input
             type="email"
-            className="bx-input mt-1 w-full"
+            className="bx-auth-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
+            placeholder="you@example.com"
           />
         </label>
-        {error ? <p className="bx-text-danger text-sm">{error}</p> : null}
-        {message ? <p className="text-sm text-[var(--bx-brand-bright)]">{message}</p> : null}
-        <button type="submit" className="bx-btn bx-btn-primary w-full" disabled={busy}>
+        {error ? <p className="bx-auth-error">{error}</p> : null}
+        {message ? <p className="bx-auth-msg">{message}</p> : null}
+        <button type="submit" className="bx-auth-cta" disabled={busy}>
           {busy ? d.common.loading : t.sendReset}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm">
-        <Link to="/login" className="text-[var(--bx-text-muted)] hover:text-[var(--bx-text)]">
-          {t.toLogin}
-        </Link>
+      <p className="bx-auth-switch">
+        <Link to="/login">{t.switchDirectLogin}</Link>
       </p>
-    </div>
+    </AuthSplitLayout>
   )
 }
